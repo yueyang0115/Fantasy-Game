@@ -50,7 +50,7 @@ clover {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'edu.duke.ece.fantacy.App'
+    mainClassName = 'edu.duke.ece.fantacy.Server'
 }
 
 test {
