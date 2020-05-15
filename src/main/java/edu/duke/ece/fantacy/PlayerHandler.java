@@ -34,7 +34,7 @@ public class PlayerHandler extends Thread{
         AttributeToJson attributeToJson = new AttributeToJson(v_attribute);
         v_attributeObj = attributeToJson.getAttributeObj();
         communicator.sendJSON(v_attributeObj);
-        System.out.println("Send virtual attribute: " +  v_attributeObj.toString());
+        System.out.println("Send virtual attribute: " +  v_attributeObj.toString()+"\n");
 
 
 //        while(true){
