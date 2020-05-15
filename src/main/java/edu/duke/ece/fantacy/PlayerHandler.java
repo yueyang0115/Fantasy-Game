@@ -37,8 +37,8 @@ public class PlayerHandler extends Thread{
         System.out.println("Send virtual attribute: " +  v_attributeObj.toString());
 
 
-        while(true){
-        }
+//        while(true){
+//        }
 
     }
 
