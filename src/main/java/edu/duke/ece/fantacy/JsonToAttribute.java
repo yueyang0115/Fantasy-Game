@@ -18,7 +18,7 @@ public class JsonToAttribute {
     public Attribute JsonToattribute(JSONObject attributeObj){
         Attribute attribute = new Attribute();
         JSONObject locationObj = new JSONObject();
-        locationObj = attributeObj.optJSONObject("location");
+        locationObj = attributeObj.optJSONObject("position");
         if(locationObj != null){
             this.mylocation = JsonToLocation(locationObj);
             attribute.setLocation(this.mylocation);

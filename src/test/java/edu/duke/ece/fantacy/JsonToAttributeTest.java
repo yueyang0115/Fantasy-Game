@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class JsonToAttributeTest {
     @Test
     void Test() {
-        String attributeStr = "{'location':{'x':'100','y':'100'}}";
+        String attributeStr = "{'position':{'x':'100','y':'100'}}";
         JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
         Attribute attribute = jsonToattribute.getAttribute();
         assertEquals(attribute.getLocation().getX(),100);

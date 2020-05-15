@@ -15,7 +15,7 @@ public class AttributeToJson {
     public JSONObject attributeTojson(Attribute attribute){
         JSONObject attributeObj = new JSONObject();
         this.mylocationObj = locationTojson(attribute.getLocation());
-        attributeObj.put("location", this.mylocationObj);
+        attributeObj.put("position", this.mylocationObj);
         return attributeObj;
     }
 

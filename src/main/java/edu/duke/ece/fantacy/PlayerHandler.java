@@ -18,8 +18,8 @@ public class PlayerHandler extends Thread{
 
     public void startPlay(){
         //Send id to player
-        communicator.sendString(String.valueOf(id));
-        System.out.println("Send player id " + id);
+//        communicator.sendString(String.valueOf(id));
+//        System.out.println("Send player id " + id);
 
         //receive first attribute, including real address
         String attributeStr = communicator.receive();
