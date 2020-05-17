@@ -22,23 +22,23 @@ public class PlayerHandler extends Thread{
 //        System.out.println("Send player id " + id);
 
         //receive first attribute, including real address
-        String attributeStr = communicator.receive();
-        System.out.println("Receive attribute: " +attributeStr);
+        while(true){
+            String attributeStr = communicator.receive();
+            System.out.println("Receive attribute: " +attributeStr);
 
-        JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
-        Attribute attribute = jsonToattribute.getAttribute();
+            JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
+            Attribute attribute = jsonToattribute.getAttribute();
 
-        //send attribute, including virtual address and others
-        Attribute v_attribute = transformAttribute(attribute);
-        JSONObject v_attributeObj = new JSONObject();
-        AttributeToJson attributeToJson = new AttributeToJson(v_attribute);
-        v_attributeObj = attributeToJson.getAttributeObj();
-        communicator.sendJSON(v_attributeObj);
-        System.out.println("Send virtual attribute: " +  v_attributeObj.toString()+"\n");
+            //send attribute, including virtual address and others
+            Attribute v_attribute = transformAttribute(attribute);
+            JSONObject v_attributeObj = new JSONObject();
+            AttributeToJson attributeToJson = new AttributeToJson(v_attribute);
+            v_attributeObj = attributeToJson.getAttributeObj();
+            communicator.sendJSON(v_attributeObj);
+            System.out.println("Send virtual attribute: " +  v_attributeObj.toString()+"\n");
+        }
 
 
-//        while(true){
-//        }
 
     }
 
