@@ -7,10 +7,6 @@ public class Attribute {
         this.location = new Location();
     }
 
-    public void setLocation(int x, int y){
-        location.setX(x);
-        location.setY(y);
-    }
     public void setLocation(Location location_rhs){
         location.setX(location_rhs.getX());
         location.setY(location_rhs.getY());

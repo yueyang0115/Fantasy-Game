@@ -1,34 +1,40 @@
 package edu.duke.ece.fantacy;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-public class ServerTest {
+public class UDPcommunicatorTest {
     @Test
-    void buildServerTest() throws IOException{
-        Server server = new Server(1234,5678);
-        buildClientTest();
-        server.startOnePlayer();
+    void UDPserverTest() throws IOException {
+        DatagramSocket UDPserverSock = new DatagramSocket(5555);
+        UDPclientTest();
+        UDPCommunicator UDPcm = new UDPCommunicator(UDPserverSock);
+
+        String attributeStr = UDPcm.receive();
+        System.out.println("UDPserver receive attribute: " +attributeStr);
+
+        //transform
+        JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
+        Attribute attribute = jsonToattribute.getAttribute();
+        AttributeToJson attributeToJson = new AttributeToJson(attribute);
+        JSONObject attributeObj = attributeToJson.getAttributeObj();
+
+        UDPcm.SendString(attributeObj.toString());
+        System.out.println("UDPserver send virtual attribute");
     }
 
-    void buildClientTest(){
+    void UDPclientTest(){
         new Thread(()->{
-            TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1234);
-//            //System.out.println("Received id is " + cm.receive());
-//            TCPcm.sendString("{'position':{'x':'100.00','y':'100.00'}}");
-//            System.out.println("Received virtual attribute is " + TCPcm.receive());
-
             InetAddress address= null;
             try {
                 address = InetAddress.getByName("localhost");
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
-            int port=5678;
+            int port=5555;
             String msg = "{'position':{'x':'100.00','y':'100.00'}}";
             byte[] data= msg.getBytes();
             DatagramPacket packet=new DatagramPacket(data, data.length, address, port);
@@ -44,7 +50,7 @@ public class ServerTest {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("[DEBUG] client send message: " + msg);
+            System.out.println("UDPclient send message");
 
             byte[] data2=new byte[1024];
             DatagramPacket packet2=new DatagramPacket(data2, data2.length);
@@ -54,7 +60,7 @@ public class ServerTest {
                 e.printStackTrace();
             }
             String reply=new String(data2, 0, packet2.getLength());
-            System.out.println("[DEBUG] client receive message: "+reply);
+            System.out.println("UDPclient receive message: "+reply);
             socket.close();
         }).start();
     }

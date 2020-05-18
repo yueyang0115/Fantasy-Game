@@ -10,8 +10,11 @@ public class JsonToAttributeTest {
         JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
         Attribute attribute = jsonToattribute.getAttribute();
         assertEquals(attribute.getLocation().getX(),100);
+        Location location = jsonToattribute.getLocation();
+        assertEquals(attribute.getLocation().getX(),100);
 
         AttributeToJson attributeTojson = new AttributeToJson(attribute);
         System.out.println(attributeTojson.getAttributeObj().toString());
+        System.out.println(attributeTojson.getLocationObj().toString());
     }
 }

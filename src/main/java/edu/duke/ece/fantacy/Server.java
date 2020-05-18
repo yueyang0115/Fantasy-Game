@@ -11,15 +11,15 @@ public class Server {
     private DatagramSocket UDPserverSock;
     private ArrayList<PlayerHandler> playerHandlerList;
 
-    public Server(){
-        this.TCPport = 1234;
+    public Server(int tcpPort, int udpPort){
+        this.TCPport = tcpPort;
         try {
             this.TCPserverSock = new ServerSocket(this.TCPport);
             System.out.println("[DEBUG] Successfully built TCPserver");
         } catch (IOException e) {
             System.out.println("[DEBUG] Failed to build TCPserver");
         }
-        this.UDPport = 5678;
+        this.UDPport = udpPort;
         try {
             this.UDPserverSock = new DatagramSocket(this.UDPport);
             System.out.println("[DEBUG] Successfully built UDPserver");
@@ -40,8 +40,15 @@ public class Server {
         }
     }
 
+    public void startOnePlayer(){
+        int id = 0;
+        PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), id);
+        playerHandlerList.add(ph);
+        ph.start();
+    }
+
     public static void main(String[] args) {
-        Server server = new Server();
+        Server server = new Server(1234,5678);
         server.startGame();
     }
 }
