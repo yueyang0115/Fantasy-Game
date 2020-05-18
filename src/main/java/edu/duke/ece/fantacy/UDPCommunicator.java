@@ -24,7 +24,7 @@ public class UDPCommunicator {
             this.port = packet.getPort();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("UDPsock failed to receive data");
+            System.out.println("[DEBUG] UDP communicator failed to receive data");
         }
         String msg = new String(data, 0, packet.getLength());
         return msg;
@@ -37,7 +37,7 @@ public class UDPCommunicator {
             socket.send(packet);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("UDPsock failed to send data");
+            System.out.println("[DEBUG] UDP communicator failed to send data");
         }
     }
 }

@@ -28,7 +28,7 @@ public class PlayerHandler extends Thread{
             //receive first attribute, including real address
             //String attributeStr = TCPcommunicator.receive();
             String attributeStr = UDPcommunicator.receive();
-            System.out.println("Receive attribute: " +attributeStr);
+            System.out.println("[DEBUG] server receive attribute: " +attributeStr);
 
             JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
             Attribute attribute = jsonToattribute.getAttribute();
@@ -41,7 +41,7 @@ public class PlayerHandler extends Thread{
 
             //TCPcommunicator.sendJSON(v_attributeObj);
             UDPcommunicator.SendString(v_attributeObj.toString());
-            System.out.println("Send virtual attribute: " +  v_attributeObj.toString()+"\n");
+            System.out.println("[DEBUG] server send virtual attribute: " +  v_attributeObj.toString()+"\n");
         }
 
     }

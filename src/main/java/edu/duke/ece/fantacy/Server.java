@@ -15,16 +15,16 @@ public class Server {
         this.TCPport = 1234;
         try {
             this.TCPserverSock = new ServerSocket(this.TCPport);
-            System.out.println("Successfully built TCPserver");
+            System.out.println("[DEBUG] Successfully built TCPserver");
         } catch (IOException e) {
-            System.out.println("Failed to build TCPserver");
+            System.out.println("[DEBUG] Failed to build TCPserver");
         }
         this.UDPport = 5678;
         try {
             this.UDPserverSock = new DatagramSocket(this.UDPport);
-            System.out.println("Successfully built UDPserver");
+            System.out.println("[DEBUG] Successfully built UDPserver");
         } catch (IOException e) {
-            System.out.println("Failed to build UDPserver");
+            System.out.println("[DEBUG] Failed to build UDPserver");
         }
         this.playerHandlerList = new ArrayList<>();
     }

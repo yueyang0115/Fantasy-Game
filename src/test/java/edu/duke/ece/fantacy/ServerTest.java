@@ -1,40 +1,61 @@
 package edu.duke.ece.fantacy;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.*;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ServerTest {
-//    @Test
-//    void buildServerTest() {
-//        Server server = new Server();
-//        server.main(null);
-//    }
+    @Test
+    void buildServerTest() throws IOException{
+        Server server = new Server();
+        buildClientTest();
+        server.startGame();
+    }
 
-    //@Test
-    void buildClientTest() throws IOException {
-        for(int i=0;i<10;i++){
+    void buildClientTest(){
+        new Thread(()->{
             TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1234);
 //            //System.out.println("Received id is " + cm.receive());
 //            TCPcm.sendString("{'position':{'x':'100.00','y':'100.00'}}");
 //            System.out.println("Received virtual attribute is " + TCPcm.receive());
 
-            InetAddress address=InetAddress.getByName("localhost");
+            InetAddress address= null;
+            try {
+                address = InetAddress.getByName("localhost");
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
             int port=5678;
             String msg = "{'position':{'x':'100.00','y':'100.00'}}";
             byte[] data= msg.getBytes();
             DatagramPacket packet=new DatagramPacket(data, data.length, address, port);
-            DatagramSocket socket=new DatagramSocket();
-            socket.send(packet);
-            System.out.println("client send message: " + msg);
+            DatagramSocket socket= null;
+            try {
+                socket = new DatagramSocket();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                socket.send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("[DEBUG] client send message: " + msg);
 
             byte[] data2=new byte[1024];
             DatagramPacket packet2=new DatagramPacket(data2, data2.length);
-            socket.receive(packet2);
+            try {
+                socket.receive(packet2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             String reply=new String(data2, 0, packet2.getLength());
-            System.out.println("client receive message: "+reply);
+            System.out.println("[DEBUG] client receive message: "+reply);
             socket.close();
-        }
+        }).start();
     }
 }

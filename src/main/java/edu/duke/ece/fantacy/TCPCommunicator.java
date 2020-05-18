@@ -13,6 +13,9 @@ public class TCPCommunicator {
     public TCPCommunicator(ServerSocket serverSocket) {
         try {
             this.socket = serverSocket.accept();
+            while(this.socket ==null){
+                this.socket = serverSocket.accept();
+            }
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
@@ -26,7 +29,7 @@ public class TCPCommunicator {
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
-            System.out.println("Failed to crete Communicator!");
+            System.out.println("Failed to crete TCPCommunicator!");
         }
     }
 
