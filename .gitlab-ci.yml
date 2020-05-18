@@ -13,13 +13,13 @@ stages:
    
 build:
   tags:
-     - Testing
+     - cicd
   stage: build
   script: docker build --build-arg LOCAL_USER_ID=`id -u`  --tag citest .
 
 test:
   tags:
-     - Testing
+     - cicd
   stage: test
   script: scripts/run-tests-in-docker.sh
   artifacts:
@@ -29,7 +29,7 @@ test:
 pages:
  stage: coverage
  tags:
-     - Testing
+     - cicd
  dependencies:
    - test
  script:
@@ -40,7 +40,7 @@ pages:
      
 deploy:
   tags:
-    - Testing
+    - cicd
   stage: deploy
   script: ./scripts/redeploy.sh
 
