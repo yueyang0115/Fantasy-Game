@@ -4,13 +4,13 @@ import java.net.*;
 import java.io.*;
 import org.json.*;
 
-public class Communicator {
+public class TCPCommunicator {
 
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
 
-    public Communicator(ServerSocket serverSocket) {
+    public TCPCommunicator(ServerSocket serverSocket) {
         try {
             this.socket = serverSocket.accept();
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -20,7 +20,7 @@ public class Communicator {
         }
     }
 
-    public Communicator(String ip, int port) {
+    public TCPCommunicator(String ip, int port) {
         try {
             this.socket = new Socket(ip, port);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

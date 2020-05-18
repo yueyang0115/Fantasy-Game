@@ -4,12 +4,15 @@ import org.json.JSONObject;
 
 public class PlayerHandler extends Thread{
     private int id;
-    private Communicator communicator;
+    private TCPCommunicator TCPcommunicator;
+    private UDPCommunicator UDPcommunicator;
+
     private JsonToAttribute jsonToAttribute;
 
-    public PlayerHandler(Communicator cm, int ID){
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, int ID){
         this.id = ID;
-        this.communicator = cm;
+        this.TCPcommunicator = TCPcm;
+        this.UDPcommunicator = UDPcm;
     }
 
     public void run() {
@@ -21,9 +24,10 @@ public class PlayerHandler extends Thread{
 //        communicator.sendString(String.valueOf(id));
 //        System.out.println("Send player id " + id);
 
-        //receive first attribute, including real address
         while(true){
-            String attributeStr = communicator.receive();
+            //receive first attribute, including real address
+            //String attributeStr = TCPcommunicator.receive();
+            String attributeStr = UDPcommunicator.receive();
             System.out.println("Receive attribute: " +attributeStr);
 
             JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
@@ -34,11 +38,11 @@ public class PlayerHandler extends Thread{
             JSONObject v_attributeObj = new JSONObject();
             AttributeToJson attributeToJson = new AttributeToJson(v_attribute);
             v_attributeObj = attributeToJson.getAttributeObj();
-            communicator.sendJSON(v_attributeObj);
+
+            //TCPcommunicator.sendJSON(v_attributeObj);
+            UDPcommunicator.SendString(v_attributeObj.toString());
             System.out.println("Send virtual attribute: " +  v_attributeObj.toString()+"\n");
         }
-
-
 
     }
 

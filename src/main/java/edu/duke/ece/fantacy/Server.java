@@ -5,17 +5,26 @@ import java.net.*;
 import java.util.*;
 
 public class Server {
-    private int port;
-    private ServerSocket serverSock;
+    private int TCPport;
+    private int UDPport;
+    private ServerSocket TCPserverSock;
+    private DatagramSocket UDPserverSock;
     private ArrayList<PlayerHandler> playerHandlerList;
 
     public Server(){
-        this.port = 1234;
+        this.TCPport = 1234;
         try {
-            this.serverSock = new ServerSocket(port);
-            System.out.println("Successfully built server");
+            this.TCPserverSock = new ServerSocket(this.TCPport);
+            System.out.println("Successfully built TCPserver");
         } catch (IOException e) {
-            System.out.println("Failed to build ServerSocket!");
+            System.out.println("Failed to build TCPserver");
+        }
+        this.UDPport = 5678;
+        try {
+            this.UDPserverSock = new DatagramSocket(this.UDPport);
+            System.out.println("Successfully built UDPserver");
+        } catch (IOException e) {
+            System.out.println("Failed to build UDPserver");
         }
         this.playerHandlerList = new ArrayList<>();
     }
@@ -23,7 +32,7 @@ public class Server {
     public void startGame() {
         int id = 0;
         while (true) {
-            PlayerHandler ph = new PlayerHandler(new Communicator(serverSock), id);
+            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), id);
             playerHandlerList.add(ph);
             ph.start();
             //ph.startPlay();
