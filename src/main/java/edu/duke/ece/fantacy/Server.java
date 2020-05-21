@@ -10,6 +10,7 @@ public class Server {
     private ServerSocket TCPserverSock;
     private DatagramSocket UDPserverSock;
     private ArrayList<PlayerHandler> playerHandlerList;
+    private DBprocessor myDBprocessor;
 
     public Server(int tcpPort, int udpPort){
         this.TCPport = tcpPort;
@@ -27,12 +28,14 @@ public class Server {
             System.out.println("[DEBUG] Failed to build UDPserver");
         }
         this.playerHandlerList = new ArrayList<>();
+        this.myDBprocessor = new DBprocessor();
     }
 
     public void startGame() {
         int id = 0;
+        myDBprocessor.create();
         while (true) {
-            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), id);
+            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), myDBprocessor, id);
             playerHandlerList.add(ph);
             ph.start();
             //ph.startPlay();

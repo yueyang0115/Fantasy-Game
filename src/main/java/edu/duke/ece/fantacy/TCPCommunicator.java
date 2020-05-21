@@ -18,6 +18,7 @@ public class TCPCommunicator {
             }
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
+            System.out.println("[DEBUG] TCP communicator successfully accept player socket!");
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to accept player socket!");
         }

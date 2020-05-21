@@ -3,16 +3,24 @@ package edu.duke.ece.fantacy;
 import org.json.JSONObject;
 
 public class PlayerHandler extends Thread{
-    private int id;
+    private int wid;
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
+    private DBprocessor myDBprocessor;
 
     private JsonToAttribute jsonToAttribute;
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, int ID){
-        this.id = ID;
+        this.wid = ID;
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
+    }
+
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DPprocessor processor, int ID) {
+        this.wid = ID;
+        this.TCPcommunicator = TCPcm;
+        this.UDPcommunicator = UDPcm;
+        this.myDBprocessor = processor;
     }
 
     public void run() {
@@ -20,9 +28,18 @@ public class PlayerHandler extends Thread{
     }
 
     public void startPlay(){
-        //Send id to player
-//        communicator.sendString(String.valueOf(id));
-//        System.out.println("Send player id " + id);
+
+        //first handle sign-up or log-in, wait until log-in succeed
+        boolean loginStatus = false;
+        while(!loginStatus){
+            String login_msg = TCPcommunicator.receive();
+            LoginHandler myLoginHandler = new LoginHandler(login_msg, myDBprocessor, wid);
+
+            String result = myLoginHandler.getLoginResult();
+            TCPcommunicator.sendString(result);
+
+            loginStatus = myLoginHandler.getLoginStatus();
+        }
 
         while(true){
             //receive first attribute, including real address
