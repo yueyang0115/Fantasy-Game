@@ -8,7 +8,7 @@ public class DBprocessor {
         try {
             Class.forName("org.postgresql.Driver");
             c = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/testdb",
+                    .getConnection("jdbc:postgresql://localhost:5433/testdb",
                             "postgres", "123");
         } catch (Exception e) {
             e.printStackTrace();
