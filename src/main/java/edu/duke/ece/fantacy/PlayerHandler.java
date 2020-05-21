@@ -37,29 +37,21 @@ public class PlayerHandler extends Thread{
 
             String result = myLoginHandler.getLoginResult();
             TCPcommunicator.sendString(result);
-
             loginStatus = myLoginHandler.getLoginStatus();
         }
 
-        while(true){
-            //receive first attribute, including real address
-            //String attributeStr = TCPcommunicator.receive();
-            String attributeStr = UDPcommunicator.receive();
-            System.out.println("[DEBUG] server receive attribute: " +attributeStr);
+        // create a thread for constantly receiving position
+        new Thread(()->{
+            while(true){
+                String position_str = TCPcommunicator.receive();
+                JSONObject position_obj = new JSONObject(position_str);
+                Position position = (new Deserializer().readPosition(position_obj));
+                //get virtual map
+                //TODO: call TerritoryHandler, return ?
+                //Territory territory = (new TerritoryHandler(position)).getResult();
+            }
+        }).start();
 
-            JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
-            Attribute attribute = jsonToattribute.getAttribute();
-
-            //send attribute, including virtual address and others
-            Attribute v_attribute = transformAttribute(attribute);
-            JSONObject v_attributeObj = new JSONObject();
-            AttributeToJson attributeToJson = new AttributeToJson(v_attribute);
-            v_attributeObj = attributeToJson.getAttributeObj();
-
-            //TCPcommunicator.sendString(v_attributeObj.toString());
-            UDPcommunicator.SendString(v_attributeObj.toString());
-            System.out.println("[DEBUG] server send virtual attribute: " +  v_attributeObj.toString()+"\n");
-        }
 
     }
 
