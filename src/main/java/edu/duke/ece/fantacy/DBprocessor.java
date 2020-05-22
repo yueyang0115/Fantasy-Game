@@ -59,8 +59,10 @@ public class DBprocessor {
 
         String curr = "";
         String worldId = "";
+        //String temp = "";
         worldId = String.valueOf(wid);
         curr = "\'"+username+"\'";
+        //temp = "\'"+password+"\'";
 
         stmt = c.createStatement();
         String sql = "INSERT INTO PLAYER (PLAYERNAME,WID,PASSWORD) "
@@ -124,7 +126,7 @@ public class DBprocessor {
             String cordx = String.format ("%.12f", x);
             String cordy = String.format ("%.12f", y);
             String ans = "";
-            String vod = "";
+
 
             String sql = "SELECT * FROM MAP WHERE WID = " + worldId + " AND X = " + cordx +
                     " AND Y = " + cordy + ";";
@@ -136,15 +138,19 @@ public class DBprocessor {
 //                ans = rs.getString("status");
 //                System.out.println( "STATUS = " + ans );
 //            }
-            if(ans.equals(vod)){
-                System.out.printf("2\n");
+            if(!rs.next()){
                 return false;
             }
             else{
-                System.out.printf("status? %b\n", ans);
-                return true;
-
+                ans = rs.getString("status");
+                if(ans.equals("")){
+                    return false;
+                }else{
+                    System.out.printf("STATUS = %s\n",ans);
+                    return true;
+                }
             }
+
 
         }catch (Exception e){
             e.printStackTrace();
