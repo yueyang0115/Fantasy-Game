@@ -48,10 +48,12 @@ public class LoginHandler {
             myMockDBprocessor.addUser(username, password, wid);
             result_obj.put("status", "success");
             result_obj.put("error_msg","null");
+            System.out.println("Signup succeed");
         }
         else{
             result_obj.put("status", "fail");
             result_obj.put("error_msg", "SignUp failed, username already exist");
+            System.out.println("Signup failed, username already exist");
         }
     }
 
@@ -64,20 +66,24 @@ public class LoginHandler {
             result_obj.put("wid",checkUser);
             result_obj.put("error_msg","null");
             loginStatus = true;
+            System.out.println("login success");
         }
         else if(checkUser == -1){
             result_obj.put("status", "fail");
             result_obj.put("error_msg","LogIn failed, username doesn't exist");
+            System.out.println("login failed, username doesn't exist");
         }
         else if(checkUser == -2){
             result_obj.put("status", "fail");
             result_obj.put("error_msg","LogIn failed, wrong password/username");
+            System.out.println("login failed, wrong password/username");
         }
     }
 
     private void handleException(){
         result_obj.put("status","fail");
         result_obj.put("error_msg","LogIn/SignUp failed, invalid operation");
+        System.out.println("failed, invalid operation");
     }
 
     public boolean getLoginStatus(){

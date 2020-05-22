@@ -33,10 +33,12 @@ public class PlayerHandler extends Thread{
         boolean loginStatus = false;
         while(!loginStatus){
             String login_msg = TCPcommunicator.receive();
+            System.out.println("TCPcoummunicator receive:" + login_msg);
             LoginHandler myLoginHandler = new LoginHandler(login_msg, myMockDBprocessor, wid);
 
             String result = myLoginHandler.getLoginResult();
             TCPcommunicator.sendString(result);
+            System.out.println("TCPcoummunicator send " + result);
             loginStatus = myLoginHandler.getLoginStatus();
         }
 
