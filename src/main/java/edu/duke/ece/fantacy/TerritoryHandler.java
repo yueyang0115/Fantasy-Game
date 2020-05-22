@@ -35,9 +35,9 @@ public class TerritoryHandler {
                 }
                 if (x_off == 0 && y_off == 0) {
                     // change the status of center territory
-                    db.updateTerritory(wid, target_x, target_y, "explored");
+//                    db.updateTerritory(wid, target_x, target_y, "explored");
                 }
-                res.add(db.getTerritory(wid, x, y));
+//                res.add(db.getTerritory(wid, x, y));
             }
         }
         return res;
