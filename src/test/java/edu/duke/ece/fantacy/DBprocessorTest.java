@@ -16,8 +16,8 @@ class DBprocessorTest {
         DBprocessor processor = new DBprocessor();
         processor.connectDB();
 
-        processor.addUser("Junqi","1234",id);
-        re1 = processor.checkUser("Junqi","1234");
+        processor.addUser("Junqi","SJQ1234",id);
+        re1 = processor.checkUser("Junqi","SJQ1234");
         System.out.printf("wid is %d\n", re1);
         re2 = processor.checkUser("Junqi","123");
         System.out.printf("wid is %d\n", re2);

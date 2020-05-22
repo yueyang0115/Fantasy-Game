@@ -35,8 +35,8 @@ public class DBprocessor {
 
             String sqlMap = "CREATE TABLE MAP" +
                     "(WID INT PRIMARY KEY     NOT NULL," +
-                    " X       REAL," +
-                    " Y       REAL," +
+                    " X       FLOAT," +
+                    " Y       FLOAT," +
                     " STATUS  TEXT     NOT NULL)";
                     //"CONSTRAINT CLEAR FOREIGN KEY (WID) REFERENCES PLAYER(WID) ON DELETE SET NULL ON UPDATE CASCADE);";
             stmt.executeUpdate(dropMap);
@@ -59,14 +59,14 @@ public class DBprocessor {
 
         String curr = "";
         String worldId = "";
-        //String temp = "";
+        String temp = "";
         worldId = String.valueOf(wid);
         curr = "\'"+username+"\'";
-        //temp = "\'"+password+"\'";
+        temp = "\'"+password+"\'";
 
         stmt = c.createStatement();
         String sql = "INSERT INTO PLAYER (PLAYERNAME,WID,PASSWORD) "
-                + "VALUES (" + curr + ", " + worldId + ", " + password + ");";
+                + "VALUES (" + curr + ", " + worldId + ", " + temp + ");";
         stmt.executeUpdate(sql);
         stmt.close();
         c.commit();
@@ -130,6 +130,7 @@ public class DBprocessor {
 
             String sql = "SELECT * FROM MAP WHERE WID = " + worldId + " AND X = " + cordx +
                     " AND Y = " + cordy + ";";
+//            String sql = "SELECT * FROM MAP WHERE WID = " + worldId + ";";
             ResultSet rs = stmt.executeQuery(sql);
 
             //System.out.println( "HERE = " + rs );
@@ -139,10 +140,12 @@ public class DBprocessor {
 //                System.out.println( "STATUS = " + ans );
 //            }
             if(!rs.next()){
+                System.out.printf("1\n");
                 return false;
             }
             else{
                 ans = rs.getString("status");
+                System.out.printf("2\n");
                 if(ans.equals("")){
                     return false;
                 }else{
