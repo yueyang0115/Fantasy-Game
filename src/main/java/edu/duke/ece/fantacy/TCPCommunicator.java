@@ -35,13 +35,16 @@ public class TCPCommunicator {
     }
 
     public void sendString(String str) {
-        out.println(str);
+        String msg = str + "\n";
+        out.println(msg);
     }
 
     public String receive() {
         String res = "";
         try {
-            res = in.readLine();
+            while(in.ready()){
+                res = in.readLine();
+            }
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to receive data!");
         }
