@@ -36,7 +36,7 @@ public class Server {
     public void startGame() {
         int id = 0;
         //myMockDBprocessor.create();
-        myDBprocessor.create();
+        myDBprocessor.connectDB();
         while (true) {
             PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), myDBprocessor, id);
             playerHandlerList.add(ph);
