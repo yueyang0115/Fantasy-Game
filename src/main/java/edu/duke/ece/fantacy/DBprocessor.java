@@ -140,12 +140,12 @@ public class DBprocessor {
 //                System.out.println( "STATUS = " + ans );
 //            }
             if(!rs.next()){
-                System.out.printf("1\n");
+
                 return false;
             }
             else{
                 ans = rs.getString("status");
-                System.out.printf("2\n");
+
                 if(ans.equals("")){
                     return false;
                 }else{
