@@ -16,11 +16,11 @@ class DBprocessorTest {
         DBprocessor processor = new DBprocessor();
         processor.connectDB();
 
-//        processor.addUser("Junqi","1234",id);
-//        re1 = processor.checkUser("Junqi","1234");
-//        System.out.printf("wid is %d\n", re1);
-//        re2 = processor.checkUser("Junqi","123");
-//        System.out.printf("wid is %d\n", re2);
+        processor.addUser("Junqi","1234",id);
+        re1 = processor.checkUser("Junqi","1234");
+        System.out.printf("wid is %d\n", re1);
+        re2 = processor.checkUser("Junqi","123");
+        System.out.printf("wid is %d\n", re2);
 //        re3 = processor.checkUser("Drew","1234");
 //        System.out.printf("wid is %d\n", re3);
 

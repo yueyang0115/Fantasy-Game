@@ -66,7 +66,8 @@ public class DBprocessor {
         String sql = "INSERT INTO PLAYER (PLAYERNAME,WID,PASSWORD) "
                 + "VALUES (" + curr + ", " + worldId + ", " + password + ");";
         stmt.executeUpdate(sql);
-        //stmt.close();
+        stmt.close();
+        c.commit();
         //c.close();
         } catch (Exception e){
             e.printStackTrace();
@@ -183,7 +184,8 @@ public class DBprocessor {
 //                ans = rs.getString("status");
 //                System.out.println( "STATUS = " + ans );
 //            }
-            //stmt.close();
+            stmt.close();
+            c.commit();
             //c.close();
         } catch (Exception e){
             e.printStackTrace();
