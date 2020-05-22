@@ -6,7 +6,7 @@ public class PlayerHandler extends Thread{
     private int wid;
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
-    private DBprocessor myDBprocessor;
+    private MockDBprocessor myMockDBprocessor;
 
     private JsonToAttribute jsonToAttribute;
 
@@ -16,11 +16,11 @@ public class PlayerHandler extends Thread{
         this.UDPcommunicator = UDPcm;
     }
 
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DPprocessor processor, int ID) {
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, MockDBprocessor processor, int ID) {
         this.wid = ID;
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
-        this.myDBprocessor = processor;
+        this.myMockDBprocessor = processor;
     }
 
     public void run() {
@@ -33,7 +33,7 @@ public class PlayerHandler extends Thread{
         boolean loginStatus = false;
         while(!loginStatus){
             String login_msg = TCPcommunicator.receive();
-            LoginHandler myLoginHandler = new LoginHandler(login_msg, myDBprocessor, wid);
+            LoginHandler myLoginHandler = new LoginHandler(login_msg, myMockDBprocessor, wid);
 
             String result = myLoginHandler.getLoginResult();
             TCPcommunicator.sendString(result);

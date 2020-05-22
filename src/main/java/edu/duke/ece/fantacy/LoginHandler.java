@@ -9,17 +9,17 @@ public class LoginHandler {
     private String password;
     private JSONObject result_obj;
     private boolean loginStatus;
-    private DBprocessor myDBprocessor;
+    private MockDBprocessor myMockDBprocessor;
     private int wid;
 
-    LoginHandler(String login_msg, DBprocessor processor, int id){
+    LoginHandler(String login_msg, MockDBprocessor processor, int id){
         this.login_obj = new JSONObject(login_msg);
         this.type = login_obj.optString("type");
         this.username = login_obj.optString("username");
         this.password = login_obj.optString("password");
         this.result_obj = new JSONObject();
         this.loginStatus = false;
-        this.myDBprocessor = processor;
+        this.myMockDBprocessor = processor;
         this.wid = id;
         handle();
     }
@@ -41,11 +41,11 @@ public class LoginHandler {
 
     private void handleSignUp(){
         //checkUser:  >0: return wid, -1 : username doesn't exist, -2 : wrong password / username
-        int checkUser = myDBprocessor.checkUser(username, password);
+        int checkUser = myMockDBprocessor.checkUser(username, password);
 
         if(checkUser==-1) {
             //username doesn't exit, can add to database
-            myDBprocessor.addUser(username, password, wid);
+            myMockDBprocessor.addUser(username, password, wid);
             result_obj.put("status", "success");
             result_obj.put("error_msg","null");
         }
@@ -57,7 +57,7 @@ public class LoginHandler {
 
     private void handleLogin(){
         //checkUser:  >0: return wid, -1 : username doesn't exist, -2 : wrong password / username
-        int checkUser = myDBprocessor.checkUser(username, password);
+        int checkUser = myMockDBprocessor.checkUser(username, password);
 
         if(checkUser >= 0){
             result_obj.put("status", "success");
