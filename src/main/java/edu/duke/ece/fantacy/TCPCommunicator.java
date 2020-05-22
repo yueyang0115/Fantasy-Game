@@ -18,6 +18,7 @@ public class TCPCommunicator {
             }
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
+            System.out.println("[DEBUG] TCP communicator successfully accept player socket!");
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to accept player socket!");
         }
@@ -34,12 +35,15 @@ public class TCPCommunicator {
     }
 
     public void sendString(String str) {
-        out.println(str);
+        String msg = str + "\n";
+        out.println(msg);
     }
 
     public String receive() {
         String res = "";
         try {
+            while(!in.ready()){
+            }
             res = in.readLine();
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to receive data!");
