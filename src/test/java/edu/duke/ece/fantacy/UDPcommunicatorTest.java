@@ -16,13 +16,7 @@ public class UDPcommunicatorTest {
         String attributeStr = UDPcm.receive();
         System.out.println("UDPserver receive attribute: " +attributeStr);
 
-        //transform
-        JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
-        Attribute attribute = jsonToattribute.getAttribute();
-        AttributeToJson attributeToJson = new AttributeToJson(attribute);
-        JSONObject attributeObj = attributeToJson.getAttributeObj();
-
-        UDPcm.SendString(attributeObj.toString());
+        UDPcm.SendString(attributeStr);
         System.out.println("UDPserver send virtual attribute");
     }
 

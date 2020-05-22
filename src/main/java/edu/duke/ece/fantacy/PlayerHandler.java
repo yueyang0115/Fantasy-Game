@@ -10,7 +10,6 @@ public class PlayerHandler extends Thread{
     //private MockDBprocessor myMockDBprocessor;
     private DBprocessor myDBprocessor;
 
-    private JsonToAttribute jsonToAttribute;
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
@@ -64,10 +63,6 @@ public class PlayerHandler extends Thread{
             }
         }).start();
 
-    }
-
-    public Attribute transformAttribute(Attribute attribute){
-        return attribute;
     }
 
 }

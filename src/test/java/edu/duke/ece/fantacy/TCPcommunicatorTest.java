@@ -16,13 +16,7 @@ public class TCPcommunicatorTest {
         String attributeStr = TCPcm.receive();
         System.out.println("TCPserver receive position: " + attributeStr);
 
-        //transform
-        JsonToAttribute jsonToattribute = new JsonToAttribute(attributeStr);
-        Attribute attribute = jsonToattribute.getAttribute();
-        AttributeToJson attributeToJson = new AttributeToJson(attribute);
-        JSONObject attributeObj = attributeToJson.getAttributeObj();
-
-        TCPcm.sendString(attributeObj.toString());
+        TCPcm.sendString(attributeStr);
         System.out.println("TCPserver send virtual attribute");
         TCPcm.close();
     }
@@ -32,7 +26,7 @@ public class TCPcommunicatorTest {
             TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1111);
             TCPcm.sendString("{'position':{'x':'100.00','y':'100.00'}}");
             System.out.println("TCPclient send position");
-            System.out.println("TCPclient receive virtual attribute: " + TCPcm.receive());
+            System.out.println("TCPclient receive virtual position: " + TCPcm.receive());
         }).start();
     }
 }
