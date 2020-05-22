@@ -34,21 +34,19 @@ public class Server {
     }
 
     public void startGame() {
-        int id = 0;
         //myMockDBprocessor.create();
         myDBprocessor.connectDB();
         while (true) {
-            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), myDBprocessor, id);
+            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), myDBprocessor);
             playerHandlerList.add(ph);
             ph.start();
             //ph.startPlay();
-            id++;
         }
     }
 
     public void startOnePlayer(){
         int id = 0;
-        PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock), id);
+        PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
         playerHandlerList.add(ph);
         ph.start();
     }

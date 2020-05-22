@@ -13,7 +13,7 @@ public class LoginHandler {
     private DBprocessor myDBprocessor;
     private int wid;
 
-    LoginHandler(String login_msg, DBprocessor processor, int id){
+    LoginHandler(String login_msg, DBprocessor processor){
         this.login_obj = new JSONObject(login_msg);
         this.type = login_obj.optString("type");
         this.username = login_obj.optString("username");
@@ -22,7 +22,6 @@ public class LoginHandler {
         this.loginStatus = false;
         //this.myMockDBprocessor = processor;
         this.myDBprocessor = processor;
-        this.wid = id;
         handle();
     }
 
@@ -97,5 +96,9 @@ public class LoginHandler {
 
     public String getLoginResult(){
         return result_obj.toString();
+    }
+
+    public int getWid(){
+        return myDBprocessor.checkUser(username,password);
     }
 }

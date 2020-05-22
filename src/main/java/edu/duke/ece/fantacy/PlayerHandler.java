@@ -11,14 +11,12 @@ public class PlayerHandler extends Thread{
     private DBprocessor myDBprocessor;
 
     private JsonToAttribute jsonToAttribute;
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, int ID){
-        this.wid = ID;
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
     }
 
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DBprocessor processor, int ID) {
-        this.wid = ID;
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DBprocessor processor) {
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         //this.myMockDBprocessor = processor;
@@ -36,14 +34,14 @@ public class PlayerHandler extends Thread{
         while(!loginStatus){
             String login_msg = TCPcommunicator.receive();
             System.out.println("TCPcoummunicator receive:" + login_msg);
-            LoginHandler myLoginHandler = new LoginHandler(login_msg, myDBprocessor, wid);
+            LoginHandler myLoginHandler = new LoginHandler(login_msg, myDBprocessor);
 
             String result = myLoginHandler.getLoginResult();
+            wid = myLoginHandler.getWid();
             TCPcommunicator.sendString(result);
             System.out.println("TCPcoummunicator send " + result);
             loginStatus = myLoginHandler.getLoginStatus();
         }
-
         // create a thread for constantly receiving position
         new Thread(()->{
             while(true){
@@ -54,7 +52,7 @@ public class PlayerHandler extends Thread{
                 JSONObject position_obj = new JSONObject(position_str);
                 Position position = (new Deserializer().readPosition(position_obj));
                 TerritoryHandler myTerritoryHandler = new TerritoryHandler(myDBprocessor);
-                List<Territory> territoryList = myTerritoryHandler.getTerritories(wid,position.getX(),position.getY());
+                List<Territory> territoryList = myTerritoryHandler.getTerritories(wid, position.getX(), position.getY());
 
                 //send territoryList
                 JSONArray territoryList_arr = new JSONArray();

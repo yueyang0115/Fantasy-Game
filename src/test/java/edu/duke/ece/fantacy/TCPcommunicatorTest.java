@@ -13,7 +13,6 @@ public class TCPcommunicatorTest {
         TCPclientTest();
         TCPCommunicator TCPcm = new TCPCommunicator(TCPserverSock);
 
-        int id = 0;
         String attributeStr = TCPcm.receive();
         System.out.println("TCPserver receive position: " + attributeStr);
 
