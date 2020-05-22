@@ -1,6 +1,7 @@
 package edu.duke.ece.fantacy;
 
-import org.json.JSONObject;
+import org.json.*;
+import java.util.*;
 
 public class PlayerHandler extends Thread{
     private int wid;
@@ -46,12 +47,22 @@ public class PlayerHandler extends Thread{
         // create a thread for constantly receiving position
         new Thread(()->{
             while(true){
+                //receive position
                 String position_str = TCPcommunicator.receive();
+                System.out.println("TCPcoummunicator receive position: " + position_str);
+
                 JSONObject position_obj = new JSONObject(position_str);
                 Position position = (new Deserializer().readPosition(position_obj));
-                //get virtual map
-                //TODO: call TerritoryHandler, return ?
-                //Territory territory = (new TerritoryHandler(position)).getResult();
+//                TerritoryHandler myTerritoryHandler = new TerritoryHandler(myDBprocessor);
+//                List<Territory> territoryList = myTerritoryHandler.getTerritories();
+
+                //send territoryList
+                JSONArray territoryList_arr = new JSONArray();
+//                for (int i = 0; i < territoryList.size(); i++) {
+//                    Territory t = territoryList.get(i);
+//                    territoryList_arr.put(t.toJSON());
+//                }
+                TCPcommunicator.sendString(territoryList_arr.toString());
             }
         }).start();
 

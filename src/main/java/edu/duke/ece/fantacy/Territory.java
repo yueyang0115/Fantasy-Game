@@ -1,4 +1,5 @@
 package edu.duke.ece.fantacy;
+import org.json.*;
 
 public class Territory {
     int wid;
@@ -36,5 +37,14 @@ public class Territory {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public JSONObject toJSON(){
+        JSONObject territory_obj = new JSONObject();
+        territory_obj.put("x",this.x);
+        territory_obj.put("y",this.y);
+        territory_obj.put("status",this.status);
+        territory_obj.put("wid",this.wid);
+        return  territory_obj;
     }
 }
