@@ -53,15 +53,15 @@ public class PlayerHandler extends Thread{
 
                 JSONObject position_obj = new JSONObject(position_str);
                 Position position = (new Deserializer().readPosition(position_obj));
-//                TerritoryHandler myTerritoryHandler = new TerritoryHandler(myDBprocessor);
-//                List<Territory> territoryList = myTerritoryHandler.getTerritories();
+                TerritoryHandler myTerritoryHandler = new TerritoryHandler(myDBprocessor);
+                List<Territory> territoryList = myTerritoryHandler.getTerritories();
 
                 //send territoryList
                 JSONArray territoryList_arr = new JSONArray();
-//                for (int i = 0; i < territoryList.size(); i++) {
-//                    Territory t = territoryList.get(i);
-//                    territoryList_arr.put(t.toJSON());
-//                }
+                for (int i = 0; i < territoryList.size(); i++) {
+                    Territory t = territoryList.get(i);
+                    territoryList_arr.put(t.toJSON());
+                }
                 TCPcommunicator.sendString(territoryList_arr.toString());
             }
         }).start();
