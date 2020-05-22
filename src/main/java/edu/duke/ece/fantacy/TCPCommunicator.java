@@ -42,9 +42,9 @@ public class TCPCommunicator {
     public String receive() {
         String res = "";
         try {
-            while(in.ready()){
-                res = in.readLine();
+            while(!in.ready()){
             }
+            res = in.readLine();
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to receive data!");
         }
