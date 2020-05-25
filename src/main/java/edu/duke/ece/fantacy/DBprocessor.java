@@ -1,4 +1,7 @@
 package edu.duke.ece.fantacy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,7 +12,7 @@ import java.text.* ;
 public class DBprocessor {
     Connection c = null;
     Statement stmt = null;
-
+    Logger logger = LoggerFactory.getLogger(DBprocessor.class);
     /**
      * this method connect postgres sql and create several tables
      */
@@ -31,8 +34,8 @@ public class DBprocessor {
                     " PASSWORD  TEXT     NOT NULL)";
             stmt.executeUpdate(dropPlayer);
             stmt.executeUpdate(sqlPlayer);
-            System.out.println("Built PLAYER table successfully");
-
+//            System.out.println("Built PLAYER table successfully");
+            logger.info("Built PLAYER table successfully");
             String sqlMap = "CREATE TABLE MAP" +
                     "(WID INT PRIMARY KEY     NOT NULL," +
                     " X       FLOAT," +
@@ -41,8 +44,7 @@ public class DBprocessor {
                     //"CONSTRAINT CLEAR FOREIGN KEY (WID) REFERENCES PLAYER(WID) ON DELETE SET NULL ON UPDATE CASCADE);";
             stmt.executeUpdate(dropMap);
             stmt.executeUpdate(sqlMap);
-            System.out.println("Built MAP table successfully");
-
+            logger.info("Built MAP table successfully");
             //stmt.close();
             //c.close();
         } catch (Exception e) {
@@ -140,7 +142,6 @@ public class DBprocessor {
 //                System.out.println( "STATUS = " + ans );
 //            }
             if(!rs.next()){
-
                 return false;
             }
             else{
@@ -203,7 +204,7 @@ public class DBprocessor {
         }
         System.out.println("Added Map information successfully");
     }
-/*
+
     public void updateTerritory(int wid,double x,double y,String status){
     }
 
