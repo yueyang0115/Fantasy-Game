@@ -66,7 +66,7 @@ public class DBprocessor {
 
         stmt = c.createStatement();
         String sql = "INSERT INTO PLAYER (PLAYERNAME,WID,PASSWORD) "
-                + "VALUES (" + curr + ", " + worldId + ", " + temp + ");";
+                + "VALUES (" + curr + ", " + worldId + ", crypt(" + temp + ", gen_salt('bf')) );";
         stmt.executeUpdate(sql);
         stmt.close();
         c.commit();
@@ -87,16 +87,18 @@ public class DBprocessor {
 
             stmt = c.createStatement();
             String curr = "\'"+username+"\'";
-            String sql = "SELECT * FROM PLAYER WHERE PLAYERNAME =" + curr + ";";
+            String temp = "\'"+password+"\'";
+            String sql = "SELECT * FROM PLAYER WHERE PLAYERNAME = " + curr + " AND PASSWORD = crypt(" + temp + ", password);";
+            System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
             if(!rs.next()){
                 return -1;
             }
             else{
                 int wid = rs.getInt("wid");
-                //System.out.printf("we get wid: %d\n", wid);
+                System.out.printf("we get wid: %d\n", wid);
                 String passwd = rs.getString("password");
-                //System.out.printf("we get passwd is: %s\n", passwd);
+                System.out.printf("we get passwd is: %s\n", passwd);
                 if(passwd.equals(password)){
                     return wid;
                 }
