@@ -89,7 +89,6 @@ public class DBprocessor {
             String curr = "\'"+username+"\'";
             String temp = "\'"+password+"\'";
             String sql = "SELECT * FROM PLAYER WHERE PLAYERNAME = " + curr + " AND PASSWORD = crypt(" + temp + ", password);";
-            System.out.println(sql);
             ResultSet rs = stmt.executeQuery(sql);
             if(!rs.next()){
                 return -1;
@@ -99,12 +98,7 @@ public class DBprocessor {
                 System.out.printf("we get wid: %d\n", wid);
                 String passwd = rs.getString("password");
                 System.out.printf("we get passwd is: %s\n", passwd);
-                if(passwd.equals(password)){
-                    return wid;
-                }
-                else{
-                    return -2;
-                }
+                return wid;
             }
 
         }catch (Exception e){
