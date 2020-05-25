@@ -72,12 +72,7 @@ public class LoginHandler {
             loginStatus = true;
             System.out.println("login success");
         }
-        else if(checkUser == -1){
-            result_obj.put("status", "fail");
-            result_obj.put("error_msg","LogIn failed, username doesn't exist");
-            System.out.println("login failed, username doesn't exist");
-        }
-        else if(checkUser == -2){
+        else{
             result_obj.put("status", "fail");
             result_obj.put("error_msg","LogIn failed, wrong password/username");
             System.out.println("login failed, wrong password/username");
