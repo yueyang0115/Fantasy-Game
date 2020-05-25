@@ -95,9 +95,9 @@ public class DBprocessor {
             }
             else{
                 int wid = rs.getInt("wid");
-                System.out.printf("we get wid: %d\n", wid);
+                //System.out.printf("we get wid: %d\n", wid);
                 String passwd = rs.getString("password");
-                System.out.printf("we get passwd is: %s\n", passwd);
+                //System.out.printf("we get passwd is: %s\n", passwd);
                 return wid;
             }
 
