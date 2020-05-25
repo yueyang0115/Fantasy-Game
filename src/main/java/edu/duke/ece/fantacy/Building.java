@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance
-@DiscriminatorColumn(name="type")
+@DiscriminatorColumn(name="TYPE")
 @Table(name="Building")
 public class Building {
     @Id
@@ -17,4 +17,6 @@ public class Building {
 
     @Column(name = "TYPE", unique = false, nullable = false, length = 100)
     private String type;
+
+
 }

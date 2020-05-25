@@ -23,6 +23,25 @@ public class TerritoryHandler {
     public TerritoryHandler() {
     }
 
+
+    public int[] MillierConvertion(double lat, double lon) {
+        double L = 6381372 * Math.PI * 2;//地球周长
+        double W=L;// 平面展开后，x轴等于周长
+        double H=L/2;// y轴约等于周长一半
+        double mill=2.3;// 米勒投影中的一个常数，范围大约在正负2.3之间
+        int x = (int)(lon * Math.PI) / 180;// 将经度从度数转换为弧度
+        int y = (int)(lat * Math.PI) / 180;// 将纬度从度数转换为弧度
+        y= (int) (1.25 * Math.log( Math.tan( 0.25 * Math.PI + 0.4 * y ) ));// 米勒投影的转换
+        // 弧度转为实际距离
+        x = (int)(( W / 2 ) + ( W / (2 * Math.PI) ) )* x;
+        y = (int) (( H / 2 ) - ( H / ( 2 * mill ) ) )* y;
+        int[] result=new int[2];
+        result[0]=x;
+        result[1]=y;
+        return result;
+    }
+
+
     // given coordination, return list of territory
     public List<Territory> getTerritories(int wid, double x, double y) {
         Session session = sf.openSession();
@@ -62,6 +81,10 @@ public class TerritoryHandler {
     public void addTerritory(int wid, double x, double y, String status) {
         Session session = sf.openSession();
         session.beginTransaction();
+    }
+
+    public void updateTerritory(int wid, int x,int y){
+
     }
 
     public Territory getTerritory(int wid, double x, double y) {
