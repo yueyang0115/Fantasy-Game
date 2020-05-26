@@ -1,5 +1,8 @@
 package edu.duke.ece.fantacy;
 
+import edu.duke.ece.fantacy.json.MessageHelper;
+import edu.duke.ece.fantacy.json.MessagesC2S;
+import edu.duke.ece.fantacy.json.MessagesS2C;
 import org.json.*;
 import java.util.*;
 
@@ -7,7 +10,6 @@ public class PlayerHandler extends Thread{
     private int wid;
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
-    //private MockDBprocessor myMockDBprocessor;
     private DBprocessor myDBprocessor;
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
@@ -18,7 +20,6 @@ public class PlayerHandler extends Thread{
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DBprocessor processor) {
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
-        //this.myMockDBprocessor = processor;
         this.myDBprocessor = processor;
     }
 
@@ -27,42 +28,18 @@ public class PlayerHandler extends Thread{
     }
 
     public void startPlay(){
+        while(true){
+            String recvMsg= TCPcommunicator.receive();
+            System.out.println("TCPcoummunicator receive:" + recvMsg);
+            MessagesC2S request = (new MessageHelper().deserialize(recvMsg));
 
-        //first handle sign-up or log-in, wait until log-in succeed
-        boolean loginStatus = false;
-        while(!loginStatus){
-            String login_msg = TCPcommunicator.receive();
-            System.out.println("TCPcoummunicator receive:" + login_msg);
-            LoginHandler myLoginHandler = new LoginHandler(login_msg, myDBprocessor);
+            MessageHandler messageHandler = new MessageHandler(myDBprocessor, wid);
+            MessagesS2C result = messageHandler.handle(request);
 
-            String result = myLoginHandler.getLoginResult();
-            wid = myLoginHandler.getWid();
-            TCPcommunicator.sendString(result);
+            String sendMsg = (new MessageHelper().serialize(result));
+            TCPcommunicator.sendString(sendMsg);
             System.out.println("TCPcoummunicator send " + result);
-            loginStatus = myLoginHandler.getLoginStatus();
         }
-        // create a thread for constantly receiving position
-        new Thread(()->{
-            while(true){
-                //receive position
-                String position_str = TCPcommunicator.receive();
-                System.out.println("TCPcoummunicator receive position: " + position_str);
-
-                JSONObject position_obj = new JSONObject(position_str);
-                Position position = (new Deserializer().readPosition(position_obj));
-                TerritoryHandler myTerritoryHandler = new TerritoryHandler();
-                List<Territory> territoryList = myTerritoryHandler.getTerritories(wid, position.getX(), position.getY());
-
-                //send territoryList
-                JSONArray territoryList_arr = new JSONArray();
-                for (int i = 0; i < territoryList.size(); i++) {
-                    Territory t = territoryList.get(i);
-                    territoryList_arr.put(t.toJSON());
-                }
-                TCPcommunicator.sendString(territoryList_arr.toString());
-            }
-        }).start();
-
     }
 
 }
