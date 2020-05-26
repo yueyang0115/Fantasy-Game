@@ -26,7 +26,7 @@ public class LoginHandler {
         }
         else{
             result.setStatus("fail");
-            result.setStatus("LogIn failed, wrong password/username");
+            result.setError_msg("LogIn failed, wrong password/username");
             System.out.println("[DEBUG] Login failed, wrong password/username");
         }
         return result;
