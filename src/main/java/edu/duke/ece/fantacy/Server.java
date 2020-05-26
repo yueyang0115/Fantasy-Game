@@ -54,6 +54,9 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(()->{
+            System.out.println("close server");
+        }));
         Server server = new Server(1234,5678);
         server.startGame();
     }
