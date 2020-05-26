@@ -16,31 +16,38 @@ class TerritoryHandlerTest {
     TerritoryHandler th = new TerritoryHandler();
     Logger logger = LoggerFactory.getLogger(TerritoryHandler.class);
     ObjectMapper objectMapper = new ObjectMapper();
-    double latitude = 40;
-    double longitude = 40;
+    double latitude = 36.0985416;
+    double longitude = -78.80034;
     int wid = 0;
     int[] coor = th.MillierConvertion(latitude,longitude);
     TerrainHandler terrainHandler = new TerrainHandler();
 
     @Test
     void getTerritories() {
-        terrainHandler.initialTerrain();
-        th.addTerritories(wid,latitude,longitude);
-        List<Territory> res = th.getTerritories(wid, latitude, longitude);
-        res = th.getTerritories(wid, latitude, longitude);
-        assertEquals(9,res.size());
+        try {
+            terrainHandler.initialTerrain();
+            th.addTerritories(wid, latitude, longitude);
+            List<Territory> res = th.getTerritories(wid, latitude, longitude);
+            res = th.getTerritories(wid, latitude, longitude);
+            assertEquals(9, res.size());
 
 
-        MessagesS2C msg = new MessagesS2C();
-        PositionResultMessage positionResultMessage = new PositionResultMessage();
-        positionResultMessage.setTerritoryArray(res);
-        msg.setPositionResultMessage(positionResultMessage);
-
-        try{
-            logger.info(objectMapper.writeValueAsString(msg));
-        } catch (JsonProcessingException e){
-            logger.debug(e.getMessage());
+            MessagesS2C msg = new MessagesS2C();
+            PositionResultMessage positionResultMessage = new PositionResultMessage();
+            positionResultMessage.setTerritoryArray(res);
+            msg.setPositionResultMessage(positionResultMessage);
+            try{
+                logger.info(objectMapper.writeValueAsString(msg));
+            } catch (JsonProcessingException e){
+                logger.debug(e.getMessage());
+            }
+        } catch (Exception e) {
+            HibernateUtil.shutdown();
+        } finally {
+            HibernateUtil.shutdown();
         }
+
+
 
     }
 
@@ -52,6 +59,7 @@ class TerritoryHandlerTest {
 
     @Test
     void updateTerritory() {
+        th.addTerritory(wid,coor[0],coor[1],"unexplored");
         th.updateTerritory(wid,coor[0],coor[1],"explored");
         assertEquals("explored",th.getTerritory(wid,coor[0],coor[1]).getStatus());
     }

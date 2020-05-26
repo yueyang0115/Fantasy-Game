@@ -68,7 +68,6 @@ public class TerritoryHandler {
             for (int y_off : y_offset) {
                 int target_x = coor[0] + x_off;
                 int target_y = coor[1] + y_off;
-                Territory t = getTerritory(wid, target_x, target_y);
                 addTerritory(wid, target_x, target_y, "unexplored");
             }
         }
@@ -80,8 +79,8 @@ public class TerritoryHandler {
         session.beginTransaction();
         TerrainHandler terrainHandler  = new TerrainHandler();
         // find the center of block
-        int center_x = (x / width_unit) * width_unit + width_unit / 2;
-        int center_y = (y / height_unit) * height_unit + height_unit / 2;
+        int center_x = (x>0)?(x / width_unit) * width_unit + width_unit / 2:(x / width_unit) * width_unit - width_unit / 2;
+        int center_y = (y>0)?(y / height_unit) * height_unit + height_unit / 2:(y / height_unit) * height_unit - height_unit / 2;
         Territory t = getTerritory(wid, center_x, center_y);
         boolean res = false;
         if (t == null) {
@@ -119,8 +118,8 @@ public class TerritoryHandler {
         // select territory according to conditions
         Session session = sf.openSession();
         session.beginTransaction();
-        int center_x = (x / width_unit) * width_unit + width_unit / 2;
-        int center_y = (y / height_unit) * height_unit + height_unit / 2;
+        int center_x = (x>0)?(x / width_unit) * width_unit + width_unit / 2:(x / width_unit) * width_unit - width_unit / 2;
+        int center_y = (y>0)?(y / height_unit) * height_unit + height_unit / 2:(y / height_unit) * height_unit - height_unit / 2;
         Query q = session.createQuery("From Territory M where M.wid =:wid and M.x =:x and M.y = :y");
         q.setParameter("wid", wid);
         q.setParameter("x", center_x);
