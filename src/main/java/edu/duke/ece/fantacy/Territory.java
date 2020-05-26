@@ -20,10 +20,10 @@ public class Territory {
     private int wid;
 
     @Column(name = "x",  nullable = false)
-    private double x;
+    private int x;
 
     @Column(name = "y", nullable = false)
-    private double y;
+    private int y;
 
     @Column(name = "status", nullable = false)
     private String status;
@@ -35,7 +35,7 @@ public class Territory {
 
     }
 
-    public Territory(int wid,double x,double y, String status){
+    public Territory(int wid,int x,int y, String status){
         this.wid = wid;
         this.x = x;
         this.y = y;
@@ -54,7 +54,7 @@ public class Territory {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(int x) {
         this.x = x;
     }
 
@@ -62,7 +62,7 @@ public class Territory {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(int y) {
         this.y = y;
     }
 

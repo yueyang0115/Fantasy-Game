@@ -14,87 +14,109 @@ import org.hibernate.transform.ResultTransformer;
 
 public class TerritoryHandler {
     SessionFactory sf = HibernateUtil.getSessionFactory();
-    private double width_unit = 0.0002;
-    private double height_unit = 0.0002;
-    private static double[][] offset = {{0, 0.0002}};
-    private static ArrayList<Double> x_offset = new ArrayList<>(Arrays.asList(0.0, 0.0002, -0.0002));
-    private static ArrayList<Double> y_offset = new ArrayList<>(Arrays.asList(0.0, 0.0002, -0.0002));
+    private int width_unit = 10;
+    private int height_unit = 10;
+    private static ArrayList<Integer> x_offset = new ArrayList<>(Arrays.asList(0, 10, -10));
+    private static ArrayList<Integer> y_offset = new ArrayList<>(Arrays.asList(0, 10, -10));
 
     public TerritoryHandler() {
     }
 
-
-    public int[] MillierConvertion(double lat, double lon) {
-        double L = 6381372 * Math.PI * 2;//地球周长
-        double W=L;// 平面展开后，x轴等于周长
-        double H=L/2;// y轴约等于周长一半
-        double mill=2.3;// 米勒投影中的一个常数，范围大约在正负2.3之间
-        int x = (int)(lon * Math.PI) / 180;// 将经度从度数转换为弧度
-        int y = (int)(lat * Math.PI) / 180;// 将纬度从度数转换为弧度
-        y= (int) (1.25 * Math.log( Math.tan( 0.25 * Math.PI + 0.4 * y ) ));// 米勒投影的转换
-        // 弧度转为实际距离
-        x = (int)(( W / 2 ) + ( W / (2 * Math.PI) ) )* x;
-        y = (int) (( H / 2 ) - ( H / ( 2 * mill ) ) )* y;
-        int[] result=new int[2];
-        result[0]=x;
-        result[1]=y;
+    public int[] MillierConvertion(double latitude, double longitude) {
+        double L = 6381372 * Math.PI * 2;// perimeter of earth
+        double W = L;
+        double H = L / 2;
+        double mill = 2.3;// miller projection parameter
+        double x = (longitude * Math.PI) / 180;
+        double y = (latitude * Math.PI) / 180;
+        y = (1.25 * Math.log(Math.tan(0.25 * Math.PI + 0.4 * y)));
+        x = ((W / 2) + (W / (2 * Math.PI))) * x;
+        y = ((H / 2) - (H / (2 * mill))) * y;
+        int[] result = new int[2];
+        result[0] = (int) x;
+        result[1] = (int) y;
         return result;
     }
 
 
     // given coordination, return list of territory
-    public List<Territory> getTerritories(int wid, double x, double y) {
+    public List<Territory> getTerritories(int wid, double latitude, double longitude) {
+        List<Territory> res = new ArrayList<>();
+        int[] coor = MillierConvertion(latitude, longitude);
+
+        // get neighbor territories
+        for (int x_off : x_offset) {
+            for (int y_off : y_offset) {
+                int target_x = coor[0] + x_off;
+                int target_y = coor[1] + y_off;
+                Territory t = getTerritory(wid, target_x, target_y);
+                if (t != null) {
+                    res.add(t);
+                }
+            }
+        }
+        return res;
+    }
+
+    public void addTerritories(int wid, double latitude, double longitude) {
+        int[] coor = MillierConvertion(latitude, longitude);
+
+        for (int x_off : x_offset) {
+            for (int y_off : y_offset) {
+                int target_x = coor[0] + x_off;
+                int target_y = coor[1] + y_off;
+                Territory t = getTerritory(wid, target_x, target_y);
+                addTerritory(wid, target_x, target_y, "unexplored");
+            }
+        }
+    }
+
+    public boolean addTerritory(int wid, int x, int y, String status) {
+        // insert territory to world
         Session session = sf.openSession();
         session.beginTransaction();
-
-        List<Territory> res = new ArrayList<>();
         // find the center of block
-        double center_x = (int) (x / width_unit) * width_unit + width_unit / 2;
-        double center_y = (int) (y / height_unit) * height_unit + height_unit / 2;
-
-        // add neighbor block to database, update status of center block
-        for (Double x_off : x_offset) {
-            for (Double y_off : y_offset) {
-                double target_x = center_x + x_off;
-                double target_y = center_y + y_off;
-                if (x > 180 || x < -180 || y > 90 || y < -90) continue;
-                Territory t = getTerritory(wid, target_x, target_y);
-                if (t == null) {
-                    // if territory haven't been tracked, add it to database
-                    t = new Territory(wid, target_x, target_y,"unexplored");
-                    t.addMonster(new Monster("wolf",100,10));
-                    session.save(t);
-                }
-                if (x_off == 0 && y_off == 0) {
-                    // change the status of center territory
-                    t.setStatus("explored");
-                    session.update(t);
-                }
-                res.add(t);
-            }
+        int center_x = (x / width_unit) * width_unit + width_unit / 2;
+        int center_y = (y / height_unit) * height_unit + height_unit / 2;
+        Territory t = getTerritory(wid, center_x, center_y);
+        boolean res = false;
+        if (t == null) {
+            t = new Territory(wid, center_x, center_y, status);
+            t.addMonster(new Monster("wolf", 100, 10)); // add monster
+            session.save(t);
+            res = true;
         }
         session.getTransaction().commit();
         session.close();
         return res;
     }
 
-    public void addTerritory(int wid, double x, double y, String status) {
+
+    public boolean updateTerritory(int wid, int x, int y, String status) {
         Session session = sf.openSession();
         session.beginTransaction();
+        boolean res = false;
+        Territory t = getTerritory(wid, x, y);
+        if (t == null) { // don't have territory
+            return res;
+        }
+        t.setStatus(status);
+        session.update(t);
+        session.getTransaction().commit();
+        session.close();
+        return res;
     }
 
-    public void updateTerritory(int wid, int x,int y){
-
-    }
-
-    public Territory getTerritory(int wid, double x, double y) {
+    public Territory getTerritory(int wid, int x, int y) {
         // select territory according to conditions
         Session session = sf.openSession();
         session.beginTransaction();
+        int center_x = (x / width_unit) * width_unit + width_unit / 2;
+        int center_y = (y / height_unit) * height_unit + height_unit / 2;
         Query q = session.createQuery("From Territory M where M.wid =:wid and M.x =:x and M.y = :y");
         q.setParameter("wid", wid);
-        q.setParameter("x", x);
-        q.setParameter("y", y);
+        q.setParameter("x", center_x);
+        q.setParameter("y", center_y);
         Territory res = (Territory) q.uniqueResult();
         session.close();
         return res;
