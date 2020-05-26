@@ -16,20 +16,23 @@ public class MessageHandler {
         LoginRequestMessage loginMsg = input.getLoginRequestMessage();
         SignUpRequestMessage signupMsg = input.getSignUpRequestMessage();
         PositionRequestMessage positionMsg = input.getPositionRequestMessage();
+
         if(loginMsg != null){
             LoginHandler lh = new LoginHandler(myDBprocessor);
             result.setLoginResultMessage(lh.handle(loginMsg));
             wid = result.getLoginResultMessage().getWid();
         }
+
         else if(signupMsg != null){
             SignUpHandler sh = new SignUpHandler(myDBprocessor, wid);
             result.setSignUpResultMessage(sh.handle(signupMsg));
         }
-        else if(input.getPositionRequestMessage() != null){
-//            TerritoryHandler th = new TerritoryHandler();
-//            PositionResultMessage positionResultMessage = new PositionResultMessage();
-//            positionResultMessage.setTerritory_array(res);
-//            result.setPositionResultMessage(positionResultMessage);
+
+        else if(positionMsg != null){
+            TerritoryHandler th = new TerritoryHandler();
+            PositionResultMessage positionResultMessage = new PositionResultMessage();
+            positionResultMessage.setTerritory_array(th.getTerritories(wid, positionMsg.getX(),positionMsg.getY()));
+            result.setPositionResultMessage(positionResultMessage);
         }
         else{
 
