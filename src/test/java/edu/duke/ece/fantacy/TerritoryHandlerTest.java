@@ -17,18 +17,20 @@ class TerritoryHandlerTest {
     TerritoryHandler th = new TerritoryHandler();
     Logger logger = LoggerFactory.getLogger(TerritoryHandler.class);
     ObjectMapper objectMapper = new ObjectMapper();
-    double latitude = 0.0021;
-    double longitude = 0.0033;
+    double latitude = 40;
+    double longitude = 40;
     int wid = 0;
     int[] coor = th.MillierConvertion(latitude,longitude);
+    TerrainHandler terrainHandler = new TerrainHandler();
 
     @Test
     void getTerritories() {
-
+        terrainHandler.initialTerrain();
         th.addTerritories(wid,latitude,longitude);
         List<Territory> res = th.getTerritories(wid, latitude, longitude);
         res = th.getTerritories(wid, latitude, longitude);
         assertEquals(9,res.size());
+
 
         MessagesS2C msg = new MessagesS2C();
         PositionResultMessage positionResultMessage = new PositionResultMessage();

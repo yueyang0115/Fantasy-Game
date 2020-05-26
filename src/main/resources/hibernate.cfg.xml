@@ -25,5 +25,6 @@
         <mapping class="edu.duke.ece.fantacy.Monster"/>
         <mapping class="edu.duke.ece.fantacy.Territory"/>
         <mapping class="edu.duke.ece.fantacy.Building"/>
+        <mapping class="edu.duke.ece.fantacy.Terrain"/>
     </session-factory>
 </hibernate-configuration>

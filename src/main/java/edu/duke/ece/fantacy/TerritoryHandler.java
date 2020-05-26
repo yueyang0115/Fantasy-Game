@@ -16,8 +16,8 @@ public class TerritoryHandler {
     SessionFactory sf = HibernateUtil.getSessionFactory();
     private int width_unit = 10;
     private int height_unit = 10;
-    private static ArrayList<Integer> x_offset = new ArrayList<>(Arrays.asList(0, 10, -10));
-    private static ArrayList<Integer> y_offset = new ArrayList<>(Arrays.asList(0, 10, -10));
+    private static ArrayList<Integer> x_offset = new ArrayList<>(Arrays.asList(-10,0, 10));
+    private static ArrayList<Integer> y_offset = new ArrayList<>(Arrays.asList(-10,0, 10));
 
     public TerritoryHandler() {
     }
@@ -45,12 +45,14 @@ public class TerritoryHandler {
         int[] coor = MillierConvertion(latitude, longitude);
 
         // get neighbor territories
-        for (int x_off : x_offset) {
-            for (int y_off : y_offset) {
-                int target_x = coor[0] + x_off;
-                int target_y = coor[1] + y_off;
+        for (int i=0;i<x_offset.size();i++) {
+            for (int j=0;j<x_offset.size();j++) {
+                int target_x = coor[0] + x_offset.get(i);
+                int target_y = coor[1] + y_offset.get(j);
                 Territory t = getTerritory(wid, target_x, target_y);
                 if (t != null) {
+                    t.setX(i-1);// set relative coordinate
+                    t.setY(j-1);
                     res.add(t);
                 }
             }
@@ -59,6 +61,7 @@ public class TerritoryHandler {
     }
 
     public void addTerritories(int wid, double latitude, double longitude) {
+        // add
         int[] coor = MillierConvertion(latitude, longitude);
 
         for (int x_off : x_offset) {
@@ -75,6 +78,7 @@ public class TerritoryHandler {
         // insert territory to world
         Session session = sf.openSession();
         session.beginTransaction();
+        TerrainHandler terrainHandler  = new TerrainHandler();
         // find the center of block
         int center_x = (x / width_unit) * width_unit + width_unit / 2;
         int center_y = (y / height_unit) * height_unit + height_unit / 2;
@@ -83,6 +87,10 @@ public class TerritoryHandler {
         if (t == null) {
             t = new Territory(wid, center_x, center_y, status);
             t.addMonster(new Monster("wolf", 100, 10)); // add monster
+            // add terrain
+            Terrain terrain = terrainHandler.getRandomTerrain();
+            session.update(terrain); // reattach the object to session
+            t.setTerrain(terrain);
             session.save(t);
             res = true;
         }
