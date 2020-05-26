@@ -35,6 +35,7 @@ public class PlayerHandler extends Thread{
 
             MessageHandler messageHandler = new MessageHandler(myDBprocessor, wid);
             MessagesS2C result = messageHandler.handle(request);
+            wid = messageHandler.getWid();
 
             String sendMsg = (new MessageHelper().serialize(result));
             TCPcommunicator.sendString(sendMsg);
