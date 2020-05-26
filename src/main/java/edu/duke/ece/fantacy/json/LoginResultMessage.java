@@ -5,6 +5,8 @@ public class LoginResultMessage {
     private String error_msg;
     private String status;
 
+    public LoginResultMessage(){}
+
     public int getWid() {
         return wid;
     }

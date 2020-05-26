@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantacy.json.MessagesS2C;
 import edu.duke.ece.fantacy.json.PositionResultMessage;
-import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ class TerritoryHandlerTest {
 
         MessagesS2C msg = new MessagesS2C();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
-        positionResultMessage.setTerritory_array(res);
+        positionResultMessage.setTerritoryArray(res);
         msg.setPositionResultMessage(positionResultMessage);
 
         try{

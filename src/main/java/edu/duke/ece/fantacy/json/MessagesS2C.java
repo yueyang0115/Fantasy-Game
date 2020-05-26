@@ -7,11 +7,19 @@ public class MessagesS2C {
     private LoginResultMessage loginResultMessage;
     private SignUpResultMessage signUpResultMessage;
 
-    public MessagesS2C(){
-        this.positionResultMessage = new PositionResultMessage();
-        this.loginResultMessage = new LoginResultMessage();
-        this.signUpResultMessage = new SignUpResultMessage();
+    public MessagesS2C(){ }
+
+    public MessagesS2C(LoginResultMessage msg){
+        this.loginResultMessage = msg;
     }
+
+   public MessagesS2C(SignUpResultMessage msg){
+        this.signUpResultMessage = msg;
+   }
+
+   public MessagesS2C(PositionResultMessage msg){
+        this.positionResultMessage = msg;
+   }
 
     public PositionResultMessage getPositionResultMessage() {
         return positionResultMessage;

@@ -39,7 +39,7 @@ public class PlayerHandler extends Thread{
 
             String sendMsg = (new MessageHelper().serialize(result));
             TCPcommunicator.sendString(sendMsg);
-            System.out.println("TCPcoummunicator send " + result);
+            System.out.println("TCPcoummunicator send " + sendMsg);
         }
     }
 

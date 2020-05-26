@@ -5,6 +5,8 @@ public class MessagesC2S {
     private SignUpRequestMessage signUpRequestMessage;
     private PositionRequestMessage positionRequestMessage;
 
+    public MessagesC2S(){ }
+
     public MessagesC2S(LoginRequestMessage loginRequestMessage) {
         this.loginRequestMessage = loginRequestMessage;
     }

@@ -31,7 +31,8 @@ public class MessageHandler {
         else if(positionMsg != null){
             TerritoryHandler th = new TerritoryHandler();
             PositionResultMessage positionResultMessage = new PositionResultMessage();
-            positionResultMessage.setTerritory_array(th.getTerritories(wid, positionMsg.getX(),positionMsg.getY()));
+            th.addTerritories(wid, positionMsg.getX(),positionMsg.getY());
+            positionResultMessage.setTerritoryArray(th.getTerritories(wid, positionMsg.getX(),positionMsg.getY()));
             result.setPositionResultMessage(positionResultMessage);
         }
         else{

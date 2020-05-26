@@ -4,6 +4,8 @@ public class SignUpRequestMessage {
     private String username;
     private String password;
 
+    public SignUpRequestMessage(){}
+
     public SignUpRequestMessage(String username, String password) {
         this.username = username;
         this.password = password;

@@ -4,8 +4,7 @@ public class SignUpResultMessage {
     private String error_msg;
     private String status;
 
-    public SignUpResultMessage() {
-    }
+    public SignUpResultMessage() {}
 
     public String getError_msg() {
         return error_msg;
