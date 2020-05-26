@@ -31,6 +31,10 @@ public class Territory {
     @OneToMany(mappedBy = "territory",cascade = CascadeType.ALL)
     private List<Monster> monsters = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name="terrain_id", nullable=false)
+    private Terrain terrain;
+
     public Territory(){
 
     }
@@ -40,6 +44,15 @@ public class Territory {
         this.x = x;
         this.y = y;
         this.status = status;
+    }
+
+    public Terrain getTerrain() {
+        return terrain;
+    }
+
+    public void setTerrain(Terrain terrain) {
+        this.terrain = terrain;
+        terrain.addTerritory(this);
     }
 
     public int getWid() {
@@ -78,6 +91,7 @@ public class Territory {
         monster.setTerritory(this);
         this.monsters.add(monster);
     }
+
 
     public JSONObject toJSON(){
         JSONObject territory_obj = new JSONObject();

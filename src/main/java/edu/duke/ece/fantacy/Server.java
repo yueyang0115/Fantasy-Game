@@ -34,6 +34,8 @@ public class Server {
     }
 
     public void startGame() {
+        TerrainHandler terrainHandler = new TerrainHandler();
+        terrainHandler.initialTerrain();
         //myMockDBprocessor.create();
         myDBprocessor.connectDB();
         while (true) {
