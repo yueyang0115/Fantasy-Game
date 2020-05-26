@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PositionResultMessage {
+    public PositionResultMessage(){}
+
     public List<Territory> getTerritory_array() {
         return territory_array;
     }
