@@ -8,7 +8,7 @@ import java.net.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ServerTest {
-    //@Test
+    @Test
     void buildServerTest() throws IOException{
         Server server = new Server(1234,5678);
         buildClientTest();
