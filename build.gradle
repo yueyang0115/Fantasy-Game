@@ -41,6 +41,9 @@ dependencies {
 
     compile group: 'org.slf4j', name:'slf4j-api', version: '1.7.21'
     compile group: 'org.slf4j', name:'slf4j-simple', version: '1.7.21'
+    compile group: 'org.jasypt', name: 'jasypt-hibernate5', version: '1.9.3'
+
+
 }
 
 test {
@@ -62,7 +65,7 @@ clover {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'edu.duke.ece.fantacy.Server'
+    mainClassName = 'edu.duke.ece.fantasy.Server'
 }
 
 test {
