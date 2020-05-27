@@ -8,15 +8,15 @@
 
         <!-- Connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://rajje.db.elephantsql.com:5432/ylbwemyh</property>
-        <property name="hibernate.connection.username">ylbwemyh</property>
-        <property name="hibernate.connection.password">kOHhsRdraZXpIQXgFzmYIv2TpvGOEBqe</property>
-<!--        <property name="hibernate.connection.url">jdbc:postgresql://ruby.db.elephantsql.com:5432/gdlstvqs</property>-->
-<!--        <property name="hibernate.connection.username">gdlstvqs</property>-->
-<!--        <property name="hibernate.connection.password">Xyzch5Lh9a5WbS7TpJen-0lGL8wVP6SI</property>-->
+<!--        <property name="hibernate.connection.url">jdbc:postgresql://rajje.db.elephantsql.com:5432/ylbwemyh</property>-->
+<!--        <property name="hibernate.connection.username">ylbwemyh</property>-->
+<!--        <property name="hibernate.connection.password">kOHhsRdraZXpIQXgFzmYIv2TpvGOEBqe</property>-->
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/fantasy</property>
+        <property name="hibernate.connection.username">fantasy</property>
+        <property name="hibernate.connection.password">fantasy</property>
 
         <!-- SQL dialect -->
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
 
         <!-- Print executed SQL to stdout -->
         <property name="show_sql">false</property>
@@ -25,9 +25,10 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Annotated entity classes -->
-        <mapping class="edu.duke.ece.fantacy.Monster"/>
-        <mapping class="edu.duke.ece.fantacy.Territory"/>
-        <mapping class="edu.duke.ece.fantacy.Building"/>
-        <mapping class="edu.duke.ece.fantacy.Terrain"/>
+        <mapping class="edu.duke.ece.fantasy.database.Monster"/>
+        <mapping class="edu.duke.ece.fantasy.database.Territory"/>
+        <mapping class="edu.duke.ece.fantasy.database.Building"/>
+        <mapping class="edu.duke.ece.fantasy.database.Terrain"/>
+        <mapping class="edu.duke.ece.fantasy.database.Player"/>
     </session-factory>
 </hibernate-configuration>
