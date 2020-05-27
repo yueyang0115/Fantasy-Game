@@ -13,7 +13,7 @@ public class Server {
     //private MockDBprocessor myMockDBprocessor;
     private DBprocessor myDBprocessor;
 
-    public Server(int tcpPort, int udpPort){
+    public Server(int tcpPort, int udpPort) {
         this.TCPport = tcpPort;
         try {
             this.TCPserverSock = new ServerSocket(this.TCPport);
@@ -46,7 +46,7 @@ public class Server {
         }
     }
 
-    public void startOnePlayer(){
+    public void startOnePlayer() {
         int id = 0;
         PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
         playerHandlerList.add(ph);
@@ -54,10 +54,12 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread(()->{
-            System.out.println("close server");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("close session factory");
+            HibernateUtil.shutdown();
         }));
-        Server server = new Server(1234,5678);
+        Server server = new Server(1234, 5678);
         server.startGame();
+
     }
 }
