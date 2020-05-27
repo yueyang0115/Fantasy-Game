@@ -22,15 +22,24 @@ public class TCPcommunicatorTest {
         server_msg.setLoginResultMessage(login_msg);
 
         TCPcm.send(server_msg);
-        System.out.println("TCPserver send: " + server_msg.toString());
-        TCPcm.close();
+        ObjectMapper om = new ObjectMapper();
+
+        System.out.println("TCPserver send: " + om.writeValueAsString(server_msg));
+        //TCPcm.close();
     }
 
     void TCPclientTest(){
         new Thread(()->{
             TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1111);
-            MessagesC2S client_msg = TCPcm.receive();
-            System.out.println("TCPclient receive: " + client_msg.toString());
+            ObjectMapper om = new ObjectMapper();
+            try {
+                System.out.println("waiting to receive");
+                MessagesS2C result = om.readValue(TCPcm.socket.getInputStream(), MessagesS2C.class);
+                System.out.println("TCPclient receive: " + om.writeValueAsString(result));
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("client failed to receive data");
+            }
         }).start();
     }
 }

@@ -3,6 +3,7 @@ package edu.duke.ece.fantacy;
 import java.net.*;
 import java.io.*;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantacy.json.MessagesC2S;
 import edu.duke.ece.fantacy.json.MessagesS2C;
@@ -10,11 +11,11 @@ import org.json.*;
 
 public class TCPCommunicator {
 
-    private Socket socket;
+    public Socket socket;
     private ObjectMapper objectMapper;
 
     public TCPCommunicator(ServerSocket serverSocket) {
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = new ObjectMapper().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
         try {
             this.socket = serverSocket.accept();
             while(this.socket ==null){
@@ -44,7 +45,7 @@ public class TCPCommunicator {
     }
 
     public MessagesC2S receive() {
-        MessagesC2S res = null;
+        MessagesC2S res = new MessagesC2S();
         try {
             res = objectMapper.readValue(socket.getInputStream(), MessagesC2S.class);
         } catch (IOException e) {
