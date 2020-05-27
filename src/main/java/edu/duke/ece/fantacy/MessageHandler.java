@@ -1,6 +1,7 @@
 package edu.duke.ece.fantacy;
 
 import edu.duke.ece.fantacy.json.*;
+import org.hibernate.Session;
 
 public class MessageHandler {
     private DBprocessor myDBprocessor;
@@ -29,11 +30,14 @@ public class MessageHandler {
         }
 
         else if(positionMsg != null){
-            TerritoryHandler th = new TerritoryHandler();
-            PositionResultMessage positionResultMessage = new PositionResultMessage();
-            th.addTerritories(wid, positionMsg.getX(),positionMsg.getY());
-            positionResultMessage.setTerritoryArray(th.getTerritories(wid, positionMsg.getX(),positionMsg.getY()));
-            result.setPositionResultMessage(positionResultMessage);
+            try(Session session = HibernateUtil.getSessionFactory().openSession()){
+                TerritoryHandler th = new TerritoryHandler(session);
+                PositionResultMessage positionResultMessage = new PositionResultMessage();
+                th.addTerritories(wid, positionMsg.getX(),positionMsg.getY());
+                positionResultMessage.setTerritoryArray(th.getTerritories(wid, positionMsg.getX(),positionMsg.getY()));
+                result.setPositionResultMessage(positionResultMessage);
+            }
+
         }
         else{
 

@@ -1,5 +1,7 @@
 package edu.duke.ece.fantacy;
 
+import org.hibernate.Session;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -34,8 +36,10 @@ public class Server {
     }
 
     public void startGame() {
-        TerrainHandler terrainHandler = new TerrainHandler();
-        terrainHandler.initialTerrain();
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            TerrainHandler terrainHandler = new TerrainHandler(session);
+            terrainHandler.initialTerrain();
+        }
         //myMockDBprocessor.create();
         myDBprocessor.connectDB();
         while (true) {

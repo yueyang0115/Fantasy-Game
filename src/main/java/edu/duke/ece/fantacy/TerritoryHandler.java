@@ -13,13 +13,14 @@ import org.hibernate.query.Query;
 import org.hibernate.transform.ResultTransformer;
 
 public class TerritoryHandler {
-    SessionFactory sf = HibernateUtil.getSessionFactory();
+    Session session;
     private int width_unit = 10;
     private int height_unit = 10;
     private static ArrayList<Integer> x_offset = new ArrayList<>(Arrays.asList(-10, 0, 10));
     private static ArrayList<Integer> y_offset = new ArrayList<>(Arrays.asList(-10, 0, 10));
 
-    public TerritoryHandler() {
+    public TerritoryHandler(Session session) {
+        this.session = session;
     }
 
     public int[] MillierConvertion(double latitude, double longitude) {
@@ -75,59 +76,52 @@ public class TerritoryHandler {
 
     public boolean addTerritory(int wid, int x, int y, String status) {
         // insert territory to world
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            TerrainHandler terrainHandler = new TerrainHandler();
-            // find the center of block
-            int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
-            int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-            Territory t = getTerritory(wid, center_x, center_y);
-            boolean res = false;
-            if (t == null) {
-                t = new Territory(wid, center_x, center_y, status);
-                t.addMonster(new Monster("wolf", 100, 10)); // add monster
-                // add terrain
-                Terrain terrain = terrainHandler.getRandomTerrain();
-                session.update(terrain); // reattach the object to session
-                t.setTerrain(terrain);
-                session.save(t);
-                res = true;
-                session.getTransaction().commit();
-            }
-            return res;
+        TerrainHandler terrainHandler = new TerrainHandler(session);
+        // find the center of block
+        int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
+        int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
+        Territory t = getTerritory(wid, center_x, center_y);
+        boolean res = false;
+        if (t == null) {
+            t = new Territory(wid, center_x, center_y, status);
+            t.addMonster(new Monster("wolf", 100, 10)); // add monster
+            // add terrain
+            Terrain terrain = terrainHandler.getRandomTerrain();
+//            session.update(terrain); // reattach the object to session
+            t.setTerrain(terrain);
+            session.save(t);
+            res = true;
+            session.getTransaction().commit();
         }
+        return res;
     }
 
 
     public boolean updateTerritory(int wid, int x, int y, String status) {
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            boolean res = false;
-            Territory t = getTerritory(wid, x, y);
-            if (t == null) { // don't have territory
-                return res;
-            }
-            t.setStatus(status);
-            session.update(t);
-            session.getTransaction().commit();
-            session.close();
+        session.beginTransaction();
+        boolean res = false;
+        Territory t = getTerritory(wid, x, y);
+        if (t == null) { // don't have territory
             return res;
         }
+        t.setStatus(status);
+        session.update(t);
+        session.getTransaction().commit();
+        return res;
+
     }
 
     public Territory getTerritory(int wid, int x, int y) {
         // select territory according to conditions
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
-            int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-            Query q = session.createQuery("From Territory M where M.wid =:wid and M.x =:x and M.y = :y");
-            q.setParameter("wid", wid);
-            q.setParameter("x", center_x);
-            q.setParameter("y", center_y);
-            Territory res = (Territory) q.uniqueResult();
-            session.close();
-            return res;
-        }
+        session.beginTransaction();
+        int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
+        int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
+        Query q = session.createQuery("From Territory M where M.wid =:wid and M.x =:x and M.y = :y");
+        q.setParameter("wid", wid);
+        q.setParameter("x", center_x);
+        q.setParameter("y", center_y);
+        Territory res = (Territory) q.uniqueResult();
+        return res;
+
     }
 }

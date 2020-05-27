@@ -8,12 +8,12 @@
 
         <!-- Connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-<!--        <property name="hibernate.connection.url">jdbc:postgresql://rajje.db.elephantsql.com:5432/ylbwemyh</property>-->
-<!--        <property name="hibernate.connection.username">ylbwemyh</property>-->
-<!--        <property name="hibernate.connection.password">kOHhsRdraZXpIQXgFzmYIv2TpvGOEBqe</property>-->
-        <property name="hibernate.connection.url">jdbc:postgresql://ruby.db.elephantsql.com:5432/gdlstvqs</property>
-        <property name="hibernate.connection.username">gdlstvqs</property>
-        <property name="hibernate.connection.password">Xyzch5Lh9a5WbS7TpJen-0lGL8wVP6SI</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://rajje.db.elephantsql.com:5432/ylbwemyh</property>
+        <property name="hibernate.connection.username">ylbwemyh</property>
+        <property name="hibernate.connection.password">kOHhsRdraZXpIQXgFzmYIv2TpvGOEBqe</property>
+<!--        <property name="hibernate.connection.url">jdbc:postgresql://ruby.db.elephantsql.com:5432/gdlstvqs</property>-->
+<!--        <property name="hibernate.connection.username">gdlstvqs</property>-->
+<!--        <property name="hibernate.connection.password">Xyzch5Lh9a5WbS7TpJen-0lGL8wVP6SI</property>-->
 
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
