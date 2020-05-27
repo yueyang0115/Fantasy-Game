@@ -45,7 +45,7 @@ class TerritoryHandlerTest {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            HibernateUtil.shutdown();
+//            HibernateUtil.shutdown();
         }
     }
 

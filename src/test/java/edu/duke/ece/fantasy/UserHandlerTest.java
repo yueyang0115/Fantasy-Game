@@ -23,7 +23,7 @@ class UserHandlerTest {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            HibernateUtil.shutdown();
+//            HibernateUtil.shutdown();
         }
     }
 
@@ -31,8 +31,11 @@ class UserHandlerTest {
     void getUser() {
         try(Session session = createSession()){
             session.beginTransaction();
-            userHandler.addUser("1","1");
             Player user = userHandler.getUser("1","1");
+            if(user ==null){
+                userHandler.addUser("1","1");
+            }
+            user = userHandler.getUser("1","1");
             session.getTransaction().commit();
             assertNotNull(user);
         }
