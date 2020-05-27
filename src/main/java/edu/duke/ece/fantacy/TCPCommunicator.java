@@ -13,14 +13,18 @@ public class TCPCommunicator {
 
     public Socket socket;
     private ObjectMapper objectMapper;
+    private InputStream in;
+    private OutputStream out;
 
     public TCPCommunicator(ServerSocket serverSocket) {
-        this.objectMapper = new ObjectMapper().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
+        this.objectMapper = new ObjectMapper(); //.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
         try {
             this.socket = serverSocket.accept();
             while(this.socket ==null){
                 this.socket = serverSocket.accept();
             }
+            this.in = socket.getInputStream();
+            this.out = socket.getOutputStream();
             System.out.println("[DEBUG] TCP communicator successfully accept player socket!");
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to accept player socket!");
@@ -40,7 +44,7 @@ public class TCPCommunicator {
 
     public void send(MessagesS2C msg) {
         try {
-            objectMapper.writeValue(socket.getOutputStream(), msg);
+            objectMapper.writeValue(out, msg);
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to send data!");
             e.printStackTrace();
@@ -50,7 +54,7 @@ public class TCPCommunicator {
     public MessagesC2S receive() {
         MessagesC2S res = new MessagesC2S();
         try {
-            res = objectMapper.readValue(socket.getInputStream(), MessagesC2S.class);
+            res = objectMapper.readValue(in, MessagesC2S.class);
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to receive data!");
             e.printStackTrace();
