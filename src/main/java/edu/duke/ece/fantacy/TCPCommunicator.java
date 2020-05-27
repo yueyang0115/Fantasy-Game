@@ -24,6 +24,7 @@ public class TCPCommunicator {
             System.out.println("[DEBUG] TCP communicator successfully accept player socket!");
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to accept player socket!");
+            e.printStackTrace();
         }
     }
 
@@ -33,6 +34,7 @@ public class TCPCommunicator {
             this.socket = new Socket(ip, port);
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to crete TCPCommunicator!");
+            e.printStackTrace();
         }
     }
 
@@ -41,6 +43,7 @@ public class TCPCommunicator {
             objectMapper.writeValue(socket.getOutputStream(), msg);
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to send data!");
+            e.printStackTrace();
         }
     }
 
@@ -50,6 +53,7 @@ public class TCPCommunicator {
             res = objectMapper.readValue(socket.getInputStream(), MessagesC2S.class);
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to receive data!");
+            e.printStackTrace();
         }
         return res;
     }
@@ -59,6 +63,7 @@ public class TCPCommunicator {
             socket.close();
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to close socket!");
+            e.printStackTrace();
         }
     }
 }
