@@ -1,6 +1,10 @@
 package edu.duke.ece.fantacy;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantacy.json.LoginRequestMessage;
+import edu.duke.ece.fantacy.json.LoginResultMessage;
+import edu.duke.ece.fantacy.json.MessagesC2S;
+import edu.duke.ece.fantacy.json.MessagesS2C;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,20 +17,20 @@ public class TCPcommunicatorTest {
         TCPclientTest();
         TCPCommunicator TCPcm = new TCPCommunicator(TCPserverSock);
 
-        String attributeStr = TCPcm.receive();
-        System.out.println("TCPserver receive position: " + attributeStr);
+        MessagesS2C server_msg = new MessagesS2C();
+        LoginResultMessage login_msg = new LoginResultMessage();
+        server_msg.setLoginResultMessage(login_msg);
 
-        TCPcm.sendString(attributeStr);
-        System.out.println("TCPserver send virtual attribute");
+        TCPcm.send(server_msg);
+        System.out.println("TCPserver send: " + server_msg.toString());
         TCPcm.close();
     }
 
     void TCPclientTest(){
         new Thread(()->{
             TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1111);
-            TCPcm.sendString("{'position':{'x':'100.00','y':'100.00'}}");
-            System.out.println("TCPclient send position");
-            System.out.println("TCPclient receive virtual position: " + TCPcm.receive());
+            MessagesC2S client_msg = TCPcm.receive();
+            System.out.println("TCPclient receive: " + client_msg.toString());
         }).start();
     }
 }
