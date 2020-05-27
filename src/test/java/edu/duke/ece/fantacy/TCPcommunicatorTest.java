@@ -2,6 +2,7 @@ package edu.duke.ece.fantacy;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantacy.json.*;
 import org.junit.jupiter.api.Test;
@@ -38,9 +39,9 @@ public class TCPcommunicatorTest {
     void TCPclientTest(){
         new Thread(()->{
             TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1111);
-            JsonFactory factory = new JsonFactory();
-            factory.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-            ObjectMapper om = new ObjectMapper(factory);
+            ObjectMapper om = new ObjectMapper();
+            om.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);
+            om.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
             try {
                 System.out.println("waiting to receive");
                 InputStream in = TCPcm.socket.getInputStream();

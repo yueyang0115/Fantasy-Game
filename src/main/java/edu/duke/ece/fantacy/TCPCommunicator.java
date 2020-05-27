@@ -19,9 +19,9 @@ public class TCPCommunicator {
     private OutputStream out;
 
     public TCPCommunicator(ServerSocket serverSocket) {
-        JsonFactory factory = new JsonFactory();
-        factory.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        this.objectMapper = new ObjectMapper(factory);
+        this.objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);
+        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
         try {
             this.socket = serverSocket.accept();
             while(this.socket ==null){
@@ -37,9 +37,9 @@ public class TCPCommunicator {
     }
 
     public TCPCommunicator(String ip, int port) {
-        JsonFactory factory = new JsonFactory();
-        factory.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        this.objectMapper = new ObjectMapper(factory);
+        this.objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);
+        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
         try {
             this.socket = new Socket(ip, port);
         } catch (IOException e) {
