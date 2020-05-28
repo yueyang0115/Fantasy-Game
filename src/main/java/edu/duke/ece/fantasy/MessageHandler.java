@@ -33,7 +33,7 @@ public class MessageHandler {
                 PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 
-                positionResultMessage.setTerritoryArray(th.handle(wid, positionMsg.getX(), positionMsg.getY(),3,3));
+                positionResultMessage.setTerritoryArray(th.handle(wid, positionMsg.getX(), positionMsg.getY(),1,1));
                 result.setPositionResultMessage(positionResultMessage);
             } else {
 

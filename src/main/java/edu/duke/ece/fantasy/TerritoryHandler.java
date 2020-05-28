@@ -68,10 +68,10 @@ public class TerritoryHandler {
         List<Territory> res = new ArrayList<>();
 
         // get neighbor territories
-        for (int i = -x_block_num / 2; i < x_block_num / 2; i++) {
-            for (int j = -y_block_num / 2; j < y_block_num / 2; j++) {
-                int target_x = x + i * 10;
-                int target_y = y + j * 10;
+        for (int i = 0; i < x_block_num; i++) {
+            for (int j = 0; j < y_block_num; j++) {
+                int target_x = x + (i - x_block_num / 2) * 10;
+                int target_y = y + (j - y_block_num / 2) * 10;
                 Territory t = getTerritory(wid, target_x, target_y);
                 if (t != null && !t.getStatus().equals("unexplored")) {
                     Territory new_t = new Territory(t);
@@ -107,10 +107,10 @@ public class TerritoryHandler {
 
     public void addTerritories(int wid, int x, int y, int x_block_num, int y_block_num) {
         // add x_block_num*y_block_num squares to database
-        for (int i = -x_block_num / 2; i < x_block_num / 2; i++) {
-            for (int j = -y_block_num / 2; j < y_block_num / 2; j++) {
-                int target_x = x + i * 10;
-                int target_y = y + j * 10;
+        for (int i = 0; i < x_block_num; i++) {
+            for (int j = 0; j < y_block_num; j++) {
+                int target_x = x + (i - x_block_num / 2) * 10;
+                int target_y = y + (j - y_block_num / 2) * 10;
                 addTerritory(wid, target_x, target_y, "unexplored");
             }
         }
