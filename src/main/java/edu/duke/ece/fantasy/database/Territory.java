@@ -1,4 +1,6 @@
 package edu.duke.ece.fantasy.database;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.json.*;
 
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table( name = "Territory" )
+@Table(name = "Territory")
 public class Territory {
 
     @Id
@@ -19,7 +21,7 @@ public class Territory {
     @Column(name = "WID", nullable = false)
     private int wid;
 
-    @Column(name = "x",  nullable = false)
+    @Column(name = "x", nullable = false)
     private int x;
 
     @Column(name = "y", nullable = false)
@@ -28,18 +30,33 @@ public class Territory {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "territory",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "territory", cascade = CascadeType.ALL)
     private List<Monster> monsters = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="terrain_id", nullable=false)
+    @JoinColumn(name = "terrain_id", nullable = false)
     private Terrain terrain;
 
-    public Territory(){
+    public Territory() {
 
     }
 
-    public Territory(int wid,int x,int y, String status){
+    public Territory(Territory old_terr) {
+        this.wid = old_terr.getWid();
+        this.x = old_terr.getX();
+        this.y = old_terr.getY();
+        this.status = old_terr.getStatus();
+        List<Monster> monsters = new ArrayList<>();
+        for(Monster monster:old_terr.getMonsters()){ // cut off reference loop
+            Monster new_monster = new Monster(monster);
+            monsters.add(monster);
+        }
+        this.monsters = monsters;
+        this.terrain = old_terr.getTerrain();
+    }
+
+    public Territory(int wid, int x, int y, String status) {
         this.wid = wid;
         this.x = x;
         this.y = y;
@@ -63,7 +80,7 @@ public class Territory {
         this.wid = wid;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
@@ -71,7 +88,7 @@ public class Territory {
         this.x = x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
@@ -87,23 +104,30 @@ public class Territory {
         this.status = status;
     }
 
-    public void addMonster(Monster monster){
+    public void addMonster(Monster monster) {
         monster.setTerritory(this);
         this.monsters.add(monster);
     }
 
+    public List<Monster> getMonsters() {
+        return monsters;
+    }
 
-    public JSONObject toJSON(){
+    public void setMonsters(List<Monster> monsters) {
+        this.monsters = monsters;
+    }
+
+    public JSONObject toJSON() {
         JSONObject territory_obj = new JSONObject();
-        territory_obj.put("x",this.x);
-        territory_obj.put("y",this.y);
-        territory_obj.put("status",this.status);
-        territory_obj.put("wid",this.wid);
+        territory_obj.put("x", this.x);
+        territory_obj.put("y", this.y);
+        territory_obj.put("status", this.status);
+        territory_obj.put("wid", this.wid);
         JSONArray monster_arr = new JSONArray();
-        for (Monster monster:monsters){
+        for (Monster monster : monsters) {
             monster_arr.put(monster.toJSON());
         }
-        territory_obj.put("monsters",monster_arr);
+        territory_obj.put("monsters", monster_arr);
         return territory_obj;
     }
 }

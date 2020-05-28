@@ -19,8 +19,8 @@ class TerritoryHandlerTest {
     TerritoryHandler th;
     Logger logger = LoggerFactory.getLogger(TerritoryHandler.class);
     ObjectMapper objectMapper = new ObjectMapper();
-    double latitude = 0;
-    double longitude = 0;
+    double latitude = 35;
+    double longitude = 178;
     int wid = 0;
     int[] coor;
     TerrainHandler terrainHandler;
@@ -40,8 +40,9 @@ class TerritoryHandlerTest {
     @Test
     void testAll() {
         try {
-//            getTerritories();
-//            updateTerritory();
+            getTerritories();
+            getTerritories();
+            updateTerritory();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -57,7 +58,7 @@ class TerritoryHandlerTest {
             List<Territory> res = th.getTerritories(wid, latitude, longitude);
             assertEquals(9, res.size());
             session.getTransaction().commit();
-            session.close();
+//            session.close();
             MessagesS2C msg = new MessagesS2C();
             PositionResultMessage positionResultMessage = new PositionResultMessage();
             positionResultMessage.setTerritoryArray(res);
@@ -65,7 +66,7 @@ class TerritoryHandlerTest {
             try {
                 logger.info(objectMapper.writeValueAsString(msg));
             } catch (JsonProcessingException e) {
-                logger.debug(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

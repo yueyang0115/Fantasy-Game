@@ -16,6 +16,7 @@ public class PlayerHandler extends Thread{
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
+        this.myObjectMapper = new ObjectMapper();
     }
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DBprocessor processor) {
@@ -34,6 +35,7 @@ public class PlayerHandler extends Thread{
             MessagesC2S request = TCPcommunicator.receive();
             String request_str = "";
             try {
+                if(myObjectMapper==null){System.out.println("null");}
                 request_str = myObjectMapper.writeValueAsString(request);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

@@ -9,6 +9,8 @@ import edu.duke.ece.fantasy.database.Terrain;
 import edu.duke.ece.fantasy.database.Territory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TerritoryHandler {
     Session session;
@@ -16,6 +18,7 @@ public class TerritoryHandler {
     private int height_unit = 10;
     private static ArrayList<Integer> x_offset = new ArrayList<>(Arrays.asList(-10, 0, 10));
     private static ArrayList<Integer> y_offset = new ArrayList<>(Arrays.asList(-10, 0, 10));
+    Logger log = LoggerFactory.getLogger(TerritoryHandler.class);
 
     public TerritoryHandler(Session session) {
         this.session = session;
@@ -50,7 +53,11 @@ public class TerritoryHandler {
                 int target_y = coor[1] + y_offset.get(j);
                 Territory t = getTerritory(wid, target_x, target_y);
                 if (t != null) {
-                    res.add(t);
+                    Territory new_t = new Territory(t);
+                    new_t.setX(i-1);
+                    new_t.setY(j-1);
+                    res.add(new_t);
+//                    res.add(t);
                 }
             }
         }

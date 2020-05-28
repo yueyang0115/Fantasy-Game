@@ -38,8 +38,11 @@ public class Server {
 
     public void startGame() {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
+            // initialize database
+            session.beginTransaction();
             TerrainHandler terrainHandler = new TerrainHandler(session);
             terrainHandler.initialTerrain();
+            session.getTransaction().commit();
         }
         //myMockDBprocessor.create();
 //        myDBprocessor.connectDB();

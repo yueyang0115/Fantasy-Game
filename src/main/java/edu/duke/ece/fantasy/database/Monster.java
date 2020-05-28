@@ -1,5 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.json.JSONObject;
 
@@ -23,6 +25,7 @@ public class Monster {
     @Column(name = "ATK", unique = false, nullable = false)
     private int atk;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="territory_id", nullable=false)
     private Territory territory;
@@ -35,6 +38,12 @@ public class Monster {
         this.type = type;
         this.hp = hp;
         this.atk = atk;
+    }
+
+    public Monster(Monster old_monster){
+        this.type = old_monster.getType();
+        this.hp = old_monster.getHp();
+        this.atk = old_monster.getAtk();
     }
 
     public int getId() {
