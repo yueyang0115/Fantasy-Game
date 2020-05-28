@@ -18,6 +18,14 @@ public class Territory {
     @Column(name = "ID", unique = true, nullable = false)
     private int id;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Column(name = "WID", nullable = false)
     private int wid;
 
@@ -43,6 +51,7 @@ public class Territory {
     }
 
     public Territory(Territory old_terr) {
+        this.id = old_terr.getId();
         this.wid = old_terr.getWid();
         this.x = old_terr.getX();
         this.y = old_terr.getY();
