@@ -41,7 +41,7 @@ public class PlayerHandler extends Thread{
                 request_str = myObjectMapper.writeValueAsString(request);
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
 
-                MessageHandler messageHandler = new MessageHandler(myDBprocessor, wid);
+                MessageHandler messageHandler = new MessageHandler();
                 MessagesS2C result = messageHandler.handle(request);
                 wid = messageHandler.getWid();
 
