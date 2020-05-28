@@ -63,6 +63,27 @@ public class TerritoryHandler {
         return res;
     }
 
+    // given coordination, return list of territory
+    public List<Territory> getTerritories(int wid, int x, int y) {
+        List<Territory> res = new ArrayList<>();
+
+        // get neighbor territories
+        for (int i = 0; i < x_offset.size(); i++) {
+            for (int j = 0; j < x_offset.size(); j++) {
+                int target_x = x + x_offset.get(i);
+                int target_y = y + y_offset.get(j);
+                Territory t = getTerritory(wid, target_x, target_y);
+                if (t != null) {
+                    Territory new_t = new Territory(t);
+//                    new_t.setX(i-1);
+//                    new_t.setY(j-1);
+                    res.add(new_t);
+                }
+            }
+        }
+        return res;
+    }
+
     public void addTerritories(int wid, double latitude, double longitude) {
         // add 9 squares to database
         int[] coor = MillierConvertion(latitude, longitude);
