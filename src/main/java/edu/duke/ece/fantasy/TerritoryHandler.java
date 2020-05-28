@@ -64,16 +64,16 @@ public class TerritoryHandler {
     }
 
     // given coordination, return list of territory
-    public List<Territory> getTerritories(int wid, int x, int y) {
+    public List<Territory> getTerritories(int wid, int x, int y, int x_block_num, int y_block_num) {
         List<Territory> res = new ArrayList<>();
 
         // get neighbor territories
-        for (int i = 0; i < x_offset.size(); i++) {
-            for (int j = 0; j < x_offset.size(); j++) {
-                int target_x = x + x_offset.get(i);
-                int target_y = y + y_offset.get(j);
+        for (int i = -x_block_num / 2; i < x_block_num / 2; i++) {
+            for (int j = -y_block_num / 2; j < y_block_num / 2; j++) {
+                int target_x = x + i * 10;
+                int target_y = y + j * 10;
                 Territory t = getTerritory(wid, target_x, target_y);
-                if (t != null) {
+                if (t != null && !t.getStatus().equals("unexplored")) {
                     Territory new_t = new Territory(t);
 //                    new_t.setX(i-1);
 //                    new_t.setY(j-1);
@@ -82,6 +82,14 @@ public class TerritoryHandler {
             }
         }
         return res;
+    }
+
+    public List<Territory> handle(int wid, int x, int y, int x_block_num, int y_block_num) {
+        addTerritories(wid, x, y, x_block_num, y_block_num);
+        if (getTerritory(wid, x, y).getStatus().equals("unexplored")) {
+            updateTerritory(wid, x, y, "explored");
+        }
+        return getTerritories(wid, x, y, x_block_num, y_block_num);
     }
 
     public void addTerritories(int wid, double latitude, double longitude) {
@@ -97,12 +105,12 @@ public class TerritoryHandler {
         }
     }
 
-    public void addTerritories(int wid, int x, int y) {
-        // add 9 squares to database
-        for (int x_off : x_offset) {
-            for (int y_off : y_offset) {
-                int target_x = x + x_off;
-                int target_y = y + y_off;
+    public void addTerritories(int wid, int x, int y, int x_block_num, int y_block_num) {
+        // add x_block_num*y_block_num squares to database
+        for (int i = -x_block_num / 2; i < x_block_num / 2; i++) {
+            for (int j = -y_block_num / 2; j < y_block_num / 2; j++) {
+                int target_x = x + i * 10;
+                int target_y = y + j * 10;
                 addTerritory(wid, target_x, target_y, "unexplored");
             }
         }

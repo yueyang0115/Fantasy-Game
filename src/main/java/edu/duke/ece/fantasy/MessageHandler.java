@@ -31,10 +31,9 @@ public class MessageHandler {
             } else if (positionMsg != null) {
                 TerritoryHandler th = new TerritoryHandler(session);
                 PositionResultMessage positionResultMessage = new PositionResultMessage();
-                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
-                session.getTransaction().commit();
-                session.beginTransaction();
-                positionResultMessage.setTerritoryArray(th.getTerritories(wid, positionMsg.getX(), positionMsg.getY()));
+//                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
+
+                positionResultMessage.setTerritoryArray(th.handle(wid, positionMsg.getX(), positionMsg.getY(),3,3));
                 result.setPositionResultMessage(positionResultMessage);
             } else {
 

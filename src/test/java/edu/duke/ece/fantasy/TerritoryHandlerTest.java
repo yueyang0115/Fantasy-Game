@@ -21,6 +21,10 @@ class TerritoryHandlerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     double latitude = 35;
     double longitude = 178;
+    int x = 5;
+    int y = 5;
+    int x_block_num = 4;
+    int y_block_num = 4;
     int wid = 0;
     int[] coor;
     TerrainHandler terrainHandler;
@@ -50,13 +54,13 @@ class TerritoryHandlerTest {
         }
     }
 
+    @Test
     void getTerritories() {
         try (Session session = createSession()) {
             session.beginTransaction();
             terrainHandler.initialTerrain();
             th.addTerritories(wid, latitude, longitude);
             List<Territory> res = th.getTerritories(wid, latitude, longitude);
-            assertEquals(9, res.size());
             session.getTransaction().commit();
 //            session.close();
             MessagesS2C msg = new MessagesS2C();
@@ -71,7 +75,36 @@ class TerritoryHandlerTest {
         }
     }
 
+    @Test
+    void getTerritories_virtual() {
+        try (Session session = createSession()) {
+            session.beginTransaction();
+            terrainHandler.initialTerrain();
+//            th.addTerritories(wid, x, y,x_block_num,y_block_num);
+//            List<Territory> res = th.getTerritories(wid, x, y,x_block_num,y_block_num);
 
+            List<Territory> res = th.handle(wid, x, y, x_block_num, y_block_num);
+            printAsJson(res);
+            res = th.handle(wid, x+10, y+10, x_block_num, y_block_num);
+            printAsJson(res);
+            session.getTransaction().commit();
+        }
+    }
+
+    void printAsJson(List<Territory> res) {
+        MessagesS2C msg = new MessagesS2C();
+        PositionResultMessage positionResultMessage = new PositionResultMessage();
+        positionResultMessage.setTerritoryArray(res);
+        msg.setPositionResultMessage(positionResultMessage);
+        try {
+            logger.info(objectMapper.writeValueAsString(msg));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
     void updateTerritory() {
         try (Session session = createSession()) {
             session.beginTransaction();
