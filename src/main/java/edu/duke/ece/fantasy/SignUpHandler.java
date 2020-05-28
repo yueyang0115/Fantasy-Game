@@ -20,16 +20,16 @@ public class SignUpHandler {
         String username = input.getUsername();
         String password = input.getPassword();
 
-        //checkUser:  >0: return wid, -1 : username doesn't exist or wrong password / username
-//        int checkUser = myDBprocessor.checkUser(username, password);
         Player player = userHandler.getUser(username,password);
         if(player == null){
             userHandler.addUser(username,password);
             result.setStatus("success");
+            System.out.println("[DEBUG] SignUp succeed");
             logger.debug("[DEBUG] SignUp succeed");
         } else {
             result.setStatus("fail");
             result.setError_msg("SignUp failed, username already exist");
+            System.out.println("[DEBUG] SignUp failed, username already exist");
             logger.debug("[DEBUG] SignUp failed, username already exist");
         }
 

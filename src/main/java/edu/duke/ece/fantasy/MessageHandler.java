@@ -5,13 +5,8 @@ import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
 
 public class MessageHandler {
-    private DBprocessor myDBprocessor;
     private int wid;
-
-    public MessageHandler(DBprocessor dbp, int id) {
-        this.myDBprocessor = dbp;
-        this.wid = id;
-    }
+    public MessageHandler() {}
 
     public MessagesS2C handle(MessagesC2S input) {
         MessagesS2C result = new MessagesS2C();
