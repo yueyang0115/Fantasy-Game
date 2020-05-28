@@ -40,9 +40,9 @@ class TerritoryHandlerTest {
     @Test
     void testAll() {
         try {
-            getTerritories();
-            getTerritories();
-            updateTerritory();
+//            getTerritories();
+//            getTerritories();
+//            updateTerritory();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
