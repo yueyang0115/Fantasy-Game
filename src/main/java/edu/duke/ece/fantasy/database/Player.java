@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.jasypt.hibernate5.type.EncryptedStringType;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 
@@ -23,7 +24,6 @@ public class Player {
 
     @Column(name = "username", unique = true, nullable = false)
     private String username;
-
 
     @Column(nullable = false)
     private String password;
