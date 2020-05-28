@@ -1,0 +1,10 @@
+> Task :compileJava
+> Task :processResources UP-TO-DATE
+> Task :classes
+
+> Task :run
+[DEBUG] Successfully built TCPserver
+[DEBUG] Successfully built UDPserver
+[DEBUG] TCP communicator successfully accept player socket!
+[DEBUG] TCP communicator failed to receive data, client might closed
+[DEBUG] Client socket might closed, exit

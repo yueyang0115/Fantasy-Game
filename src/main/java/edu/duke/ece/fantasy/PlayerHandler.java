@@ -6,6 +6,8 @@ import edu.duke.ece.fantasy.json.MessageHelper;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 
+import java.io.IOException;
+
 public class PlayerHandler extends Thread{
     private int wid;
     private TCPCommunicator TCPcommunicator;
@@ -31,30 +33,33 @@ public class PlayerHandler extends Thread{
     }
 
     public void startPlay(){
-        while(true){
-            MessagesC2S request = TCPcommunicator.receive();
-            String request_str = "";
-            try {
-                if(myObjectMapper==null){System.out.println("null");}
+        while(!TCPcommunicator.isClosed()){
+            try{
+                MessagesC2S request = TCPcommunicator.receive();
+                if(TCPcommunicator.isClosed()) break;
+                String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            System.out.println("TCPcoummunicator receive:" + request_str);
+                System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
 
-            MessageHandler messageHandler = new MessageHandler(myDBprocessor, wid);
-            MessagesS2C result = messageHandler.handle(request);
-            wid = messageHandler.getWid();
+                MessageHandler messageHandler = new MessageHandler(myDBprocessor, wid);
+                MessagesS2C result = messageHandler.handle(request);
+                wid = messageHandler.getWid();
 
-            TCPcommunicator.send(result);
-            String result_str = "";
-            try {
+                TCPcommunicator.send(result);
+                if(TCPcommunicator.isClosed()) break;
+                String result_str = "";
                 result_str = myObjectMapper.writeValueAsString(result);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                System.out.println("[DEBUG] TCPcommunicator successfully send " +result_str);
             }
-            System.out.println("TCPcoummunicator send " +result_str);
+            catch(IOException e){
+                e.printStackTrace();
+                if(TCPcommunicator.isClosed()) {
+                    System.out.println("[DEBUG] Client socket might closed, prepare to exit");
+                }
+            }
         }
+        TCPcommunicator.close();
+        System.out.println("[DEBUG] Client socket might closed, close corresponding thread in server");
     }
 
 }
