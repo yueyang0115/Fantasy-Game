@@ -54,10 +54,9 @@ public class TerritoryHandler {
                 Territory t = getTerritory(wid, target_x, target_y);
                 if (t != null) {
                     Territory new_t = new Territory(t);
-                    new_t.setX(i-1);
-                    new_t.setY(j-1);
+//                    new_t.setX(i-1);
+//                    new_t.setY(j-1);
                     res.add(new_t);
-//                    res.add(t);
                 }
             }
         }
