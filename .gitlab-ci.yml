@@ -16,7 +16,7 @@ build:
      - cicd
   stage: build
 #  script: docker build --build-arg LOCAL_USER_ID=`id -u`  --tag citest .
-  script: docker-compose build
+  script: docker-compose build --build-arg LOCAL_USER_ID=`id -u` server && docker-compose build
 
 test:
   tags:
