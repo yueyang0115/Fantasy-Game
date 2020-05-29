@@ -29,7 +29,7 @@ public class Player {
     private String password;
 
 
-    @Column(name = "WID",columnDefinition="serial", unique = true,insertable = false, updatable = false)
+    @Column(name = "WID",columnDefinition="serial", unique = true,insertable = false, updatable = false,nullable = false)
     private int wid;
 
     public Player(String username, String password) {
