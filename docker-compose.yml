@@ -1,0 +1,16 @@
+version: "2"
+services:
+  mydb:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: fantasy
+      POSTGRES_USER: fantasy
+      POSTGRES_DB: fantasy
+  server:
+    build: ./
+    #    command: bash -c "./wait-for-it.sh mydb:5432 --strict -- ./server 12345 23456 50"
+    #    ports:
+    #      - "12345:12345"
+    #      - "23456:23456"
+    depends_on:
+      - mydb
