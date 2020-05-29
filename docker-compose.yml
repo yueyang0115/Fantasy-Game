@@ -9,7 +9,7 @@ services:
     volumes:
       - data-volume:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "8000:5432"
   server:
     build: ./
     volumes:
