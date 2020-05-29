@@ -22,8 +22,8 @@ test:
   tags:
      - cicd
   stage: test
-#  script: scripts/run-tests-in-docker.sh
-  script: docker-compose run server
+  script: scripts/run-tests-in-docker.sh
+#  script: docker-compose run server
   artifacts:
     paths:
       - coverage
