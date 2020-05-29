@@ -6,10 +6,14 @@ services:
       POSTGRES_PASSWORD: fantasy
       POSTGRES_USER: fantasy
       POSTGRES_DB: fantasy
+    volumes:
+      - data-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   server:
     build: ./
     volumes:
-      - ./coverage:/coverage-out
+      - ${PWD}/coverage:/coverage-out
     command: bash -c "scripts/test.sh"
     depends_on:
       - mydb
