@@ -20,7 +20,7 @@ public class SignUpHandler {
         String username = input.getUsername();
         String password = input.getPassword();
 
-        Player player = userHandler.getUser(username,password);
+        Player player = userHandler.getUser(username);
         if(player == null){
             userHandler.addUser(username,password);
             result.setStatus("success");

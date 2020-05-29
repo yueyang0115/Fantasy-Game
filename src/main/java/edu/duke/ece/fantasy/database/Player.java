@@ -1,14 +1,14 @@
 package edu.duke.ece.fantasy.database;
 
-import org.hibernate.annotations.ColumnTransformer;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.jasypt.hibernate5.type.EncryptedStringType;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
+import org.jasypt.hibernate5.type.EncryptedStringType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import static javax.persistence.GenerationType.IDENTITY;
 
 
 @Entity
@@ -28,9 +28,8 @@ public class Player {
     @Column(nullable = false)
     private String password;
 
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "WID", unique = true, nullable = false)
+
+    @Column(name = "WID",columnDefinition="serial", unique = true,insertable = false, updatable = false)
     private int wid;
 
     public Player(String username, String password) {

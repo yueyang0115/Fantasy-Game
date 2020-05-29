@@ -19,6 +19,12 @@ public class UserHandler {
         session.save(player);
     }
 
+    public Player getUser(String username) {
+        Query q = session.createQuery("From Player U where U.username =:username");
+        q.setParameter("username", username);
+        return (Player) q.uniqueResult();
+    }
+
     public Player getUser(String username, String password) {
         // select territory according to conditions
         Query q = session.createQuery("From Player U where U.username =:username");

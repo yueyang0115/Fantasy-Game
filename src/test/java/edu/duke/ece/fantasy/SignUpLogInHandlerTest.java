@@ -34,8 +34,11 @@ public class SignUpLogInHandlerTest {
     public void testAll() {
         try {
             session.beginTransaction();
-            testSignUpSuccess();
-            testSignUpFail();
+            testSignUpSuccess("111","111");
+            testSignUpFail("111","111");
+            testSignUpFail("111","11");
+            testSignUpSuccess("112","11");
+            testSignUpFail("112","11");
             testLogInSuccess();
             testLogInFail();
         } catch (Exception e) {
@@ -45,19 +48,19 @@ public class SignUpLogInHandlerTest {
         }
     }
 
-    private void testSignUpSuccess(){
+    private void testSignUpSuccess(String username,String password){
         SignUpRequestMessage request = new SignUpRequestMessage();
-        request.setPassword("111");
-        request.setUsername("111");
+        request.setPassword(password);
+        request.setUsername(username);
         SignUpResultMessage SignUpResult = sh.handle(request);
         assertEquals(SignUpResult.getStatus(),"success");
         assertEquals(SignUpResult.getError_msg(),null);
     }
 
-    private void testSignUpFail(){
+    private void testSignUpFail(String username,String password){
         SignUpRequestMessage request = new SignUpRequestMessage();
-        request.setPassword("111");
-        request.setUsername("111");
+        request.setPassword(password);
+        request.setUsername(username);
         SignUpResultMessage SignUpResult = sh.handle(request);
         assertEquals(SignUpResult.getStatus(),"fail");
         assertNotNull(SignUpResult.getError_msg());
