@@ -17,3 +17,5 @@ services:
     command: bash -c "scripts/test.sh"
     depends_on:
       - mydb
+volumes:
+  data-volume:
