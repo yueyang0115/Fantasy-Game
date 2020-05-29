@@ -146,7 +146,6 @@ public class TerritoryHandler {
         t.setStatus(status);
         session.update(t);
         return true;
-
     }
 
     public Territory getTerritory(int wid, int x, int y) {

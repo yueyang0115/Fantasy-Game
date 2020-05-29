@@ -60,7 +60,6 @@ class TerritoryHandlerTest {
             terrainHandler.initialTerrain();
             th.addTerritories(wid, latitude, longitude);
             List<Territory> res = th.getTerritories(wid, latitude, longitude);
-            session.getTransaction().commit();
 //            session.close();
             MessagesS2C msg = new MessagesS2C();
             PositionResultMessage positionResultMessage = new PositionResultMessage();
@@ -86,7 +85,6 @@ class TerritoryHandlerTest {
             printAsJson(res);
             res = th.handle(wid, x+10, y+10, x_block_num, y_block_num);
             printAsJson(res);
-            session.getTransaction().commit();
         }
     }
 
@@ -110,7 +108,6 @@ class TerritoryHandlerTest {
             th.addTerritory(wid, coor[0], coor[1], "unexplored");
             th.updateTerritory(wid, coor[0], coor[1], "explored");
             assertEquals("explored", th.getTerritory(wid, coor[0], coor[1]).getStatus());
-            session.getTransaction().commit();
         }
     }
 
