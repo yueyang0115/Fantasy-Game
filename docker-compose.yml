@@ -13,7 +13,7 @@ services:
   server:
     build: ./
     volumes:
-      - ./coverage:/coverage-out
+      - ../scripts/coverage:/coverage-out
     command: bash -c "scripts/test.sh"
     depends_on:
       - mydb
