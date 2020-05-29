@@ -8,9 +8,8 @@ services:
       POSTGRES_DB: fantasy
   server:
     build: ./
-    #    command: bash -c "./wait-for-it.sh mydb:5432 --strict -- ./server 12345 23456 50"
-    #    ports:
-    #      - "12345:12345"
-    #      - "23456:23456"
+    volumes:
+      - `pwd`/coverage:/coverage-out
+    command: bash -c "scripts/test.sh"
     depends_on:
       - mydb
