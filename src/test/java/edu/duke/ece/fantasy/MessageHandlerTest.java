@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MessageHandlerTest {
     @Test
     void testAll(){
-        testLogin();
-        testSignUp();
+        //testLogin();
+        //testSignUp();
     }
 
     void testLogin(){
