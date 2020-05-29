@@ -15,13 +15,15 @@ build:
   tags:
      - cicd
   stage: build
-  script: docker build --build-arg LOCAL_USER_ID=`id -u`  --tag citest .
+#  script: docker build --build-arg LOCAL_USER_ID=`id -u`  --tag citest .
+  script: docker-compose build
 
 test:
   tags:
      - cicd
   stage: test
-  script: scripts/run-tests-in-docker.sh
+#  script: scripts/run-tests-in-docker.sh
+  script: docker-compose run server
   artifacts:
     paths:
       - coverage

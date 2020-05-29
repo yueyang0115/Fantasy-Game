@@ -30,7 +30,7 @@ public class SignUpLogInHandlerTest {
         this.lh = new LoginHandler(this.session);
     }
 
-//    @Test
+    @Test
     public void testAll() {
         try {
             session.beginTransaction();

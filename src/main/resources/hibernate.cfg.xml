@@ -11,7 +11,7 @@
 <!--        <property name="hibernate.connection.url">jdbc:postgresql://rajje.db.elephantsql.com:5432/ylbwemyh</property>-->
 <!--        <property name="hibernate.connection.username">ylbwemyh</property>-->
 <!--        <property name="hibernate.connection.password">kOHhsRdraZXpIQXgFzmYIv2TpvGOEBqe</property>-->
-        <property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432/fantasy</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://mydb/fantasy</property>
         <property name="hibernate.connection.username">fantasy</property>
         <property name="hibernate.connection.password">fantasy</property>
 
