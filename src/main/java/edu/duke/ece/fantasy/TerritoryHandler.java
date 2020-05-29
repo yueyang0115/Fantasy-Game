@@ -139,14 +139,12 @@ public class TerritoryHandler {
 
 
     public boolean updateTerritory(int wid, int x, int y, String status) {
-//        session.beginTransaction();
         Territory t = getTerritory(wid, x, y);
         if (t == null) { // don't have territory
             return false;
         }
         t.setStatus(status);
         session.update(t);
-//        session.getTransaction().commit();
         return true;
 
     }

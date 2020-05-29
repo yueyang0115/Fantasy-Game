@@ -13,6 +13,16 @@ public class MessageHandlerTest {
         //testSignUp();
     }
 
+    @Test
+    void testWid(){
+        MessageHandler mh = new MessageHandler();
+        LoginRequestMessage loginRequest = new LoginRequestMessage();
+        loginRequest.setUsername("4321");
+        loginRequest.setPassword("4321");
+        MessagesC2S request = new MessagesC2S(loginRequest);
+        MessagesS2C result = mh.handle(request);
+    }
+
     void testLogin(){
         MessageHandler mh = new MessageHandler();
         LoginRequestMessage loginRequest = new LoginRequestMessage();
