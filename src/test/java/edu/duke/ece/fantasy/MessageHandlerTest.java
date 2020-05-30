@@ -13,7 +13,7 @@ public class MessageHandlerTest {
         //testSignUp();
     }
 
-    @Test
+//    @Test
     void testWid(){
         MessageHandler mh = new MessageHandler();
         LoginRequestMessage loginRequest = new LoginRequestMessage();

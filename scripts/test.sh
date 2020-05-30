@@ -7,4 +7,5 @@ ls -l
 scripts/coverage_summary.sh
 ls -l /
 ls -l /coverage-out/
-cp -r build/reports/clover/html/* /coverage-out/ || exit 1
+cp -r build/reports/clover/html/* /coverage-out/
+ls -l /coverage-out/ || exit 1

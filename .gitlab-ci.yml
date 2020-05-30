@@ -4,7 +4,7 @@ before_script:
   - pwd
   - ls -la
   - docker --version
-
+  - docker-compose --version
 stages:
    - build
    - test
@@ -15,13 +15,15 @@ build:
   tags:
      - cicd
   stage: build
-  script: docker build --build-arg LOCAL_USER_ID=`id -u`  --tag citest .
+#  script: docker build --build-arg LOCAL_USER_ID=`id -u`  --tag server .
+  script: docker-compose build --build-arg LOCAL_USER_ID=`id -u` server && docker-compose build
 
 test:
   tags:
      - cicd
   stage: test
   script: scripts/run-tests-in-docker.sh
+#  script: docker-compose run server
   artifacts:
     paths:
       - coverage

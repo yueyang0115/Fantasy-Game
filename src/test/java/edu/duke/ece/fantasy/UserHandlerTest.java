@@ -16,10 +16,10 @@ class UserHandlerTest {
         return session;
     }
 
-    @Test
+//    @Test
     void testAll() {
         try {
-//            getUser();
+            getUser();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

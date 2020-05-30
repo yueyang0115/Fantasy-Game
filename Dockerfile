@@ -34,7 +34,6 @@ RUN mkdir -p /home/juser/.emacs.d/dcoverage
 COPY --chown=juser scripts/dcoverage.el /home/juser/.emacs.d/dcoverage/
 RUN chmod u+x emacs-bare.sh && ./emacs-bare.sh
 
-
 # we are going to do a bit of gradle first, just to speed
 # up future builds
 COPY --chown=juser build.gradle gradlew settings.gradle  ./
@@ -49,6 +48,7 @@ COPY --chown=juser gradle/wrapper gradle/wrapper
 # if we change src, etc, but not our gradle setup,
 # Docker can resume from this point
 COPY --chown=juser ./ ./
+RUN mv -f ./src/main/resources/hibernate.cfg.xml.docker ./src/main/resources/hibernate.cfg.xml
 
 # compile the code
 RUN ./gradlew  assemble
