@@ -48,6 +48,7 @@ COPY --chown=juser gradle/wrapper gradle/wrapper
 # if we change src, etc, but not our gradle setup,
 # Docker can resume from this point
 COPY --chown=juser ./ ./
+RUN mv -f ./src/main/resources/hibernate.cfg.xml.docker ./src/main/resources/hibernate.cfg.xml
 
 # compile the code
 RUN ./gradlew  assemble

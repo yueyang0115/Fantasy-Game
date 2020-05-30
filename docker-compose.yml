@@ -11,7 +11,8 @@ services:
     ports:
       - "8000:5432"
   server:
-    image: server
+#    image: server
+    build: ./
     volumes:
       - ./coverage:/coverage-out
     command: bash -c "scripts/test.sh"
