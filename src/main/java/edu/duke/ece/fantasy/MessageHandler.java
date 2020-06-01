@@ -16,6 +16,7 @@ public class MessageHandler {
         LoginRequestMessage loginMsg = input.getLoginRequestMessage();
         SignUpRequestMessage signupMsg = input.getSignUpRequestMessage();
         PositionRequestMessage positionMsg = input.getPositionRequestMessage();
+        BattleRequestMessage battleMsg = input.getBattleRequestMessage();
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -33,10 +34,14 @@ public class MessageHandler {
 //                log.info("wid is {} when handle positionMsg",wid);
                 positionResultMessage.setTerritoryArray(th.handle(wid, positionMsg.getX(), positionMsg.getY(),1,1));
                 result.setPositionResultMessage(positionResultMessage);
-            } else {
+            }else if(battleMsg != null){
+
+            }
+            else {
 
             }
             session.getTransaction().commit();
+            session.close();
         }
         return result;
     }
