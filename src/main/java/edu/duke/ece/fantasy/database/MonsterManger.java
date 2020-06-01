@@ -1,6 +1,5 @@
 package edu.duke.ece.fantasy.database;
 
-import edu.duke.ece.fantasy.database.Monster;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

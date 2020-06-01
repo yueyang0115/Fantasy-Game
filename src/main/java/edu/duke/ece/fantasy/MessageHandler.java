@@ -1,6 +1,6 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
 import org.slf4j.Logger;
