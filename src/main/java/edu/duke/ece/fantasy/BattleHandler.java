@@ -27,6 +27,23 @@ public class BattleHandler {
         }
         else{
             doBattle();
+            Soldier soldier = mySoldierManger.getSoldier(soldierID);
+            if(soldier.getTerritory().getId() != territoryID){
+                result.setResult("invalid");
+                return result;
+            }
+            Monster monster = myMonsterManger.getMonster(monsterID);
+            int monsterHp = monster.getHp();
+            int soldierAtk = soldier.getAtk();
+            int newMonsterHp = Math.max(monsterHp - soldierAtk, 0);
+            if(newMonsterHp == 0){
+                result.setResult("win");
+            }
+            else{
+                result.setResult("continue");
+            }
+            myMonsterManger.setMonsterHp(monsterID,monsterHp-soldierAtk);
+
         }
         return result;
     }

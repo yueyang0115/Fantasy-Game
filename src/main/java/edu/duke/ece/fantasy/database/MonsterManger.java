@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy.database;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonsterManger {
@@ -12,15 +13,28 @@ public class MonsterManger {
         this.session = session;
     }
 
-    public Monster getMonster(int id) {
+    //get a monster from database based on the provided monsterID
+    public Monster getMonster(int monsterID) {
         Query q = session.createQuery("From Monster M where M.id =:id");
-        q.setParameter("id", id);
+        q.setParameter("id", monsterID);
         Monster res = (Monster) q.uniqueResult();
         return res;
     }
 
-    public boolean setMonsterHp(int id, int hp){
-        Monster m = getMonster(id);
+    //get monsters which are located in the provided territoryID from database
+    public List<Monster> getMonsters(int territoryID){
+        List<Monster> monsterList = new ArrayList<>();
+        Query q = session.createQuery("From Monster M where M.territory.id =:territoryID");
+        q.setParameter("territoryID", territoryID);
+        for(Object o : q.list()) {
+            monsterList.add((Monster) o);
+        }
+        return monsterList;
+    }
+
+    //update a monster's hp
+    public boolean setMonsterHp(int monsterID, int hp){
+        Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return false;
         }

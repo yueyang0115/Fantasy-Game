@@ -29,6 +29,7 @@ public class MonsterMangerTest {
     public void testAll(){
         initMonster();
         getMonsterTest();
+        getMonstersTest();
         setMonsterHpTest();
 
         //session.getTransaction().commit();
@@ -48,11 +49,22 @@ public class MonsterMangerTest {
         session.save(t);
 
         Long count = (Long) session.createQuery("select count(*) from Monster ").uniqueResult();
-        System.out.println(count.intValue());
+        System.out.println("Monster num in database is "+count.intValue());
     }
 
     public void getMonsterTest(){
         Monster m = myMonsterManger.getMonster(1);
+        assertNotNull(m);
+        assertEquals(m.getType(),"wolf");
+        assertEquals(m.getAtk(),10);
+        assertEquals(m.getHp(),100);
+        assertEquals(m.getTerritory().getWid(),1111);
+    }
+
+    public void getMonstersTest(){
+        List<Monster> monsterList = myMonsterManger.getMonsters(1);
+        System.out.println("Monster num in territoryID = 1 is "+monsterList.size());
+        Monster m = monsterList.get(0);
         assertNotNull(m);
         assertEquals(m.getType(),"wolf");
         assertEquals(m.getAtk(),10);
@@ -67,7 +79,6 @@ public class MonsterMangerTest {
         assertEquals(m.getAtk(),10);
         assertEquals(m.getHp(),90);
         assertEquals(m.getTerritory().getWid(),1111);
-
     }
 
 
