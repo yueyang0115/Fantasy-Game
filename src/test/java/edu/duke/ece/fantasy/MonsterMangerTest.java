@@ -32,7 +32,7 @@ public class MonsterMangerTest {
         getMonstersTest();
         setMonsterHpTest();
 
-        session.getTransaction().commit();
+        //session.getTransaction().commit();
         //session.close(); call session.close() will write data to database
         //HibernateUtil.shutdown();
     }
