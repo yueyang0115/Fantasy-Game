@@ -26,8 +26,8 @@ public class Soldier{
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="territory_id", nullable=false)
-    private Territory territory;
+    @JoinColumn(name="player_id", nullable=false)
+    private Player player;
 
     public Soldier(){
 
@@ -77,12 +77,12 @@ public class Soldier{
         this.atk = atk;
     }
 
-    public Territory getTerritory() {
-        return territory;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public JSONObject toJSON(){

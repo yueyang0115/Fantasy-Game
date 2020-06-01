@@ -21,7 +21,7 @@ public class MonsterManger {
         return res;
     }
 
-    //get monsters which are located in the provided territoryID from database
+    //get all monsters in the provided territory from database
     public List<Monster> getMonsters(int territoryID){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.territory.id =:territoryID");

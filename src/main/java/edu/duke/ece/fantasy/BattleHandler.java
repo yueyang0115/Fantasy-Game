@@ -16,39 +16,44 @@ public class BattleHandler {
     }
 
     public BattleResultMessage handle(BattleRequestMessage request){
-        BattleResultMessage result = new BattleResultMessage();
-        int territoryID = request.getTerritoryID();
-        int monsterID = request.getMonsterID();
-        int soldierID = request.getSoldierID();
         String action = request.getAction();
-
+        BattleResultMessage result = new BattleResultMessage();
         if(action.equals("escape")){
             result.setResult("escaped");
         }
         else{
-            doBattle();
-            Soldier soldier = mySoldierManger.getSoldier(soldierID);
-            if(soldier.getTerritory().getId() != territoryID){
-                result.setResult("invalid");
-                return result;
-            }
-            Monster monster = myMonsterManger.getMonster(monsterID);
-            int monsterHp = monster.getHp();
-            int soldierAtk = soldier.getAtk();
-            int newMonsterHp = Math.max(monsterHp - soldierAtk, 0);
-            if(newMonsterHp == 0){
-                result.setResult("win");
-            }
-            else{
-                result.setResult("continue");
-            }
-            myMonsterManger.setMonsterHp(monsterID,monsterHp-soldierAtk);
-
+            doBattle(request, result);
         }
         return result;
     }
 
-    public void doBattle(){
+    private void doBattle(BattleRequestMessage request, BattleResultMessage result){
+        int territoryID = request.getTerritoryID();
+        int monsterID = request.getMonsterID();
+        int soldierID = request.getSoldierID();
 
+        //check the monster exist in the territory
+        Monster monster = myMonsterManger.getMonster(monsterID);
+        if(monster.getTerritory().getId() != territoryID){
+            result.setResult("invalid");
+            return;
+        }
+
+        //set monsterList and soldierList in result
+        result.setMonsters(myMonsterManger.getMonsters(territoryID));
+        //result.setSoldiers();
+
+        //soldier attack monster, reduce monster's hp
+        Soldier soldier = mySoldierManger.getSoldier(soldierID);
+        int monsterHp = monster.getHp();
+        int soldierAtk = soldier.getAtk();
+        int newMonsterHp = Math.max(monsterHp - soldierAtk, 0);
+        if(newMonsterHp == 0){
+            result.setResult("win");
+        }
+        else{
+            result.setResult("continue");
+        }
+        myMonsterManger.setMonsterHp(monsterID,monsterHp-soldierAtk);
     }
 }

@@ -5,9 +5,9 @@ import edu.duke.ece.fantasy.database.Soldier;
 import java.util.*;
 
 public class BattleResultMessage {
-    private List<Monster> monsters = new ArrayList<>();
-    private List<Soldier> soldiers = new ArrayList<>();
-    private String result;//"win","lose","continue","escaped"
+    private List<Monster> monsters = new ArrayList<>(); //all monsters in the territory
+    private List<Soldier> soldiers = new ArrayList<>(); //all soldiers the player has
+    private String result; //status: "win","lose","continue","escaped","invalid"
 
     public BattleResultMessage() {
     }

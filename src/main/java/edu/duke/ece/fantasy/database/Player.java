@@ -1,12 +1,17 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 import org.jasypt.hibernate5.type.EncryptedStringType;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -28,9 +33,12 @@ public class Player {
     @Column(nullable = false)
     private String password;
 
-
     @Column(name = "WID",columnDefinition="serial", unique = true,insertable = false, updatable = false,nullable = false)
     private int wid;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    private List<Soldier> soldiers = new ArrayList<>();
 
     public Player(String username, String password) {
         this.username = username;
@@ -70,5 +78,13 @@ public class Player {
 
     public void setWid(int wid) {
         this.wid = wid;
+    }
+
+    public List<Soldier> getSoldiers() {
+        return soldiers;
+    }
+
+    public void setSoldiers(List<Soldier> soldiers) {
+        this.soldiers = soldiers;
     }
 }
