@@ -87,4 +87,9 @@ public class Player {
     public void setSoldiers(List<Soldier> soldiers) {
         this.soldiers = soldiers;
     }
+
+    public void addSoldier(Soldier soldier) {
+        soldier.setPlayer(this);
+        this.soldiers.add(soldier);
+    }
 }

@@ -24,9 +24,11 @@ public class MessageHandler {
                 LoginHandler lh = new LoginHandler(session);
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
+
             } else if (signupMsg != null) {
                 SignUpHandler sh = new SignUpHandler(session);
                 result.setSignUpResultMessage(sh.handle(signupMsg));
+
             } else if (positionMsg != null) {
                 TerritoryHandler th = new TerritoryHandler(session);
                 PositionResultMessage positionResultMessage = new PositionResultMessage();
@@ -34,8 +36,10 @@ public class MessageHandler {
 //                log.info("wid is {} when handle positionMsg",wid);
                 positionResultMessage.setTerritoryArray(th.handle(wid, positionMsg.getX(), positionMsg.getY(),1,1));
                 result.setPositionResultMessage(positionResultMessage);
-            }else if(battleMsg != null){
 
+            }else if(battleMsg != null){
+                BattleHandler bh = new BattleHandler(session);
+                result.setBattleResultMessage(bh.handle(battleMsg,wid));
             }
             else {
 

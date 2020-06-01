@@ -15,19 +15,19 @@ public class BattleHandler {
         mySoldierManger = new SoldierManger(session);
     }
 
-    public BattleResultMessage handle(BattleRequestMessage request){
+    public BattleResultMessage handle(BattleRequestMessage request, int wid){
         String action = request.getAction();
         BattleResultMessage result = new BattleResultMessage();
         if(action.equals("escape")){
             result.setResult("escaped");
         }
         else{
-            doBattle(request, result);
+            doBattle(request, wid, result);
         }
         return result;
     }
 
-    private void doBattle(BattleRequestMessage request, BattleResultMessage result){
+    private void doBattle(BattleRequestMessage request, int wid, BattleResultMessage result){
         int territoryID = request.getTerritoryID();
         int monsterID = request.getMonsterID();
         int soldierID = request.getSoldierID();
@@ -41,19 +41,19 @@ public class BattleHandler {
 
         //set monsterList and soldierList in result
         result.setMonsters(myMonsterManger.getMonsters(territoryID));
+        result.setSoldiers(mySoldierManger.getSoldiers(wid));
         //result.setSoldiers();
 
         //soldier attack monster, reduce monster's hp
         Soldier soldier = mySoldierManger.getSoldier(soldierID);
-        int monsterHp = monster.getHp();
-        int soldierAtk = soldier.getAtk();
-        int newMonsterHp = Math.max(monsterHp - soldierAtk, 0);
+        int newMonsterHp = Math.max(monster.getHp() - soldier.getAtk(), 0);
+        myMonsterManger.setMonsterHp(monsterID,newMonsterHp);
+
         if(newMonsterHp == 0){
             result.setResult("win");
         }
         else{
             result.setResult("continue");
         }
-        myMonsterManger.setMonsterHp(monsterID,monsterHp-soldierAtk);
     }
 }
