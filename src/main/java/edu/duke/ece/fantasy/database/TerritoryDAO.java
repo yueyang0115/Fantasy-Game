@@ -1,26 +1,23 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.database;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Terrain;
-import edu.duke.ece.fantasy.database.Territory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TerritoryHandler {
+public class TerritoryDAO {
     Session session;
     private int width_unit = 10;
     private int height_unit = 10;
     private static ArrayList<Integer> x_offset = new ArrayList<>(Arrays.asList(-10, 0, 10));
     private static ArrayList<Integer> y_offset = new ArrayList<>(Arrays.asList(-10, 0, 10));
-    Logger log = LoggerFactory.getLogger(TerritoryHandler.class);
+    Logger log = LoggerFactory.getLogger(TerritoryDAO.class);
 
-    public TerritoryHandler(Session session) {
+    public TerritoryDAO(Session session) {
         this.session = session;
     }
 
@@ -73,10 +70,9 @@ public class TerritoryHandler {
                 int target_x = x + (i - x_block_num / 2) * 10;
                 int target_y = y + (j - y_block_num / 2) * 10;
                 Territory t = getTerritory(wid, target_x, target_y);
-                if (t != null && !t.getStatus().equals("unexplored")) {
+                if (t != null) {
+//                if (t != null && !t.getStatus().equals("unexplored")) {
                     Territory new_t = new Territory(t);
-//                    new_t.setX(i-1);
-//                    new_t.setY(j-1);
                     res.add(new_t);
                 }
             }
@@ -118,7 +114,7 @@ public class TerritoryHandler {
 
     public boolean addTerritory(int wid, int x, int y, String status) {
         // insert territory to world
-        TerrainHandler terrainHandler = new TerrainHandler(session);
+        TerrainDAO terrainDAO = new TerrainDAO(session);
         // find the center of block
         int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
         int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
@@ -126,11 +122,13 @@ public class TerritoryHandler {
         boolean res = false;
         if (t == null) {
             t = new Territory(wid, center_x, center_y, status);
-            // add monster
-            t.addMonster(new Monster("wolf", 100, 10));
             // add terrain
-            Terrain terrain = terrainHandler.getRandomTerrain();
+            Terrain terrain = terrainDAO.getRandomTerrain();
             t.setTerrain(terrain);
+            // add monster
+            if (terrain.getType().equals("mountain")){
+                t.addMonster(new Monster("wolf", 100, 10));
+            }
             session.save(t);
             res = true;
         }
