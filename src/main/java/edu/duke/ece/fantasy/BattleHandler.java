@@ -15,19 +15,19 @@ public class BattleHandler {
         mySoldierManger = new SoldierManger(session);
     }
 
-    public BattleResultMessage handle(BattleRequestMessage request, int wid){
+    public BattleResultMessage handle(BattleRequestMessage request, int playerID){
         String action = request.getAction();
         BattleResultMessage result = new BattleResultMessage();
         if(action.equals("escape")){
             result.setResult("escaped");
         }
         else{
-            doBattle(request, wid, result);
+            doBattle(request, playerID, result);
         }
         return result;
     }
 
-    private void doBattle(BattleRequestMessage request, int wid, BattleResultMessage result){
+    private void doBattle(BattleRequestMessage request, int playerID, BattleResultMessage result){
         int territoryID = request.getTerritoryID();
         int monsterID = request.getMonsterID();
         int soldierID = request.getSoldierID();
@@ -41,7 +41,7 @@ public class BattleHandler {
 
         //set monsterList and soldierList in result
         result.setMonsters(myMonsterManger.getMonsters(territoryID));
-        result.setSoldiers(mySoldierManger.getSoldiers(wid));
+        result.setSoldiers(mySoldierManger.getSoldiers(playerID));
         //result.setSoldiers();
 
         //soldier attack monster, reduce monster's hp

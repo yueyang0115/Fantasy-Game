@@ -26,7 +26,7 @@ public class Soldier{
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="player_wid", nullable=false)
+    @JoinColumn(name="player_id", nullable=false)
     private Player player;
 
     public Soldier(){

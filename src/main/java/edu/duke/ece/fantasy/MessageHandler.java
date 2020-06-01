@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class MessageHandler {
     private int wid;
+    private int playerId;
     public MessageHandler() {}
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
 
@@ -24,7 +25,7 @@ public class MessageHandler {
                 LoginHandler lh = new LoginHandler(session);
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
-
+                playerId = result.getLoginResultMessage().getId();
             } else if (signupMsg != null) {
                 SignUpHandler sh = new SignUpHandler(session);
                 result.setSignUpResultMessage(sh.handle(signupMsg));
@@ -39,7 +40,7 @@ public class MessageHandler {
 
             }else if(battleMsg != null){
                 BattleHandler bh = new BattleHandler(session);
-                result.setBattleResultMessage(bh.handle(battleMsg,wid));
+                result.setBattleResultMessage(bh.handle(battleMsg,playerId));
             }
             else {
 

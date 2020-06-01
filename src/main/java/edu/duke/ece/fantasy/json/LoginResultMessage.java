@@ -4,8 +4,17 @@ public class LoginResultMessage {
     private int wid;
     private String error_msg;
     private String status;
+    private int id;
 
     public LoginResultMessage(){}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getWid() {
         return wid;

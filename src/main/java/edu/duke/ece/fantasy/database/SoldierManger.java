@@ -15,17 +15,17 @@ public class SoldierManger {
 
     //get a soldier from database based on the provided soldierID
     public Soldier getSoldier(int soldierID) {
-        Query q = session.createQuery("From Monster M where M.id =:id");
+        Query q = session.createQuery("From Soldier S where S.id =:id");
         q.setParameter("id", soldierID);
         Soldier res = (Soldier) q.uniqueResult();
         return res;
     }
 
     //get all soldiers a player has
-    public List<Soldier> getSoldiers(int playerWID){
+    public List<Soldier> getSoldiers(int playerID){
         List<Soldier> soldierList = new ArrayList<>();
-        Query q = session.createQuery("From Soldier S where S.player.wid =:playerWID");
-        q.setParameter("playerWID", playerWID);
+        Query q = session.createQuery("From Soldier S where S.player.id =:playerID");
+        q.setParameter("playerID", playerID);
         for(Object o : q.list()) {
             soldierList.add((Soldier) o);
         }
