@@ -21,6 +21,12 @@ public class BattleHandler {
         if(action.equals("escape")){
             result.setResult("escaped");
         }
+        else if(action.equals("start")){
+            int territoryID = request.getTerritoryID();
+            result.setMonsters(myMonsterManger.getMonsters(territoryID));
+            result.setSoldiers(mySoldierManger.getSoldiers(playerID));
+            result.setResult("continue");
+        }
         else{
             doBattle(request, playerID, result);
         }
