@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class MessageHandler {
     private int wid;
-    private int playerId;
+    private int playerID;
     public MessageHandler() {}
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
 
@@ -18,6 +18,7 @@ public class MessageHandler {
         SignUpRequestMessage signupMsg = input.getSignUpRequestMessage();
         PositionRequestMessage positionMsg = input.getPositionRequestMessage();
         BattleRequestMessage battleMsg = input.getBattleRequestMessage();
+        AttributeRequestMessage attributeMsg = input.getAttributeRequestMessage();
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -25,7 +26,7 @@ public class MessageHandler {
                 LoginHandler lh = new LoginHandler(session);
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
-                playerId = result.getLoginResultMessage().getId();
+                playerID = result.getLoginResultMessage().getId();
             } else if (signupMsg != null) {
                 SignUpHandler sh = new SignUpHandler(session);
                 result.setSignUpResultMessage(sh.handle(signupMsg));
@@ -40,13 +41,19 @@ public class MessageHandler {
 
             }else if(battleMsg != null){
                 BattleHandler bh = new BattleHandler(session);
-                result.setBattleResultMessage(bh.handle(battleMsg,playerId));
+                result.setBattleResultMessage(bh.handle(battleMsg, playerID));
             }
+
+            else if(attributeMsg != null){
+                AttributeHandler ah = new AttributeHandler(session);
+                result.setAttributeResultMessage(ah.handle(attributeMsg, playerID));
+            }
+
             else {
 
             }
             session.getTransaction().commit();
-            session.close();
+            //session.close();
         }
         return result;
     }

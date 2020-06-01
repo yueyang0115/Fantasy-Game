@@ -6,6 +6,8 @@ public class MessagesC2S {
     private PositionRequestMessage positionRequestMessage;
     private BattleRequestMessage battleRequestMessage;
 
+    private AttributeRequestMessage attributeRequestMessage;
+
     public MessagesC2S(){ }
 
     public MessagesC2S(LoginRequestMessage loginRequestMessage) {
@@ -50,5 +52,11 @@ public class MessagesC2S {
 
     public void setBattleRequestMessage(BattleRequestMessage battleRequestMessage) {
         this.battleRequestMessage = battleRequestMessage;
+    }
+
+    public AttributeRequestMessage getAttributeRequestMessage() { return attributeRequestMessage; }
+
+    public void setAttributeRequestMessage(AttributeRequestMessage attributeRequestMessage) {
+        this.attributeRequestMessage = attributeRequestMessage;
     }
 }
