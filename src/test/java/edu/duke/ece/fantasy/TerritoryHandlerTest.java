@@ -45,9 +45,7 @@ class TerritoryHandlerTest {
 //    @Test
     void testAll() {
         try {
-            getTerritories();
-            getTerritories();
-            updateTerritory();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -55,24 +53,24 @@ class TerritoryHandlerTest {
         }
     }
 
-    void getTerritories() {
-        try (Session session = createSession()) {
-            session.beginTransaction();
-            terrainDAO.initialTerrain();
-            th.addTerritories(wid, latitude, longitude);
-            List<Territory> res = th.getTerritories(wid, latitude, longitude);
-//            session.close();
-            MessagesS2C msg = new MessagesS2C();
-            PositionResultMessage positionResultMessage = new PositionResultMessage();
-            positionResultMessage.setTerritoryArray(res);
-            msg.setPositionResultMessage(positionResultMessage);
-            try {
-                logger.info(objectMapper.writeValueAsString(msg));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    void getTerritories() {
+//        try (Session session = createSession()) {
+//            session.beginTransaction();
+//            terrainDAO.initialTerrain();
+//            th.addTerritories(wid, latitude, longitude);
+//            List<Territory> res = th.getTerritories(wid, latitude, longitude);
+////            session.close();
+//            MessagesS2C msg = new MessagesS2C();
+//            PositionResultMessage positionResultMessage = new PositionResultMessage();
+//            positionResultMessage.setTerritoryArray(res);
+//            msg.setPositionResultMessage(positionResultMessage);
+//            try {
+//                logger.info(objectMapper.writeValueAsString(msg));
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 
     void getTerritories_virtual() {
@@ -101,15 +99,5 @@ class TerritoryHandlerTest {
         }
     }
 
-
-    void updateTerritory() {
-        try (Session session = createSession()) {
-            session.beginTransaction();
-            terrainDAO.initialTerrain();
-            th.addTerritory(wid, coor[0], coor[1], "unexplored");
-            th.updateTerritory(wid, coor[0], coor[1], "explored");
-            assertEquals("explored", th.getTerritory(wid, coor[0], coor[1]).getStatus());
-        }
-    }
 
 }

@@ -10,5 +10,6 @@ class TileGeneratorTest {
     void generateTileSet() {
         TileGenerator tileGenerator = new TileGenerator(30,30);
         tileGenerator.GenerateTileSet();
+        tileGenerator.printTileSet();
     }
 }
