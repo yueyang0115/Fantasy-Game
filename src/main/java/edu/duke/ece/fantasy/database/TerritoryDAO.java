@@ -68,6 +68,11 @@ public class TerritoryDAO {
         session.update(territory);
     }
 
+    public void addBuildingToTerritory(Territory territory, Building building) {
+        territory.setBuilding(building);
+        session.update(territory);
+    }
+
     public Territory addTerritory(int wid, int x, int y, String status, Terrain terrain, List<Monster> monsters) throws IllegalArgumentException {
         // insert territory to world
         TerrainDAO terrainDAO = new TerrainDAO(session);

@@ -19,7 +19,6 @@ public class TerrainDAO {
             t = new Terrain(type);
             session.save(t);
         }
-
     }
 
     public Terrain getTerrain(String type) {
@@ -27,7 +26,6 @@ public class TerrainDAO {
         q.setParameter("type", type);
         Terrain res = (Terrain) q.uniqueResult();
         return res;
-
     }
 
     public Terrain getRandomTerrain() {

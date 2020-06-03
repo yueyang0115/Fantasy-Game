@@ -38,13 +38,7 @@ public class Server {
     }
 
     public void startGame() {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            // initialize database
-            session.beginTransaction();
-            TerrainDAO terrainDAO = new TerrainDAO(session);
-            terrainDAO.initialTerrain();
-            session.getTransaction().commit();
-        }
+        (new Initializer()).initialize();
         //myMockDBprocessor.create();
 //        myDBprocessor.connectDB();
         while (true) {

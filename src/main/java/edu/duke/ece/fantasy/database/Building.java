@@ -3,20 +3,42 @@ package edu.duke.ece.fantasy.database;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Inheritance
-@DiscriminatorColumn(name="TYPE")
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="Building")
-public class Building {
+public abstract class Building {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     @Column(name = "ID", unique = true, nullable = false)
     private int id;
 
-    @Column(name = "TYPE", unique = false, nullable = false, length = 100)
-    private String type;
+    @OneToMany(mappedBy = "building",cascade = CascadeType.ALL)
+    private List<Territory> territories = new ArrayList<>();
 
+    public Building() {
+    }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Territory> getTerritories() {
+        return territories;
+    }
+
+    public void setTerritories(List<Territory> territories) {
+        this.territories = territories;
+    }
+
+    public void addTerritory(Territory territory){
+        this.territories.add(territory);
+    }
 }

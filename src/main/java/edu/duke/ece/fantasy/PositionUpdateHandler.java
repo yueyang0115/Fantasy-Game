@@ -31,20 +31,25 @@ public class PositionUpdateHandler {
         int center_y = Math.abs((y - start_y) / 10);
         int dir_x = (x > 0) ? 10 : -10;
         int dir_y = (y > 0) ? 10 : -10;
+        RandomGenerator randomGenerator = new RandomGenerator();
         if (territoryDAO.getTerritory(wid, x, y) == null) {
             // check if need to generate new tile set
-            TileGenerator tileGenerator = new TileGenerator(x_block_num, y_block_num);
+            TileGenerator tileGenerator = new TileGenerator(x_block_num, y_block_num);  // generate tile set
             TerritoryBlock[][] new_map = tileGenerator.GenerateTileSet();
             for (int i = 0; i < y_block_num; i++) {
                 for (int j = 0; j < x_block_num; j++) {
                     // add terrain
                     Terrain terrain = terrainDAO.getTerrain(new_map[i][j].getType());
-                    List<Monster> monsters = new ArrayList<>();
                     // add monster
+                    List<Monster> monsters = new ArrayList<>();
                     if (terrain.getType().equals("mountain")) {
                         monsters.add(new Monster("wolf", 10, 10));
                     }
                     Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
+                    // add building
+                    if (terrain.getType().equals("grass")&&randomGenerator.getRandomResult(20)){
+
+                    }
                 }
             }
         }
@@ -53,9 +58,8 @@ public class PositionUpdateHandler {
         if (territoryDAO.getTerritory(wid, x, y).getStatus().equals("unexplored")) {
             territoryDAO.updateTerritory(wid, x, y, "explored");
         }
-        // generate tile set
-        res = territoryDAO.getTerritories(wid, x, y, vision_x, vision_y);
         // get x_block_num*y_block_num blocks
+        res = territoryDAO.getTerritories(wid, x, y, vision_x, vision_y);
         return res;
     }
 

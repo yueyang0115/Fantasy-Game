@@ -46,6 +46,10 @@ public class Territory {
     @JoinColumn(name = "terrain_id", nullable = false)
     private Terrain terrain;
 
+    @ManyToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
+
     public Territory() {
 
     }
@@ -70,6 +74,15 @@ public class Territory {
         this.x = x;
         this.y = y;
         this.status = status;
+    }
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
+        building.addTerritory(this);
     }
 
     public Terrain getTerrain() {
@@ -126,17 +139,4 @@ public class Territory {
         this.monsters = monsters;
     }
 
-    public JSONObject toJSON() {
-        JSONObject territory_obj = new JSONObject();
-        territory_obj.put("x", this.x);
-        territory_obj.put("y", this.y);
-        territory_obj.put("status", this.status);
-        territory_obj.put("wid", this.wid);
-        JSONArray monster_arr = new JSONArray();
-        for (Monster monster : monsters) {
-            monster_arr.put(monster.toJSON());
-        }
-        territory_obj.put("monsters", monster_arr);
-        return territory_obj;
-    }
 }
