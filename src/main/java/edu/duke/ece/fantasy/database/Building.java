@@ -16,10 +16,17 @@ public abstract class Building {
     @Column(name = "ID", unique = true, nullable = false)
     private int id;
 
+    @Column(name = "name")
+    private String name;
+
     @OneToMany(mappedBy = "building",cascade = CascadeType.ALL)
     private List<Territory> territories = new ArrayList<>();
 
     public Building() {
+    }
+
+    public Building(String name) {
+        this.name = name;
     }
 
     public int getId() {

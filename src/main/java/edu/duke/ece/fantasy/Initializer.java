@@ -1,15 +1,14 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.ItemDAO;
-import edu.duke.ece.fantasy.database.ShopDAO;
-import edu.duke.ece.fantasy.database.TerrainDAO;
+import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
+
+import java.util.List;
 
 public class Initializer {
 
-    public void initialize(){
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    public void initialize() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // initialize database
             session.beginTransaction();
             // initialize terrain
@@ -19,8 +18,9 @@ public class Initializer {
             ItemDAO itemDAO = new ItemDAO(session);
             itemDAO.initial();
             // initialize shop
-            ShopDAO shopDao = new ShopDAO(session);
-
+            List<Item> items = itemDAO.getAllItem();
+            ShopDAO shopDAO = new ShopDAO(session);
+            shopDAO.initialShop(items);
             session.getTransaction().commit();
         }
     }

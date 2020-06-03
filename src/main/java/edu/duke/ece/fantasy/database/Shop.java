@@ -8,8 +8,26 @@ import java.util.List;
 @Table(name = "Shop")
 @PrimaryKeyJoinColumn(name = "ID")
 public class Shop extends Building {
-    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "Shop_Item",
+            joinColumns = { @JoinColumn(name = "shop_id") },
+            inverseJoinColumns = { @JoinColumn(name = "item_id") }
+    )
     private List<Item> inventory = new ArrayList<>();
+
+    public Shop() {
+    }
+
+    public Shop(String name) {
+        super(name);
+    }
+
+    public Shop addInventory(Item item) {
+        inventory.add(item);
+        item.addShop(this);
+        return this;
+    }
 
     public List<Item> getInventory() {
         return inventory;
