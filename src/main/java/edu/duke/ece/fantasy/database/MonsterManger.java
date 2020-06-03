@@ -48,6 +48,7 @@ public class MonsterManger {
         Monster monster;
         if ((monster = (Monster) session.get(Monster.class, monsterID)) != null) {
             session.delete(monster);
+            System.out.println("[DEBUG] Delete monster " + monsterID);
         }
     }
 }
