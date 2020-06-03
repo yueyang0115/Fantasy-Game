@@ -42,4 +42,13 @@ public class MonsterManger {
         session.update(m);
         return true;
     }
+
+    //delete a monster from database
+    public void deleteMonster(int monsterID){
+        Monster monster;
+        if ((monster = (Monster) session.get(Monster.class, monsterID)) != null) {
+            session.delete(monster);
+            System.out.println("[DEBUG] Delete monster " + monsterID);
+        }
+    }
 }
