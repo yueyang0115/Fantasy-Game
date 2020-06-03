@@ -52,11 +52,14 @@ public class BattleHandler {
 
         //soldier attack monster, reduce monster's hp
         Soldier soldier = mySoldierManger.getSoldier(soldierID);
-        int newMonsterHp = Math.max(monster.getHp() - soldier.getAtk(), 0);
+        int monsterHp = monster.getHp();
+        int soldierAtk = soldier.getAtk();
+        int newMonsterHp = Math.max(monsterHp - soldierAtk, 0);
         myMonsterManger.setMonsterHp(monsterID,newMonsterHp);
 
         if(newMonsterHp == 0){
             result.setResult("win");
+            myMonsterManger.deleteMonster(monsterID);
         }
         else{
             result.setResult("continue");
