@@ -40,7 +40,7 @@ public class BattleHandler {
 
         //check the monster exist in the territory
         Monster monster = myMonsterManger.getMonster(monsterID);
-        if(monster.getTerritory().getId() != territoryID){
+        if(monster == null || monster.getTerritory().getId() != territoryID){
             result.setResult("invalid");
             return;
         }
