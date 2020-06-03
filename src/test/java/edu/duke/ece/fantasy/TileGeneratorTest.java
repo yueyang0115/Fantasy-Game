@@ -8,7 +8,7 @@ class TileGeneratorTest {
 
     @Test
     void generateTileSet() {
-        TileGenerator tileGenerator = new TileGenerator(30,30);
+        TileGenerator tileGenerator = new TileGenerator(20,20);
         tileGenerator.GenerateTileSet();
         tileGenerator.printTileSet();
     }
