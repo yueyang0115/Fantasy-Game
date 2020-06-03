@@ -57,8 +57,4 @@ public class PositionUpdateHandler {
         return res;
     }
 
-
-    private void GenerateTileSet() {
-
-    }
 }

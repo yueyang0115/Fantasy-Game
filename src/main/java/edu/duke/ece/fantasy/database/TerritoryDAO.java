@@ -104,10 +104,10 @@ public class TerritoryDAO {
             throw new IllegalArgumentException("already exist");
         }
         t = new Territory(wid, center_x, center_y, status);
-//         add terrain
+        // add terrain
         Terrain terrain = terrainDAO.getTerrain(terrain_type);
         t.setTerrain(terrain);
-            // add monster
+        // add monster
         if (terrain.getType().equals("mountain")) {
             t.addMonster(new Monster("wolf", 100, 10));
         }

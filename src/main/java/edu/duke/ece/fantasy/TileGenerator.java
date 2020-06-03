@@ -15,9 +15,6 @@ public class TileGenerator {
         map = new TerritoryBlock[y_block_num][x_block_num];
     }
 
-//    public TerritoryBlock[][] InitialMap() {
-//
-//    }
 
     public void printTileSet() {
         for (int i = 0; i < map.length; i++) {
@@ -41,30 +38,39 @@ public class TileGenerator {
     }
 
     public TerritoryBlock[][] GenerateTileSet() {
-        Set<TerritoryBlock> set_1 = GenerateBlocks("river", 10, 15);
-//        printTileSet();
-        Set<TerritoryBlock> set_2 = GenerateBlocks("river", set_1.size(), set_1.size());
-//        printTileSet();
-        connect_blocks(set_1, set_2);
-
-        // randomly add function block
-        Set<TerritoryBlock> function_block_set = GenerateBlocks("grass", 15, 20);
-        // randomly add road block
-        Set<TerritoryBlock> road_block_set = GenerateBlocks("grass", function_block_set.size(), function_block_set.size());
-//         connect road with function block
-        connect_blocks(function_block_set, road_block_set);
-        // add obstacle block
+        // add river
+        add_terrain_path("river",10,15);
+        // add mountain
+        add_terrain_path("mountain",10,15);
+        // add grass
         for (int i = 0; i < y_block_num; i++) {
             for (int j = 0; j < x_block_num; j++) {
                 if (map[i][j] == null) {
-                    map[i][j] = new TerritoryBlock(j, i, "mountain", null);
+                    map[i][j] = new TerritoryBlock(j, i, "grass", null);
                 }
             }
         }
         return map;
     }
 
-    private void connect_blocks(Set<TerritoryBlock> function_blocks, Set<TerritoryBlock> road_blocks) {
+    private void add_terrain_path(String type,int min_size,int max_size){
+        // add start block
+        Set<TerritoryBlock> set_1 = GenerateBlocks(type, min_size, max_size);
+        // add end block
+        Set<TerritoryBlock> set_2 = GenerateBlocks(type, set_1.size(), set_1.size());
+        // connect blocks
+        connect_blocks(set_1, set_2,5);
+        // delete unreachable block
+        delete_blocks(set_1);
+    }
+
+    private void delete_blocks(Set<TerritoryBlock> blocks) {
+        for (TerritoryBlock block : blocks) {
+            map[block.getY()][block.getX()] = null;
+        }
+    }
+
+    private void connect_blocks(Set<TerritoryBlock> function_blocks, Set<TerritoryBlock> road_blocks,int path_len) {
         int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
         String road_type = "grass";
         for (TerritoryBlock block : road_blocks) { // get road block type
@@ -72,23 +78,24 @@ public class TileGenerator {
             break;
         }
         Set<TerritoryBlock> tmp = new HashSet<>(road_blocks);
-        for (TerritoryBlock block : road_blocks) {
+        for (TerritoryBlock start_block : road_blocks) {
             // bfs
             Queue<TerritoryBlock> queue = new ArrayDeque<>();
             Set<TerritoryBlock> visited = new HashSet<>();
-            queue.add(block);
-            visited.add(block);
+            queue.add(start_block);
+            visited.add(start_block);
+            int level = 0;
             while (!queue.isEmpty()) {
                 TerritoryBlock top_block = queue.remove();
-                if (function_blocks.contains(top_block)) {
-                    // hit the end block, add path to map
+                if (function_blocks.contains(top_block) && level > path_len) {
+                    // hit the end block, add path to map; make sure the path length is greater than given number
                     TerritoryBlock parent_block = top_block.parent;
-                    while (parent_block != block) {
+                    while (parent_block != start_block) { // traverse from the end block to the start block
                         map[parent_block.getY()][parent_block.getX()] = parent_block;
                         parent_block = parent_block.parent;
                     }
                     function_blocks.remove(top_block);
-                    tmp.remove(block);
+                    tmp.remove(start_block);
                     break;
                 }
                 for (int i = 0; i < 4; i++) {
@@ -97,18 +104,16 @@ public class TileGenerator {
                     int new_x = top_block.getX() + dir[0];
                     int new_y = top_block.getY() + dir[1];
                     TerritoryBlock new_block = new TerritoryBlock(new_x, new_y, road_type, top_block);
-                    if (0 < new_x && new_x < x_block_num && 0 < new_y && new_y < y_block_num && !visited.contains(new_block)&&(map[new_y][new_x] == null||map[new_y][new_x].getType().equals(road_type)||function_blocks.contains(new_block))) {
+                    if (0 < new_x && new_x < x_block_num && 0 < new_y && new_y < y_block_num && !visited.contains(new_block) && (map[new_y][new_x] == null || map[new_y][new_x].getType().equals(road_type) || function_blocks.contains(new_block))) {
 //                    if (0 < new_x && new_x < x_block_num && 0 < new_y && new_y < y_block_num && map[new_y][new_x] == null) {
                         queue.add(new_block);
                         visited.add(new_block);
                     }
                 }
-
+                level += 1;
             }
 
         }
-        int x=1;
-        int y= 1;
     }
 
     private Set<TerritoryBlock> GenerateBlocks(String type, int min_num, int max_num) {
