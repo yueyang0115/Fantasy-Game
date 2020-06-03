@@ -39,7 +39,7 @@ public class MonsterMangerTest {
 
     public void initMonster(){
         session.beginTransaction();
-        TerrainHandler terrainHandler = new TerrainHandler(session);
+        TerrainDAO terrainHandler = new TerrainDAO(session);
         terrainHandler.initialTerrain();
 
         Territory t = new Territory(1111, 222, 3333, "explored");

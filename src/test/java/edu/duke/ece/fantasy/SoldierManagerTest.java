@@ -46,7 +46,7 @@ public class SoldierManagerTest {
 
         session.save(player);
 
-        Player savedplayer = (new UserHandler(session)).getUser(username);
+        Player savedplayer = (new PlayerDAO(session)).getPlayer(username);
         System.out.println("newly saved player has id " + savedplayer.getId());
         return savedplayer;
     }
