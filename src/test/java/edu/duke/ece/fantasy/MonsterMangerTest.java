@@ -14,10 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MonsterMangerTest {
     private MonsterManger myMonsterManger;
     private Session session;
+    private TerritoryDAO territoryDAO;
+    private int wid = -3;
+    private int x = 5;
+    private int y = 5;
+
 
     public MonsterMangerTest(){
         this.session = createSession();
         this.myMonsterManger = new MonsterManger(this.session);
+        this.territoryDAO = new TerritoryDAO(session);
     }
 
     private Session createSession() {
@@ -42,7 +48,7 @@ public class MonsterMangerTest {
         TerrainDAO terrainHandler = new TerrainDAO(session);
         terrainHandler.initialTerrain();
 
-        Territory t = new Territory(1111, 222, 3333, "explored");
+        Territory t = new Territory(wid, x, y, "explored");
         Monster m = new Monster("wolf", 97, 10);
         Monster m2 = new Monster("wolf", 98, 10);
         t.addMonster(m);
@@ -50,7 +56,7 @@ public class MonsterMangerTest {
 
         t.setTerrain(terrainHandler.getRandomTerrain());
         session.save(t);
-
+//        session.getTransaction().commit();
         Long count = (Long) session.createQuery("select count(*) from Monster ").uniqueResult();
         System.out.println("Monster num in database is "+count.intValue());
     }
@@ -61,7 +67,8 @@ public class MonsterMangerTest {
     }
 
     public void getMonstersTest(){
-        List<Monster> monsterList = myMonsterManger.getMonsters(1);
+        Territory territory = territoryDAO.getTerritory(wid,x,y);
+        List<Monster> monsterList = myMonsterManger.getMonsters(territory.getId());
         System.out.println("Monster num in territoryID = 1 is "+monsterList.size());
         Monster m = monsterList.get(0);
         assertNotNull(m);

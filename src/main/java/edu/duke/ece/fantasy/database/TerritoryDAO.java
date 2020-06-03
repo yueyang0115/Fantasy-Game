@@ -57,31 +57,6 @@ public class TerritoryDAO {
         return res;
     }
 
-    public List<Territory> handle(int wid, int x, int y, int x_block_num, int y_block_num) {
-        addTerritories(wid, x, y, x_block_num, y_block_num);
-        if (getTerritory(wid, x, y).getStatus().equals("unexplored")) {
-            updateTerritory(wid, x, y, "explored");
-        }
-        return getTerritories(wid, x, y, x_block_num, y_block_num);
-    }
-
-
-    public void addTerritories(int wid, int x, int y, int x_block_num, int y_block_num) {
-        // add x_block_num*y_block_num squares to database
-        TerrainDAO terrainDAO = new TerrainDAO(session);
-        for (int i = 0; i < x_block_num; i++) {
-            for (int j = 0; j < y_block_num; j++) {
-                int target_x = x + (i - x_block_num / 2) * 10;
-                int target_y = y + (j - y_block_num / 2) * 10;
-                try {
-                    addTerritory(wid, target_x, target_y, "unexplored","grass");
-                } catch (IllegalArgumentException e) {
-                    log.info(e.getMessage());
-                }
-            }
-        }
-    }
-
 
     public void addTerrainToTerritory(Territory territory, Terrain terrain) {
         territory.setTerrain(terrain);
@@ -93,7 +68,7 @@ public class TerritoryDAO {
         session.update(territory);
     }
 
-    public Territory addTerritory(int wid, int x, int y, String status, String terrain_type) throws IllegalArgumentException {
+    public Territory addTerritory(int wid, int x, int y, String status, Terrain terrain, List<Monster> monsters) throws IllegalArgumentException {
         // insert territory to world
         TerrainDAO terrainDAO = new TerrainDAO(session);
         // find the center of block
@@ -105,11 +80,14 @@ public class TerritoryDAO {
         }
         t = new Territory(wid, center_x, center_y, status);
         // add terrain
-        Terrain terrain = terrainDAO.getTerrain(terrain_type);
+//        Terrain terrain = terrainDAO.getTerrain(terrain_type);
         t.setTerrain(terrain);
         // add monster
-        if (terrain.getType().equals("mountain")) {
-            t.addMonster(new Monster("wolf", 100, 10));
+//        if (terrain.getType().equals("mountain")) {
+//            t.addMonster(new Monster("wolf", 100, 10));
+//        }
+        for (Monster monster : monsters) {
+            t.addMonster(monster);
         }
         session.save(t);
         return t;
@@ -134,6 +112,8 @@ public class TerritoryDAO {
         q.setParameter("wid", wid);
         q.setParameter("x", center_x);
         q.setParameter("y", center_y);
+//        q.setParameter("x", x);
+//        q.setParameter("y", y);
         Territory res = (Territory) q.uniqueResult();
         return res;
 

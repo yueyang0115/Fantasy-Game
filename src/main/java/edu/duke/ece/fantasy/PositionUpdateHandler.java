@@ -37,12 +37,14 @@ public class PositionUpdateHandler {
             TerritoryBlock[][] new_map = tileGenerator.GenerateTileSet();
             for (int i = 0; i < y_block_num; i++) {
                 for (int j = 0; j < x_block_num; j++) {
-                    Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", new_map[i][j].getType());
-//                    Terrain terrain = terrainDAO.getTerrain(new_map[i][j].getType());
-//                    territoryDAO.addTerrainToTerritory(territory,terrain);
-//                    if(terrain.getType().equals("mountain")){
-//                        territoryDAO.addMonsterToTerritory(territory,new Monster("wolf", 100, 10));
-//                    }
+                    // add terrain
+                    Terrain terrain = terrainDAO.getTerrain(new_map[i][j].getType());
+                    List<Monster> monsters = new ArrayList<>();
+                    // add monster
+                    if (terrain.getType().equals("mountain")) {
+                        monsters.add(new Monster("wolf", 10, 10));
+                    }
+                    Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
                 }
             }
         }

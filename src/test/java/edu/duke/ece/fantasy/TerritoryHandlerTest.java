@@ -73,19 +73,6 @@ class TerritoryHandlerTest {
 //    }
 
 
-    void getTerritories_virtual() {
-        try (Session session = createSession()) {
-            session.beginTransaction();
-            terrainDAO.initialTerrain();
-//            th.addTerritories(wid, x, y,x_block_num,y_block_num);
-//            List<Territory> res = th.getTerritories(wid, x, y,x_block_num,y_block_num);
-
-            List<Territory> res = th.handle(wid, x, y, x_block_num, y_block_num);
-            printAsJson(res);
-            res = th.handle(wid, x+10, y+10, x_block_num, y_block_num);
-            printAsJson(res);
-        }
-    }
 
     void printAsJson(List<Territory> res) {
         MessagesS2C msg = new MessagesS2C();
