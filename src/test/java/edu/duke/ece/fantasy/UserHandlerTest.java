@@ -2,17 +2,17 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.database.PlayerDAO;
 import org.hibernate.Session;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserHandlerTest {
-    UserHandler userHandler;
+    PlayerDAO playerDAO;
 
     Session createSession() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        userHandler = new UserHandler(session);
+        playerDAO = new PlayerDAO(session);
         return session;
     }
 
@@ -31,11 +31,11 @@ class UserHandlerTest {
     void getUser() {
         try(Session session = createSession()){
             session.beginTransaction();
-            Player user = userHandler.getUser("1","1");
+            Player user = playerDAO.getPlayer("1","1");
             if(user ==null){
-                userHandler.addUser("1","1");
+                playerDAO.addPlayer("1","1");
             }
-            user = userHandler.getUser("1","1");
+            user = playerDAO.getPlayer("1","1");
             session.getTransaction().commit();
             assertNotNull(user);
         }

@@ -32,11 +32,11 @@ public class MessageHandler {
                 result.setSignUpResultMessage(sh.handle(signupMsg));
 
             } else if (positionMsg != null) {
-                TerritoryHandler th = new TerritoryHandler(session);
+                PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(session);
                 PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
-                positionResultMessage.setTerritoryArray(th.handle(wid, positionMsg.getX(), positionMsg.getY(),1,1));
+                positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg.getX(), positionMsg.getY(),3,3));
                 result.setPositionResultMessage(positionResultMessage);
 
             }else if(battleMsg != null){

@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.database;
 
 import edu.duke.ece.fantasy.database.Terrain;
 import org.hibernate.Session;
@@ -6,10 +6,10 @@ import org.hibernate.query.Query;
 
 import java.util.Random;
 
-public class TerrainHandler {
+public class TerrainDAO {
     Session session;
 
-    TerrainHandler(Session session) {
+    public TerrainDAO(Session session) {
         this.session = session;
     }
 
