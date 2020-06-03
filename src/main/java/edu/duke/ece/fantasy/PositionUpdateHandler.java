@@ -21,11 +21,11 @@ public class PositionUpdateHandler {
 
     public List<Territory> handle(int wid, int x, int y, int vision_x, int vision_y) {
         List<Territory> res = new ArrayList<>();
-        int x_block_num = 10;
-        int y_block_num = 10;
+        int x_block_num = 20; // how large tileSet should we generate
+        int y_block_num = 20;
         int x_size = x_block_num * 10;
         int y_size = y_block_num * 10;
-        int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5);
+        int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5); // calculate the game map index and mapping the generated tileSet index to it
         int start_y = (y / y_size) * y_size + ((y > 0) ? 5 : -5);
         int center_x = Math.abs((x - start_x) / 10);
         int center_y = Math.abs((y - start_y) / 10);
