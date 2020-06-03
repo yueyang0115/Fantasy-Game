@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.database.Soldier;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -17,6 +18,11 @@ public class PlayerDAO {
     public void addPlayer(String username, String password) {
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
+
+        //add one default soldier for each player
+        Soldier soldier = new Soldier("soldier",50,5);
+        player.addSoldier(soldier);
+
         session.save(player);
     }
 

@@ -23,6 +23,7 @@ public class LoginHandler {
         if(player != null){
             result.setStatus("success");
             result.setWid(player.getWid());
+            result.setId(player.getId());
             System.out.println("[DEBUG] Login success");
         }
         else{

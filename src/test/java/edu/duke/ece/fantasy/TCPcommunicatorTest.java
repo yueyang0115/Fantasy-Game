@@ -37,7 +37,7 @@ public class TCPcommunicatorTest {
     }
 
     void TCPclientTest(){
-        new Thread(()->{
+        new Thread(()-> {
             TCPCommunicator TCPcm = new TCPCommunicator("0.0.0.0", 1111);
             ObjectMapper om = new ObjectMapper();
             om.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);

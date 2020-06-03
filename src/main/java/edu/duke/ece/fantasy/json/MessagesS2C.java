@@ -4,6 +4,9 @@ public class MessagesS2C {
     private PositionResultMessage positionResultMessage;
     private LoginResultMessage loginResultMessage;
     private SignUpResultMessage signUpResultMessage;
+    private BattleResultMessage battleResultMessage;
+
+    private AttributeResultMessage attributeResultMessage;
 
     public MessagesS2C(){ }
 
@@ -18,6 +21,10 @@ public class MessagesS2C {
    public MessagesS2C(PositionResultMessage msg){
         this.positionResultMessage = msg;
    }
+
+    public MessagesS2C(BattleResultMessage msg){
+        this.battleResultMessage = msg;
+    }
 
     public PositionResultMessage getPositionResultMessage() {
         return positionResultMessage;
@@ -41,5 +48,19 @@ public class MessagesS2C {
 
     public void setSignUpResultMessage(SignUpResultMessage signUpResultMessage) {
         this.signUpResultMessage = signUpResultMessage;
+    }
+
+    public BattleResultMessage getBattleResultMessage() {
+        return battleResultMessage;
+    }
+
+    public void setBattleResultMessage(BattleResultMessage battleResultMessage) {
+        this.battleResultMessage = battleResultMessage;
+    }
+
+    public AttributeResultMessage getAttributeResultMessage() { return attributeResultMessage; }
+
+    public void setAttributeResultMessage(AttributeResultMessage attributeResultMessage) {
+        this.attributeResultMessage = attributeResultMessage;
     }
 }

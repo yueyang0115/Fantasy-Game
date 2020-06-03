@@ -26,6 +26,7 @@
 
         <!-- Annotated entity classes -->
         <mapping class="edu.duke.ece.fantasy.database.Monster"/>
+        <mapping class="edu.duke.ece.fantasy.database.Soldier"/>
         <mapping class="edu.duke.ece.fantasy.database.Territory"/>
         <mapping class="edu.duke.ece.fantasy.database.Building"/>
         <mapping class="edu.duke.ece.fantasy.database.Terrain"/>
