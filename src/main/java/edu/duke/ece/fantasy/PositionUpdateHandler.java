@@ -42,7 +42,7 @@ public class PositionUpdateHandler {
                     List<Monster> monsters = new ArrayList<>();
                     // add monster
                     if (terrain.getType().equals("mountain")) {
-                        monsters.add(new Monster("wolf", 10, 10));
+                        monsters.add(new Monster("wolf", 10, 10,10));
                     }
                     Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
                 }

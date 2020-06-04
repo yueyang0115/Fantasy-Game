@@ -22,6 +22,9 @@ public class Soldier extends Unit{
     @Column(name = "ATK", unique = false, nullable = false)
     private int atk;
 
+//    @Column(name = "speed", unique = false, nullable = false)
+//    private int speed = this.getSpeed();
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name="player_id", nullable=false)
@@ -31,16 +34,18 @@ public class Soldier extends Unit{
 
     }
 
-    public Soldier(String type,int hp,int atk){
+    public Soldier(String type,int hp,int atk,int speed){
         this.s_type = type;
         this.hp = hp;
         this.atk = atk;
+        this.setSpeed(speed);
     }
 
     public Soldier(Soldier old_soldier){
         this.s_type = old_soldier.getType();
         this.hp = old_soldier.getHp();
         this.atk = old_soldier.getAtk();
+        this.setSpeed(old_soldier.getSpeed());
     }
 
     public String getType() {

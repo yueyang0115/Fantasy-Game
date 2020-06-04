@@ -41,7 +41,7 @@ public class SoldierManagerTest {
         String password = passwordEncryptor.encryptPassword("TestPassword");
         Player player = new Player(username, password);
 
-        Soldier soldier = new Soldier("soldier",49,1);
+        Soldier soldier = new Soldier("soldier",49,1,20);
         player.addSoldier(soldier);
 
         session.save(player);

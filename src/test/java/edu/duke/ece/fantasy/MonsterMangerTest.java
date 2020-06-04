@@ -49,8 +49,8 @@ public class MonsterMangerTest {
         terrainHandler.initialTerrain();
 
         Territory t = new Territory(wid, x, y, "explored");
-        Monster m = new Monster("wolf", 97, 10);
-        Monster m2 = new Monster("wolf", 98, 10);
+        Monster m = new Monster("wolf", 97, 10,10);
+        Monster m2 = new Monster("wolf", 98, 10,10);
         t.addMonster(m);
         t.addMonster(m2);
 

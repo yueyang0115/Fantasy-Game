@@ -16,6 +16,9 @@ public abstract class Unit{
     @Column(name = "unit_type", unique = false, nullable = false, length = 100)
     private String u_type;
 
+    @Column(name = "speed", unique = false, nullable = false)
+    private int speed;
+
     public int getId() {
         return id;
     }
@@ -24,11 +27,12 @@ public abstract class Unit{
         this.id = id;
     }
 
-    public String getType() {
-        return u_type;
-    }
+    public String getType() { return u_type; }
 
-    public void setType(String type) {
-        this.u_type = type;
+    public void setType(String type) { this.u_type = type; }
+
+    public int getSpeed() { return speed; }
+
+    public void setSpeed(int speed) { this.speed = speed; }
+
     }
-}
