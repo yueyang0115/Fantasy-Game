@@ -8,14 +8,14 @@ import javax.persistence.*;
 
 @Entity
 @Table( name = "Soldier" )
-public class Soldier{
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "ID", unique = true, nullable = false)
-    private int id;
+public class Soldier extends Unit{
+//    @Id
+//    @GeneratedValue(generator = "increment")
+//    @GenericGenerator(name = "increment", strategy = "increment")
+//    @Column(name = "ID", unique = true, nullable = false)
+//    private int id;
 
-    @Column(name = "TYPE", unique = false, nullable = false, length = 100)
+    @Column(name = "type", unique = false, nullable = false, length = 100)
     private String type;
 
     @Column(name = "HP", unique = false, nullable = false)
@@ -39,18 +39,10 @@ public class Soldier{
         this.atk = atk;
     }
 
-    public Soldier(Monster old_monster){
-        this.type = old_monster.getType();
-        this.hp = old_monster.getHp();
-        this.atk = old_monster.getAtk();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Soldier(Soldier old_soldier){
+        this.type = old_soldier.getType();
+        this.hp = old_soldier.getHp();
+        this.atk = old_soldier.getAtk();
     }
 
     public String getType() {
@@ -87,7 +79,7 @@ public class Soldier{
 
     public JSONObject toJSON(){
         JSONObject soldier_obj = new JSONObject();
-        soldier_obj.put("id",id);
+        //soldier_obj.put("id",id);
         soldier_obj.put("type",type);
         soldier_obj.put("hp",hp);
         soldier_obj.put("atk",atk);

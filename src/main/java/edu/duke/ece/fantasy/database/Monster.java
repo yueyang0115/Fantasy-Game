@@ -9,14 +9,14 @@ import javax.persistence.*;
 
 @Entity
 @Table( name = "Monster" )
-public class Monster {
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "ID", unique = true, nullable = false)
-    private int id;
+public class Monster extends Unit{
+//    @Id
+//    @GeneratedValue(generator = "increment")
+//    @GenericGenerator(name = "increment", strategy = "increment")
+//    @Column(name = "ID", unique = true, nullable = false)
+//    private int id;
 
-    @Column(name = "TYPE", unique = false, nullable = false, length = 100)
+    @Column(name = "type", unique = false, nullable = false, length = 100)
     private String type;
 
     @Column(name = "HP", unique = false, nullable = false)
@@ -44,14 +44,6 @@ public class Monster {
         this.type = old_monster.getType();
         this.hp = old_monster.getHp();
         this.atk = old_monster.getAtk();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getType() {
@@ -88,7 +80,7 @@ public class Monster {
 
     public JSONObject toJSON(){
         JSONObject monster_obj = new JSONObject();
-        monster_obj.put("id",id);
+//        monster_obj.put("id",id);
         monster_obj.put("type",type);
         monster_obj.put("hp",hp);
         monster_obj.put("atk",atk);

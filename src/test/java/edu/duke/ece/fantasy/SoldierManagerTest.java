@@ -27,7 +27,7 @@ public class SoldierManagerTest {
     public void testAll(){
         session.beginTransaction();
         Player player = initPlayer();
-        getSoldierTest();
+        //getSoldierTest();
         getSoldiersTest(player);
 
         //session.getTransaction().commit();
@@ -52,8 +52,6 @@ public class SoldierManagerTest {
     }
 
     public void getSoldierTest(){
-        Soldier soldier = mySoldierManager.getSoldier(1);
-        assertNotNull(soldier);
     }
 
     public void getSoldiersTest(Player player){
@@ -61,6 +59,10 @@ public class SoldierManagerTest {
         List<Soldier> soldierList = mySoldierManager.getSoldiers(playerID);
         System.out.println("Player with wid = " + playerID + " has " + soldierList.size() + " soldiers");
         assertNotEquals(soldierList.size(),0);
+
+        //test getSoldier
+        Soldier soldier = mySoldierManager.getSoldier(soldierList.get(0).getId());
+        assertNotNull(soldier);
     }
 
 }

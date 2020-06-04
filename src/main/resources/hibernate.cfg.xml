@@ -22,9 +22,10 @@
         <property name="show_sql">false</property>
 
         <!-- Update database on startup -->
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
 
         <!-- Annotated entity classes -->
+        <mapping class="edu.duke.ece.fantasy.database.Unit"/>
         <mapping class="edu.duke.ece.fantasy.database.Monster"/>
         <mapping class="edu.duke.ece.fantasy.database.Soldier"/>
         <mapping class="edu.duke.ece.fantasy.database.Territory"/>
