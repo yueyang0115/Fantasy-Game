@@ -1,9 +1,11 @@
 package edu.duke.ece.fantasy.database;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,8 +23,9 @@ public class Item {
     @Column(name = "cost")
     private int cost;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "inventory")
-    private List<Shop> shop_list;
+    private List<Shop> shop_list = new ArrayList<>();
 
     public Item() {
     }

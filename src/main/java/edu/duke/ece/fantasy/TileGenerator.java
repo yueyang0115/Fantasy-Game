@@ -70,7 +70,7 @@ public class TileGenerator {
         }
     }
 
-    private void connect_blocks(Set<TerritoryBlock> function_blocks, Set<TerritoryBlock> road_blocks,int path_len) {
+    private void connect_blocks(Set<TerritoryBlock> end_blocks, Set<TerritoryBlock> road_blocks,int path_len) {
         int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
         String road_type = "grass";
         for (TerritoryBlock block : road_blocks) { // get road block type
@@ -87,14 +87,14 @@ public class TileGenerator {
             int level = 0;
             while (!queue.isEmpty()) {
                 TerritoryBlock top_block = queue.remove();
-                if (function_blocks.contains(top_block) && level > path_len) {
+                if (end_blocks.contains(top_block) && level > path_len) {
                     // hit the end block, add path to map; make sure the path length is greater than given number
                     TerritoryBlock parent_block = top_block.parent;
                     while (parent_block != start_block) { // traverse from the end block to the start block
                         map[parent_block.getY()][parent_block.getX()] = parent_block;
                         parent_block = parent_block.parent;
                     }
-                    function_blocks.remove(top_block);
+                    end_blocks.remove(top_block);
                     tmp.remove(start_block);
                     break;
                 }
@@ -104,7 +104,7 @@ public class TileGenerator {
                     int new_x = top_block.getX() + dir[0];
                     int new_y = top_block.getY() + dir[1];
                     TerritoryBlock new_block = new TerritoryBlock(new_x, new_y, road_type, top_block);
-                    if (0 < new_x && new_x < x_block_num && 0 < new_y && new_y < y_block_num && !visited.contains(new_block) && (map[new_y][new_x] == null || map[new_y][new_x].getType().equals(road_type) || function_blocks.contains(new_block))) {
+                    if (0 < new_x && new_x < x_block_num && 0 < new_y && new_y < y_block_num && !visited.contains(new_block) && (map[new_y][new_x] == null || map[new_y][new_x].getType().equals(road_type) || end_blocks.contains(new_block))) {
 //                    if (0 < new_x && new_x < x_block_num && 0 < new_y && new_y < y_block_num && map[new_y][new_x] == null) {
                         queue.add(new_block);
                         visited.add(new_block);

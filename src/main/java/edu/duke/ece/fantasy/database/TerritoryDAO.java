@@ -49,8 +49,7 @@ public class TerritoryDAO {
                 Territory t = getTerritory(wid, target_x, target_y);
                 if (t != null) {
 //                if (t != null && !t.getStatus().equals("unexplored")) {
-                    Territory new_t = new Territory(t);
-                    res.add(new_t);
+                    res.add(t);
                 }
             }
         }
@@ -88,9 +87,6 @@ public class TerritoryDAO {
 //        Terrain terrain = terrainDAO.getTerrain(terrain_type);
         t.setTerrain(terrain);
         // add monster
-//        if (terrain.getType().equals("mountain")) {
-//            t.addMonster(new Monster("wolf", 100, 10));
-//        }
         for (Monster monster : monsters) {
             t.addMonster(monster);
         }

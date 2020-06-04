@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Random;
 
 public class ShopDAO {
     Session session;
@@ -11,7 +12,6 @@ public class ShopDAO {
     public ShopDAO(Session session) {
         this.session = session;
     }
-
 
     public Shop addShop(String name){
         Shop shop = getShop(name);
@@ -36,8 +36,16 @@ public class ShopDAO {
         return res;
     }
 
+    public Shop getRandomShop() {
+        Long count = (Long) session.createQuery("select count(*) from Shop ").uniqueResult();
+        Random rand = new Random();
+        int rand_id = rand.nextInt(count.intValue()) + 1;
+        Shop res = session.get(Shop.class, rand_id);
+        return res;
+    }
+
     public void initialShop(List<Item> items) {
-        Shop shop = addShop("shop_1");
+        Shop shop = addShop("shop");
         for (Item item:items){
             shop.addInventory(item);
         }

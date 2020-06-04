@@ -46,6 +46,7 @@ public class Territory {
     @JoinColumn(name = "terrain_id", nullable = false)
     private Terrain terrain;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "building_id")
     private Building building;
@@ -67,6 +68,7 @@ public class Territory {
         }
         this.monsters = monsters;
         this.terrain = old_terr.getTerrain();
+        this.building = old_terr.getBuilding();
     }
 
     public Territory(int wid, int x, int y, String status) {

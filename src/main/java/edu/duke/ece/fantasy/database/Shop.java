@@ -1,5 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ public class Shop extends Building {
             joinColumns = { @JoinColumn(name = "shop_id") },
             inverseJoinColumns = { @JoinColumn(name = "item_id") }
     )
+    @JsonManagedReference
     private List<Item> inventory = new ArrayList<>();
 
     public Shop() {

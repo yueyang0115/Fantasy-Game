@@ -9,6 +9,8 @@ import java.util.List;
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
     TerrainDAO terrainDAO;
+    BuildingDAO buildingDAO;
+    ShopDAO shopDAO;
     int tile_set_width = 300;
     int tile_set_height = 300;
 //    int x_block_num;
@@ -17,6 +19,8 @@ public class PositionUpdateHandler {
     public PositionUpdateHandler(Session session) {
         territoryDAO = new TerritoryDAO(session);
         terrainDAO = new TerrainDAO(session);
+        buildingDAO = new BuildingDAO(session);
+        shopDAO = new ShopDAO(session);
     }
 
     public List<Territory> handle(int wid, int x, int y, int vision_x, int vision_y) {
@@ -27,8 +31,8 @@ public class PositionUpdateHandler {
         int y_size = y_block_num * 10;
         int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5); // calculate the game map index and mapping the generated tileSet index to it
         int start_y = (y / y_size) * y_size + ((y > 0) ? 5 : -5);
-        int center_x = Math.abs((x - start_x) / 10);
-        int center_y = Math.abs((y - start_y) / 10);
+//        int center_x = Math.abs((x - start_x) / 10);
+//        int center_y = Math.abs((y - start_y) / 10);
         int dir_x = (x > 0) ? 10 : -10;
         int dir_y = (y > 0) ? 10 : -10;
         RandomGenerator randomGenerator = new RandomGenerator();
@@ -42,14 +46,15 @@ public class PositionUpdateHandler {
                     Terrain terrain = terrainDAO.getTerrain(new_map[i][j].getType());
                     // add monster
                     List<Monster> monsters = new ArrayList<>();
-                    if (terrain.getType().equals("mountain")) {
+//                    if (terrain.getType().equals("mountain")) {
                         monsters.add(new Monster("wolf", 10, 10));
-                    }
+//                    }
                     Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
                     // add building
-                    if (terrain.getType().equals("grass")&&randomGenerator.getRandomResult(20)){
-
-                    }
+                    Building building = buildingDAO.getBuilding("shop");
+//                    if (randomGenerator.getRandomResult(100)){
+                        territoryDAO.addBuildingToTerritory(territory,building);
+//                    }
                 }
             }
         }

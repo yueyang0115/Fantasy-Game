@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public abstract class Building {
     @Column(name = "name")
     private String name;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "building",cascade = CascadeType.ALL)
     private List<Territory> territories = new ArrayList<>();
 
@@ -47,5 +49,13 @@ public abstract class Building {
 
     public void addTerritory(Territory territory){
         this.territories.add(territory);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

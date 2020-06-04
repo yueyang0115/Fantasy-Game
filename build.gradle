@@ -65,7 +65,7 @@ clover {
 
 application {
     // Define the main class for the application.
-    mainClassName = project.hasProperty("mainClass") ? getProperty("mainClass") : "Server"
+    mainClassName = project.hasProperty("mainClass") ? getProperty("mainClass") : "edu.duke.ece.fantasy.Server"
 }
 
 test {
