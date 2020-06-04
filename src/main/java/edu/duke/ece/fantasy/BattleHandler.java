@@ -10,6 +10,7 @@ public class BattleHandler {
     private Session session;
     private MonsterManger myMonsterManger;
     private SoldierManger mySoldierManger;
+    private UnitManager myUnitManager;
 
     /* unitQueue: keep track of the unit's attack order, it is first sorted by unit's speed
     the units will take turns to attack in the order of the queue,
@@ -20,6 +21,7 @@ public class BattleHandler {
         this.session = session;
         myMonsterManger = new MonsterManger(session);
         mySoldierManger = new SoldierManger(session);
+        myUnitManager = new UnitManager(session);
     }
 
     public BattleResultMessage handle(BattleRequestMessage request, int playerID){
@@ -88,29 +90,30 @@ public class BattleHandler {
         BattleResultMessage result = new BattleResultMessage();
 
         int territoryID = request.getTerritoryID();
-        int monsterID = request.getMonsterID();
-        int soldierID = request.getSoldierID();
+        int attackeeID = request.getAttackeeID();
+        int attackerID = request.getAttackerID();
         int deletedID = -1;
 
         //check whether the monster exist in the territory
-        Monster monster = myMonsterManger.getMonster(monsterID);
-        if(monster == null || monster.getTerritory().getId() != territoryID){
-            result.setResult("invalid");
-            return result;
-        }
+//        Monster monster = myMonsterManger.getMonster(attackeeID);
+//        if(monster == null || monster.getTerritory().getId() != territoryID){
+//            result.setResult("invalid");
+//            return result;
+//        }
 
-        //soldier attack monster, reduce monster's hp
-        Soldier soldier = mySoldierManger.getSoldier(soldierID);
-        int monsterHp = monster.getHp();
-        int soldierAtk = soldier.getAtk();
-        int newMonsterHp = Math.max(monsterHp - soldierAtk, 0);
-        monster.setHp(newMonsterHp);
-        myMonsterManger.setMonsterHp(monsterID,newMonsterHp);
+        //begin battle
+        Unit attacker = myUnitManager.getUnit(attackerID);
+        Unit attackee = myUnitManager.getUnit(attackeeID);
+        int attckeeHp = attackee.getHp();
+        int attackerAtk = attacker.getAtk();
+        int newAttackeeHp = Math.max(attckeeHp - attackerAtk, 0);
+        attackee.setHp(newAttackeeHp);
+        myUnitManager.setUnitHp(attackeeID, newAttackeeHp);
 
-        if(newMonsterHp == 0){
+        if(newAttackeeHp == 0){
             result.setResult("win");
-            deletedID = monsterID;
-            myMonsterManger.deleteMonster(monsterID);
+            deletedID = attackeeID;
+            myUnitManager.deleteUnit(attackeeID);
         }
         else{
             result.setResult("continue");
