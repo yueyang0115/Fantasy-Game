@@ -34,7 +34,7 @@ public class MonsterMangerTest {
     @Test
     public void testAll(){
         initMonster();
-        getMonsterTest();
+        //getMonsterTest();
         getMonstersTest();
         setMonsterHpTest();
 
@@ -49,8 +49,8 @@ public class MonsterMangerTest {
         terrainHandler.initialTerrain();
 
         Territory t = new Territory(wid, x, y, "explored");
-        Monster m = new Monster("wolf", 97, 10);
-        Monster m2 = new Monster("wolf", 98, 10);
+        Monster m = new Monster("wolf", 97, 10,10);
+        Monster m2 = new Monster("wolf", 98, 10,10);
         t.addMonster(m);
         t.addMonster(m2);
 
@@ -62,16 +62,16 @@ public class MonsterMangerTest {
     }
 
     public void getMonsterTest(){
-        Monster m = myMonsterManger.getMonster(1);
-        assertNotNull(m);
     }
 
     public void getMonstersTest(){
         Territory territory = territoryDAO.getTerritory(wid,x,y);
         List<Monster> monsterList = myMonsterManger.getMonsters(territory.getId());
         System.out.println("Monster num in territoryID = 1 is "+monsterList.size());
-        Monster m = monsterList.get(0);
-        assertNotNull(m);
+
+        //test getMonater
+        Monster monster = myMonsterManger.getMonster(monsterList.get(0).getId());
+        assertNotNull(monster);
     }
 
     public void setMonsterHpTest(){

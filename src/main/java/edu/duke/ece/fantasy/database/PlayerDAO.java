@@ -20,8 +20,10 @@ public class PlayerDAO {
         Player player = new Player(username, encryptPassword);
 
         //add one default soldier for each player
-        Soldier soldier = new Soldier("soldier",50,5);
+        Soldier soldier = new Soldier("soldier",50,5,20);
+        Soldier soldier2 = new Soldier("soldier",48,3,18);
         player.addSoldier(soldier);
+        player.addSoldier(soldier2);
 
         session.save(player);
     }
