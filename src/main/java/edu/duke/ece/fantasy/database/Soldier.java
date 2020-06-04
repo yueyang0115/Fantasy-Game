@@ -9,14 +9,12 @@ import javax.persistence.*;
 @Entity
 @Table( name = "Soldier" )
 public class Soldier extends Unit{
-//    @Id
-//    @GeneratedValue(generator = "increment")
-//    @GenericGenerator(name = "increment", strategy = "increment")
-//    @Column(name = "ID", unique = true, nullable = false)
-//    private int id;
 
-    @Column(name = "type", unique = false, nullable = false, length = 100)
-    private String type;
+    //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
+    private String u_type = "soldier";
+
+    @Column(name = "soldier_type", unique = false, nullable = false, length = 100)
+    private String s_type;
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
@@ -34,23 +32,23 @@ public class Soldier extends Unit{
     }
 
     public Soldier(String type,int hp,int atk){
-        this.type = type;
+        this.s_type = type;
         this.hp = hp;
         this.atk = atk;
     }
 
     public Soldier(Soldier old_soldier){
-        this.type = old_soldier.getType();
+        this.s_type = old_soldier.getType();
         this.hp = old_soldier.getHp();
         this.atk = old_soldier.getAtk();
     }
 
     public String getType() {
-        return type;
+        return s_type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.s_type = type;
     }
 
     public int getHp() {
@@ -80,7 +78,7 @@ public class Soldier extends Unit{
     public JSONObject toJSON(){
         JSONObject soldier_obj = new JSONObject();
         //soldier_obj.put("id",id);
-        soldier_obj.put("type",type);
+        soldier_obj.put("type",s_type);
         soldier_obj.put("hp",hp);
         soldier_obj.put("atk",atk);
         return soldier_obj;

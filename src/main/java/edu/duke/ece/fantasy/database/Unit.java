@@ -6,15 +6,15 @@ import javax.persistence.*;
 @Entity
 @Table(name="Unit")
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Unit{
+public abstract class Unit{
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     @Column(name = "ID", unique = true, nullable = false)
     private int id;
 
-    @Column(name = "TYPE", unique = false, nullable = false, length = 100)
-    private String type;
+    @Column(name = "unit_type", unique = false, nullable = false, length = 100)
+    private String u_type;
 
     public int getId() {
         return id;
@@ -25,10 +25,10 @@ public class Unit{
     }
 
     public String getType() {
-        return type;
+        return u_type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.u_type = type;
     }
 }

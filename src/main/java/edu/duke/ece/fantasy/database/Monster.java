@@ -10,14 +10,12 @@ import javax.persistence.*;
 @Entity
 @Table( name = "Monster" )
 public class Monster extends Unit{
-//    @Id
-//    @GeneratedValue(generator = "increment")
-//    @GenericGenerator(name = "increment", strategy = "increment")
-//    @Column(name = "ID", unique = true, nullable = false)
-//    private int id;
 
-    @Column(name = "type", unique = false, nullable = false, length = 100)
-    private String type;
+    //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
+    private String u_type = "monster";
+
+    @Column(name = "monster_type", unique = false, nullable = false, length = 100)
+    private String m_type;
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
@@ -35,23 +33,23 @@ public class Monster extends Unit{
     }
 
     public Monster(String type,int hp,int atk){
-        this.type = type;
+        this.m_type = type;
         this.hp = hp;
         this.atk = atk;
     }
 
     public Monster(Monster old_monster){
-        this.type = old_monster.getType();
+        this.m_type = old_monster.getType();
         this.hp = old_monster.getHp();
         this.atk = old_monster.getAtk();
     }
 
     public String getType() {
-        return type;
+        return m_type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.m_type = type;
     }
 
     public int getHp() {
@@ -81,7 +79,7 @@ public class Monster extends Unit{
     public JSONObject toJSON(){
         JSONObject monster_obj = new JSONObject();
 //        monster_obj.put("id",id);
-        monster_obj.put("type",type);
+        monster_obj.put("type",m_type);
         monster_obj.put("hp",hp);
         monster_obj.put("atk",atk);
         return monster_obj;
