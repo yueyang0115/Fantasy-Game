@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
@@ -7,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageHandlerTest {
-    //@Test
+    MessageHandler mh = new MessageHandler();
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    @Test
     void testAll(){
         //testLogin();
         //testSignUp();
@@ -47,5 +51,21 @@ public class MessageHandlerTest {
         assertEquals(result.getPositionResultMessage(),null);
         assertEquals(result.getSignUpResultMessage().getStatus(),"success");
         assertEquals(result.getSignUpResultMessage().getError_msg(),null);
+    }
+
+    @Test
+    void testPositionUpdate(){
+        (new Initializer()).initialize();
+        PositionRequestMessage positionRequestMessage = new PositionRequestMessage();
+        positionRequestMessage.setX(-5);
+        positionRequestMessage.setY(15);
+        MessagesC2S request = new MessagesC2S(positionRequestMessage);
+        MessagesS2C res = mh.handle(request);
+        try{
+            String tmp = objectMapper.writeValueAsString(res);
+            System.out.println(tmp);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

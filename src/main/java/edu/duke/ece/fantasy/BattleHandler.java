@@ -10,7 +10,7 @@ public class BattleHandler {
     private Session session;
     private MonsterManger myMonsterManger;
     private SoldierManger mySoldierManger;
-    Queue<Integer> speedQueue; // stores the speed of soldiers and monsters, rolls in turns
+    Queue<Unit> speedQueue; // stores the speed of soldiers and monsters, rolls in turns
 
     public BattleHandler(Session session) {
         this.session = session;
@@ -33,42 +33,52 @@ public class BattleHandler {
         }
     }
 
-    private BattleResultMessage doStart(BattleRequestMessage request, int playerID){
+    public BattleResultMessage doStart(BattleRequestMessage request, int playerID){
         BattleResultMessage result = new BattleResultMessage();
         speedQueue = new LinkedList<>();
 
         int territoryID = request.getTerritoryID();
         List<Monster> monsterList = myMonsterManger.getMonsters(territoryID);
         List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
-        speedQueue = getSpeedQueue(monsterList, soldierList);
+        speedQueue = generateSpeedQueue(monsterList, soldierList);
+        List<Integer> unitIDList = genarateIDList(speedQueue);
 
         result.setMonsters(monsterList);
         result.setSoldiers(soldierList);
         result.setResult("continue");
+        result.setUnitIDs(unitIDList);
+
         return result;
     }
 
-    private Queue<Integer> getSpeedQueue(List<Monster> monsterList, List<Soldier> soldierList){
-            PriorityQueue<Integer> pq = new PriorityQueue( new Comparator<Integer>() {
-                public int compare(Integer e1, Integer e2) {
-                    return e2 - e1;
+    public Queue<Unit> generateSpeedQueue(List<Monster> monsterList, List<Soldier> soldierList){
+            PriorityQueue<Unit> pq = new PriorityQueue( new Comparator<Unit>() {
+                public int compare(Unit u1, Unit u2) {
+                    return u2.getSpeed() - u1.getSpeed();
                 }
             });
-            for(Monster monster : monsterList) pq.add(monster.getId());
-            for(Soldier soldier : soldierList) pq.add(soldier.getId());
-            Queue speedQueue = new LinkedList<>();
+            for(Monster monster : monsterList) pq.add(monster);
+            for(Soldier soldier : soldierList) pq.add(soldier);
+            Queue<Unit> speedQueue = new LinkedList<>();
             while(!pq.isEmpty()) {
                 speedQueue.add(pq.poll());
             }
             return speedQueue;
     }
 
-    private BattleResultMessage doBattle(BattleRequestMessage request, int playerID){
+    public List<Integer> genarateIDList(Queue<Unit> q){
+        Unit[] unitArray = (Unit[]) q.toArray();
+        List<Integer> unitIDList = new ArrayList<>();
+        for(Unit u : unitArray) unitIDList.add(u.getId());
+        return unitIDList;
+    }
+
+    public BattleResultMessage doBattle(BattleRequestMessage request, int playerID){
         BattleResultMessage result = new BattleResultMessage();
 
         int territoryID = request.getTerritoryID();
-        int monsterID = request.getMonsterID();
-        int soldierID = request.getSoldierID();
+        int monsterID = request.getAttackeeID();
+        int soldierID = request.getAttackerID();
 
         //check the monster exist in the territory
         Monster monster = myMonsterManger.getMonster(monsterID);
@@ -76,10 +86,6 @@ public class BattleHandler {
             result.setResult("invalid");
             return result;
         }
-
-        //set monsterList and soldierList in result
-        result.setMonsters(myMonsterManger.getMonsters(territoryID));
-        result.setSoldiers(mySoldierManger.getSoldiers(playerID));
 
         //soldier attack monster, reduce monster's hp
         Soldier soldier = mySoldierManger.getSoldier(soldierID);
