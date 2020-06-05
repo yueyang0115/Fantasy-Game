@@ -121,6 +121,7 @@ public class BattleHandler {
 
         //update unitQueue
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
+        result.setUnitIDs(generateIDList(unitQueue));
         result.setMonsters(myMonsterManger.getMonsters(territoryID));
         result.setSoldiers(mySoldierManger.getSoldiers(playerID));
         return result;
