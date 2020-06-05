@@ -29,8 +29,6 @@ public class PositionUpdateHandler {
         int y_size = y_block_num * 10;
         int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5); // calculate the game map index and mapping the generated tileSet index to it
         int start_y = (y / y_size) * y_size + ((y > 0) ? 5 : -5);
-        int center_x = Math.abs((x - start_x) / 10);
-        int center_y = Math.abs((y - start_y) / 10);
         int dir_x = (x > 0) ? 10 : -10;
         int dir_y = (y > 0) ? 10 : -10;
         RandomGenerator randomGenerator = new RandomGenerator();
@@ -47,10 +45,12 @@ public class PositionUpdateHandler {
                     if (terrain.getType().equals("mountain")) {
                         monsters.add(new Monster("wolf", 10, 10, 10));
                     }
-                    Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
+                    int new_x = new_map[i][j].getX() * dir_x + start_x;
+                    int new_y = new_map[i][j].getY() * dir_y + start_y;
+                    Territory territory = territoryDAO.addTerritory(wid, new_x, new_y, "unexplored", terrain, monsters);
                     // add building
                     Building building = buildingDAO.getBuilding("shop");
-                    if ((territory.getTerrain().getType().equals("grass") && randomGenerator.getRandomResult(30)) || (center_x == i && center_y == j)) {
+                    if ((territory.getTerrain().getType().equals("grass") && randomGenerator.getRandomResult(30)) || (new_x == x && new_y == y)) {
                         territoryDAO.addBuildingToTerritory(territory, building);
                     }
                 }
