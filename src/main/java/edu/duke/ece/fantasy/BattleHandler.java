@@ -79,9 +79,9 @@ public class BattleHandler {
 
     // make a list of unitIDs, corresponding units of these IDs are in same order with unitQueue
     public List<Integer> generateIDList(Queue<Unit> q){
-        Unit[] unitArray = (Unit[]) q.toArray();
+        List<Unit> unitList = new ArrayList<>(q);
         List<Integer> unitIDList = new ArrayList<>();
-        for(Unit u : unitArray) unitIDList.add(u.getId());
+        for(Unit u : unitList) unitIDList.add(u.getId());
         return unitIDList;
     }
 
