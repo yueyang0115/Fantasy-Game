@@ -17,7 +17,7 @@ public class UnitManager {
     public Unit getUnit(int unitID) {
         Query q = session.createQuery("From Unit U where U.id =:id");
         q.setParameter("id", unitID);
-        Unit res = (Soldier) q.uniqueResult();
+        Unit res = (Unit) q.uniqueResult();
         return res;
     }
 
