@@ -50,9 +50,9 @@ public class PositionUpdateHandler {
                     Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
                     // add building
                     Building building = buildingDAO.getBuilding("shop");
-                    if ((territory.getTerrain().getType().equals("grass") && randomGenerator.getRandomResult(30)) || (center_x == x && center_y == y)) {
+//                    if ((territory.getTerrain().getType().equals("grass") && randomGenerator.getRandomResult(30)) || (center_x == x && center_y == y)) {
                         territoryDAO.addBuildingToTerritory(territory, building);
-                    }
+//                    }
                 }
             }
         }
