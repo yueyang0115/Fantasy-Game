@@ -77,8 +77,8 @@ public class BattleHandler {
         BattleResultMessage result = new BattleResultMessage();
 
         int territoryID = request.getTerritoryID();
-        int monsterID = request.getMonsterID();
-        int soldierID = request.getSoldierID();
+        int monsterID = request.getAttackeeID();
+        int soldierID = request.getAttackerID();
 
         //check the monster exist in the territory
         Monster monster = myMonsterManger.getMonster(monsterID);
