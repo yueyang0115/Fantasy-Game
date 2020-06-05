@@ -4,7 +4,7 @@ public class BattleRequestMessage {
     private int territoryID;
     private int attackeeID;
     private int attackerID;
-    private String action;//"attack","escape","start"
+    private String action;//"attack" "escape" "start"
 
     public BattleRequestMessage() {
     }

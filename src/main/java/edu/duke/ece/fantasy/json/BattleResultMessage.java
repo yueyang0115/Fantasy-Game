@@ -8,7 +8,11 @@ public class BattleResultMessage {
     private List<Monster> monsters = new ArrayList<>(); //all monsters in the territory
     private List<Soldier> soldiers = new ArrayList<>(); //all soldiers the player has
     private String result; //status: "win","lose","continue","escaped","invalid"
-    private List<Integer> unitIDs = new ArrayList<>(); //sorted by unit's speed
+
+    /* unitIDs: records units's ID engaged in the battle, first sorted by unit's speed,
+    the units will take turns to attack in the order of the list,
+    first unitID in the list will be set as next round's attacker in next battleRequestMsg */
+    private List<Integer> unitIDs = new ArrayList<>();
 
     public BattleResultMessage() {
     }
