@@ -18,6 +18,8 @@ public class TCPCommunicator {
     private InputStream in;
     private OutputStream out;
     private boolean isShutdown;
+    private int sendfailNum;
+    private int recvfailNum;
 
     public TCPCommunicator(ServerSocket serverSocket) {
         this.isShutdown = false;
@@ -58,9 +60,15 @@ public class TCPCommunicator {
         }
         try {
             objectMapper.writeValue(out, msg);
+            sendfailNum = 0;
         } catch (IOException e) {
-            isShutdown = true;
-            System.out.println("[DEBUG] TCP communicator failed to send data, client might closed");
+            sendfailNum++;
+            if(sendfailNum>2){
+                sendfailNum = 0;
+                isShutdown = true;
+                System.out.println("[DEBUG] TCP communicator failed to send data, client might closed");
+            }
+            if(isShutdown == false) System.out.println("[DEBUG] TCP communicator failed to send data");
             e.printStackTrace();
         }
     }
@@ -69,9 +77,14 @@ public class TCPCommunicator {
         MessagesC2S res = new MessagesC2S();
         try {
             res = objectMapper.readValue(in, MessagesC2S.class);
+            recvfailNum = 0;
         } catch (IOException e) {
-            isShutdown = true;
-            System.out.println("[DEBUG] TCP communicator failed to receive data, client might closed");
+            if(recvfailNum > 2){
+                recvfailNum = 0;
+                isShutdown = true;
+                System.out.println("[DEBUG] TCP communicator failed to receive data, client might closed");
+            }
+            if(isShutdown == false) System.out.println("[DEBUG] TCP communicator failed to receive data");
             e.printStackTrace();
         }
         return res;

@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.TerrainDAO;
 import org.hibernate.Session;
 
 import java.io.*;
@@ -40,8 +41,8 @@ public class Server {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             // initialize database
             session.beginTransaction();
-            TerrainHandler terrainHandler = new TerrainHandler(session);
-            terrainHandler.initialTerrain();
+            TerrainDAO terrainDAO = new TerrainDAO(session);
+            terrainDAO.initialTerrain();
             session.getTransaction().commit();
         }
         //myMockDBprocessor.create();
