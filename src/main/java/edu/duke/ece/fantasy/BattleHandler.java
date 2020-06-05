@@ -104,6 +104,10 @@ public class BattleHandler {
         //begin battle
         Unit attacker = myUnitManager.getUnit(attackerID);
         Unit attackee = myUnitManager.getUnit(attackeeID);
+        if(attackee == null || attacker==null){
+            result.setResult("invalid");
+            return result;
+        }
         int attckeeHp = attackee.getHp();
         int attackerAtk = attacker.getAtk();
         int newAttackeeHp = Math.max(attckeeHp - attackerAtk, 0);
