@@ -5,7 +5,7 @@ public class MessagesS2C {
     private LoginResultMessage loginResultMessage;
     private SignUpResultMessage signUpResultMessage;
     private BattleResultMessage battleResultMessage;
-
+    private ShopResultMessage shopResultMessage;
     private AttributeResultMessage attributeResultMessage;
 
     public MessagesS2C(){ }
@@ -62,5 +62,13 @@ public class MessagesS2C {
 
     public void setAttributeResultMessage(AttributeResultMessage attributeResultMessage) {
         this.attributeResultMessage = attributeResultMessage;
+    }
+
+    public ShopResultMessage getShopResultMessage() {
+        return shopResultMessage;
+    }
+
+    public void setShopResultMessage(ShopResultMessage shopResultMessage) {
+        this.shopResultMessage = shopResultMessage;
     }
 }
