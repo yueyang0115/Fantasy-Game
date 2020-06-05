@@ -17,14 +17,15 @@ public class BattleHandler {
     once a unit finishes attack, it will be added to the back of the queue */
     private Queue<Unit> unitQueue;
 
-    public BattleHandler(Session session) {
+    public BattleHandler() {
+    }
+
+    public BattleResultMessage handle(BattleRequestMessage request, int playerID, Session session){
         this.session = session;
         myMonsterManger = new MonsterManger(session);
         mySoldierManger = new SoldierManger(session);
         myUnitManager = new UnitManager(session);
-    }
 
-    public BattleResultMessage handle(BattleRequestMessage request, int playerID){
         String action = request.getAction();
         if(action.equals("escape")){
             BattleResultMessage result = new BattleResultMessage();
@@ -51,6 +52,7 @@ public class BattleHandler {
         List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
         // sort unit by speed and set the UnitQueue
         this.unitQueue = generateUnitQueue(monsterList, soldierList);
+        System.out.println(" outside generateUnitQueue, q.size() " + this.unitQueue.size());
         // make a list of unitIDs, corresponding units of these IDs are in same order with unitQueue
         List<Integer> unitIDList = generateIDList(unitQueue);
 
@@ -74,6 +76,7 @@ public class BattleHandler {
             while(!pq.isEmpty()) {
                 q.add(pq.poll());
             }
+            System.out.println(" in generateUnitQueue, q.size() " + q.size());
             return q;
     }
 
@@ -124,6 +127,7 @@ public class BattleHandler {
         }
 
         //update unitQueue
+        System.out.println(" before rollQueue, unitQueue.size() " + this.unitQueue.size());
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
         result.setUnitIDs(generateIDList(unitQueue));
         result.setMonsters(myMonsterManger.getMonsters(territoryID));
