@@ -50,6 +50,8 @@ public class TerritoryDAO {
                 if (t != null) {
 //                if (t != null && !t.getStatus().equals("unexplored")) {
                     res.add(t);
+//                    Territory new_t = new Territory(t);
+//                    res.add(new_t);
                 }
             }
         }

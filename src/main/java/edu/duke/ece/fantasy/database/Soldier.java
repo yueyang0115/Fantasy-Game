@@ -8,21 +8,22 @@ import javax.persistence.*;
 
 @Entity
 @Table( name = "Soldier" )
-public class Soldier{
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "ID", unique = true, nullable = false)
-    private int id;
+public class Soldier extends Unit{
 
-    @Column(name = "TYPE", unique = false, nullable = false, length = 100)
-    private String type;
+    //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
+    private String u_type = "soldier";
+
+    @Column(name = "soldier_type", unique = false, nullable = false, length = 100)
+    private String s_type;
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
 
     @Column(name = "ATK", unique = false, nullable = false)
     private int atk;
+
+//    @Column(name = "speed", unique = false, nullable = false)
+//    private int speed = this.getSpeed();
 
     @JsonBackReference
     @ManyToOne
@@ -33,32 +34,26 @@ public class Soldier{
 
     }
 
-    public Soldier(String type,int hp,int atk){
-        this.type = type;
+    public Soldier(String type,int hp,int atk,int speed){
+        this.s_type = type;
         this.hp = hp;
         this.atk = atk;
+        this.setSpeed(speed);
     }
 
-    public Soldier(Monster old_monster){
-        this.type = old_monster.getType();
-        this.hp = old_monster.getHp();
-        this.atk = old_monster.getAtk();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Soldier(Soldier old_soldier){
+        this.s_type = old_soldier.getType();
+        this.hp = old_soldier.getHp();
+        this.atk = old_soldier.getAtk();
+        this.setSpeed(old_soldier.getSpeed());
     }
 
     public String getType() {
-        return type;
+        return s_type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.s_type = type;
     }
 
     public int getHp() {
@@ -87,8 +82,8 @@ public class Soldier{
 
     public JSONObject toJSON(){
         JSONObject soldier_obj = new JSONObject();
-        soldier_obj.put("id",id);
-        soldier_obj.put("type",type);
+        //soldier_obj.put("id",id);
+        soldier_obj.put("type",s_type);
         soldier_obj.put("hp",hp);
         soldier_obj.put("atk",atk);
         return soldier_obj;

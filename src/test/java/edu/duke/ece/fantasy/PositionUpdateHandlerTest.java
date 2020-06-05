@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PositionUpdateHandlerTest {
     PositionUpdateHandler positionUpdateHandler;
     TerrainDAO terrainDAO;
-    ObjectMapper objectMapper = new ObjectMapper();
 
     Session createSession() {
         Session session = HibernateUtil.getSessionFactory().openSession();

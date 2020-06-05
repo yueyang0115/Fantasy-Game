@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ public class MessageHandler {
     private int playerID;
     public MessageHandler() {}
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
+    ObjectMapper objectMapper = new ObjectMapper();
 
     public MessagesS2C handle(MessagesC2S input) {
         MessagesS2C result = new MessagesS2C();
@@ -53,7 +55,12 @@ public class MessageHandler {
 
             }
             session.getTransaction().commit();
-            //session.close();
+            try{
+                String tmp = objectMapper.writeValueAsString(result); // fix lazy initialization problem
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
         return result;
     }

@@ -1,6 +1,8 @@
 package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Polymorphism;
+import org.hibernate.annotations.PolymorphismType;
 
 import javax.persistence.*;
 import java.util.ArrayList;

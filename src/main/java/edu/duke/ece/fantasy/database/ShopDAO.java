@@ -29,6 +29,13 @@ public class ShopDAO {
         return res;
     }
 
+    public Shop getShopByTerritoryID(int territory_id){
+        Query q = session.createQuery("From Shop s where s.territories =:id");
+        q.setParameter("id", territory_id);
+        Shop res = (Shop) q.uniqueResult();
+        return res;
+    }
+
     public Shop getShop(int id) {
         Query q = session.createQuery("From Shop s where s.id =:id");
         q.setParameter("id", id);

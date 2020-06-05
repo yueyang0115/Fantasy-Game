@@ -11,8 +11,6 @@ public class PositionUpdateHandler {
     TerrainDAO terrainDAO;
     BuildingDAO buildingDAO;
     ShopDAO shopDAO;
-    int tile_set_width = 300;
-    int tile_set_height = 300;
 //    int x_block_num;
 //    int y_block_num;
 
@@ -47,19 +45,18 @@ public class PositionUpdateHandler {
                     // add monster
                     List<Monster> monsters = new ArrayList<>();
 //                    if (terrain.getType().equals("mountain")) {
-                        monsters.add(new Monster("wolf", 10, 10));
+                        monsters.add(new Monster("wolf", 10, 10,10));
 //                    }
                     Territory territory = territoryDAO.addTerritory(wid, new_map[i][j].getX() * dir_x + start_x, new_map[i][j].getY() * dir_y + start_y, "unexplored", terrain, monsters);
                     // add building
                     Building building = buildingDAO.getBuilding("shop");
-//                    if (randomGenerator.getRandomResult(100)){
+                    if (territory.getTerrain().getType().equals("grass")&&randomGenerator.getRandomResult(30)){
                         territoryDAO.addBuildingToTerritory(territory,building);
-//                    }
+                    }
                 }
             }
         }
 
-//        territoryDAO.addTerritories(wid, x, y, x_block_num, y_block_num);
         if (territoryDAO.getTerritory(wid, x, y).getStatus().equals("unexplored")) {
             territoryDAO.updateTerritory(wid, x, y, "explored");
         }

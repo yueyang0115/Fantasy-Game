@@ -62,7 +62,7 @@ public class Territory {
         this.y = old_terr.getY();
         this.status = old_terr.getStatus();
         List<Monster> monsters = new ArrayList<>();
-        for(Monster monster:old_terr.getMonsters()){ // cut off reference loop
+        for(Monster monster:old_terr.getMonsters()){ // solve lazy initialize problem
             Monster new_monster = new Monster(monster);
             monsters.add(monster);
         }
