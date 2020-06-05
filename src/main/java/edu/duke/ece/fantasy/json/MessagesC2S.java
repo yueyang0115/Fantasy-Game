@@ -5,7 +5,7 @@ public class MessagesC2S {
     private SignUpRequestMessage signUpRequestMessage;
     private PositionRequestMessage positionRequestMessage;
     private BattleRequestMessage battleRequestMessage;
-
+    private ShopRequestMessage shopRequestMessage;
     private AttributeRequestMessage attributeRequestMessage;
 
     public MessagesC2S(){ }
@@ -58,5 +58,13 @@ public class MessagesC2S {
 
     public void setAttributeRequestMessage(AttributeRequestMessage attributeRequestMessage) {
         this.attributeRequestMessage = attributeRequestMessage;
+    }
+
+    public ShopRequestMessage getShopRequestMessage() {
+        return shopRequestMessage;
+    }
+
+    public void setShopRequestMessage(ShopRequestMessage shopRequestMessage) {
+        this.shopRequestMessage = shopRequestMessage;
     }
 }

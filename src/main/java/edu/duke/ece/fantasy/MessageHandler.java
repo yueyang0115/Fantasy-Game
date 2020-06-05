@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
@@ -9,8 +10,12 @@ import org.slf4j.LoggerFactory;
 public class MessageHandler {
     private int wid;
     private int playerID;
-    public MessageHandler() {}
+
+    public MessageHandler() {
+    }
+
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
+    ObjectMapper objectMapper = new ObjectMapper();
 
     public MessagesS2C handle(MessagesC2S input) {
         MessagesS2C result = new MessagesS2C();
@@ -19,6 +24,7 @@ public class MessageHandler {
         PositionRequestMessage positionMsg = input.getPositionRequestMessage();
         BattleRequestMessage battleMsg = input.getBattleRequestMessage();
         AttributeRequestMessage attributeMsg = input.getAttributeRequestMessage();
+        ShopRequestMessage shopRequestMessage = input.getShopRequestMessage();
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
@@ -36,24 +42,28 @@ public class MessageHandler {
                 PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
-                positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg.getX(), positionMsg.getY(),3,3));
+                positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg.getX(), positionMsg.getY(), 3, 3));
                 result.setPositionResultMessage(positionResultMessage);
 
-            }else if(battleMsg != null){
+            } else if (battleMsg != null) {
                 BattleHandler bh = new BattleHandler(session);
                 result.setBattleResultMessage(bh.handle(battleMsg, playerID));
-            }
-
-            else if(attributeMsg != null){
+            } else if (attributeMsg != null) {
                 AttributeHandler ah = new AttributeHandler(session);
                 result.setAttributeResultMessage(ah.handle(attributeMsg, playerID));
-            }
-
-            else {
+            } else if (shopRequestMessage != null) {
+                ShopHandler shopHandler = new ShopHandler(session);
+                result.setShopResultMessage(shopHandler.handle(shopRequestMessage));
+            } else {
 
             }
             session.getTransaction().commit();
-            //session.close();
+            try {
+                String tmp = objectMapper.writeValueAsString(result); // fix lazy initialization problem
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         return result;
     }

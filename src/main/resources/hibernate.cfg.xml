@@ -30,6 +30,8 @@
         <mapping class="edu.duke.ece.fantasy.database.Soldier"/>
         <mapping class="edu.duke.ece.fantasy.database.Territory"/>
         <mapping class="edu.duke.ece.fantasy.database.Building"/>
+        <mapping class="edu.duke.ece.fantasy.database.Shop"/>
+        <mapping class="edu.duke.ece.fantasy.database.Item"/>
         <mapping class="edu.duke.ece.fantasy.database.Terrain"/>
         <mapping class="edu.duke.ece.fantasy.database.Player"/>
     </session-factory>

@@ -46,6 +46,11 @@ public class Territory {
     @JoinColumn(name = "terrain_id", nullable = false)
     private Terrain terrain;
 
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
+
     public Territory() {
 
     }
@@ -57,12 +62,13 @@ public class Territory {
         this.y = old_terr.getY();
         this.status = old_terr.getStatus();
         List<Monster> monsters = new ArrayList<>();
-        for(Monster monster:old_terr.getMonsters()){ // cut off reference loop
+        for(Monster monster:old_terr.getMonsters()){ // solve lazy initialize problem
             Monster new_monster = new Monster(monster);
             monsters.add(monster);
         }
         this.monsters = monsters;
         this.terrain = old_terr.getTerrain();
+        this.building = old_terr.getBuilding();
     }
 
     public Territory(int wid, int x, int y, String status) {
@@ -70,6 +76,15 @@ public class Territory {
         this.x = x;
         this.y = y;
         this.status = status;
+    }
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
+        building.addTerritory(this);
     }
 
     public Terrain getTerrain() {
@@ -126,17 +141,4 @@ public class Territory {
         this.monsters = monsters;
     }
 
-    public JSONObject toJSON() {
-        JSONObject territory_obj = new JSONObject();
-        territory_obj.put("x", this.x);
-        territory_obj.put("y", this.y);
-        territory_obj.put("status", this.status);
-        territory_obj.put("wid", this.wid);
-        JSONArray monster_arr = new JSONArray();
-        for (Monster monster : monsters) {
-            monster_arr.put(monster.toJSON());
-        }
-        territory_obj.put("monsters", monster_arr);
-        return territory_obj;
-    }
 }
