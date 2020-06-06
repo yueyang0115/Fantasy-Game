@@ -6,6 +6,7 @@ import org.hibernate.query.Query;
 public class BuildingDAO {
     Session session;
 
+
     public BuildingDAO(Session session) {
         this.session = session;
     }

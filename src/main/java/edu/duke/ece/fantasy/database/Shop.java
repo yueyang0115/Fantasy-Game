@@ -12,33 +12,29 @@ import java.util.List;
 @Table(name = "Shop")
 @PrimaryKeyJoinColumn(name = "ID")
 public class Shop extends Building {
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "Shop_Item",
-            joinColumns = { @JoinColumn(name = "shop_id") },
-            inverseJoinColumns = { @JoinColumn(name = "item_id") }
-    )
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Item> inventory = new ArrayList<>();
+    private List<ItemPack> inventory = new ArrayList<>();
 
     public Shop() {
+        super("shop");
     }
 
     public Shop(String name) {
         super(name);
     }
 
-    public Shop addInventory(Item item) {
+    public Shop addInventory(ItemPack item) {
         inventory.add(item);
-        item.addShop(this);
+        item.setShop(this);
         return this;
     }
 
-    public List<Item> getInventory() {
+    public List<ItemPack> getInventory() {
         return inventory;
     }
 
-    public void setInventory(List<Item> inventory) {
+    public void setInventory(List<ItemPack> inventory) {
         this.inventory = inventory;
     }
 }

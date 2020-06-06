@@ -40,6 +40,10 @@ public class Player {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
+    @JsonManagedReference (value = "player-items")
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    private List<ItemPack> items = new ArrayList<>();
+
     public Player(String username, String password) {
         this.username = username;
         this.password = password;

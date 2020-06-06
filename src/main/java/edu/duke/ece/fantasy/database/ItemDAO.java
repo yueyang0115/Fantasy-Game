@@ -34,5 +34,6 @@ public class ItemDAO {
 
     public void initial() {
         addItem("medicine",10);
+        addItem("sword",200);
     }
 }

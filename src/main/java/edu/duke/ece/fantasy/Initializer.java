@@ -18,9 +18,9 @@ public class Initializer {
             ItemDAO itemDAO = new ItemDAO(session);
             itemDAO.initial();
             // initialize shop
-            List<Item> items = itemDAO.getAllItem();
-            ShopDAO shopDAO = new ShopDAO(session);
-            shopDAO.initialShop(items);
+//            List<Item> items = itemDAO.getAllItem();
+//            ShopDAO shopDAO = new ShopDAO(session);
+//            shopDAO.initialShop(items);
             session.getTransaction().commit();
         }
     }

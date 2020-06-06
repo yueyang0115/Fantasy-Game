@@ -22,9 +22,9 @@ public class Building {
     @Column(name = "name")
     private String name;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "building",cascade = CascadeType.ALL)
-    private List<Territory> territories = new ArrayList<>();
+    @JsonBackReference(value = "territory-building")
+    @OneToOne(mappedBy = "building",cascade = CascadeType.ALL)
+    private Territory territory;
 
     public Building() {
     }
@@ -41,16 +41,12 @@ public class Building {
         this.id = id;
     }
 
-    public List<Territory> getTerritories() {
-        return territories;
+    public Territory getTerritory() {
+        return territory;
     }
 
-    public void setTerritories(List<Territory> territories) {
-        this.territories = territories;
-    }
-
-    public void addTerritory(Territory territory){
-        this.territories.add(territory);
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
     }
 
     public String getName() {

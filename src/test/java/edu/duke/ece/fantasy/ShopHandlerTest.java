@@ -31,14 +31,13 @@ class ShopHandlerTest {
         try(Session session = createSession()){
             (new Initializer()).initialize();
             session.beginTransaction();
-            Shop shop = shopDAO.getRandomShop();
+            Shop shop = shopDAO.createShop();
             ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
             shopRequestMessage.setAction("list");
             shopRequestMessage.setShopID(shop.getId());
 
 
             ShopResultMessage resultMessage = shopHandler.handle(shopRequestMessage);
-            resultMessage.getItems();
             try {
                 logger.info(objectMapper.writeValueAsString(resultMessage));
             } catch (JsonProcessingException e) {
