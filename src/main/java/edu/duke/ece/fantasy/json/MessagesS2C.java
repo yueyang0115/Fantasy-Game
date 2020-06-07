@@ -7,6 +7,7 @@ public class MessagesS2C {
     private BattleResultMessage battleResultMessage;
     private ShopResultMessage shopResultMessage;
     private AttributeResultMessage attributeResultMessage;
+    private InventoryResultMessage inventoryResultMessage;
 
     public MessagesS2C(){ }
 
@@ -70,5 +71,13 @@ public class MessagesS2C {
 
     public void setShopResultMessage(ShopResultMessage shopResultMessage) {
         this.shopResultMessage = shopResultMessage;
+    }
+
+    public InventoryResultMessage getInventoryResultMessage() {
+        return inventoryResultMessage;
+    }
+
+    public void setInventoryResultMessage(InventoryResultMessage inventoryResultMessage) {
+        this.inventoryResultMessage = inventoryResultMessage;
     }
 }

@@ -7,6 +7,7 @@ public class MessagesC2S {
     private BattleRequestMessage battleRequestMessage;
     private ShopRequestMessage shopRequestMessage;
     private AttributeRequestMessage attributeRequestMessage;
+    private InventoryRequestMessage inventoryRequestMessage;
 
     public MessagesC2S(){ }
 
@@ -66,5 +67,13 @@ public class MessagesC2S {
 
     public void setShopRequestMessage(ShopRequestMessage shopRequestMessage) {
         this.shopRequestMessage = shopRequestMessage;
+    }
+
+    public InventoryRequestMessage getInventoryRequestMessage() {
+        return inventoryRequestMessage;
+    }
+
+    public void setInventoryRequestMessage(InventoryRequestMessage inventoryRequestMessage) {
+        this.inventoryRequestMessage = inventoryRequestMessage;
     }
 }

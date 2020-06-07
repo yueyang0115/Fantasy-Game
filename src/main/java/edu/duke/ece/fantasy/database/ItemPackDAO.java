@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 public class ItemPackDAO {
     Session session;
@@ -16,6 +17,13 @@ public class ItemPackDAO {
 
     public void updateItemPack(ItemPack itemPack){
         session.update(itemPack);
+    }
+
+    public ItemPack getItemPack(int id){
+        Query q = session.createQuery("From ItemPack I where I.id =:id");
+        q.setParameter("id", id);
+        ItemPack res = (ItemPack) q.uniqueResult();
+        return res;
     }
 
 }
