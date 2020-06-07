@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,7 +62,8 @@ class ShopHandlerTest {
     }
 
     void handle_buy(Shop shop) {
-        for (ItemPack itemPack : shop.getInventory()) {
+        List<ItemPack> itemPacks = shop.getInventory();
+        for (ItemPack itemPack : itemPacks) {
             int itemPack_id = itemPack.getId();
             int item_amount = itemPack.getAmount();
             int required_money = itemPack.getItem().getCost() * item_amount;
@@ -79,6 +81,7 @@ class ShopHandlerTest {
             // success
             player.setMoney(required_money);
             ShopResultMessage resultMessage = buy_item(player, shop, itemPack_id, item_amount);
+            assertEquals("valid",resultMessage.getResult());
             try {
                 logger.info(objectMapper.writeValueAsString(resultMessage));
             } catch (JsonProcessingException e) {

@@ -33,6 +33,7 @@ public class ShopHandler {
             try {
                 if (validate(shop, player, item_list)) {
                     execute(shop, player, item_list);
+                    result.setResult("valid");
                 }
             } catch (Exception e) {
                 result.setResult("invalid:" + e.getMessage());
@@ -41,6 +42,7 @@ public class ShopHandler {
             try {
                 if (validate(player, shop, item_list)) {
                     execute(player, shop, item_list);
+                    result.setResult("valid");
                 }
             } catch (Exception e) {
                 result.setResult("invalid:" + e.getMessage());
