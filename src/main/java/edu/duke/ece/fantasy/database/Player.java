@@ -136,16 +136,17 @@ public class Player implements Trader {
     }
 
     @Override
-    public void removeItem(ItemPack itemPack, int amount) {
+    public void sellItem(ItemPack itemPack, int amount) {
         int left_amount = itemPack.getAmount() - amount;
         itemPack.setAmount(left_amount);
+        money += amount * itemPack.getItem().getCost();
         if (left_amount == 0) {
             this.getItems().remove(itemPack);
         }
     }
 
     @Override
-    public void addItem(ItemPack select_item, int amount) {
+    public void buyItem(ItemPack select_item, int amount) {
         boolean find = false;
         for (ItemPack item : items) {
             if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item
@@ -154,6 +155,7 @@ public class Player implements Trader {
                 find = true;
             }
         }
+        money -= amount * select_item.getItem().getCost();
         if (!find) {
             ItemPack new_item = new ItemPack(select_item.getItem(), amount);
             addItem(new_item);

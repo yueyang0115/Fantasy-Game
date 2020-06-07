@@ -26,7 +26,7 @@ public class PlayerDAO {
         player.addSoldier(soldier2);
 
         // add default money
-        player.setMoney(100);
+        player.setMoney(2000);
         session.save(player);
 
     }

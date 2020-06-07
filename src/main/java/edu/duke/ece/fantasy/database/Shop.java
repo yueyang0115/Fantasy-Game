@@ -54,7 +54,7 @@ public class Shop extends Building implements Trader{
     }
 
     @Override
-    public void removeItem(ItemPack itemPack, int amount) {
+    public void sellItem(ItemPack itemPack, int amount) {
         int left_amount = itemPack.getAmount() - amount;
         itemPack.setAmount(left_amount);
         if (left_amount == 0) {
@@ -63,7 +63,7 @@ public class Shop extends Building implements Trader{
     }
 
     @Override
-    public void addItem(ItemPack select_item, int amount) {
+    public void buyItem(ItemPack select_item, int amount) {
         boolean find = false;
         for (ItemPack item : inventory) {
             if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item

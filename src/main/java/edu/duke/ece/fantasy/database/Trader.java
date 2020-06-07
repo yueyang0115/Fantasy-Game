@@ -5,7 +5,7 @@ public interface Trader {
 
     public boolean checkItem(ItemPack itemPack, int amount);
 
-    public void removeItem(ItemPack itemPack, int amount);
+    public void sellItem(ItemPack itemPack, int amount);
 
-    public void addItem(ItemPack itemPack, int amount);
+    public void buyItem(ItemPack itemPack, int amount);
 }

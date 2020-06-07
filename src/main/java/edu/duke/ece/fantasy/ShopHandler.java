@@ -77,9 +77,9 @@ public class ShopHandler {
             ItemPack itemPack = itemPackDAO.getItemPack((Integer) item.getKey());
             int amount = (Integer) item.getValue();
             // deduce the amount of item from seller
-            seller.removeItem(itemPack, amount);
+            seller.sellItem(itemPack, amount);
             // add the amount of item to buyer
-            buyer.addItem(itemPack, amount);
+            buyer.buyItem(itemPack, amount);
         }
     }
 
