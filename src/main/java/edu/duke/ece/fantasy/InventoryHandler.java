@@ -16,6 +16,8 @@ public class InventoryHandler {
         InventoryResultMessage resultMessage = new InventoryResultMessage();
         Player player = playerDAO.getPlayer(player_id);
         resultMessage.setItems(player.getItems());
+        resultMessage.setMoney(player.getMoney());
+        resultMessage.setResult("valid");
         return resultMessage;
     }
 }
