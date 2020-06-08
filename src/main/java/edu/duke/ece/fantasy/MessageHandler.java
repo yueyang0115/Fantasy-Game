@@ -7,20 +7,26 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MessageHandler {
     private int wid;
     private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
+    private TCPCommunicator TCPcm;
 
     public MessageHandler() {
+    }
+
+    public MessageHandler(TCPCommunicator TCPcm) {
+        this.TCPcm = TCPcm;
     }
 
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public MessagesS2C handle(MessagesC2S input) {
+    public void handle(MessagesC2S input) {
         MessagesS2C result = new MessagesS2C();
         LoginRequestMessage loginMsg = input.getLoginRequestMessage();
         SignUpRequestMessage signupMsg = input.getSignUpRequestMessage();
@@ -37,11 +43,13 @@ public class MessageHandler {
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
                 playerID = result.getLoginResultMessage().getId();
+                sendResult(result);
             }
 
             if (signupMsg != null) {
                 SignUpHandler sh = new SignUpHandler(session);
                 result.setSignUpResultMessage(sh.handle(signupMsg));
+                sendResult(result);
             }
 
             if (positionMsg != null) {
@@ -51,25 +59,33 @@ public class MessageHandler {
 //                log.info("wid is {} when handle positionMsg",wid);
                 positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg.getX(), positionMsg.getY(), 3, 3));
                 result.setPositionResultMessage(positionResultMessage);
+                sendResult(result);
             }
+
             if (battleMsg != null) {
-                List<BattleResultMessage> results = myBattleHandler.handle(battleMsg, playerID, session);
-                result.setBattleResultMessage(results.get(0));
+                List<BattleResultMessage> battleResults = myBattleHandler.handle(battleMsg, playerID, session);
+                for(BattleResultMessage r: battleResults) {
+                    result.setBattleResultMessage(r);
+                    sendResult(result);
+                }
             }
 
             if (attributeMsg != null) {
                 AttributeHandler ah = new AttributeHandler(session);
                 result.setAttributeResultMessage(ah.handle(attributeMsg, playerID));
+                sendResult(result);
             }
 
             if (shopRequestMessage != null) {
                 ShopHandler shopHandler = new ShopHandler(session);
                 result.setShopResultMessage(shopHandler.handle(shopRequestMessage, playerID));
+                sendResult(result);
             }
 
             if(inventoryRequestMessage != null){
                 InventoryHandler inventoryHandler = new InventoryHandler(session);
                 result.setInventoryResultMessage(inventoryHandler.handle(playerID));
+                sendResult(result);
             }
 
             session.getTransaction().commit();
@@ -80,7 +96,23 @@ public class MessageHandler {
             }
 
         }
-        return result;
+//        return result;
+    }
+
+    public void sendResult(MessagesS2C result){
+        try {
+            this.TCPcm.send(result);
+            if (this.TCPcm.isClosed()) return;
+            String result_str = "";
+            result_str = new ObjectMapper().writeValueAsString(result);
+            System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
+        }
+        catch(IOException e){
+            e.printStackTrace();
+            if(this.TCPcm.isClosed()) {
+                System.out.println("[DEBUG] Client socket might closed, prepare to exit");
+            }
+        }
     }
 
     public int getWid() {
