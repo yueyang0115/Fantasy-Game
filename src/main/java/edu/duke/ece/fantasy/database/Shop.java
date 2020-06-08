@@ -59,6 +59,7 @@ public class Shop extends Building implements Trader{
         itemPack.setAmount(left_amount);
         if (left_amount == 0) {
             this.getInventory().remove(itemPack);
+            itemPack.setShop(null);
         }
     }
 

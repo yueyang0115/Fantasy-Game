@@ -51,6 +51,7 @@ public class ShopHandler {
         session.update(shop);
         session.update(player);
         result.setItems(shop.getInventory());
+        result.setInventoryResultMessage((new InventoryHandler(session)).handle(playerID));
         return result;
     }
 
@@ -80,6 +81,9 @@ public class ShopHandler {
             seller.sellItem(itemPack, amount);
             // add the amount of item to buyer
             buyer.buyItem(itemPack, amount);
+            if (itemPack.getPlayer() == null && itemPack.getShop() == null) {
+                session.delete(itemPack);
+            }
         }
     }
 

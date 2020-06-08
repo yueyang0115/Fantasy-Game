@@ -139,10 +139,11 @@ public class Player implements Trader {
     public void sellItem(ItemPack itemPack, int amount) {
         int left_amount = itemPack.getAmount() - amount;
         itemPack.setAmount(left_amount);
-        money += amount * itemPack.getItem().getCost();
         if (left_amount == 0) {
             this.getItems().remove(itemPack);
+            itemPack.setPlayer(null);
         }
+        money += amount * itemPack.getItem().getCost();
     }
 
     @Override
