@@ -15,8 +15,8 @@ public class Initializer {
             TerrainDAO terrainDAO = new TerrainDAO(session);
             terrainDAO.initialTerrain();
             // initialize item
-            ItemDAO itemDAO = new ItemDAO(session);
-            itemDAO.initial();
+            ConsumableDAO consumableDAO = new ConsumableDAO(session);
+            consumableDAO.initial();
             // initialize shop
 //            List<Item> items = itemDAO.getAllItem();
 //            ShopDAO shopDAO = new ShopDAO(session);

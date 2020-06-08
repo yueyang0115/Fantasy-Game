@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Item")
-public class Item {
+public abstract class Item {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -22,10 +22,6 @@ public class Item {
 
     @Column(name = "cost")
     private int cost;
-
-//    @JsonBackReference
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-//    private List<ItemPack> itemPack;
 
     public Item() {
     }
@@ -54,13 +50,6 @@ public class Item {
         this.cost = cost;
     }
 
-//    public List<ItemPack> getItemPack() {
-//        return itemPack;
-//    }
-//
-//    public void setItemPack(List<ItemPack> itemPack) {
-//        this.itemPack = itemPack;
-//    }
 
     public Item(String name, int cost) {
         this.name = name;

@@ -24,16 +24,16 @@ public class ItemDAO {
         return res;
     }
 
-    public void addItem(String name, int cost) {
-        Item item = getItem(name);
-        if (item == null) {
-            item = new Item(name, cost);
-            session.save(item);
-        }
-    }
-
-    public void initial() {
-        addItem("medicine",10);
-        addItem("sword",200);
-    }
+//    public void addItem(String name, int cost) {
+//        Item item = getItem(name);
+//        if (item == null) {
+//            item = new Item(name, cost);
+//            session.save(item);
+//        }
+//    }
+//
+//    public void initial() {
+//        addItem("medicine",10);
+//        addItem("sword",200);
+//    }
 }
