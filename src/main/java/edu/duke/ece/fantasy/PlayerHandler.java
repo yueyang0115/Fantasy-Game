@@ -19,20 +19,14 @@ public class PlayerHandler extends Thread{
     private UDPCommunicator UDPcommunicator;
     private DBprocessor myDBprocessor;
     private ObjectMapper myObjectMapper;
-    MessageHandler messageHandler = new MessageHandler();
+    MessageHandler messageHandler;
     Logger log = LoggerFactory.getLogger(Player.class);
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
-    }
-
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DBprocessor processor) {
-        this.TCPcommunicator = TCPcm;
-        this.UDPcommunicator = UDPcm;
-        this.myDBprocessor = processor;
-        this.myObjectMapper = new ObjectMapper();
+        this.messageHandler = new MessageHandler(TCPcm);
     }
 
     public void run() {

@@ -89,11 +89,11 @@ public class MessageHandler {
             }
 
             session.getTransaction().commit();
-            try {
-                String tmp = objectMapper.writeValueAsString(result); // fix lazy initialization problem
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                String tmp = objectMapper.writeValueAsString(result); // fix lazy initialization problem
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
         }
 //        return result;
@@ -102,7 +102,9 @@ public class MessageHandler {
     public void sendResult(MessagesS2C result){
         try {
             this.TCPcm.send(result);
-            if (this.TCPcm.isClosed()) return;
+            if (this.TCPcm.isClosed()){
+                return;
+            }
             String result_str = "";
             result_str = new ObjectMapper().writeValueAsString(result);
             System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
@@ -110,7 +112,7 @@ public class MessageHandler {
         catch(IOException e){
             e.printStackTrace();
             if(this.TCPcm.isClosed()) {
-                System.out.println("[DEBUG] Client socket might closed, prepare to exit");
+                System.out.println("[DEBUG] In messageHandler, Client socket might closed, prepare to exit");
             }
         }
     }
