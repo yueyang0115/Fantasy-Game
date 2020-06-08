@@ -21,10 +21,10 @@ public class InventoryHandler {
     }
 
     public InventoryResultMessage handle(InventoryRequestMessage request, int player_id) {
+        // get related object from database
         String action = request.getAction();
         InventoryResultMessage resultMessage = new InventoryResultMessage();
         Player player = playerDAO.getPlayer(player_id);
-
         int item_id = request.getItemPackID();
         ItemPack itemPack = itemPackDAO.getItemPack(item_id);
         Unit unit = unitManager.getUnit(request.getUnitID());
