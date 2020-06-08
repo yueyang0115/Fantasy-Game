@@ -46,8 +46,8 @@ public class Territory {
     @JoinColumn(name = "terrain_id", nullable = false)
     private Terrain terrain;
 
-    @JsonManagedReference
-    @ManyToOne
+    @JsonManagedReference(value = "territory-building")
+    @OneToOne
     @JoinColumn(name = "building_id")
     private Building building;
 
@@ -84,7 +84,7 @@ public class Territory {
 
     public void setBuilding(Building building) {
         this.building = building;
-        building.addTerritory(this);
+        building.setTerritory(this);
     }
 
     public Terrain getTerrain() {

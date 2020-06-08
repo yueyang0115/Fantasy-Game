@@ -11,6 +11,7 @@ public class PositionUpdateHandler {
     TerrainDAO terrainDAO;
     BuildingDAO buildingDAO;
     ShopDAO shopDAO;
+    ItemDAO itemDAO;
 //    int x_block_num;
 //    int y_block_num;
 
@@ -19,6 +20,7 @@ public class PositionUpdateHandler {
         terrainDAO = new TerrainDAO(session);
         buildingDAO = new BuildingDAO(session);
         shopDAO = new ShopDAO(session);
+        itemDAO = new ItemDAO(session);
     }
 
     public List<Territory> handle(int wid, int x, int y, int vision_x, int vision_y) {
@@ -27,7 +29,7 @@ public class PositionUpdateHandler {
         int y_block_num = 20;
         int x_size = x_block_num * 10;
         int y_size = y_block_num * 10;
-        int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5); // calculate the game map index and mapping the generated tileSet index to it
+        int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5); // used for converting the generated tileSet index to game map index
         int start_y = (y / y_size) * y_size + ((y > 0) ? 5 : -5);
         int dir_x = (x > 0) ? 10 : -10;
         int dir_y = (y > 0) ? 10 : -10;
@@ -38,20 +40,21 @@ public class PositionUpdateHandler {
             TerritoryBlock[][] new_map = tileGenerator.GenerateTileSet();
             for (int i = 0; i < y_block_num; i++) {
                 for (int j = 0; j < x_block_num; j++) {
+                    int new_x = new_map[i][j].getX() * dir_x + start_x;
+                    int new_y = new_map[i][j].getY() * dir_y + start_y;
                     // add terrain
                     Terrain terrain = terrainDAO.getTerrain(new_map[i][j].getType());
                     // add monster
                     List<Monster> monsters = new ArrayList<>();
-                    if (terrain.getType().equals("mountain")) {
+                    if (terrain.getType().equals("mountain") && !(new_x == x && new_y == y)) {
                         monsters.add(new Monster("wolf", 10, 10, 10));
                     }
-                    int new_x = new_map[i][j].getX() * dir_x + start_x;
-                    int new_y = new_map[i][j].getY() * dir_y + start_y;
                     Territory territory = territoryDAO.addTerritory(wid, new_x, new_y, "unexplored", terrain, monsters);
                     // add building
-                    Building building = buildingDAO.getBuilding("shop");
                     if ((territory.getTerrain().getType().equals("grass") && randomGenerator.getRandomResult(30)) || (new_x == x && new_y == y)) {
-                        territoryDAO.addBuildingToTerritory(territory, building);
+                        // create shop
+                        Shop shop = shopDAO.createShop();
+                        territoryDAO.addBuildingToTerritory(territory, shop);
                     }
                 }
             }

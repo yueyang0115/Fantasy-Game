@@ -23,9 +23,9 @@ public class Item {
     @Column(name = "cost")
     private int cost;
 
-    @JsonBackReference
-    @ManyToMany(mappedBy = "inventory")
-    private List<Shop> shop_list = new ArrayList<>();
+//    @JsonBackReference
+//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+//    private List<ItemPack> itemPack;
 
     public Item() {
     }
@@ -54,17 +54,13 @@ public class Item {
         this.cost = cost;
     }
 
-    public List<Shop> getShop_list() {
-        return shop_list;
-    }
-
-    public void setShop_list(List<Shop> shop_list) {
-        this.shop_list = shop_list;
-    }
-
-    public void addShop(Shop shop){
-        shop_list.add(shop);
-    }
+//    public List<ItemPack> getItemPack() {
+//        return itemPack;
+//    }
+//
+//    public void setItemPack(List<ItemPack> itemPack) {
+//        this.itemPack = itemPack;
+//    }
 
     public Item(String name, int cost) {
         this.name = name;

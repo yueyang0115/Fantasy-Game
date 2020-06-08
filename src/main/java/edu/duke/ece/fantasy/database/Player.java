@@ -17,8 +17,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 
 @Entity
-@Table( name = "Player" )
-public class Player {
+@Table(name = "Player")
+public class Player implements Trader {
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -26,19 +26,25 @@ public class Player {
     @Column(name = "ID", unique = true, nullable = false)
     private int id;
 
-
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "WID",columnDefinition="serial", unique = true,insertable = false, updatable = false,nullable = false)
+    @Column(name = "money")
+    private int money;
+
+    @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
     private int wid;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
+
+    @JsonManagedReference(value = "player-items")
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    private List<ItemPack> items = new ArrayList<>();
 
     public Player(String username, String password) {
         this.username = username;
@@ -91,5 +97,69 @@ public class Player {
     public void addSoldier(Soldier soldier) {
         soldier.setPlayer(this);
         this.soldiers.add(soldier);
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public List<ItemPack> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemPack> items) {
+        this.items = items;
+    }
+
+    public void addItem(ItemPack item) {
+        items.add(item);
+        item.setPlayer(this);
+    }
+
+    @Override
+    public boolean checkMoney(int required_money) {
+        return money >= required_money;
+    }
+
+    @Override
+    public boolean checkItem(ItemPack itemPack, int amount) {
+        for (ItemPack item : items) {
+            if (item.getItem().getId() == itemPack.getItem().getId()) { // if have this type of item
+                return item.getAmount() >= amount;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void sellItem(ItemPack itemPack, int amount) {
+        int left_amount = itemPack.getAmount() - amount;
+        itemPack.setAmount(left_amount);
+        if (left_amount == 0) {
+            this.getItems().remove(itemPack);
+            itemPack.setPlayer(null);
+        }
+        money += amount * itemPack.getItem().getCost();
+    }
+
+    @Override
+    public void buyItem(ItemPack select_item, int amount) {
+        boolean find = false;
+        for (ItemPack item : items) {
+            if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item
+                int init_amount = item.getAmount();
+                item.setAmount(init_amount + amount);
+                find = true;
+            }
+        }
+        money -= amount * select_item.getItem().getCost();
+        if (!find) {
+            ItemPack new_item = new ItemPack(select_item.getItem(), amount);
+            addItem(new_item);
+        }
     }
 }

@@ -3,17 +3,47 @@ package edu.duke.ece.fantasy.database;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class ShopDAO {
     Session session;
+    ItemDAO itemDAO;
 
     public ShopDAO(Session session) {
         this.session = session;
+        itemDAO = new ItemDAO(session);
     }
 
-    public Shop addShop(String name){
+    public Shop createShop(){
+        List<Item> items = itemDAO.getAllItem();
+        List<ItemPack> itemPacks = new ArrayList<>();
+        for(Item item:items){
+            itemPacks.add(new ItemPack(item,20));
+        }
+        Shop shop = new Shop();
+        for(ItemPack itemPack:itemPacks){
+            shop.addInventory(itemPack);
+        }
+        session.save(shop);
+        return shop;
+    }
+
+    public Shop addShop(int territory_id, List<ItemPack> items) {
+        Shop shop = getShopByTerritoryID(territory_id);
+        if (shop == null) {
+            shop = new Shop("shop");
+//            shop.setInventory(items);
+            for(ItemPack item:items){
+                shop.addInventory(item);
+            }
+            session.save(shop);
+        }
+        return shop;
+    }
+
+    public Shop addShop(String name) {
         Shop shop = getShop(name);
         if (shop == null) {
             shop = new Shop(name);
@@ -29,7 +59,7 @@ public class ShopDAO {
         return res;
     }
 
-    public Shop getShopByTerritoryID(int territory_id){
+    public Shop getShopByTerritoryID(int territory_id) {
         Query q = session.createQuery("From Shop s where s.territories =:id");
         q.setParameter("id", territory_id);
         Shop res = (Shop) q.uniqueResult();
@@ -51,10 +81,10 @@ public class ShopDAO {
         return res;
     }
 
-    public void initialShop(List<Item> items) {
-        Shop shop = addShop("shop");
-        for (Item item:items){
-            shop.addInventory(item);
-        }
-    }
+//    public void initialShop(List<Item> items) {
+//        Shop shop = addShop("shop");
+//        for (Item item:items){
+//            shop.addInventory(item);
+//        }
+//    }
 }

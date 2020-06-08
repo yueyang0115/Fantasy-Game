@@ -1,9 +1,11 @@
 package edu.duke.ece.fantasy.json;
 
+import java.util.Map;
+
 public class ShopRequestMessage {
     private int shopID;
     private int territoryID;
-    private int itemID;
+    private Map<Integer,Integer> itemMap;
     private String action;//"list""buy""sell"
 
     public ShopRequestMessage() {
@@ -33,11 +35,11 @@ public class ShopRequestMessage {
         this.action = action;
     }
 
-    public int getItemID() {
-        return itemID;
+    public Map<Integer, Integer> getItemMap() {
+        return itemMap;
     }
 
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
+    public void setItemMap(Map<Integer, Integer> itemMap) {
+        this.itemMap = itemMap;
     }
 }
