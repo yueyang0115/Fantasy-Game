@@ -1,7 +1,10 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="Unit")
@@ -25,7 +28,9 @@ public abstract class Unit{
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
-
+    @JsonManagedReference
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+    private List<Equipment> equipment = new ArrayList<>();
 
     public int getId() {
         return id;

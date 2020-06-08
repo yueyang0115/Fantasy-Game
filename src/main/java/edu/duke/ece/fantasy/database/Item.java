@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name = "Item")
 public abstract class Item {
     @Id
