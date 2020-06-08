@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
@@ -51,7 +52,9 @@ public class ShopHandler {
         session.update(shop);
         session.update(player);
         result.setItems(shop.getInventory());
-        result.setInventoryResultMessage((new InventoryHandler(session)).handle(playerID));
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("list");
+        result.setInventoryResultMessage((new InventoryHandler(session)).handle(inventoryRequestMessage, playerID));
         return result;
     }
 

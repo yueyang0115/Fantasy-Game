@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Item")
-public class Item {
+public abstract class Item {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -66,4 +66,6 @@ public class Item {
         this.name = name;
         this.cost = cost;
     }
+
+    public abstract void useItem(Unit unit);
 }
