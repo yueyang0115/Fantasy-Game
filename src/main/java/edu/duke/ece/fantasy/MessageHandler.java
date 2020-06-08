@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 public class MessageHandler {
     private int wid;
     private int playerID;
+    private BattleHandler myBattleHandler = new BattleHandler();
 
     public MessageHandler() {
     }
@@ -49,10 +50,8 @@ public class MessageHandler {
                 positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg.getX(), positionMsg.getY(), 3, 3));
                 result.setPositionResultMessage(positionResultMessage);
             }
-
             if (battleMsg != null) {
-                BattleHandler bh = new BattleHandler(session);
-                result.setBattleResultMessage(bh.handle(battleMsg, playerID));
+                result.setBattleResultMessage(myBattleHandler.handle(battleMsg, playerID, session));
             }
 
             if (attributeMsg != null) {
