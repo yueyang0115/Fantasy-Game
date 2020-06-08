@@ -40,12 +40,14 @@ public class InventoryHandler {
                 if (itemPack.getPlayer() == null) {
                     session.delete(itemPack);
                 }
+                session.update(player);
+                session.update(unit);
+                resultMessage.setResult("valid");
             } catch (Exception e) {
-
+                resultMessage.setResult("invalid:" + e.getMessage());
             }
         }
-        session.update(player);
-        session.update(unit);
+
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
         resultMessage.setAttributeResultMessage((new AttributeHandler(session)).handle(attributeRequestMessage, player_id));
         resultMessage.setItems(player.getItems());
