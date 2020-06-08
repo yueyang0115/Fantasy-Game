@@ -80,8 +80,8 @@ class ShopHandlerTest {
 
             // success
             player.setMoney(required_money);
-            ShopResultMessage resultMessage = buy_item(player, shop, itemPack_id, item_amount);
-            assertEquals("valid",resultMessage.getResult());
+            ShopResultMessage resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
+            assertEquals("valid", resultMessage.getResult());
             try {
                 logger.info(objectMapper.writeValueAsString(resultMessage));
             } catch (JsonProcessingException e) {
