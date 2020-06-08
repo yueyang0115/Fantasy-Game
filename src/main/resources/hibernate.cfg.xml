@@ -36,5 +36,6 @@
         <mapping class="edu.duke.ece.fantasy.database.Terrain"/>
         <mapping class="edu.duke.ece.fantasy.database.Player"/>
         <mapping class="edu.duke.ece.fantasy.database.Consumable"/>
+        <mapping class="edu.duke.ece.fantasy.database.Equipment"/>
     </session-factory>
 </hibernate-configuration>
