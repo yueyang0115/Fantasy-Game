@@ -25,6 +25,8 @@ public abstract class Unit{
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
+
+
     public int getId() {
         return id;
     }

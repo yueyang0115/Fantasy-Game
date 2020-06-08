@@ -120,6 +120,20 @@ public class Player implements Trader {
         item.setPlayer(this);
     }
 
+    private void reduceItem(ItemPack itemPack, int amount) {
+        int left_amount = itemPack.getAmount() - amount;
+        itemPack.setAmount(left_amount);
+        if (left_amount == 0) {
+            this.getItems().remove(itemPack);
+            itemPack.setPlayer(null);
+        }
+    }
+
+    public void useItem(ItemPack itemPack, int amount, Unit unit) {
+        reduceItem(itemPack, amount);
+        itemPack.getItem().useItem(unit);
+    }
+
     @Override
     public boolean checkMoney(int required_money) {
         return money >= required_money;
@@ -137,12 +151,7 @@ public class Player implements Trader {
 
     @Override
     public void sellItem(ItemPack itemPack, int amount) {
-        int left_amount = itemPack.getAmount() - amount;
-        itemPack.setAmount(left_amount);
-        if (left_amount == 0) {
-            this.getItems().remove(itemPack);
-            itemPack.setPlayer(null);
-        }
+        reduceItem(itemPack, amount);
         money += amount * itemPack.getItem().getCost();
     }
 
