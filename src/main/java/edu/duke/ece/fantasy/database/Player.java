@@ -134,6 +134,10 @@ public class Player implements Trader {
         itemPack.getItem().useItem(unit);
     }
 
+    public void dropItem(ItemPack itemPack, int amount) {
+        reduceItem(itemPack, amount);
+    }
+
     @Override
     public boolean checkMoney(int required_money) {
         return money >= required_money;
@@ -159,14 +163,14 @@ public class Player implements Trader {
     public void buyItem(ItemPack select_item, int amount) {
         boolean find = false;
         for (ItemPack item : items) {
-            if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item
+            if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item, add amount to existing object
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
             }
         }
         money -= amount * select_item.getItem().getCost();
-        if (!find) {
+        if (!find) { // if don't have this type of item, create object
             ItemPack new_item = new ItemPack(select_item.getItem(), amount);
             addItem(new_item);
         }

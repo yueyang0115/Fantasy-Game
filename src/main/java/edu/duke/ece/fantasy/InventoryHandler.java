@@ -28,11 +28,10 @@ public class InventoryHandler {
         int item_id = request.getItemPackID();
         ItemPack itemPack = itemPackDAO.getItemPack(item_id);
         Unit unit = unitManager.getUnit(request.getUnitID());
-
-        if (action.equals("list")) {
-            resultMessage.setResult("valid");
-        } else if (action.equals("use")) {
-            try {
+        try {
+            if (action.equals("list")) {
+                resultMessage.setResult("valid");
+            } else if (action.equals("use")) {
                 if (validate(player, itemPack)) {
                     player.useItem(itemPack, 1, unit);
                 }
@@ -43,9 +42,19 @@ public class InventoryHandler {
                 session.update(player);
                 session.update(unit);
                 resultMessage.setResult("valid");
-            } catch (Exception e) {
-                resultMessage.setResult("invalid:" + e.getMessage());
+            } else if (action.equals("drop")) {
+                if (validate(player, itemPack)) {
+                    player.dropItem(itemPack, 1);
+                }
+                // remove itempack from database if don't belongs to the player
+                if (itemPack.getPlayer() == null) {
+                    session.delete(itemPack);
+                }
+                session.update(player);
+                resultMessage.setResult("valid");
             }
+        } catch (Exception e) {
+            resultMessage.setResult("invalid:" + e.getMessage());
         }
 
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();

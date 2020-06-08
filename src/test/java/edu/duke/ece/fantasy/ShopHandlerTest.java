@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.management.PlatformLoggingMXBean;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ class ShopHandlerTest {
             session.beginTransaction();
             PlayerDAO playerDAO = new PlayerDAO(session);
             playerDAO.addPlayer("test", "test");
+
             Shop shop = shopDAO.createShop();
 
             handle_list(shop);
@@ -68,7 +70,6 @@ class ShopHandlerTest {
             int item_amount = itemPack.getAmount();
             int required_money = itemPack.getItem().getCost() * item_amount;
             Player player = playerDAO.getPlayer("test");
-
 
             // Don't have enough money
             player.setMoney(required_money - 1);
