@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class MessageHandler {
     private int wid;
     private int playerID;
@@ -51,7 +53,8 @@ public class MessageHandler {
                 result.setPositionResultMessage(positionResultMessage);
             }
             if (battleMsg != null) {
-                result.setBattleResultMessage(myBattleHandler.handle(battleMsg, playerID, session));
+                List<BattleResultMessage> results = myBattleHandler.handle(battleMsg, playerID, session);
+                result.setBattleResultMessage(results.get(0));
             }
 
             if (attributeMsg != null) {

@@ -20,7 +20,9 @@ public class BattleHandler {
     public BattleHandler() {
     }
 
-    public BattleResultMessage handle(BattleRequestMessage request, int playerID, Session session){
+    //return a list of battleResult because doBattle may contain results of multiple rounds
+    public List<BattleResultMessage> handle(BattleRequestMessage request, int playerID, Session session){
+        List<BattleResultMessage> allResults = new ArrayList<>();
         this.session = session;
         myMonsterManger = new MonsterManger(session);
         mySoldierManger = new SoldierManger(session);
@@ -30,10 +32,12 @@ public class BattleHandler {
         if(action.equals("escape")){
             BattleResultMessage result = new BattleResultMessage();
             result.setResult("escaped");
-            return result;
+            allResults.add(result);
+            return allResults;
         }
         else if(action.equals("start")){
-            return doStart(request, playerID);
+            allResults.add(doStart(request,playerID));
+            return allResults;
         }
         else {
             return doBattle(request, playerID);
@@ -88,21 +92,33 @@ public class BattleHandler {
         return unitIDList;
     }
 
-    // handle "attack" message, use existing unitQueue and modify it*/
-    public BattleResultMessage doBattle(BattleRequestMessage request, int playerID){
-        BattleResultMessage result = new BattleResultMessage();
-
+    // handle "attack" message, use existing unitQueue and modify it
+    public List<BattleResultMessage> doBattle(BattleRequestMessage request, int playerID) {
+        List<BattleResultMessage> allResults = new ArrayList<>();
         int territoryID = request.getTerritoryID();
         int attackeeID = request.getAttackeeID();
         int attackerID = request.getAttackerID();
-        int deletedID = -1;
+        allResults.add(doBattleOnce(attackerID,attackeeID,territoryID,playerID));
 
+        //if the next attacker in UnitQueue is monster, server do another monster attack
+        while(this.unitQueue.peek() instanceof Monster){
+            attackerID = this.unitQueue.peek().getId();
+            attackeeID = request.getAttackerID();
+            allResults.add(doBattleOnce(attackerID,attackeeID,territoryID,playerID));
+        }
+
+        return allResults;
         //check whether the monster exist in the territory
 //        Monster monster = myMonsterManger.getMonster(attackeeID);
 //        if(monster == null || monster.getTerritory().getId() != territoryID){
 //            result.setResult("invalid");
 //            return result;
 //        }
+    }
+
+    public BattleResultMessage doBattleOnce(int attackerID, int attackeeID, int territoryID, int playerID){
+        BattleResultMessage result = new BattleResultMessage();
+        int deletedID = -1;
 
         //begin battle
         Unit attacker = myUnitManager.getUnit(attackerID);
