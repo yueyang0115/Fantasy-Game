@@ -1,7 +1,6 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.TerrainDAO;
 import org.hibernate.Session;
 
 import java.io.*;

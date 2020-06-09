@@ -2,7 +2,6 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.TerrainDAO;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.database.TerritoryDAO;
 import org.hibernate.Session;
@@ -14,12 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PositionUpdateHandlerTest {
     PositionUpdateHandler positionUpdateHandler;
-    TerrainDAO terrainDAO;
+
 
     Session createSession() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         positionUpdateHandler = new PositionUpdateHandler(session);
-        terrainDAO = new TerrainDAO(session);
         return session;
     }
 
@@ -28,7 +26,6 @@ class PositionUpdateHandlerTest {
         try(Session session = createSession()){
             (new Initializer()).initialize();
             session.beginTransaction();
-            terrainDAO.initialTerrain();
             TerritoryHandlerTest th = new TerritoryHandlerTest();
             List<Territory> res = positionUpdateHandler.handle(1,-15,15,3,3);
             th.printAsJson(res);

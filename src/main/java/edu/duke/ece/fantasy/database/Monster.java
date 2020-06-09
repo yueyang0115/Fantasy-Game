@@ -17,10 +17,10 @@ public class Monster extends Unit{
     @Column(name = "monster_type", unique = false, nullable = false, length = 100)
     private String m_type;
 
-    @JsonBackReference
+  /*@JsonBackReference
     @ManyToOne
     @JoinColumn(name="territory_id", nullable=false)
-    private Territory territory;
+    private Territory territory;*/
 
     public Monster(){
 
@@ -48,14 +48,14 @@ public class Monster extends Unit{
         this.m_type = type;
     }
 
-    public Territory getTerritory() {
-        return territory;
+  /*public Territory getTerritory() {
+    return territory;
     }
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
     }
-
+  */
     public JSONObject toJSON(){
         JSONObject monster_obj = new JSONObject();
 //        monster_obj.put("id",id);

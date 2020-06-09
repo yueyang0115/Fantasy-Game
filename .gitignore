@@ -9,3 +9,5 @@ build
 scripts/coverage
 
 /coverage
+
+*~

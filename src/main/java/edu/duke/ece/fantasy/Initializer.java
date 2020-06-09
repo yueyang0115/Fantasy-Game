@@ -12,8 +12,6 @@ public class Initializer {
             // initialize database
             session.beginTransaction();
             // initialize terrain
-            TerrainDAO terrainDAO = new TerrainDAO(session);
-            terrainDAO.initialTerrain();
             // initialize item
             ItemDAO itemDAO = new ItemDAO(session);
             itemDAO.initial();
