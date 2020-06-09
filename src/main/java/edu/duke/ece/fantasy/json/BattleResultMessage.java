@@ -8,6 +8,7 @@ public class BattleResultMessage {
     private List<Monster> monsters = new ArrayList<>(); //all monsters in the territory
     private List<Soldier> soldiers = new ArrayList<>(); //all soldiers the player has
     private String result; //status: "win","lose","continue","escaped","invalid"
+    private BattleAction battleAction;
 
     /* unitIDs: records units's ID engaged in the battle, first sorted by unit's speed,
     the units will take turns to attack in the order of the list,
@@ -51,4 +52,8 @@ public class BattleResultMessage {
     public List<Integer> getUnitIDs() { return unitIDs; }
 
     public void setUnitIDs(List<Integer> unitIDs) { this.unitIDs = unitIDs; }
+
+    public BattleAction getBattleAction() { return battleAction; }
+
+    public void setBattleAction(BattleAction battleAction) { this.battleAction = battleAction; }
 }

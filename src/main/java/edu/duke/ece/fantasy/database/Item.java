@@ -24,10 +24,6 @@ public abstract class Item {
     @Column(name = "cost")
     private int cost;
 
-//    @JsonBackReference
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-//    private List<ItemPack> itemPack;
-
     public Item() {
     }
 
@@ -55,13 +51,6 @@ public abstract class Item {
         this.cost = cost;
     }
 
-//    public List<ItemPack> getItemPack() {
-//        return itemPack;
-//    }
-//
-//    public void setItemPack(List<ItemPack> itemPack) {
-//        this.itemPack = itemPack;
-//    }
 
     public Item(String name, int cost) {
         this.name = name;

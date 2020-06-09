@@ -79,6 +79,7 @@ public class TCPCommunicator {
             res = objectMapper.readValue(in, MessagesC2S.class);
             recvfailNum = 0;
         } catch (IOException e) {
+            recvfailNum++;
             if(recvfailNum > 2){
                 recvfailNum = 0;
                 isShutdown = true;

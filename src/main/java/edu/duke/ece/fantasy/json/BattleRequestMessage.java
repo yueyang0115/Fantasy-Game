@@ -2,17 +2,14 @@ package edu.duke.ece.fantasy.json;
 
 public class BattleRequestMessage {
     private int territoryID;
-    private int attackeeID;
-    private int attackerID;
     private String action;//"attack" "escape" "start"
+    private BattleAction battleAction; //inclide attackerID, attackeeID, action("normal, magical")
 
     public BattleRequestMessage() {
     }
 
-    public BattleRequestMessage(int territoryID, int attackeeID, int attackerID, String action) {
+    public BattleRequestMessage(int territoryID, String action, BattleAction battleAction) {
         this.territoryID = territoryID;
-        this.attackeeID = attackeeID;
-        this.attackerID = attackerID;
         this.action = action;
     }
 
@@ -24,20 +21,12 @@ public class BattleRequestMessage {
         this.territoryID = territoryID;
     }
 
-    public int getAttackeeID() {
-        return attackeeID;
+    public BattleAction getBattleAction() {
+        return battleAction;
     }
 
-    public void setAttackeeID(int attackeeID) {
-        this.attackeeID = attackeeID;
-    }
-
-    public int getAttackerID() {
-        return attackerID;
-    }
-
-    public void setAttackerID(int attackerID) {
-        this.attackerID = attackerID;
+    public void setBattleAction(BattleAction battleAction) {
+        this.battleAction = battleAction;
     }
 
     public String getAction() {

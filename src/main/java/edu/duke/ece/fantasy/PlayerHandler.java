@@ -19,20 +19,14 @@ public class PlayerHandler extends Thread{
     private UDPCommunicator UDPcommunicator;
     private DBprocessor myDBprocessor;
     private ObjectMapper myObjectMapper;
-    MessageHandler messageHandler = new MessageHandler();
+    MessageHandler messageHandler;
     Logger log = LoggerFactory.getLogger(Player.class);
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
-    }
-
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm, DBprocessor processor) {
-        this.TCPcommunicator = TCPcm;
-        this.UDPcommunicator = UDPcm;
-        this.myDBprocessor = processor;
-        this.myObjectMapper = new ObjectMapper();
+        this.messageHandler = new MessageHandler(TCPcm);
     }
 
     public void run() {
@@ -49,14 +43,10 @@ public class PlayerHandler extends Thread{
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
 //                Instant start = Instant.now();
 
-                MessagesS2C result = messageHandler.handle(request);
+                messageHandler.handle(request);
                 wid = messageHandler.getWid();
-
-                TCPcommunicator.send(result);
                 if(TCPcommunicator.isClosed()) break;
-                String result_str = "";
-                result_str = myObjectMapper.writeValueAsString(result);
-                System.out.println("[DEBUG] TCPcommunicator successfully send " +result_str);
+
 //                Instant end = Instant.now();
 //                Duration timeElapsed  = Duration.between(start,end);
 //                log.info("time used in handling message is {} Nanoseconds",timeElapsed.getNano());
