@@ -29,17 +29,18 @@ class InventoryHandlerTest {
     Logger logger = LoggerFactory.getLogger(InventoryHandlerTest.class);
 
     InventoryHandlerTest() {
+        (new Initializer()).initialize();
         session = HibernateUtil.getSessionFactory().openSession();
         itemDAO = new ItemDAO(session);
         playerDAO = new PlayerDAO(session);
         itemPackDAO = new ItemPackDAO(session);
         inventoryHandler = new InventoryHandler(session);
         items = itemDAO.getAllItem();
+
     }
 
     void initial_player() {
-//        List<Item> items = itemDAO.getAllItem();
-//        List<ItemPack> itemPacks = new ArrayList<>();
+        session.beginTransaction();
         for (Item item : items) {
             itemPacks.add(new ItemPack(item, 20));
         }
@@ -48,7 +49,8 @@ class InventoryHandlerTest {
         for (ItemPack itemPack : itemPacks) {
             player.addItem(itemPack);
         }
-        session.save(player);
+        session.update(player);
+        session.getTransaction().commit();
     }
 
     @Test
