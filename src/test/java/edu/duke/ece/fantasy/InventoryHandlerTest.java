@@ -1,10 +1,16 @@
 package edu.duke.ece.fantasy;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.json.InventoryRequestMessage;
+import edu.duke.ece.fantasy.json.InventoryResultMessage;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +19,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InventoryHandlerTest {
     ItemDAO itemDAO;
+    ItemPackDAO itemPackDAO;
     PlayerDAO playerDAO;
     Session session;
+    InventoryHandler inventoryHandler;
+    List<Item> items;
+    List<ItemPack> itemPacks = new ArrayList<>();
+    ObjectMapper objectMapper = new ObjectMapper();
+    Logger logger = LoggerFactory.getLogger(InventoryHandlerTest.class);
 
     InventoryHandlerTest() {
         session = HibernateUtil.getSessionFactory().openSession();
         itemDAO = new ItemDAO(session);
         playerDAO = new PlayerDAO(session);
+        itemPackDAO = new ItemPackDAO(session);
+        inventoryHandler = new InventoryHandler(session);
+        items = itemDAO.getAllItem();
     }
 
     void initial_player() {
-        List<Item> items = itemDAO.getAllItem();
-        List<ItemPack> itemPacks = new ArrayList<>();
+//        List<Item> items = itemDAO.getAllItem();
+//        List<ItemPack> itemPacks = new ArrayList<>();
         for (Item item : items) {
             itemPacks.add(new ItemPack(item, 20));
         }
@@ -45,23 +60,42 @@ class InventoryHandlerTest {
 
 
     void handle_list() {
-//        ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-//        shopRequestMessage.setShopID(shop.getId());
-//        shopRequestMessage.setAction("list");
-//
-//        ShopResultMessage resultMessage = shopHandler.handle(shopRequestMessage, player.getId());
-//
-//        assertEquals("valid", resultMessage.getResult());
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("list");
+        Player player = playerDAO.getPlayer("test");
+        InventoryResultMessage resultMessage = new InventoryResultMessage();
 
+        for (ItemPack itemPack : itemPacks) {
+            int itemPack_id = itemPack.getId();
+            inventoryRequestMessage.setItemPackID(itemPack_id);
+            resultMessage = inventoryHandler.handle(inventoryRequestMessage, player.getId());
+            assertEquals("valid", resultMessage.getResult());
+        }
+        try {
+            logger.info(objectMapper.writeValueAsString(resultMessage));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     void handle_use(){
-//        ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-//        shopRequestMessage.setShopID(shop.getId());
-//        shopRequestMessage.setAction("use");
-//
-//        ShopResultMessage resultMessage = shopHandler.handle(shopRequestMessage, player.getId());
-//
-//        assertEquals(19,amount);
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("use");
+        Player player = playerDAO.getPlayer("test");
+        InventoryResultMessage resultMessage = new InventoryResultMessage();
+
+        for (ItemPack itemPack : itemPacks) {
+            int i = 19;
+            int itemPack_id = itemPack.getId();
+            inventoryRequestMessage.setItemPackID(itemPack_id);
+            resultMessage = inventoryHandler.handle(inventoryRequestMessage, player.getId());
+            assertEquals(i--,itemPack.getAmount());
+        }
+        try {
+            logger.info(objectMapper.writeValueAsString(resultMessage));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
     }
 }
