@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name = "Item")
-public class Item {
+public abstract class Item {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -22,10 +23,6 @@ public class Item {
 
     @Column(name = "cost")
     private int cost;
-
-    @JsonBackReference
-    @ManyToMany(mappedBy = "inventory")
-    private List<Shop> shop_list = new ArrayList<>();
 
     public Item() {
     }
@@ -54,20 +51,11 @@ public class Item {
         this.cost = cost;
     }
 
-    public List<Shop> getShop_list() {
-        return shop_list;
-    }
-
-    public void setShop_list(List<Shop> shop_list) {
-        this.shop_list = shop_list;
-    }
-
-    public void addShop(Shop shop){
-        shop_list.add(shop);
-    }
 
     public Item(String name, int cost) {
         this.name = name;
         this.cost = cost;
     }
+
+    public abstract void useItem(Unit unit);
 }

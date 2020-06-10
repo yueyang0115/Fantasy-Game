@@ -25,7 +25,16 @@ public class PlayerDAO {
         player.addSoldier(soldier);
         player.addSoldier(soldier2);
 
+        // add default money
+        player.setMoney(2000);
         session.save(player);
+
+    }
+
+    public Player getPlayer(int id){
+        Query q = session.createQuery("From Player U where U.id =:id");
+        q.setParameter("id", id);
+        return (Player) q.uniqueResult();
     }
 
     public Player getPlayer(String username) {

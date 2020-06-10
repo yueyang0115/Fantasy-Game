@@ -22,7 +22,7 @@
         <property name="show_sql">false</property>
 
         <!-- Update database on startup -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
 
         <!-- Annotated entity classes -->
 
@@ -33,9 +33,12 @@
         <mapping class="edu.duke.ece.fantasy.database.Building"/>
         <mapping class="edu.duke.ece.fantasy.database.Shop"/>
         <mapping class="edu.duke.ece.fantasy.database.Item"/>
-        <mapping class="edu.duke.ece.fantasy.database.Player"/>
         <mapping class="edu.duke.ece.fantasy.database.Tile"/>
         <mapping class="edu.duke.ece.fantasy.database.WorldInfo"/>
-
+        <mapping class="edu.duke.ece.fantasy.database.Consumable"/>
+        <mapping class="edu.duke.ece.fantasy.database.Equipment"/>
+        <mapping class="edu.duke.ece.fantasy.database.ItemPack"/>
+        <mapping class="edu.duke.ece.fantasy.database.Player"/>
+        <mapping class="edu.duke.ece.fantasy.database.Consumable"/>
     </session-factory>
 </hibernate-configuration>

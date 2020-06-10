@@ -1,12 +1,16 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name="Unit")
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Unit{
+@Table(name = "Unit")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Unit {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -25,6 +29,10 @@ public abstract class Unit{
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+    private List<Equipment> equipment = new ArrayList<>();
+
     public int getId() {
         return id;
     }
@@ -33,13 +41,21 @@ public abstract class Unit{
         this.id = id;
     }
 
-    public String getType() { return u_type; }
+    public String getType() {
+        return u_type;
+    }
 
-    public void setType(String type) { this.u_type = type; }
+    public void setType(String type) {
+        this.u_type = type;
+    }
 
-    public int getSpeed() { return speed; }
+    public int getSpeed() {
+        return speed;
+    }
 
-    public void setSpeed(int speed) { this.speed = speed; }
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     public int getHp() {
         return hp;
@@ -57,4 +73,16 @@ public abstract class Unit{
         this.atk = atk;
     }
 
+    public void addEquipment(Equipment equipment) {
+        this.equipment.add(equipment);
+        equipment.setUnit(this);
     }
+
+    public List<Equipment> getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(List<Equipment> equipment) {
+        this.equipment = equipment;
+    }
+}

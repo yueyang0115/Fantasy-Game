@@ -25,8 +25,8 @@ public class Territory {
   */
     private String terrainType;
 
-    @JsonManagedReference
-    @ManyToOne
+    @JsonManagedReference(value = "territory-building")
+    @OneToOne
     @JoinColumn(name = "building_id")
     private Building building;
 
@@ -58,7 +58,7 @@ public class Territory {
 
     public void setBuilding(Building building) {
         this.building = building;
-        building.addTerritory(this);
+        building.setTerritory(this);
     }
 
     public String getTerrain() {

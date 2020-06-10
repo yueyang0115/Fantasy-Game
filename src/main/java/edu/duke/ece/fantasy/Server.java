@@ -23,6 +23,7 @@ public class Server {
             System.out.println("[DEBUG] Successfully built TCPserver");
         } catch (IOException e) {
             System.out.println("[DEBUG] Failed to build TCPserver");
+            e.printStackTrace();
         }
         this.UDPport = udpPort;
         try {
@@ -30,6 +31,7 @@ public class Server {
             System.out.println("[DEBUG] Successfully built UDPserver");
         } catch (IOException e) {
             System.out.println("[DEBUG] Failed to build UDPserver");
+            e.printStackTrace();
         }
         this.playerHandlerList = new ArrayList<>();
         //this.myMockDBprocessor = new MockDBprocessor();
