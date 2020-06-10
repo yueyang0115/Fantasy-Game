@@ -45,10 +45,10 @@ public class TileTest {
     TileInfo test = new TileInfo("test", inp, true, edgeTags);
     TileInfo t2 = test.rotate(mapping);
     //check that edges came out right.
-    assertEquals("north", t2.getEdgeTag(TileInfo.EAST));
-    assertEquals("east",t2.getEdgeTag(TileInfo.SOUTH));
-    assertEquals("south",t2.getEdgeTag(TileInfo.WEST));
-    assertEquals("west",t2.getEdgeTag(TileInfo.NORTH));
+    assertEquals("north:r", t2.getEdgeTag(TileInfo.EAST));
+    assertEquals("east:r",t2.getEdgeTag(TileInfo.SOUTH));
+    assertEquals("south:r",t2.getEdgeTag(TileInfo.WEST));
+    assertEquals("west:r",t2.getEdgeTag(TileInfo.NORTH));
     
     assertEquals("A", t2.getSquareAt(2,0).getId());
     assertEquals("B", t2.getSquareAt(2,1).getId());

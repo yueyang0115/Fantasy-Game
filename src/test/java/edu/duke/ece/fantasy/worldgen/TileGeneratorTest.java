@@ -17,7 +17,7 @@ class TileGeneratorTest {
       assertEquals("Id:2", tg.panicTile);
       Square river = tg.squareMapping.get("|"); //get the river NS tile
       assertNotNull(river);
-      assertEquals("riverNS", river.getImageName());
+      assertEquals("river_ns", river.getImageName());
       assertEquals("|", river.getId());
       assertEquals("river", river.getType());
       assertEquals("-", river.getRotId());

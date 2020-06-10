@@ -51,7 +51,7 @@ public class TileInfo {
     boolean answer = squares.length == squares[0].length; // whether or not all squares can be rotated + is square
                                                           // (w==h)
     for (int row = 0; row < squares.length; row++) {
-      String s = rows.getString(row);
+      String s = rows.getString(squares.length-row-1); //we need to flip this upside down since y goes up in world coords
       for (int col = 0; col < squares[row].length; col++) {
         char c = s.charAt(col); // one letter = one square
         String sqname = "" + c; // but we do the mapping a string
@@ -103,13 +103,18 @@ public class TileInfo {
       }
     }
     String[] newEdgeTags = new String[4];
-    newEdgeTags[NORTH] = edgeTags[WEST];
-    newEdgeTags[EAST] = edgeTags[NORTH];
-    newEdgeTags[SOUTH] = edgeTags[EAST];
-    newEdgeTags[WEST] = edgeTags[SOUTH];
+    newEdgeTags[NORTH] = rotationNameForEdge(edgeTags[WEST]);
+    newEdgeTags[EAST] = rotationNameForEdge(edgeTags[NORTH]);
+    newEdgeTags[SOUTH] = rotationNameForEdge(edgeTags[EAST]);
+    newEdgeTags[WEST] = rotationNameForEdge(edgeTags[SOUTH]);
     return new TileInfo(newId, newSquares, ansCanRot, newEdgeTags);
   }
-
+  private String rotationNameForEdge(String orig) {
+    if (orig.length() <= 1){
+      return orig;
+    }
+    return orig + ":r";
+  }
   public String getEdgeTag(int which) {
     return edgeTags[which];
   }
@@ -135,5 +140,8 @@ public class TileInfo {
       return false;
     return true;
   }
-
+  @Override
+  public String toString() {
+    return "TileInfo" + id;
+  }
 }

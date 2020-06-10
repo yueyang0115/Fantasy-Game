@@ -94,13 +94,13 @@ public class TileGenerator {
         startTileName = t.getId();
       }
       addTile(t);
-      for (int j = 0; j < 3; j++) {
+      /*for (int j = 0; j < 3; j++) {
         if (!t.canRotate()) {
           break;
         }
         t = t.rotate(this.getSquareMapping());
         addTile(t);
-      }
+        }*/
     }
   }
   private void addTile(TileInfo t) {
@@ -112,6 +112,7 @@ public class TileGenerator {
         al = new ArrayList<TileInfo>();
         m.put(t.getEdgeTag(i), al);
       }
+      //System.out.println("Putting " + t + " into " + t.getEdgeTag(i) + " for dir" + i);
       al.add(t);
     }
   }
@@ -133,8 +134,10 @@ public class TileGenerator {
     return c - offset;
   }
   private ArrayList<TileInfo> selectPossibleTiles(WorldCoord where, HashMap<WorldCoord, Tile> existingTiles){
+    //these are organized N, S, E, W
     int deltaXs[] = {0, 0, tileWidth, -tileWidth};
-    int deltaYs[] = {-tileHeight, tileHeight, 0, 0 };
+    int deltaYs[] = {tileHeight, -tileHeight, 0, 0 };
+    //System.out.println("selectPossible for " + where);
     HashSet<TileInfo> ans = null;
     //first, for each of N, S, E, W, find out our constraints.
     //put either null (no constraints) or a list of valid tiles into possible[i]
@@ -150,8 +153,13 @@ public class TileGenerator {
         if (ti != null) {
           //get the constraing on the edge facing (e.g., if neighboors is north, get constranit on south)
           String constraint = ti.getEdgeTag(TileInfo.facingEdge(i));
+          //System.out.println("In direction " + i + " neighboor is " + neighboor.getName() + " with constraint " + constraint);
           //look up the list of tiles that have "constraint" edge type on "i" direction
           curr = tilesByEdgeTag.get(i).get(constraint);
+          //System.out.println("Possible tiles in that direction: " + curr);
+          if (curr == null) {
+            continue;
+          }
           //now we need to intersect with whatever is in ans.  if we don't have
           //ans yet, it is treated as universal set (so take curr).
           if (ans == null) {
@@ -161,6 +169,7 @@ public class TileGenerator {
             HashSet<TileInfo> temp = new HashSet<TileInfo>();
             for (TileInfo t: curr){
               if (ans.contains(t)) {
+                //System.out.println("  -> valid choice: " + t);
                 temp.add(t);
               }
             }
@@ -193,9 +202,9 @@ public class TileGenerator {
     where = new WorldCoord(where.getWid(), alignX, alignY);
     //System.out.println("aligned is " + where);
                            
-    //we'll fill in a +/-10 by +/-10 region around "where", but we get a bit more since we can
+    //we'll fill in a +/-1 by +/-1 tile region around "where", but we get a bit more since we can
     //be constrained by things near us
-    HashMap<WorldCoord,Tile> existingTiles = tdao.getAllNearPoint(where, 7 * tileWidth);
+    HashMap<WorldCoord,Tile> existingTiles = tdao.getAllNearPoint(where, 3 * tileWidth);
     //TODO: do we have world edge wrap around??
     int startX = alignX - 1 * tileWidth;
     int endX = alignX + 1 * tileWidth;
@@ -215,6 +224,7 @@ public class TileGenerator {
         TileInfo selected;
         if (possible.size() == 0) {
           //ummm no tiles can fit here.... we have "panic tile" for that case.
+          System.out.println("Picking panic tile!");
           selected = tilesByName.get(panicTile);
         }
         else {
