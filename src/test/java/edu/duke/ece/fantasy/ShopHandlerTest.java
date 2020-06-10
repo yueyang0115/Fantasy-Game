@@ -40,7 +40,10 @@ class ShopHandlerTest {
             (new Initializer()).initialize();
             session.beginTransaction();
             PlayerDAO playerDAO = new PlayerDAO(session);
-            playerDAO.addPlayer("test", "test");
+            Player player = playerDAO.getPlayer("test");
+            if (player == null) { // if test player doesn't exist
+                playerDAO.addPlayer("test", "test");
+            }
 
             Shop shop = shopDAO.createShop();
 
@@ -73,7 +76,9 @@ class ShopHandlerTest {
 
             // Don't have enough money
             player.setMoney(required_money - 1);
-            buy_item(player, shop, itemPack_id, item_amount);
+            ShopResultMessage resultMessage=buy_item(player, shop, itemPack_id, item_amount);
+
+            assertNotEquals("valid", resultMessage.getResult());
 
             // shop don't have enough item
             player.setMoney(required_money);
@@ -81,7 +86,7 @@ class ShopHandlerTest {
 
             // success
             player.setMoney(required_money);
-            ShopResultMessage resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
+            resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
             assertEquals("valid", resultMessage.getResult());
             try {
                 logger.info(objectMapper.writeValueAsString(resultMessage));

@@ -41,21 +41,26 @@ class InventoryHandlerTest {
 
     void initial_player() {
         session.beginTransaction();
-        for (Item item : items) {
+        for (Item item : items) { // add itempack
             itemPacks.add(new ItemPack(item, 20));
         }
-        playerDAO.addPlayer("test", "test");
         Player player = playerDAO.getPlayer("test");
+        if (player == null) { // if test player doesn't exist
+            playerDAO.addPlayer("test", "test");
+            player = playerDAO.getPlayer("test");
+        }
         for (ItemPack itemPack : itemPacks) {
             player.addItem(itemPack);
         }
         session.update(player);
-        session.getTransaction().commit();
+//        session.getTransaction().commit();
     }
 
     @Test
     void handle() {
+        Player player = playerDAO.getPlayer("test");
         initial_player();
+
         handle_list();
         handle_use();
     }
@@ -80,18 +85,18 @@ class InventoryHandlerTest {
         }
     }
 
-    void handle_use(){
+    void handle_use() {
         InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
         inventoryRequestMessage.setAction("use");
         Player player = playerDAO.getPlayer("test");
         InventoryResultMessage resultMessage = new InventoryResultMessage();
 
         for (ItemPack itemPack : itemPacks) {
-            int i = 19;
+            int i = itemPack.getAmount()-1;
             int itemPack_id = itemPack.getId();
             inventoryRequestMessage.setItemPackID(itemPack_id);
             resultMessage = inventoryHandler.handle(inventoryRequestMessage, player.getId());
-            assertEquals(i--,itemPack.getAmount());
+            assertEquals(i, itemPack.getAmount());
         }
         try {
             logger.info(objectMapper.writeValueAsString(resultMessage));
