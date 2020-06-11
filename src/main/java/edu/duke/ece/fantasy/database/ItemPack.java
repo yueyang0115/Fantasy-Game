@@ -8,14 +8,14 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ItemPack")
-public class ShopInventory {
+public class ItemPack {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @JsonBackReference (value = "player-items")
+    @JsonBackReference(value = "player-items")
     @ManyToOne
     @JoinColumn(name = "player_id")
     private Player player;
@@ -26,7 +26,7 @@ public class ShopInventory {
     private Shop shop;
 
     @ManyToOne
-    @JoinColumn(name = "item_id",nullable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
     @Column(name = "amount", nullable = false)
@@ -78,5 +78,14 @@ public class ShopInventory {
 
     public void setAmount(int number) {
         this.amount = number;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o.getClass().equals(ItemPack.class)) {
+            ItemPack itemPack = (ItemPack) o;
+            return itemPack.getItem().getId() == ((ItemPack) o).getItem().getId();
+        }
+        return false;
     }
 }

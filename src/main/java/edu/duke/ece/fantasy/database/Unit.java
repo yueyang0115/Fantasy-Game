@@ -31,7 +31,7 @@ public abstract class Unit {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
-    private List<Equipment> equipment = new ArrayList<>();
+    private List<ItemPack> equipments = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -73,16 +73,21 @@ public abstract class Unit {
         this.atk = atk;
     }
 
-    public void addEquipment(Equipment equipment) {
-        this.equipment.add(equipment);
-        equipment.setUnit(this);
+    public boolean addEquipment(ItemPack equipment) {
+        int ind = equipments.indexOf(equipment);
+        if (ind == -1) {
+            equipments.add(equipment);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public List<Equipment> getEquipment() {
-        return equipment;
+    public List<ItemPack> getEquipment() {
+        return equipments;
     }
 
-    public void setEquipment(List<Equipment> equipment) {
-        this.equipment = equipment;
+    public void setEquipment(List<ItemPack> equipment) {
+        this.equipments = equipment;
     }
 }

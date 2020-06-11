@@ -17,11 +17,6 @@ public class Equipment extends Item {
     @Column(name = "speed")
     int speed;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
-
     public Equipment() {
     }
 
@@ -34,14 +29,7 @@ public class Equipment extends Item {
 
     @Override
     public void useItem(Unit unit) {
-        unit.addEquipment(this);
-    }
-
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Unit unit) {
-        this.unit = unit;
+        ItemPack new_equiment = new ItemPack(this, 1);
+        unit.addEquipment(new_equiment);
     }
 }

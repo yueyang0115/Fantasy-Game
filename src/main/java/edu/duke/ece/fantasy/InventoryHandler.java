@@ -37,7 +37,7 @@ public class InventoryHandler {
                 if (validate(player, itemPack)) {
                     player.useItem(itemPack, 1, unit);
                 }
-                // remove itempack from database if don't belongs to the player
+                // remove itempack from database if doesn't belongs to the player
                 if (itemPack.getPlayer() == null) {
                     session.delete(itemPack);
                 }
@@ -48,7 +48,7 @@ public class InventoryHandler {
                 if (validate(player, itemPack)) {
                     player.dropItem(itemPack, 1);
                 }
-                // remove itempack from database if don't belongs to the player
+                // remove itempack from database if doesn't belongs to the player
                 if (itemPack.getPlayer() == null) {
                     session.delete(itemPack);
                 }
