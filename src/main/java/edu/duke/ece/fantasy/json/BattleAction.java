@@ -1,29 +1,37 @@
 package edu.duke.ece.fantasy.json;
 
-public class BattleAction {
-    private int attackerID;
-    private int attackeeID;
-    private String actionType = "normal"; //"normal", "magical"
+import edu.duke.ece.fantasy.database.Unit;
+import java.util.List;
 
+public class BattleAction {
+    private Unit attacker;
+    private Unit attackee;
+    private String actionType = "normal"; //"normal", "magical"
+    private List<Integer> units;
 
     public BattleAction() {
     }
 
-    public BattleAction(int attacker, int attackee, String actionType) {
-        this.attackerID = attacker;
-        this.attackeeID = attackee;
+    public BattleAction(Unit attacker, Unit attackee, String actionType, List<Integer> units) {
+        this.attacker = attacker;
+        this.attackee = attackee;
         this.actionType = actionType;
+        this.units = units;
     }
 
-    public int getAttackerID() { return attackerID; }
+    public Unit getAttacker() { return attacker; }
 
-    public void setAttackerID(int attackerID) { this.attackerID = attackerID; }
+    public void setAttacker(Unit attacker) { this.attacker = attacker; }
 
-    public int getAttackeeID() { return attackeeID; }
+    public Unit getAttackee() { return attackee; }
 
-    public void setAttackeeID(int attackeeID) { this.attackeeID = attackeeID; }
+    public void setAttackee(Unit attackee) { this.attackee = attackee; }
 
     public String getActionType() { return actionType; }
 
     public void setActionType(String actionType) { this.actionType = actionType; }
+
+    public List<Integer> getUnits() { return units; }
+
+    public void setUnits(List<Integer> units) { this.units = units; }
 }
