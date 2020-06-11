@@ -30,6 +30,8 @@ public class InventoryHandler {
         Unit unit = unitManager.getUnit(request.getUnitID());
         try {
             if (action.equals("list")) {
+                System.out.println("enter list");
+                Thread.sleep(10000);
                 resultMessage.setResult("valid");
             } else if (action.equals("use")) {
                 if (validate(player, itemPack)) {

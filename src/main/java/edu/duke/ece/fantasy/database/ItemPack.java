@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ItemPack")
-public class ItemPack {
+public class ShopInventory {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

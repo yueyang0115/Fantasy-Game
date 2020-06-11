@@ -85,6 +85,7 @@ public class MessageHandler {
             if(inventoryRequestMessage != null){
                 InventoryHandler inventoryHandler = new InventoryHandler(session);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage,playerID));
+                sendResult(result);
             }
 
             session.getTransaction().commit();
