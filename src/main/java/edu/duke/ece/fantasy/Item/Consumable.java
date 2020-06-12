@@ -1,10 +1,11 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.Item;
+
+import edu.duke.ece.fantasy.database.Unit;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "Consumable")
+
 public class Consumable extends Item {
     int hp;
 
@@ -17,7 +18,7 @@ public class Consumable extends Item {
     }
 
     @Override
-    public void useItem(Unit unit) {
-        unit.setHp(unit.getHp() + hp);
+    public void OnUse(Unit unit) {
+        unit.addHp(hp);
     }
 }

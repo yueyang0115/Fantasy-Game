@@ -13,10 +13,10 @@ public class Initializer {
             session.beginTransaction();
             // initialize terrain
             // initialize item
-            ConsumableDAO consumableDAO = new ConsumableDAO(session);
-            consumableDAO.initial();
-            EquipmentDAO equipmentDAO = new EquipmentDAO(session);
-            equipmentDAO.initial();
+//            ConsumableDAO consumableDAO = new ConsumableDAO(session);
+//            consumableDAO.initial();
+//            EquipmentDAO equipmentDAO = new EquipmentDAO(session);
+//            equipmentDAO.initial();
             // initialize shop
 //            List<Item> items = itemDAO.getAllItem();
 //            ShopDAO shopDAO = new ShopDAO(session);

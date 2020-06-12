@@ -2,8 +2,8 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.Item.IItem;
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.management.PlatformLoggingMXBean;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,32 +66,39 @@ class ShopHandlerTest {
     }
 
     void handle_buy(Shop shop) {
-        List<ItemPack> itemPacks = shop.getInventory();
-        for (ItemPack itemPack : itemPacks) {
-            int itemPack_id = itemPack.getId();
-            int item_amount = itemPack.getAmount();
-            int required_money = itemPack.getItem().getCost() * item_amount;
-            Player player = playerDAO.getPlayer("test");
-
-            // Don't have enough money
-            player.setMoney(required_money - 1);
-            ShopResultMessage resultMessage=buy_item(player, shop, itemPack_id, item_amount);
-
-            assertNotEquals("valid", resultMessage.getResult());
-
-            // shop don't have enough item
-            player.setMoney(required_money);
-            buy_item(player, shop, itemPack_id, item_amount + 1);
-
-            // success
-            player.setMoney(required_money);
-            resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
-            assertEquals("valid", resultMessage.getResult());
+        List<shopInventory> itemPacks = shop.getItems();
+        for (shopInventory select_item : itemPacks) {
             try {
-                logger.info(objectMapper.writeValueAsString(resultMessage));
-            } catch (JsonProcessingException e) {
+                int itemPack_id = select_item.getId();
+                int item_amount = select_item.getAmount();
+                IItem item_obj = (IItem) Class.forName(select_item.getItem_name()).getDeclaredConstructor().newInstance();
+                int required_money = item_obj.getCost() * item_amount;
+                Player player = playerDAO.getPlayer("test");
+
+                // Don't have enough money
+                player.setMoney(required_money - 1);
+                ShopResultMessage resultMessage = buy_item(player, shop, itemPack_id, item_amount);
+
+                assertNotEquals("valid", resultMessage.getResult());
+
+                // shop don't have enough item
+                player.setMoney(required_money);
+                buy_item(player, shop, itemPack_id, item_amount + 1);
+
+                // success
+                player.setMoney(required_money);
+                resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
+                assertEquals("valid", resultMessage.getResult());
+                try {
+                    logger.info(objectMapper.writeValueAsString(resultMessage));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
 
 //        ShopResultMessage resultMessage = shopHandler.handle(shopRequestMessage, player.getId());

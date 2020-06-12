@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import edu.duke.ece.fantasy.Item.Item;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -16,26 +17,27 @@ public class ShopDAO {
         itemDAO = new ItemDAO(session);
     }
 
-    public Shop createShop(){
-        List<Item> items = itemDAO.getAllItem();
-        List<ItemPack> itemPacks = new ArrayList<>();
-        for(Item item:items){
-            itemPacks.add(new ItemPack(item,20));
-        }
+    public Shop createShop() {
+        List<String> items = new ArrayList<>();
+        items.add("Medicine");
+        List<shopInventory> shopInventories = new ArrayList<>();
         Shop shop = new Shop();
-        for(ItemPack itemPack:itemPacks){
+        for (String item : items) {
+            shopInventories.add(new shopInventory(item, 20, shop));
+        }
+        for (shopInventory itemPack : shopInventories) {
             shop.addInventory(itemPack);
         }
         session.save(shop);
         return shop;
     }
 
-    public Shop addShop(int territory_id, List<ItemPack> items) {
+    public Shop addShop(int territory_id, List<shopInventory> items) {
         Shop shop = getShopByTerritoryID(territory_id);
         if (shop == null) {
             shop = new Shop("shop");
 //            shop.setInventory(items);
-            for(ItemPack item:items){
+            for (shopInventory item : items) {
                 shop.addInventory(item);
             }
             session.save(shop);

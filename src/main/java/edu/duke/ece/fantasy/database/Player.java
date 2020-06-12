@@ -1,19 +1,17 @@
 package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import edu.duke.ece.fantasy.Item.IItem;
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.Parameter;
-import org.jasypt.hibernate5.type.EncryptedStringType;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 
 @Entity
@@ -44,7 +42,7 @@ public class Player implements Trader {
 
     @JsonManagedReference(value = "player-items")
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
-    private List<ItemPack> items = new ArrayList<>();
+    private List<playerInventory> items = new ArrayList<>();
 
     public Player(String username, String password) {
         this.username = username;
@@ -107,36 +105,37 @@ public class Player implements Trader {
         this.money = money;
     }
 
-    public List<ItemPack> getItems() {
+    public List<playerInventory> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemPack> items) {
+    public void setItems(List<playerInventory> items) {
         this.items = items;
     }
 
-    public void addItem(ItemPack item) {
+    public void addItem(playerInventory item) {
         items.add(item);
         item.setPlayer(this);
     }
 
-    private void reduceItem(ItemPack itemPack, int amount) {
-        int left_amount = itemPack.getAmount() - amount;
-        itemPack.setAmount(left_amount);
+    private void reduceItem(Inventory inventory, int amount) {
+        playerInventory playerInventory = (playerInventory) inventory;
+        int left_amount = inventory.getAmount() - amount;
+        inventory.setAmount(left_amount);
         if (left_amount == 0) {
-            this.getItems().remove(itemPack);
-            itemPack.setPlayer(null);
+            this.getItems().remove(inventory);
+            playerInventory.setPlayer(null);
         }
     }
 
-    public void useItem(ItemPack itemPack, int amount, Unit unit) {
-        reduceItem(itemPack, amount);
-        itemPack.getItem().useItem(unit);
-    }
-
-    public void dropItem(ItemPack itemPack, int amount) {
-        reduceItem(itemPack, amount);
-    }
+//    public void useItem(Inventory inventory, int amount, Unit unit) {
+//        reduceItem(inventory, amount);
+//        inventory.getItem().useItem(unit);
+//    }
+//
+//    public void dropItem(Inventory inventory, int amount) {
+//        reduceItem(inventory, amount);
+//    }
 
     @Override
     public boolean checkMoney(int required_money) {
@@ -144,9 +143,9 @@ public class Player implements Trader {
     }
 
     @Override
-    public boolean checkItem(ItemPack itemPack, int amount) {
-        for (ItemPack item : items) {
-            if (item.getItem().getId() == itemPack.getItem().getId()) { // if have this type of item
+    public boolean checkItem(Inventory inventory, int amount) {
+        for (Inventory item : items) {
+            if (item.getItem_name().equals(inventory.getItem_name())) { // if have this type of item
                 return item.getAmount() >= amount;
             }
         }
@@ -154,24 +153,26 @@ public class Player implements Trader {
     }
 
     @Override
-    public void sellItem(ItemPack itemPack, int amount) {
-        reduceItem(itemPack, amount);
-        money += amount * itemPack.getItem().getCost();
+    public void sellItem(Inventory inventory, int amount) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        IItem item_obj = (IItem) Class.forName(inventory.getItem_name()).getDeclaredConstructor().newInstance();
+        money += amount * item_obj.getCost();
+        reduceItem(inventory, amount);
     }
 
     @Override
-    public void buyItem(ItemPack select_item, int amount) {
+    public void buyItem(Inventory select_item, int amount) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         boolean find = false;
-        for (ItemPack item : items) {
-            if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item, add amount to existing object
+        IItem item_obj = (IItem) Class.forName(select_item.getItem_name()).getDeclaredConstructor().newInstance();
+        for (Inventory item : items) {
+            if (item.getItem_name().equals(select_item.getItem_name())) { // if have this type of item, add amount to existing object
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
             }
         }
-        money -= amount * select_item.getItem().getCost();
+        money -= amount * item_obj.getCost();
         if (!find) { // if don't have this type of item, create object
-            ItemPack new_item = new ItemPack(select_item.getItem(), amount);
+            playerInventory new_item = new playerInventory(select_item.getItem_name(), amount,this);
             addItem(new_item);
         }
     }

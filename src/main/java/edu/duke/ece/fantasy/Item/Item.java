@@ -1,38 +1,20 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.Item;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import edu.duke.ece.fantasy.database.Unit;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "Item")
-public abstract class Item {
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "ID", unique = true, nullable = false)
-    private int id;
-
-    @Column(name = "name")
+public abstract class Item implements IItem {
     private String name;
 
-    @Column(name = "cost")
     private int cost;
 
     public Item() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -57,6 +39,6 @@ public abstract class Item {
         this.cost = cost;
     }
 
-    public abstract void useItem(Unit unit);
+//    public abstract void useItem(Unit unit);
 
 }

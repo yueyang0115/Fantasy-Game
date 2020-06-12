@@ -28,10 +28,10 @@ public abstract class Unit {
 
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
-    private List<ItemPack> equipments = new ArrayList<>();
+//
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+//    private List<ItemPack> equipments = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -57,6 +57,10 @@ public abstract class Unit {
         this.speed = speed;
     }
 
+    public void addHp(int heal_hp) {
+        hp += heal_hp;
+    }
+
     public int getHp() {
         return hp;
     }
@@ -73,21 +77,21 @@ public abstract class Unit {
         this.atk = atk;
     }
 
-    public boolean addEquipment(ItemPack equipment) {
-        int ind = equipments.indexOf(equipment);
-        if (ind == -1) {
-            equipments.add(equipment);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public List<ItemPack> getEquipment() {
-        return equipments;
-    }
-
-    public void setEquipment(List<ItemPack> equipment) {
-        this.equipments = equipment;
-    }
+//    public boolean addEquipment(ItemPack equipment) {
+//        int ind = equipments.indexOf(equipment);
+//        if (ind == -1) {
+//            equipments.add(equipment);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+//
+//    public List<ItemPack> getEquipment() {
+//        return equipments;
+//    }
+//
+//    public void setEquipment(List<ItemPack> equipment) {
+//        this.equipments = equipment;
+//    }
 }
