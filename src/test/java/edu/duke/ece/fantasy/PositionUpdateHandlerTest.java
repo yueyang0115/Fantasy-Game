@@ -21,14 +21,16 @@ class PositionUpdateHandlerTest {
         return session;
     }
 
+
     @Test
     void handle() {
-        try(Session session = createSession()){
-            (new Initializer()).initialize();
-            session.beginTransaction();
-            TerritoryHandlerTest th = new TerritoryHandlerTest();
+//        try(Session session = createSession()){
+//            (new Initializer()).initialize();
+//            session.beginTransaction();
+//            TerritoryHandlerTest th = new TerritoryHandlerTest();
 //            List<Territory> res = positionUpdateHandler.handle(1,-15,15,3,3);
 //            th.printAsJson(res);
         }
     }
+
 }
