@@ -30,7 +30,6 @@ class PositionUpdateHandlerTest {
 //            TerritoryHandlerTest th = new TerritoryHandlerTest();
 //            List<Territory> res = positionUpdateHandler.handle(1,-15,15,3,3);
 //            th.printAsJson(res);
-        }
     }
-
 }
+

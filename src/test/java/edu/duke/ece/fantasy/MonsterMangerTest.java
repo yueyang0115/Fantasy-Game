@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.Item.Medicine;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
@@ -33,6 +34,8 @@ public class MonsterMangerTest {
 
     @Test
     public void testAll(){
+        Medicine m = new Medicine();
+        String tmp = Medicine.class.getName();
         initMonster();
         //getMonsterTest();
         getMonstersTest();
