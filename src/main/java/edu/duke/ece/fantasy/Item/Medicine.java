@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.Item;
 
 
 import edu.duke.ece.fantasy.Item.Consumable;

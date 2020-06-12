@@ -35,7 +35,7 @@ public class Territory {
     }
 
     public Territory(Territory old_terr) {
-      this.coord = old_terr.coord;
+        this.coord = old_terr.coord;
         this.status = old_terr.getStatus();
         /*List<Monster> monsters = new ArrayList<>();
         for(Monster monster:old_terr.getMonsters()){ // solve lazy initialize problem
