@@ -27,12 +27,8 @@ public class MonsterManger {
     }
 
     public Monster getMonsterWhere(WorldCoord where) {
-        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
-        q.setParameter("wid", where.getWid());
-        q.setParameter("x", where.getX());
-        q.setParameter("y", where.getY());
-//        q.setParameter("x", x);
-//        q.setParameter("y", y);
+        Query q = session.createQuery("From Monster M where M.coord =: coord");
+        q.setParameter("coord", where);
         Monster res = (Monster) q.uniqueResult();
         return res;
 

@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Monster extends Unit{
 
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String u_type = "monster";
+    private String type = "monster";
 
     @Column(name = "monster_type", unique = false, nullable = false, length = 100)
     private String m_type;

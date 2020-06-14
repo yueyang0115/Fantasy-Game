@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Soldier extends Unit{
 
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String u_type = "soldier";
+    private String type = "soldier";
 
     @Column(name = "soldier_type", unique = false, nullable = false, length = 100)
     private String s_type;
