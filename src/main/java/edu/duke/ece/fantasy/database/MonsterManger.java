@@ -26,6 +26,18 @@ public class MonsterManger {
         return res;
     }
 
+    public Monster getMonsterWhere(WorldCoord where) {
+        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
+        q.setParameter("wid", where.getWid());
+        q.setParameter("x", where.getX());
+        q.setParameter("y", where.getY());
+//        q.setParameter("x", x);
+//        q.setParameter("y", y);
+        Monster res = (Monster) q.uniqueResult();
+        return res;
+
+    }
+
     //get all monsters in the provided coord from database
     public List<Monster> getMonsters(int territoryID){
         List<Monster> monsterList = new ArrayList<>();

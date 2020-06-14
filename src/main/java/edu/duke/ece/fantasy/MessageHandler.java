@@ -55,8 +55,8 @@ public class MessageHandler {
                 PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
-                positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
-                result.setPositionResultMessage(positionResultMessage);
+                //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
+                result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
             }
 
             if (battleMsg != null) {

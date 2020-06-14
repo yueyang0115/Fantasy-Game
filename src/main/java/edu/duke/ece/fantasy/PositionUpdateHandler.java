@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
+import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
 
 import edu.duke.ece.fantasy.worldgen.TileGenerator;
@@ -28,8 +29,10 @@ public class PositionUpdateHandler {
         //    itemDAO = new ItemDAO(session);
     }
 
-    public List<Territory> handle(int wid, PositionRequestMessage positionMsg) {
-        ArrayList<Territory> res = new ArrayList<Territory>();
+    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg) {
+        PositionResultMessage positionResultMessage = new PositionResultMessage();
+        ArrayList<Territory> territoryList = new ArrayList<Territory>();
+        ArrayList<Monster> monsterList = new ArrayList<Monster>();
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
@@ -52,8 +55,15 @@ public class PositionUpdateHandler {
 //                    territoryDAO.updateTerritory(where, "explored");
 //                }
 //            }
-            res.add(t);
+            territoryList.add(t);
+
+            Monster m = monsterDAO.getMonsterWhere(where);
+            if(m != null) monsterList.add(m);
         }
+
+        positionResultMessage.setTerritoryArray(territoryList);
+        positionResultMessage.setMonsterArray(monsterList);
+        return  positionResultMessage;
 //        WorldCoord where = new WorldCoord(wid, x, y);
 
 
@@ -78,8 +88,6 @@ public class PositionUpdateHandler {
 //            res.add(t);
 //          }
 //        }
-
-        return res;
     }
 
 }
