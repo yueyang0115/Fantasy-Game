@@ -39,20 +39,24 @@ public class MessageHandler {
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
         //System.out.println("incoming message: " + input);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
             if (loginMsg != null) {
+                session.beginTransaction();
                 LoginHandler lh = new LoginHandler(session);
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
                 playerID = result.getLoginResultMessage().getId();
+                session.getTransaction().commit();
             }
 
             if (signupMsg != null) {
+                session.beginTransaction();
                 SignUpHandler sh = new SignUpHandler(session);
                 result.setSignUpResultMessage(sh.handle(signupMsg));
+                session.getTransaction().commit();
             }
 
             if (positionMsg != null) {
+                session.beginTransaction();
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(session);
                 //PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
@@ -62,26 +66,32 @@ public class MessageHandler {
             }
 
             if (battleMsg != null) {
+                session.beginTransaction();
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
                 result.setBattleResultMessage(battleResult);
+                session.getTransaction().commit();
             }
 
             if (attributeMsg != null) {
+                session.beginTransaction();
                 AttributeHandler ah = new AttributeHandler(session);
                 result.setAttributeResultMessage(ah.handle(attributeMsg, playerID));
+                session.getTransaction().commit();
             }
 
             if (shopRequestMessage != null) {
+                session.beginTransaction();
                 ShopHandler shopHandler = new ShopHandler(session);
                 result.setShopResultMessage(shopHandler.handle(shopRequestMessage, playerID));
+                session.getTransaction().commit();
             }
 
             if(inventoryRequestMessage != null){
-                InventoryHandler inventoryHandler = new InventoryHandler(session);
-                result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage,playerID));
+//                InventoryHandler inventoryHandler = new InventoryHandler(session);
+//                result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage,playerID));
             }
 
-            session.getTransaction().commit();
+
 //            try {
 //                String tmp = objectMapper.writeValueAsString(result); // fix lazy initialization problem
 //            } catch (Exception e) {

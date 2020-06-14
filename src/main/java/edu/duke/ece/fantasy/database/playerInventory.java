@@ -15,8 +15,8 @@ public class playerInventory extends Inventory {
     @JoinColumn(name = "player_id")
     private Player player;
 
-    public playerInventory(String item_name, int amount, Player player) {
-        super(item_name, amount);
+    public playerInventory(DBItem item, int amount, Player player) {
+        super(item, amount);
         this.player = player;
     }
 

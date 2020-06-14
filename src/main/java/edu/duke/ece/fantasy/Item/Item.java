@@ -1,18 +1,14 @@
 package edu.duke.ece.fantasy.Item;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import edu.duke.ece.fantasy.database.Unit;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.database.DBItem;
 
 public abstract class Item implements IItem {
     private String name;
 
     private int cost;
+
 
     public Item() {
     }
@@ -33,11 +29,21 @@ public abstract class Item implements IItem {
         this.cost = cost;
     }
 
-
     public Item(String name, int cost) {
         this.name = name;
         this.cost = cost;
     }
+
+    public DBItem toDBItem() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return new DBItem(this.getClass().getName(), objectMapper.writeValueAsString(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 //    public abstract void useItem(Unit unit);
 

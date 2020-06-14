@@ -36,6 +36,7 @@ public class Shop extends Building implements Trader {
         this.items = items;
     }
 
+
     @Override
     public boolean checkMoney(int required_money) {
         return true;
@@ -44,7 +45,7 @@ public class Shop extends Building implements Trader {
     @Override
     public boolean checkItem(Inventory inventory, int amount) {
         for (Inventory item : items) {
-            if (item.getItem_name().equals(inventory.getItem_name())) { // if have this type of item
+            if (item == inventory) { // if have this type of item
                 return item.getAmount() >= amount;
             }
         }
@@ -53,12 +54,10 @@ public class Shop extends Building implements Trader {
 
     @Override
     public void sellItem(Inventory inventory, int amount) {
-        shopInventory shopInventory = (shopInventory) inventory;
         int left_amount = inventory.getAmount() - amount;
         inventory.setAmount(left_amount);
         if (left_amount == 0) {
             this.getItems().remove(inventory);
-            shopInventory.setShop(null);
         }
     }
 
@@ -66,14 +65,14 @@ public class Shop extends Building implements Trader {
     public void buyItem(Inventory select_item, int amount) {
         boolean find = false;
         for (Inventory item : items) {
-            if (item.getItem_name().equals(select_item.getItem_name())) { // if have this type of item
+            if (item == select_item) { // if have this type of item
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
             }
         }
         if (!find) {
-            shopInventory new_item = new shopInventory(select_item.getItem_name(), amount,this);
+            shopInventory new_item = new shopInventory(select_item.getDBItem(), amount,this);
             addInventory(new_item);
         }
     }

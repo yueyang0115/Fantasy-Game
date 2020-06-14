@@ -1,6 +1,9 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.Item.Consumable;
 import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.Item.Potion;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -18,16 +21,16 @@ public class ShopDAO {
     }
 
     public Shop createShop() {
-        List<String> items = new ArrayList<>();
-        items.add("Medicine");
+//        List<Item> items = new ArrayList<>();
+//        items.add(new Consumable("Potion", 10, 20));
+
         List<shopInventory> shopInventories = new ArrayList<>();
         Shop shop = new Shop();
-        for (String item : items) {
-            shopInventories.add(new shopInventory(item, 20, shop));
-        }
-        for (shopInventory itemPack : shopInventories) {
-            shop.addInventory(itemPack);
-        }
+//        for (Item item : items) {
+        shopInventories.add(new shopInventory(new Consumable("Potion", 10, 20).toDBItem(), 20, shop));
+//        }
+        shop.setItems(shopInventories);
+
         session.save(shop);
         return shop;
     }
@@ -62,7 +65,7 @@ public class ShopDAO {
     }
 
     public Shop getShopByTerritoryID(int territory_id) {
-        Query q = session.createQuery("From Shop s where s.territories =:id");
+        Query q = session.createQuery("From Shop s where s.territory =:id");
         q.setParameter("id", territory_id);
         Shop res = (Shop) q.uniqueResult();
         return res;

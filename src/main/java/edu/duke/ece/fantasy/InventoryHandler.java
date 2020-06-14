@@ -1,10 +1,14 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.AttributeRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryResultMessage;
 import org.hibernate.Session;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryHandler {
     PlayerDAO playerDAO;
@@ -29,7 +33,6 @@ public class InventoryHandler {
         Unit unit = unitManager.getUnit(request.getUnitID());
         try {
             if (action.equals("list")) {
-                System.out.println("enter list");
                 resultMessage.setResult("valid");
             } else if (action.equals("use")) {
 //                if (validate(player, itemPack)) {
@@ -57,9 +60,10 @@ public class InventoryHandler {
             resultMessage.setResult("invalid:" + e.getMessage());
         }
 
+
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
         resultMessage.setAttributeResultMessage((new AttributeHandler(session)).handle(attributeRequestMessage, player_id));
-        resultMessage.setItems(player.getItems());
+        resultMessage.setItems(new ArrayList<>(player.getItems()));
         resultMessage.setMoney(player.getMoney());
 
         return resultMessage;

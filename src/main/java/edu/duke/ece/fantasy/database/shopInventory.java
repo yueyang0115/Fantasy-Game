@@ -15,14 +15,13 @@ public class shopInventory extends Inventory {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    Shop shop;
-
+    private Shop shop;
 
     public shopInventory() {
     }
 
-    public shopInventory(String item_name, int amount, Shop shop) {
-        super(item_name, amount);
+    public shopInventory(DBItem item, int amount, Shop shop) {
+        super(item, amount);
         this.shop = shop;
     }
 
@@ -33,7 +32,6 @@ public class shopInventory extends Inventory {
     public void setShop(Shop shop) {
         this.shop = shop;
     }
-
 
     @Override
     public int getOwnerID() {
