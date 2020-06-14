@@ -63,15 +63,16 @@ public class PositionUpdateHandler {
                 int ID = m.getId();
                 Monster cachedMonster = cachedMap.getOrDefault(ID,null);
                 if(cachedMonster == null){
-                    System.out.println("new monster, add to return list");
+                    System.out.println("new monster, add to cache and return list");
+                    cachedMap.put(ID, m);
                     monsterList.add(m);
                 }
                 else if( !cachedMonster.equals(m) ) {
-                    System.out.println("changed monster, add to return list");
+                    System.out.println("changed monster, add to cache and return list");
                     cachedMap.remove(ID);
+                    cachedMap.put(ID, m);
                     monsterList.add(m);
                 }
-                cachedMap.put(ID, m);
             }
         }
 
