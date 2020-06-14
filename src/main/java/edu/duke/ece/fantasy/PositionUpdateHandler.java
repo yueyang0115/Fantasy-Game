@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
@@ -29,7 +30,7 @@ public class PositionUpdateHandler {
         //    itemDAO = new ItemDAO(session);
     }
 
-    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg) {
+    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg, HashMap<Integer, Monster> cachedMap) {
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
         ArrayList<Monster> monsterList = new ArrayList<Monster>();
@@ -58,7 +59,20 @@ public class PositionUpdateHandler {
             territoryList.add(t);
 
             Monster m = monsterDAO.getMonsterWhere(where);
-            if(m != null) monsterList.add(m);
+            if(m != null){
+                int ID = m.getId();
+                Monster cachedMonster = cachedMap.getOrDefault(ID,null);
+                if(cachedMonster == null){
+                    System.out.println("new monster, add to return list");
+                    monsterList.add(m);
+                }
+                else if( !cachedMonster.equals(m) ) {
+                    System.out.println("changed monster, add to return list");
+                    cachedMap.remove(ID);
+                    monsterList.add(m);
+                }
+                cachedMap.put(ID, m);
+            }
         }
 
         positionResultMessage.setTerritoryArray(territoryList);

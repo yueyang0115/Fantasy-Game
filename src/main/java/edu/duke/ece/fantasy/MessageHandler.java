@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public class MessageHandler {
@@ -15,6 +16,7 @@ public class MessageHandler {
     private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
     private TCPCommunicator TCPcm;
+    private HashMap<Integer, Monster> cachedMonsters = new HashMap<>();
 
     public MessageHandler() {
     }
@@ -52,11 +54,11 @@ public class MessageHandler {
 
             if (positionMsg != null) {
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(session);
-                PositionResultMessage positionResultMessage = new PositionResultMessage();
+                //PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
                 //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
-                result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
+                result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg, cachedMonsters));
             }
 
             if (battleMsg != null) {

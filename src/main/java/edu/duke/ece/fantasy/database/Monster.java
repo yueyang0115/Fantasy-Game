@@ -79,6 +79,23 @@ public class Monster extends Unit{
         this.coord.setY(y);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o.getClass().equals(Monster.class)) {
+            Monster m = (Monster) o;
+            return this.coord==m.coord && this.getId()==m.getId();
+        }
+        return false;
+    }
+    @Override
+    public int hashCode(){
+        return this.toString().hashCode();
+    }
+    @Override
+    public String toString(){
+        return (this.getId() + ":" + this.coord.getX() + "," + this.coord.getY());
+    }
+
   /*public Territory getTerritory() {
     return territory;
     }
