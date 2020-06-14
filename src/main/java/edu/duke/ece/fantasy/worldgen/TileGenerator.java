@@ -246,7 +246,7 @@ public class TileGenerator {
         terDAO.addTerritory(place, "unexplored", s.getImageName(), new ArrayList<Monster>());
 
         //TODO: yy: add monstef, use s.getImage Name to add a random monster
-        if(s.getImageName().equals("forestDense")){
+        if(s.getImageName().equals("forest_dense")){
           System.out.println("addMonster in " + place.getX() + ","+place.getY());
           Monster m = new Monster("BigWolf", 60, 6, 10);
           monsterDAO.addMonster(m,place);
