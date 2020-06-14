@@ -43,7 +43,7 @@ public class Territory {
             monsters.add(monster);
         }
         this.monsters = monsters;*/
-        this.terrainType = old_terr.getTerrain();
+        this.terrainType = old_terr.getTerrainType();
         this.building = old_terr.getBuilding();
     }
 
@@ -61,13 +61,9 @@ public class Territory {
         building.setTerritory(this);
     }
 
-    public String getTerrain() {
-        return terrainType;
-    }
+    public String getTerrainType() { return terrainType; }
 
-    public void setTerrain(String terrain) {
-        this.terrainType = terrain;
-    }
+    public void setTerrainType(String terrainType) { this.terrainType = terrainType; }
 
     public WorldCoord getCoord() { return coord; }
 
