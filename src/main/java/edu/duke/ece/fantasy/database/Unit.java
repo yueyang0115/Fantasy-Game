@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "Unit")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Unit {
+public class Unit {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -32,6 +32,8 @@ public abstract class Unit {
 //    @JsonManagedReference
 //    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
 //    private List<ItemPack> equipments = new ArrayList<>();
+
+    public Unit(){}
 
     public int getId() {
         return id;
