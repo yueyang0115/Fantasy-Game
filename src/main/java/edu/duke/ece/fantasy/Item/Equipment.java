@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.Item;
 
+import edu.duke.ece.fantasy.database.DBItem;
 import edu.duke.ece.fantasy.database.Unit;
 
 import javax.persistence.*;
@@ -26,6 +27,11 @@ public class Equipment extends Item {
     public void OnDeEquip(){
 
     }
+
+//    @Override
+//    public DBItem toDBItem() {
+//        return null;
+//    }
 
     @Override
     public void OnUse(Unit unit) {

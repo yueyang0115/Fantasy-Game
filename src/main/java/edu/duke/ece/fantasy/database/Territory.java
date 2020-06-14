@@ -12,8 +12,8 @@ import java.util.List;
 @Table(name = "Territory")
 public class Territory {
 
-  @EmbeddedId
-  WorldCoord coord;
+    @EmbeddedId
+    WorldCoord coord;
   
 
     @Column(name = "status", nullable = false)

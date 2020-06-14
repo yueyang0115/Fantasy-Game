@@ -25,6 +25,33 @@ public class Initializer {
         }
     }
 
+    public void test_initialize() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // initialize database
+            session.beginTransaction();
+            // initialize terrain
+            // initialize item
+//            ConsumableDAO consumableDAO = new ConsumableDAO(session);
+//            consumableDAO.initial();
+//            EquipmentDAO equipmentDAO = new EquipmentDAO(session);
+//            equipmentDAO.initial();
+
+            // initialize player
+            PlayerDAO playerDAO = new PlayerDAO(session);
+            Player player = playerDAO.getPlayer("test");
+            if (player == null) { // if test player doesn't exist
+                playerDAO.addPlayer("test", "test");
+            }
+            // initialize shop
+            ShopDAO shopDAO = new ShopDAO(session);
+            Shop shop = shopDAO.getShop(1);
+            if (shop == null) {
+                shopDAO.createShop();
+            }
+            session.getTransaction().commit();
+        }
+    }
+
 
     public static void main(String[] args) {
         (new Initializer()).initialize();

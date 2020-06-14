@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.duke.ece.fantasy.Item.IItem;
+import edu.duke.ece.fantasy.Item.Item;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -137,6 +138,7 @@ public class Player implements Trader {
 //        reduceItem(inventory, amount);
 //    }
 
+
     @Override
     public boolean checkMoney(int required_money) {
         return money >= required_money;
@@ -145,7 +147,7 @@ public class Player implements Trader {
     @Override
     public boolean checkItem(Inventory inventory, int amount) {
         for (Inventory item : items) {
-            if (item.getItem_name().equals(inventory.getItem_name())) { // if have this type of item
+            if (item == inventory) { // if have this type of item
                 return item.getAmount() >= amount;
             }
         }
@@ -153,18 +155,17 @@ public class Player implements Trader {
     }
 
     @Override
-    public void sellItem(Inventory inventory, int amount) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        IItem item_obj = (IItem) Class.forName(inventory.getItem_name()).getDeclaredConstructor().newInstance();
-        money += amount * item_obj.getCost();
+    public void sellItem(Inventory inventory, int amount) {
+        money += amount * inventory.getDBItem().toGameItem().getCost();
         reduceItem(inventory, amount);
     }
 
     @Override
-    public void buyItem(Inventory select_item, int amount) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public void buyItem(Inventory select_item, int amount) {
         boolean find = false;
-        IItem item_obj = (IItem) Class.forName(select_item.getItem_name()).getDeclaredConstructor().newInstance();
+        Item item_obj = select_item.getDBItem().toGameItem();
         for (Inventory item : items) {
-            if (item.getItem_name().equals(select_item.getItem_name())) { // if have this type of item, add amount to existing object
+            if (item == select_item) { // if have this type of item, add amount to existing object
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
@@ -172,8 +173,8 @@ public class Player implements Trader {
         }
         money -= amount * item_obj.getCost();
         if (!find) { // if don't have this type of item, create object
-            playerInventory new_item = new playerInventory(select_item.getItem_name(), amount,this);
-            addItem(new_item);
+            playerInventory new_record = new playerInventory(select_item.getDBItem(), amount, this);
+            addItem(new_record);
         }
     }
 }

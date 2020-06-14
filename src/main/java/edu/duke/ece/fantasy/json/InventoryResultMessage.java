@@ -1,5 +1,7 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.playerInventory;
 
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.List;
 
 public class InventoryResultMessage {
     private AttributeResultMessage attributeResultMessage;
-    private List<playerInventory> items = new ArrayList<>(); //all items of player
+    private List<Inventory> items = new ArrayList<>(); //all items of player
     private String result; //status: "valid","invalid"
     private int money;
 
@@ -23,11 +25,11 @@ public class InventoryResultMessage {
         this.attributeResultMessage = attributeResultMessage;
     }
 
-    public List<playerInventory> getItems() {
+    public List<Inventory> getItems() {
         return items;
     }
 
-    public void setItems(List<playerInventory> items) {
+    public void setItems(List<Inventory> items) {
         this.items = items;
     }
 

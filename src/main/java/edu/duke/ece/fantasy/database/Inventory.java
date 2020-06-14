@@ -15,8 +15,8 @@ public abstract class Inventory {
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @JoinColumn(name = "item_name", nullable = false)
-    private String item_name;
+    @Embedded
+    private DBItem item;
 
     @Column(name = "amount", nullable = false)
     private int amount;
@@ -24,8 +24,8 @@ public abstract class Inventory {
     public Inventory() {
     }
 
-    public Inventory(String item_name, int amount) {
-        this.item_name = item_name;
+    public Inventory(DBItem item, int amount) {
+        this.item = item;
         this.amount = amount;
     }
 
@@ -37,12 +37,12 @@ public abstract class Inventory {
         this.id = id;
     }
 
-    public String getItem_name() {
-        return item_name;
+    public DBItem getDBItem() {
+        return item;
     }
 
-    public void setItem_name(String item_name) {
-        this.item_name = item_name;
+    public void setDBItem(DBItem item) {
+        this.item = item;
     }
 
     public int getAmount() {
@@ -55,17 +55,16 @@ public abstract class Inventory {
 
     public abstract int getOwnerID();
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Inventory)) return false;
         Inventory inventory = (Inventory) o;
-        return Objects.equals(item_name, inventory.item_name);
+        return Objects.equals(item, inventory.item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(item_name);
+        return Objects.hash(item);
     }
 }
