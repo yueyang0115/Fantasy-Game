@@ -248,7 +248,7 @@ public class TileGenerator {
         //TODO: yy: add monstef, use s.getImage Name to add a random monster
         if(s.getImageName().equals("forest_dense")){
           System.out.println("addMonster in " + place.getX() + ","+place.getY());
-          Monster m = new Monster("BigWolf", 60, 6, 10);
+          Monster m = new Monster("wolf", 60, 6, 10);
           monsterDAO.addMonster(m,place);
         }
 
