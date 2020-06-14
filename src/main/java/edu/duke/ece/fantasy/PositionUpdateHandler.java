@@ -3,16 +3,10 @@ package edu.duke.ece.fantasy;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import org.hibernate.Session;
 
-import edu.duke.ece.fantasy.database.BuildingDAO;
-import edu.duke.ece.fantasy.database.ShopDAO;
-import edu.duke.ece.fantasy.database.Territory;
-import edu.duke.ece.fantasy.database.TerritoryDAO;
-import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.WorldDAO;
-import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
@@ -20,6 +14,7 @@ public class PositionUpdateHandler {
     BuildingDAO buildingDAO;
     ShopDAO shopDAO;
     WorldDAO worldDAO;
+    MonsterManger monsterDAO;
   //    ItemDAO itemDAO;
 //    int x_block_num;
 //    int y_block_num;
@@ -29,6 +24,7 @@ public class PositionUpdateHandler {
         buildingDAO = new BuildingDAO(session);
         shopDAO = new ShopDAO(session);
         worldDAO = new WorldDAO(session);
+        monsterDAO = new MonsterManger(session);
         //    itemDAO = new ItemDAO(session);
     }
 
@@ -48,7 +44,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, where, info);
+                gen.generate(territoryDAO, monsterDAO, where, info);
                 t = territoryDAO.getTerritory(where);
             }
 //            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
