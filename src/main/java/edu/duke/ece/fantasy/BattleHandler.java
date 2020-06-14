@@ -48,8 +48,8 @@ public class BattleHandler {
         BattleResultMessage result = new BattleResultMessage();
 
         // get monsters and soldiers engaged in the battle
-        int territoryID = request.getTerritoryID();
-        List<Monster> monsterList = myMonsterManger.getMonsters(territoryID);
+        WorldCoord where = request.getTerritoryCoord();
+        List<Monster> monsterList = myMonsterManger.getMonsters(where);
         List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
         // sort unit by speed and set the UnitQueue
         this.unitQueue = generateUnitQueue(monsterList, soldierList);
@@ -89,21 +89,21 @@ public class BattleHandler {
     public BattleResultMessage doBattle(BattleRequestMessage request, int playerID) {
         BattleResultMessage result = new BattleResultMessage();
         List<BattleAction> actions = new ArrayList<>();
-        int territoryID = request.getTerritoryID();
+        WorldCoord where = request.getTerritoryCoord();
         int attackeeID = request.getBattleAction().getAttackee().getId();
         int attackerID = request.getBattleAction().getAttacker().getId();
 
-        BattleAction action = doBattleOnce(attackerID,attackeeID,territoryID,playerID,result);
+        BattleAction action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
         actions.add(action);
-        setStatus(territoryID,playerID,result);
+        setStatus(where,playerID,result);
 
         //if the next attacker in UnitQueue is monster, server do another monster attack
         while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
             attackerID = this.unitQueue.peek().getId();
             attackeeID = request.getBattleAction().getAttacker().getId();
-            action = doBattleOnce(attackerID,attackeeID,territoryID,playerID,result);
+            action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
             actions.add(action);
-            setStatus(territoryID,playerID,result);
+            setStatus(where,playerID,result);
         }
 
         result.setActions(actions);
@@ -111,15 +111,15 @@ public class BattleHandler {
     }
 
     //set "win" "lose" "continue" status for BattleResultMsg
-    public void setStatus(int territoryID, int playerID, BattleResultMessage result) {
-        List<Monster> monsterList = myMonsterManger.getMonsters(territoryID);
+    public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
+        List<Monster> monsterList = myMonsterManger.getMonsters(where);
         List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
         if(monsterList == null || monsterList.size() ==0) result.setResult("win");
         else if(soldierList == null || soldierList.size() ==0) result.setResult("lose");
         else result.setResult("continue");
     }
 
-    public BattleAction doBattleOnce(int attackerID, int attackeeID, int territoryID, int playerID,BattleResultMessage result){
+    public BattleAction doBattleOnce(int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
         BattleAction action = new BattleAction();
         int deletedID = -1;
 

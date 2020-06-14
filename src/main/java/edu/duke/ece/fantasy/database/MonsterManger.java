@@ -39,15 +39,10 @@ public class MonsterManger {
     }
 
     //get all monsters in the provided coord from database
-    public List<Monster> getMonsters(int territoryID){
+    public List<Monster> getMonsters(WorldCoord where){
         List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Territory T where T.id =:territoryID");
-        q.setParameter("territoryID", territoryID);
-        Territory t = (Territory) q.uniqueResult();
-
-        WorldCoord coord = t.getCoord();
         Query q2 = session.createQuery("From Monster M where M.coord =:coord");
-        q2.setParameter("coord", coord);
+        q2.setParameter("coord", where);
         for(Object o : q2.list()) {
             monsterList.add((Monster) o);
         }
