@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
@@ -15,12 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.duke.ece.fantasy.RandomGenerator;
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.TerritoryDAO;
-import edu.duke.ece.fantasy.database.Tile;
-import edu.duke.ece.fantasy.database.TileDAO;
-import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.WorldInfo;
 
 public class TileGenerator {
   private static HashMap<String, TileGenerator> perWorldType = new HashMap<String, TileGenerator>();
@@ -186,13 +181,13 @@ public class TileGenerator {
     return new ArrayList<TileInfo>(ans);
   }
   //I hate how tightly coupled this it to the database :(
-  public void generate(TerritoryDAO terdao, WorldCoord where, WorldInfo info) {
+  public void generate(TerritoryDAO terdao, MonsterManger monsterDAO, WorldCoord where, WorldInfo info) {
     TileDAO tdao = new TileDAO(terdao);
     //if the world doesn't have a start tile, lets put one in it.
     if (!tdao.doesWorldHaveStartTile(info)){
       //System.out.println("Putting start tile at " + info.getFirstTile());
       tdao.addTile(info.getFirstTile(), startTileName);
-      putTerrain(terdao, info.getFirstTile(), tilesByName.get(startTileName));
+      putTerrain(terdao, monsterDAO, info.getFirstTile(), tilesByName.get(startTileName));
     }
     //align "where" to a tile start.
     //System.out
@@ -213,7 +208,7 @@ public class TileGenerator {
     for (int y = startY; y <= endY; y+= tileHeight) {
       for (int x = startX; x <= endX; x+= tileWidth) {
         WorldCoord thisWc = new WorldCoord(where.getWid(), x, y);
-        //System.out.println("Considering tile at " + thisWc);
+        System.out.println("Considering tile at " + thisWc);
         if(tdao.getTileAt(thisWc) != null) {
           //System.out.println("Already have " + tdao.getTileAt(thisWc));
           continue;
@@ -231,15 +226,16 @@ public class TileGenerator {
           selected = possible.get(RandomGenerator.random.nextInt(possible.size()));
         }
         Tile t =tdao.addTile(thisWc, selected.getId());
+        System.out.println("tdao.addTile " + selected.getId());
         existingTiles.put(thisWc, t);
-        putTerrain(terdao, thisWc, selected);
+        putTerrain(terdao, monsterDAO, thisWc, selected);
 
       }
     }
 
   }
 
-  private void putTerrain(TerritoryDAO terDAO, WorldCoord where, TileInfo info) {
+  private void putTerrain(TerritoryDAO terDAO, MonsterManger monsterDAO, WorldCoord where, TileInfo info) {
     //    System.out.println("Putting terrain on ["+where.getX()+","+(where.getX()+tileWidth)+") y:["+where.getY()+","+(where.getY()+tileHeight)+")"+ System.currentTimeMillis());
 
     for (int x = 0; x < tileWidth; x++) {
@@ -248,6 +244,14 @@ public class TileGenerator {
         WorldCoord place = new WorldCoord(where.getWid(), where.getX()+x, where.getY()+y);
         //System.out.println("Territory at place: " + place);
         terDAO.addTerritory(place, "unexplored", s.getImageName(), new ArrayList<Monster>());
+
+        //TODO: yy: add monstef, use s.getImage Name to add a random monster
+        if(s.getImageName().equals("forestDense")){
+          System.out.println("addMonster in " + place.getX() + ","+place.getY());
+          Monster m = new Monster("BigWolf", 60, 6, 10);
+          monsterDAO.addMonster(m,place);
+        }
+
       }
     }
   }

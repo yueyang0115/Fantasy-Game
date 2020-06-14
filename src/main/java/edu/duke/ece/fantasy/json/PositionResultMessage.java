@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
 
 import java.util.List;
@@ -17,4 +18,9 @@ public class PositionResultMessage {
 
     private List<Territory> territoryArray;
 
+    public List<Monster> getMonsterArray() { return monsterArray; }
+
+    public void setMonsterArray(List<Monster> monsterArray) { this.monsterArray = monsterArray; }
+
+    private List<Monster> monsterArray;
 }

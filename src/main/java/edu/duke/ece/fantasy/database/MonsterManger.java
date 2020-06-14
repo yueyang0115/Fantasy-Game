@@ -13,6 +13,11 @@ public class MonsterManger {
         this.session = session;
     }
 
+    public void addMonster(Monster m, WorldCoord where){
+        m.setCoord(where);
+        session.save(m);
+    }
+
     //get a monster from database based on the provided monsterID
     public Monster getMonster(int monsterID) {
         Query q = session.createQuery("From Monster M where M.id =:id");
@@ -21,12 +26,24 @@ public class MonsterManger {
         return res;
     }
 
-    //get all monsters in the provided territory from database
-    public List<Monster> getMonsters(int territoryID){
+    public Monster getMonsterWhere(WorldCoord where) {
+        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
+        q.setParameter("wid", where.getWid());
+        q.setParameter("x", where.getX());
+        q.setParameter("y", where.getY());
+//        q.setParameter("x", x);
+//        q.setParameter("y", y);
+        Monster res = (Monster) q.uniqueResult();
+        return res;
+
+    }
+
+    //get all monsters in the provided coord from database
+    public List<Monster> getMonsters(WorldCoord where){
         List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.territory.id =:territoryID");
-        q.setParameter("territoryID", territoryID);
-        for(Object o : q.list()) {
+        Query q2 = session.createQuery("From Monster M where M.coord =:coord");
+        q2.setParameter("coord", where);
+        for(Object o : q2.list()) {
             monsterList.add((Monster) o);
         }
         return monsterList;
