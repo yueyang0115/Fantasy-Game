@@ -16,7 +16,6 @@ public class MessageHandler {
     private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
     private TCPCommunicator TCPcm;
-    private HashMap<Integer, Monster> cachedMonsters = new HashMap<>();
 
     public MessageHandler() {
     }
@@ -62,7 +61,7 @@ public class MessageHandler {
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
                 //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
-                result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg, cachedMonsters));
+                result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
                 session.getTransaction().commit();
             }
 

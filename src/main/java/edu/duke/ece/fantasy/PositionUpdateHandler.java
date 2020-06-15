@@ -31,7 +31,7 @@ public class PositionUpdateHandler {
         //    itemDAO = new ItemDAO(session);
     }
 
-    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg, HashMap<Integer, Monster> cachedMap) {
+    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg) {
         //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
@@ -64,21 +64,7 @@ public class PositionUpdateHandler {
                 System.out.println("find forest_dense, should have a monster here");
             }
             Monster m = monsterDAO.getMonsterWhere(where);
-            if(m != null){
-                int ID = m.getId();
-                Monster cachedMonster = cachedMap.getOrDefault(ID,null);
-                if(cachedMonster == null){
-                    System.out.println("new monster, add to cache and return list");
-                    cachedMap.put(ID, m);
-                    monsterList.add(m);
-                }
-                else if( !cachedMonster.equals(m) ) {
-                    System.out.println("changed monster, add to cache and return list");
-                    cachedMap.remove(ID);
-                    cachedMap.put(ID, m);
-                    monsterList.add(m);
-                }
-            }
+            if(m != null) monsterList.add(m);
         }
 
         positionResultMessage.setTerritoryArray(territoryList);
