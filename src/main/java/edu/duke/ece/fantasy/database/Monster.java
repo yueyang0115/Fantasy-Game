@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Monster extends Unit{
 
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String type = "monster";
+//    private String type = "monster";
 
 //    @Column(name = "monster_type", unique = false, nullable = false, length = 100)
 //    private String m_type;
@@ -26,10 +26,11 @@ public class Monster extends Unit{
     private Territory territory;*/
 
     public Monster(){
-
+        this.setType("monster");
     }
 
     public Monster(String name,int hp,int atk,int speed){
+        this.setType("monster");
         this.setName(name);
         this.setHp(hp);
         this.setAtk(atk);
@@ -37,6 +38,7 @@ public class Monster extends Unit{
     }
 
     public Monster(Monster old_monster){
+        this.setType("monster");
         this.setName(old_monster.getType());
         this.setHp(old_monster.getHp());
         this.setAtk(old_monster.getAtk());

@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Soldier extends Unit{
 
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String type = "soldier";
+//    private String type = "soldier";
 
     @JsonBackReference
     @ManyToOne
@@ -19,10 +19,11 @@ public class Soldier extends Unit{
     private Player player;
 
     public Soldier(){
-
+        this.setType("soldier");
     }
 
     public Soldier(String name,int hp,int atk,int speed){
+        this.setType("soldier");
         this.setName(name);
         this.setHp(hp);
         this.setAtk(atk);
@@ -30,6 +31,7 @@ public class Soldier extends Unit{
     }
 
     public Soldier(Soldier old_soldier){
+        this.setType("soldier");
         this.setName(old_soldier.getType());
         this.setHp(old_soldier.getHp());
         this.setAtk(old_soldier.getAtk());
