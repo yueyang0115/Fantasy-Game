@@ -14,15 +14,15 @@ public class Territory {
 
     @EmbeddedId
     WorldCoord coord;
-  
+
 
     @Column(name = "status", nullable = false)
     private String status;
 
-  /*@JsonManagedReference
-    @OneToMany(mappedBy = "territory", cascade = CascadeType.ALL)
-    private List<Monster> monsters = new ArrayList<>();
-  */
+    /*@JsonManagedReference
+      @OneToMany(mappedBy = "territory", cascade = CascadeType.ALL)
+      private List<Monster> monsters = new ArrayList<>();
+    */
     private String terrainType;
 
     @JsonManagedReference(value = "territory-building")
@@ -47,8 +47,8 @@ public class Territory {
         this.building = old_terr.getBuilding();
     }
 
-  public Territory(WorldCoord coord, String status) {
-    this.coord = coord;
+    public Territory(WorldCoord coord, String status) {
+        this.coord = coord;
         this.status = status;
     }
 
@@ -70,27 +70,27 @@ public class Territory {
     }
 
     public int getWid() {
-      return coord.getWid();
+        return coord.getWid();
     }
 
     public void setWid(int wid) {
-      this.coord.setWid(wid);
+        this.coord.setWid(wid);
     }
 
     public int getX() {
-      return coord.getX();
+        return coord.getX();
     }
 
     public void setX(int x) {
-      this.coord.setX(x);
+        this.coord.setX(x);
     }
 
     public int getY() {
-      return coord.getY();
+        return coord.getY();
     }
 
     public void setY(int y) {
-      this.coord.setY(y);
+        this.coord.setY(y);
     }
 
     public String getStatus() {

@@ -20,8 +20,14 @@ public class Equipment extends Item {
         this.speed = speed;
     }
 
-    public void OnEquip(Unit unit){
+    private boolean meetRequirement(Unit unit){
+        return true;
+    }
 
+    public void OnEquip(Unit unit){
+        if(meetRequirement(unit)){
+
+        }
     }
 
     public void OnDeEquip(){

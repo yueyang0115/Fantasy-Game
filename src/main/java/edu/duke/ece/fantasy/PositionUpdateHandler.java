@@ -20,7 +20,7 @@ public class PositionUpdateHandler {
     BuildingDAO buildingDAO;
     ShopDAO shopDAO;
     WorldDAO worldDAO;
-  //    ItemDAO itemDAO;
+    //    ItemDAO itemDAO;
 //    int x_block_num;
 //    int y_block_num;
 
@@ -37,7 +37,7 @@ public class PositionUpdateHandler {
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
-        for(WorldCoord where:worldCoords){
+        for (WorldCoord where : worldCoords) {
             where.setWid(wid);
             if (info == null) {
                 info = worldDAO.initWorld(where, "fixmelater", 20);//TODO: real player names.  Fix hardcoding of tile size

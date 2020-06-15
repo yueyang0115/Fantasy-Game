@@ -31,8 +31,4 @@ public class playerInventory extends Inventory {
         this.player = player;
     }
 
-    @Override
-    public int getOwnerID() {
-        return (player != null) ? player.getId() : -1;
-    }
 }

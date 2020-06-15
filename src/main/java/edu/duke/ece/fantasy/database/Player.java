@@ -129,10 +129,10 @@ public class Player implements Trader {
         }
     }
 
-//    public void useItem(Inventory inventory, int amount, Unit unit) {
-//        reduceItem(inventory, amount);
-//        inventory.getItem().useItem(unit);
-//    }
+    public void useItem(Inventory inventory, int amount, Unit unit) {
+        inventory.getDBItem().toGameItem().OnUse(unit);
+        reduceItem(inventory, amount);
+    }
 //
 //    public void dropItem(Inventory inventory, int amount) {
 //        reduceItem(inventory, amount);

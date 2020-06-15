@@ -97,7 +97,6 @@ class ShopHandlerTest {
             }
         }
 
-
     }
 
     ShopResultMessage buy_item(Player player, Shop shop, int inventory_id, int item_amount) {

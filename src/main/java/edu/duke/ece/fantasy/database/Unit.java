@@ -28,10 +28,9 @@ public abstract class Unit {
 
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
-//
-//    @JsonManagedReference
-//    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
-//    private List<ItemPack> equipments = new ArrayList<>();
+
+    @Embedded
+    private List<DBItem> equipments = new ArrayList<>();
 
     public int getId() {
         return id;
