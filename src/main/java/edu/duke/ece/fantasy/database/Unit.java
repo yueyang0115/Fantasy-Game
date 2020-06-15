@@ -17,8 +17,11 @@ public class Unit {
     @Column(name = "ID", unique = true, nullable = false)
     private int id;
 
-    @Column(name = "unit_type", unique = false, nullable = false, length = 100)
+    @Column(name = "type", unique = false, nullable = false, length = 100)
     private String type;
+
+    @Column(name = "name", unique = false, nullable = false)
+    private String name;
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
@@ -36,6 +39,7 @@ public class Unit {
 
     public Unit(Unit unit){
         this.id = unit.getId();
+        this.name = unit.getName();
         this.type = unit.getType();
         this.hp = unit.getHp();
         this.atk = unit.getAtk();
@@ -57,6 +61,10 @@ public class Unit {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 
     public int getSpeed() {
         return speed;
