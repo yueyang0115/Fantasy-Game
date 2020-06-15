@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy.Item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.DBItem;
+import edu.duke.ece.fantasy.database.Unit;
 
 public abstract class Item implements IItem {
     private String name;
@@ -44,7 +45,6 @@ public abstract class Item implements IItem {
         }
     }
 
-
-//    public abstract void useItem(Unit unit);
+    public abstract void OnUse(Unit unit);
 
 }

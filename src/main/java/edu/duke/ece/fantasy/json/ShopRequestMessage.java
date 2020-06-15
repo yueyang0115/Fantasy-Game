@@ -18,7 +18,6 @@ public class ShopRequestMessage {
         this.shopID = shopID;
     }
 
-
     public String getAction() {
         return action;
     }

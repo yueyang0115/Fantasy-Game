@@ -53,8 +53,6 @@ public abstract class Inventory {
         this.amount = amount;
     }
 
-    public abstract int getOwnerID();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

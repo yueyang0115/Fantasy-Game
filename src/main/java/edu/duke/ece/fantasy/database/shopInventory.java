@@ -33,8 +33,5 @@ public class shopInventory extends Inventory {
         this.shop = shop;
     }
 
-    @Override
-    public int getOwnerID() {
-        return (shop != null) ? shop.getId() : -1;
-    }
+
 }

@@ -35,16 +35,16 @@ public class InventoryHandler {
             if (action.equals("list")) {
                 resultMessage.setResult("valid");
             } else if (action.equals("use")) {
-//                if (validate(player, itemPack)) {
-//                    player.useItem(itemPack, 1, unit);
-//                }
-//                // remove itempack from database if doesn't belongs to the player
-//                if (itemPack.getPlayer() == null) {
-//                    session.delete(itemPack);
-//                }
+                if (validate(player, itemPack)) {
+                    player.useItem(itemPack, 1, unit);
+                }
+                // remove itempack from database if it is 0
+                if (itemPack.getAmount() == 0) {
+                    session.delete(itemPack);
+                }
 //                session.update(player);
 //                session.update(unit);
-//                resultMessage.setResult("valid");
+                resultMessage.setResult("valid");
             } else if (action.equals("drop")) {
 //                if (validate(player, itemPack)) {
 //                    player.dropItem(itemPack, 1);
