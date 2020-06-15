@@ -2,17 +2,13 @@ package edu.duke.ece.fantasy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
+import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
 
-import edu.duke.ece.fantasy.database.BuildingDAO;
-import edu.duke.ece.fantasy.database.ShopDAO;
-import edu.duke.ece.fantasy.database.Territory;
-import edu.duke.ece.fantasy.database.TerritoryDAO;
-import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.WorldDAO;
-import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
@@ -20,7 +16,9 @@ public class PositionUpdateHandler {
     BuildingDAO buildingDAO;
     ShopDAO shopDAO;
     WorldDAO worldDAO;
-    //    ItemDAO itemDAO;
+    MonsterManger monsterDAO;
+  //    ItemDAO itemDAO;
+
 //    int x_block_num;
 //    int y_block_num;
 
@@ -29,11 +27,14 @@ public class PositionUpdateHandler {
         buildingDAO = new BuildingDAO(session);
         shopDAO = new ShopDAO(session);
         worldDAO = new WorldDAO(session);
+        monsterDAO = new MonsterManger(session);
         //    itemDAO = new ItemDAO(session);
     }
 
-    public List<Territory> handle(int wid, PositionRequestMessage positionMsg) {
-        ArrayList<Territory> res = new ArrayList<Territory>();
+    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg, HashMap<Integer, Monster> cachedMap) {
+        PositionResultMessage positionResultMessage = new PositionResultMessage();
+        ArrayList<Territory> territoryList = new ArrayList<Territory>();
+        ArrayList<Monster> monsterList = new ArrayList<Monster>();
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
@@ -48,7 +49,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, where, info);
+                gen.generate(territoryDAO, monsterDAO, where, info);
                 t = territoryDAO.getTerritory(where);
             }
 //            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
@@ -56,8 +57,29 @@ public class PositionUpdateHandler {
 //                    territoryDAO.updateTerritory(where, "explored");
 //                }
 //            }
-            res.add(t);
+            territoryList.add(t);
+
+            Monster m = monsterDAO.getMonsterWhere(where);
+            if(m != null){
+                int ID = m.getId();
+                Monster cachedMonster = cachedMap.getOrDefault(ID,null);
+                if(cachedMonster == null){
+                    System.out.println("new monster, add to cache and return list");
+                    cachedMap.put(ID, m);
+                    monsterList.add(m);
+                }
+                else if( !cachedMonster.equals(m) ) {
+                    System.out.println("changed monster, add to cache and return list");
+                    cachedMap.remove(ID);
+                    cachedMap.put(ID, m);
+                    monsterList.add(m);
+                }
+            }
         }
+
+        positionResultMessage.setTerritoryArray(territoryList);
+        positionResultMessage.setMonsterArray(monsterList);
+        return  positionResultMessage;
 //        WorldCoord where = new WorldCoord(wid, x, y);
 
 
@@ -82,8 +104,6 @@ public class PositionUpdateHandler {
 //            res.add(t);
 //          }
 //        }
-
-        return res;
     }
 
 }

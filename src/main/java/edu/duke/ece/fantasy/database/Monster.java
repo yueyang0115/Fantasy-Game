@@ -17,6 +17,9 @@ public class Monster extends Unit{
     @Column(name = "monster_type", unique = false, nullable = false, length = 100)
     private String m_type;
 
+    @Embedded
+    private WorldCoord coord;
+
   /*@JsonBackReference
     @ManyToOne
     @JoinColumn(name="territory_id", nullable=false)
@@ -46,6 +49,51 @@ public class Monster extends Unit{
 
     public void setType(String type) {
         this.m_type = type;
+    }
+
+    public WorldCoord getCoord() { return coord; }
+
+    public void setCoord(WorldCoord coord) { this.coord = coord; }
+
+    public int getWid() {
+        return coord.getWid();
+    }
+
+    public void setWid(int wid) {
+        this.coord.setWid(wid);
+    }
+
+    public int getX() {
+        return coord.getX();
+    }
+
+    public void setX(int x) {
+        this.coord.setX(x);
+    }
+
+    public int getY() {
+        return coord.getY();
+    }
+
+    public void setY(int y) {
+        this.coord.setY(y);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o.getClass().equals(Monster.class)) {
+            Monster m = (Monster) o;
+            return this.coord==m.coord && this.getId()==m.getId();
+        }
+        return false;
+    }
+    @Override
+    public int hashCode(){
+        return this.toString().hashCode();
+    }
+    @Override
+    public String toString(){
+        return (this.getId() + ":" + this.coord.getX() + "," + this.coord.getY());
     }
 
   /*public Territory getTerritory() {

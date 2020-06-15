@@ -69,6 +69,10 @@ public class Territory {
         this.terrainType = terrain;
     }
 
+    public WorldCoord getCoord() { return coord; }
+
+    public void setCoord(WorldCoord coord) { this.coord = coord; }
+
     public int getWid() {
         return coord.getWid();
     }
@@ -92,6 +96,8 @@ public class Territory {
     public void setY(int y) {
         this.coord.setY(y);
     }
+
+
 
     public String getStatus() {
         return status;

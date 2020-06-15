@@ -1,25 +1,24 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.database.WorldCoord;
+
 public class BattleRequestMessage {
-    private int territoryID;
+    private WorldCoord territoryCoord; //territoryCoord includes: x,y,wid
     private String action;//"attack" "escape" "start"
     private BattleAction battleAction; //inclide attackerID, attackeeID, action("normal, magical")
 
     public BattleRequestMessage() {
     }
 
-    public BattleRequestMessage(int territoryID, String action, BattleAction battleAction) {
-        this.territoryID = territoryID;
+    public BattleRequestMessage(WorldCoord territoryCoord, String action, BattleAction battleAction) {
+        this.territoryCoord = territoryCoord;
         this.action = action;
+        this.battleAction = battleAction;
     }
 
-    public int getTerritoryID() {
-        return territoryID;
-    }
+    public WorldCoord getTerritoryCoord() { return territoryCoord; }
 
-    public void setTerritoryID(int territoryID) {
-        this.territoryID = territoryID;
-    }
+    public void setTerritoryCoord(WorldCoord territoryCoord) { this.territoryCoord = territoryCoord; }
 
     public BattleAction getBattleAction() {
         return battleAction;
