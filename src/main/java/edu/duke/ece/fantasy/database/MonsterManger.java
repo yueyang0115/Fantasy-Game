@@ -27,12 +27,8 @@ public class MonsterManger {
     }
 
     public Monster getMonsterWhere(WorldCoord where) {
-        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
-        q.setParameter("wid", where.getWid());
-        q.setParameter("x", where.getX());
-        q.setParameter("y", where.getY());
-//        q.setParameter("x", x);
-//        q.setParameter("y", y);
+        Query q = session.createQuery("From Monster M where M.coord =: coord");
+        q.setParameter("coord", where);
         Monster res = (Monster) q.uniqueResult();
         return res;
 
@@ -41,8 +37,9 @@ public class MonsterManger {
     //get all monsters in the provided coord from database
     public List<Monster> getMonsters(WorldCoord where){
         List<Monster> monsterList = new ArrayList<>();
-        Query q2 = session.createQuery("From Monster M where M.coord =:coord");
-        q2.setParameter("coord", where);
+        Query q2 = session.createQuery("From Monster M where M.coord.x =:x and M.coord.y =:y");
+        q2.setParameter("x", where.getX());
+        q2.setParameter("y", where.getY());
         for(Object o : q2.list()) {
             monsterList.add((Monster) o);
         }

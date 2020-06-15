@@ -17,7 +17,7 @@ public class PositionUpdateHandler {
     ShopDAO shopDAO;
     WorldDAO worldDAO;
     MonsterManger monsterDAO;
-  //    ItemDAO itemDAO;
+    //    ItemDAO itemDAO;
 
 //    int x_block_num;
 //    int y_block_num;
@@ -31,10 +31,12 @@ public class PositionUpdateHandler {
         //    itemDAO = new ItemDAO(session);
     }
 
-    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg, HashMap<Integer, Monster> cachedMap) {
+    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg) {
+        //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
         ArrayList<Monster> monsterList = new ArrayList<Monster>();
+        ArrayList<Building> buildingList = new ArrayList<>();
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
@@ -49,7 +51,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, monsterDAO, where, info);
+                gen.generate(territoryDAO, monsterDAO, buildingDAO, where, info);
                 t = territoryDAO.getTerritory(where);
             }
 //            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
@@ -59,27 +61,20 @@ public class PositionUpdateHandler {
 //            }
             territoryList.add(t);
 
-            Monster m = monsterDAO.getMonsterWhere(where);
-            if(m != null){
-                int ID = m.getId();
-                Monster cachedMonster = cachedMap.getOrDefault(ID,null);
-                if(cachedMonster == null){
-                    System.out.println("new monster, add to cache and return list");
-                    cachedMap.put(ID, m);
-                    monsterList.add(m);
-                }
-                else if( !cachedMonster.equals(m) ) {
-                    System.out.println("changed monster, add to cache and return list");
-                    cachedMap.remove(ID);
-                    cachedMap.put(ID, m);
-                    monsterList.add(m);
-                }
+            if (t.getTerrainType().equals("forest_dense")) {
+                System.out.println("find forest_dense, should have a monster here");
             }
+            Monster m = monsterDAO.getMonsterWhere(where);
+            if (m != null) monsterList.add(m);
+
+            Building building = buildingDAO.getBuilding(where);
+            if (building != null) buildingList.add(building);
         }
 
         positionResultMessage.setTerritoryArray(territoryList);
+        positionResultMessage.setBuildingArray(buildingList);
         positionResultMessage.setMonsterArray(monsterList);
-        return  positionResultMessage;
+        return positionResultMessage;
 //        WorldCoord where = new WorldCoord(wid, x, y);
 
 

@@ -38,7 +38,8 @@ public class Territory {
             monsters.add(monster);
         }
         this.monsters = monsters;*/
-        this.terrainType = old_terr.getTerrain();
+
+        this.terrainType = old_terr.getTerrainType();
     }
 
     public Territory(WorldCoord coord, String status) {
@@ -46,17 +47,22 @@ public class Territory {
         this.status = status;
     }
 
-    public String getTerrain() {
+
+    public String getTerrainType() {
         return terrainType;
     }
 
-    public void setTerrain(String terrain) {
-        this.terrainType = terrain;
+    public void setTerrainType(String terrainType) {
+        this.terrainType = terrainType;
     }
 
-    public WorldCoord getCoord() { return coord; }
+    public WorldCoord getCoord() {
+        return coord;
+    }
 
-    public void setCoord(WorldCoord coord) { this.coord = coord; }
+    public void setCoord(WorldCoord coord) {
+        this.coord = coord;
+    }
 
 
     public String getStatus() {

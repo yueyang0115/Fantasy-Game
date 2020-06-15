@@ -23,4 +23,11 @@ public class BuildingDAO {
         Building res = (Building) q.uniqueResult();
         return res;
     }
+
+    public Shop getBuilding(WorldCoord coord) {
+        Query q = session.createQuery("From Building b where b.coord =:coord");
+        q.setParameter("coord", coord);
+        Shop res = (Shop) q.uniqueResult();
+        return res;
+    }
 }

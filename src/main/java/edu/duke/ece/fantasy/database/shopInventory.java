@@ -20,6 +20,10 @@ public class shopInventory extends Inventory {
     public shopInventory() {
     }
 
+    public shopInventory(DBItem item, int amount) {
+        super(item, amount);
+    }
+
     public shopInventory(DBItem item, int amount, Shop shop) {
         super(item, amount);
         this.shop = shop;

@@ -143,8 +143,8 @@ public class BattleHandler {
 
         //update unitQueue
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
-        action.setAttackee(attackee);
-        action.setAttacker(attacker);
+        action.setAttackee(new Unit(attackee));
+        action.setAttacker(new Unit(attacker));
         action.setActionType("normal");
         action.setUnits(generateIDList(unitQueue));
         return action;

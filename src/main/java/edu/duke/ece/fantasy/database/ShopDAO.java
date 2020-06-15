@@ -20,6 +20,10 @@ public class ShopDAO {
         itemDAO = new ItemDAO(session);
     }
 
+    public ShopDAO(){
+
+    }
+
     public Shop createShop() {
 //        List<Item> items = new ArrayList<>();
 //        items.add(new Consumable("Potion", 10, 20));
@@ -31,7 +35,6 @@ public class ShopDAO {
 //        }
         shop.setItems(shopInventories);
 
-        session.save(shop);
         return shop;
     }
 

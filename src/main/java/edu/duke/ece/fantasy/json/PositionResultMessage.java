@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.database.Building;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
 
@@ -23,4 +24,14 @@ public class PositionResultMessage {
     public void setMonsterArray(List<Monster> monsterArray) { this.monsterArray = monsterArray; }
 
     private List<Monster> monsterArray;
+
+    private List<Building> buildingArray;
+
+    public List<Building> getBuildingArray() {
+        return buildingArray;
+    }
+
+    public void setBuildingArray(List<Building> buildingArray) {
+        this.buildingArray = buildingArray;
+    }
 }

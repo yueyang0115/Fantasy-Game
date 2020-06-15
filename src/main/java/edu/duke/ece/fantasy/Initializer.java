@@ -46,7 +46,7 @@ public class Initializer {
             ShopDAO shopDAO = new ShopDAO(session);
             Shop shop = shopDAO.getShop(1);
             if (shop == null) {
-                shopDAO.createShop();
+                shopDAO.addShop(new WorldCoord(), shopDAO.createShop());
             }
             session.getTransaction().commit();
         }

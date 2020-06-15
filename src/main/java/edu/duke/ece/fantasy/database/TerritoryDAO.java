@@ -75,7 +75,8 @@ public class TerritoryDAO {
         // insert territory to world
         Territory t = new Territory(where, status);
         // add terrain
-        t.setTerrain(terrain);
+//        Terrain terrain = terrainDAO.getTerrain(terrain_type);
+        t.setTerrainType(terrain);
         // add monster
         /*for (Monster monster : monsters) {
             t.addMonster(monster);
