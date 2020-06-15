@@ -229,10 +229,8 @@ public class TileGenerator {
                 System.out.println("tdao.addTile " + selected.getId());
                 existingTiles.put(thisWc, t);
                 putTerrain(terdao, monsterDAO, thisWc, selected);
-
             }
         }
-
     }
 
     private void putTerrain(TerritoryDAO terDAO, MonsterManger monsterDAO, WorldCoord where, TileInfo info) {
@@ -252,6 +250,9 @@ public class TileGenerator {
                     monsterDAO.addMonster(m,place);
                 }
 
+//                if(s.getImageName().equals()){
+//
+//                }
             }
         }
     }
