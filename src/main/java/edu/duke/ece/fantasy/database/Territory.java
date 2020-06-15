@@ -25,11 +25,6 @@ public class Territory {
     */
     private String terrainType;
 
-    @JsonManagedReference(value = "territory-building")
-    @OneToOne
-    @JoinColumn(name = "building_id")
-    private Building building;
-
     public Territory() {
 
     }
@@ -44,21 +39,11 @@ public class Territory {
         }
         this.monsters = monsters;*/
         this.terrainType = old_terr.getTerrain();
-        this.building = old_terr.getBuilding();
     }
 
     public Territory(WorldCoord coord, String status) {
         this.coord = coord;
         this.status = status;
-    }
-
-    public Building getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(Building building) {
-        this.building = building;
-        building.setTerritory(this);
     }
 
     public String getTerrain() {

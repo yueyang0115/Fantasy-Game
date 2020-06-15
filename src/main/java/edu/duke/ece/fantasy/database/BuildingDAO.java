@@ -11,6 +11,12 @@ public class BuildingDAO {
         this.session = session;
     }
 
+    public Building addBuilding(WorldCoord where, Building building) {
+        building.setCoord(where);
+        session.saveOrUpdate(building);
+        return building;
+    }
+
     public Building getBuilding(String name){
         Query q = session.createQuery("From Building b where b.name =:name");
         q.setParameter("name", name);

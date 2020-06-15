@@ -35,38 +35,15 @@ public class ShopDAO {
         return shop;
     }
 
-    public Shop addShop(int territory_id, List<shopInventory> items) {
-        Shop shop = getShopByTerritoryID(territory_id);
-        if (shop == null) {
-            shop = new Shop("shop");
-//            shop.setInventory(items);
-            for (shopInventory item : items) {
-                shop.addInventory(item);
-            }
-            session.save(shop);
-        }
+    public Shop addShop(WorldCoord where, Shop shop) {
+        shop.setCoord(where);
+        session.saveOrUpdate(shop);
         return shop;
     }
 
-    public Shop addShop(String name) {
-        Shop shop = getShop(name);
-        if (shop == null) {
-            shop = new Shop(name);
-            session.save(shop);
-        }
-        return shop;
-    }
-
-    public Shop getShop(String name) {
-        Query q = session.createQuery("From Shop s where s.name =:name");
-        q.setParameter("name", name);
-        Shop res = (Shop) q.uniqueResult();
-        return res;
-    }
-
-    public Shop getShopByTerritoryID(int territory_id) {
-        Query q = session.createQuery("From Shop s where s.territory =:id");
-        q.setParameter("id", territory_id);
+    public Shop getShop(WorldCoord coord) {
+        Query q = session.createQuery("From Shop s where s.coord =:coord");
+        q.setParameter("coord", coord);
         Shop res = (Shop) q.uniqueResult();
         return res;
     }

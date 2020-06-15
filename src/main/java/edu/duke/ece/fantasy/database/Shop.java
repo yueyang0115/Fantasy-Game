@@ -15,11 +15,10 @@ public class Shop extends Building implements Trader {
     private List<shopInventory> items = new ArrayList<>();
 
     public Shop() {
-        super("shop");
     }
 
-    public Shop(String name) {
-        super(name);
+    public Shop(WorldCoord coord) {
+        super("shop", coord);
     }
 
     public Shop addInventory(shopInventory item) {
@@ -72,7 +71,7 @@ public class Shop extends Building implements Trader {
             }
         }
         if (!find) {
-            shopInventory new_item = new shopInventory(select_item.getDBItem(), amount,this);
+            shopInventory new_item = new shopInventory(select_item.getDBItem(), amount, this);
             addInventory(new_item);
         }
     }

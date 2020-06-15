@@ -250,9 +250,9 @@ public class TileGenerator {
                     monsterDAO.addMonster(m,place);
                 }
 
-//                if(s.getImageName().equals()){
-//
-//                }
+                if(s.getImageName().equals("")){
+
+                }
             }
         }
     }

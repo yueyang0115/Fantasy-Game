@@ -69,10 +69,7 @@ public class TerritoryDAO {
         //session.update(territory);
     }
 
-    public void addBuildingToTerritory(Territory territory, Building building) {
-        territory.setBuilding(building);
-        session.update(territory);
-    }
+
 
     public Territory addTerritory(WorldCoord where, String status, String terrain, List<Monster> monsters) {
         // insert territory to world
