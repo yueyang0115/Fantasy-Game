@@ -14,8 +14,8 @@ public class Monster extends Unit{
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
     private String type = "monster";
 
-    @Column(name = "monster_type", unique = false, nullable = false, length = 100)
-    private String m_type;
+//    @Column(name = "monster_type", unique = false, nullable = false, length = 100)
+//    private String m_type;
 
     @Embedded
     private WorldCoord coord;
@@ -29,26 +29,18 @@ public class Monster extends Unit{
 
     }
 
-    public Monster(String type,int hp,int atk,int speed){
-        this.m_type = type;
+    public Monster(String name,int hp,int atk,int speed){
+        this.setName(name);
         this.setHp(hp);
         this.setAtk(atk);
         this.setSpeed(speed);
     }
 
     public Monster(Monster old_monster){
-        this.m_type = old_monster.getType();
+        this.setName(old_monster.getType());
         this.setHp(old_monster.getHp());
         this.setAtk(old_monster.getAtk());
         this.setSpeed(old_monster.getSpeed());
-    }
-
-    public String getType() {
-        return m_type;
-    }
-
-    public void setType(String type) {
-        this.m_type = type;
     }
 
     public WorldCoord getCoord() { return coord; }
@@ -83,7 +75,7 @@ public class Monster extends Unit{
     public JSONObject toJSON(){
         JSONObject monster_obj = new JSONObject();
 //        monster_obj.put("id",id);
-        monster_obj.put("type",m_type);
+//        monster_obj.put("type",m_type);
 //        monster_obj.put("hp",hp);
 //        monster_obj.put("atk",atk);
         return monster_obj;
