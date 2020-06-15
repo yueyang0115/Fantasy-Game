@@ -238,23 +238,18 @@ public class TileGenerator {
 
         for (int x = 0; x < tileWidth; x++) {
             for (int y = 0; y < tileHeight; y++) {
-                Square s = info.getSquareAt(x,y);
-                WorldCoord place = new WorldCoord(where.getWid(), where.getX()+x, where.getY()+y);
+                Square s = info.getSquareAt(x, y);
+                WorldCoord place = new WorldCoord(where.getWid(), where.getX() + x, where.getY() + y);
                 //System.out.println("Territory at place: " + place);
                 terDAO.addTerritory(place, "unexplored", s.getImageName(), new ArrayList<Monster>());
 
                 //TODO: yy: add monstef, use s.getImage Name to add a random monster
-                if(s.getImageName().equals("forestDense")){
-                    System.out.println("addMonster in " + place.getX() + ","+place.getY());
-                    Monster m = new Monster("BigWolf", 60, 6, 10);
-                    monsterDAO.addMonster(m,place);
+                if (s.getImageName().equals("forest_dense")) {
+                    System.out.println("addMonster in " + place.getX() + "," + place.getY());
+                    Monster m = new Monster("wolf", 60, 6, 10);
+                    monsterDAO.addMonster(m, place);
                 }
-
-        //TODO: yy: add monstef, use s.getImage Name to add a random monster
-        if(s.getImageName().equals("forest_dense")){
-          System.out.println("addMonster in " + place.getX() + ","+place.getY());
-          Monster m = new Monster("wolf", 60, 6, 10);
-          monsterDAO.addMonster(m,place);
+            }
         }
     }
 
