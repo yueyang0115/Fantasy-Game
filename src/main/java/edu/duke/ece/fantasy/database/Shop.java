@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -10,8 +11,9 @@ import java.util.List;
 @Table(name = "Shop")
 @PrimaryKeyJoinColumn(name = "ID")
 public class Shop extends Building implements Trader {
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<shopInventory> items = new ArrayList<>();
 
     public Shop() {

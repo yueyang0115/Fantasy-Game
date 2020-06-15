@@ -70,18 +70,4 @@ class TerritoryHandlerTest {
 //    }
 
 
-
-    void printAsJson(List<Territory> res) {
-        MessagesS2C msg = new MessagesS2C();
-        PositionResultMessage positionResultMessage = new PositionResultMessage();
-        positionResultMessage.setTerritoryArray(res);
-        msg.setPositionResultMessage(positionResultMessage);
-        try {
-            logger.info(objectMapper.writeValueAsString(msg));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }
