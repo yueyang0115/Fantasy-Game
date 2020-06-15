@@ -28,6 +28,10 @@ public class Building {
     public Building() {
     }
 
+    public Building(String name) {
+        this.name = name;
+    }
+
     public Building(String name, WorldCoord coord) {
         this.name = name;
         this.coord = coord;

@@ -67,8 +67,12 @@ public class PositionUpdateHandler {
             Monster m = monsterDAO.getMonsterWhere(where);
             if (m != null) monsterList.add(m);
 
-            Building building = buildingDAO.getBuilding(where);
-            if (building != null) buildingList.add(building);
+//            Shop building = shopDAO.getShop(where);
+//
+//            if (building != null) {
+//                building.getItems();
+//                buildingList.add(building);
+//            }
         }
 
         positionResultMessage.setTerritoryArray(territoryList);

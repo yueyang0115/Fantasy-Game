@@ -15,6 +15,7 @@ public class Shop extends Building implements Trader {
     private List<shopInventory> items = new ArrayList<>();
 
     public Shop() {
+        super("shop");
     }
 
     public Shop(WorldCoord coord) {
