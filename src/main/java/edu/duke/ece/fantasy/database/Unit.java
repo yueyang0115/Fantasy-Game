@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "Unit")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Unit {
+public class Unit {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -18,7 +18,7 @@ public abstract class Unit {
     private int id;
 
     @Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String u_type;
+    private String type;
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
@@ -32,6 +32,16 @@ public abstract class Unit {
     @Embedded
     private List<DBItem> equipments = new ArrayList<>();
 
+    public Unit(){}
+
+    public Unit(Unit unit){
+        this.id = unit.getId();
+        this.type = unit.getType();
+        this.hp = unit.getHp();
+        this.atk = unit.getAtk();
+        this.speed = unit.getSpeed();
+    }
+
     public int getId() {
         return id;
     }
@@ -41,11 +51,11 @@ public abstract class Unit {
     }
 
     public String getType() {
-        return u_type;
+        return type;
     }
 
     public void setType(String type) {
-        this.u_type = type;
+        this.type = type;
     }
 
     public int getSpeed() {

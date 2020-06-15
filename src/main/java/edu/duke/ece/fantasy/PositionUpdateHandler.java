@@ -32,6 +32,7 @@ public class PositionUpdateHandler {
     }
 
     public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg, HashMap<Integer, Monster> cachedMap) {
+        //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
         ArrayList<Monster> monsterList = new ArrayList<Monster>();
@@ -59,6 +60,9 @@ public class PositionUpdateHandler {
 //            }
             territoryList.add(t);
 
+            if(t.getTerrainType().equals("forest_dense")){
+                System.out.println("find forest_dense, should have a monster here");
+            }
             Monster m = monsterDAO.getMonsterWhere(where);
             if(m != null){
                 int ID = m.getId();

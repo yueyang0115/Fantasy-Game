@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Monster extends Unit{
 
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String u_type = "monster";
+    private String type = "monster";
 
     @Column(name = "monster_type", unique = false, nullable = false, length = 100)
     private String m_type;
@@ -54,30 +54,6 @@ public class Monster extends Unit{
     public WorldCoord getCoord() { return coord; }
 
     public void setCoord(WorldCoord coord) { this.coord = coord; }
-
-    public int getWid() {
-        return coord.getWid();
-    }
-
-    public void setWid(int wid) {
-        this.coord.setWid(wid);
-    }
-
-    public int getX() {
-        return coord.getX();
-    }
-
-    public void setX(int x) {
-        this.coord.setX(x);
-    }
-
-    public int getY() {
-        return coord.getY();
-    }
-
-    public void setY(int y) {
-        this.coord.setY(y);
-    }
 
     @Override
     public boolean equals(Object o) {

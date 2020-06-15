@@ -45,7 +45,7 @@ public class MonsterMangerTest {
         //t.addMonster(m);
         //t.addMonster(m2);
 
-        t.setTerrain("grass");
+        t.setTerrainType("grass");
         session.save(t);
 //        session.getTransaction().commit();
         Long count = (Long) session.createQuery("select count(*) from Monster ").uniqueResult();

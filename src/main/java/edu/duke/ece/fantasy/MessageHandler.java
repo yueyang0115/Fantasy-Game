@@ -63,10 +63,12 @@ public class MessageHandler {
 //                log.info("wid is {} when handle positionMsg",wid);
                 //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
                 result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg, cachedMonsters));
+                session.getTransaction().commit();
             }
 
             if (battleMsg != null) {
                 session.beginTransaction();
+                battleMsg.getTerritoryCoord().setWid(this.wid);
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
                 result.setBattleResultMessage(battleResult);
                 session.getTransaction().commit();
