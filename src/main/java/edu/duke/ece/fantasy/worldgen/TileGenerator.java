@@ -257,9 +257,8 @@ public class TileGenerator {
 
                 if (s.getImageName().equals("grass") && RandomGenerator.getRandomResult(40)) {
                     Shop shop = (new ShopDAO()).createShop();
-                    buildingDAO.addBuilding(where,shop);
+                    buildingDAO.addBuilding(place,shop);
                 }
-
             }
         }
     }

@@ -24,10 +24,10 @@ public class BuildingDAO {
         return res;
     }
 
-    public Shop getBuilding(WorldCoord coord) {
+    public Building getBuilding(WorldCoord coord) {
         Query q = session.createQuery("From Building b where b.coord =:coord");
         q.setParameter("coord", coord);
-        Shop res = (Shop) q.uniqueResult();
+        Building res = (Building) q.uniqueResult();
         return res;
     }
 }
