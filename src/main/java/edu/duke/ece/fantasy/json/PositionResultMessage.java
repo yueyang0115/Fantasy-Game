@@ -7,6 +7,10 @@ import edu.duke.ece.fantasy.database.Territory;
 import java.util.List;
 
 public class PositionResultMessage {
+    private List<Territory> territoryArray;
+    private List<Monster> monsterArray;
+    private List<Building> buildingArray;
+
     public PositionResultMessage(){}
 
     public List<Territory> getTerritoryArray() {
@@ -17,15 +21,9 @@ public class PositionResultMessage {
         this.territoryArray = territoryArray;
     }
 
-    private List<Territory> territoryArray;
-
     public List<Monster> getMonsterArray() { return monsterArray; }
 
     public void setMonsterArray(List<Monster> monsterArray) { this.monsterArray = monsterArray; }
-
-    private List<Monster> monsterArray;
-
-    private List<Building> buildingArray;
 
     public List<Building> getBuildingArray() {
         return buildingArray;

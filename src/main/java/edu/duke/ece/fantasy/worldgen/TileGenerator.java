@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
@@ -241,6 +242,7 @@ public class TileGenerator {
         //    System.out.println("Putting terrain on ["+where.getX()+","+(where.getX()+tileWidth)+") y:["+where.getY()+","+(where.getY()+tileHeight)+")"+ System.currentTimeMillis());
 
         ShopDAO shopDAO = new ShopDAO();
+        Random rand = new Random();
         for (int x = 0; x < tileWidth; x++) {
             for (int y = 0; y < tileHeight; y++) {
                 Square s = info.getSquareAt(x, y);
@@ -250,9 +252,12 @@ public class TileGenerator {
 
                 //TODO: yy: add monstef, use s.getImage Name to add a random monster
                 if (s.getImageName().equals("forest_dense")) {
-                    System.out.println("addMonster in " + place.getX() + "," + place.getY());
+                    //System.out.println("addMonster in " + place.getX() + "," + place.getY());
                     Monster m = new Monster("wolf", 60, 6, 10);
-                    monsterDAO.addMonster(m, place);
+                    int randomNum = rand.nextInt(9) + 0;
+                    if(randomNum>=7){
+                        monsterDAO.addMonster(m, place);
+                    }
                 }
 
                 if (s.getImageName().equals("grass") && RandomGenerator.getRandomResult(40)) {
