@@ -214,7 +214,7 @@ public class TileGenerator {
         for (int y = startY; y <= endY; y += tileHeight) {
             for (int x = startX; x <= endX; x += tileWidth) {
                 WorldCoord thisWc = new WorldCoord(where.getWid(), x, y);
-                System.out.println("Considering tile at " + thisWc);
+                //System.out.println("Considering tile at " + thisWc);
                 if (tdao.getTileAt(thisWc) != null) {
                     //System.out.println("Already have " + tdao.getTileAt(thisWc));
                     continue;
@@ -231,7 +231,7 @@ public class TileGenerator {
                     selected = possible.get(RandomGenerator.random.nextInt(possible.size()));
                 }
                 Tile t = tdao.addTile(thisWc, selected.getId());
-                System.out.println("tdao.addTile " + selected.getId());
+                //System.out.println("tdao.addTile " + selected.getId());
                 existingTiles.put(thisWc, t);
                 putTerrain(terdao, monsterDAO, buildingDAO, thisWc, selected);
             }
