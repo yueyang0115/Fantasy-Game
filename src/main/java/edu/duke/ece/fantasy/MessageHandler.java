@@ -67,7 +67,7 @@ public class MessageHandler {
 
             if (battleMsg != null) {
                 session.beginTransaction();
-                battleMsg.getTerritoryCoord().setWid(this.wid);
+                if(battleMsg.getTerritoryCoord()!=null) battleMsg.getTerritoryCoord().setWid(this.wid);
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
                 result.setBattleResultMessage(battleResult);
                 session.getTransaction().commit();
