@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Table(name = "shopInventory")
 public class shopInventory extends Inventory {
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
