@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Table(name = "shopInventory")
 public class shopInventory extends Inventory {
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;

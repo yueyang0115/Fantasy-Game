@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "Inventory")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Inventory {
+public class Inventory {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
