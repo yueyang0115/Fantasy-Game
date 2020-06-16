@@ -67,7 +67,7 @@ public class Shop extends Building implements Trader {
     public void buyItem(Inventory select_item, int amount) {
         boolean find = false;
         for (Inventory item : items) {
-            if (item == select_item) { // if have this type of item
+            if (item.equals(select_item)) { // if have this type of item
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;

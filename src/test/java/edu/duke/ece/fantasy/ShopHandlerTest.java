@@ -62,8 +62,10 @@ class ShopHandlerTest {
 
     void handle_buy(Shop shop) {
         List<shopInventory> itemPacks = new ArrayList<>(shop.getItems());
-        for (shopInventory select_item : itemPacks) {
+
+        for (int i = 0; i < itemPacks.size(); i++) {
             try {
+                shopInventory select_item = itemPacks.get(i);
                 Item item_obj = select_item.getDBItem().toGameItem();
                 int itemPack_id = select_item.getId();
                 int item_amount = select_item.getAmount();
@@ -85,6 +87,16 @@ class ShopHandlerTest {
                 // success
                 player.setMoney(required_money);
                 resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
+                assertEquals("valid", resultMessage.getResult());
+                try {
+                    logger.info(objectMapper.writeValueAsString(resultMessage));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                // success buy again
+                player.setMoney(required_money);
+                resultMessage = buy_item(player, shop, itemPack_id, 1);
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));

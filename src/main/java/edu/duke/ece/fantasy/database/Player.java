@@ -147,7 +147,7 @@ public class Player implements Trader {
     @Override
     public boolean checkItem(Inventory inventory, int amount) {
         for (Inventory item : items) {
-            if (item == inventory) { // if have this type of item
+            if (item.equals(inventory)) { // if have this type of item
                 return item.getAmount() >= amount;
             }
         }
@@ -165,7 +165,7 @@ public class Player implements Trader {
         boolean find = false;
         Item item_obj = select_item.getDBItem().toGameItem();
         for (Inventory item : items) {
-            if (item == select_item) { // if have this type of item, add amount to existing object
+            if (item.equals(select_item)) { // if have this type of item, add amount to existing object
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
