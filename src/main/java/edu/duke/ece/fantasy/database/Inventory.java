@@ -29,6 +29,12 @@ public class Inventory {
         this.amount = amount;
     }
 
+    public Inventory(int id, DBItem item, int amount) {
+        this.id = id;
+        this.item = item;
+        this.amount = amount;
+    }
+
     public int getId() {
         return id;
     }

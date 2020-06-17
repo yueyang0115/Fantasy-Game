@@ -42,7 +42,11 @@ public class DBItem {
     public Item toGameItem() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return (Item) objectMapper.readValue(item_properties, Class.forName(item_class));
+            if (!item_properties.equals("")) {
+                return (Item) objectMapper.readValue(item_properties, Class.forName(item_class));
+            } else {
+                return (Item) Class.forName(item_class).getDeclaredConstructor().newInstance();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;

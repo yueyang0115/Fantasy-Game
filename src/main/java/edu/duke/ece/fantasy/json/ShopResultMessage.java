@@ -7,7 +7,7 @@ import edu.duke.ece.fantasy.database.shopInventory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopResultMessage{
+public class ShopResultMessage {
     private InventoryResultMessage inventoryResultMessage;
     private List<Inventory> items = new ArrayList<>(); //all items in the shop
     private String result; //status: "valid","invalid"
@@ -29,6 +29,10 @@ public class ShopResultMessage{
 
     public void setItems(List<Inventory> items) {
         this.items = items;
+    }
+
+    public void addItem(Inventory item) {
+        this.items.add(item);
     }
 
     public String getResult() {

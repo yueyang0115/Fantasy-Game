@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.Item.IItem;
 import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.Item.Sword;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
@@ -37,6 +38,10 @@ class ShopHandlerTest {
 
     @Test
     void handle() {
+        Sword sword = new Sword();
+        DBItem tmp = sword.toDBItem();
+        System.out.println(tmp.getItem_properties());
+        Item tmp_item = tmp.toGameItem();
         try (Session session = createSession()) {
             (new Initializer()).test_initialize();
             session.beginTransaction();

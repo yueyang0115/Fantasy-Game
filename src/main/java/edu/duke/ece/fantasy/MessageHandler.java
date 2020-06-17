@@ -95,12 +95,6 @@ public class MessageHandler {
             }
 
 
-//            try {
-//                String tmp = objectMapper.writeValueAsString(result); // fix lazy initialization problem
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
         }
         return result;
     }

@@ -9,6 +9,7 @@ import edu.duke.ece.fantasy.json.ShopResultMessage;
 import net.bytebuddy.implementation.bytecode.Addition;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,15 @@ public class ShopHandler {
         }
         // get latest data from db(previous transaction may roll back)
         shop = shopDAO.getShop(request.getShopID());
-        result.setItems(new ArrayList<>(shop.getItems()));
+        List<shopInventory> db_items = shop.getItems();
+
+        for (shopInventory db_item : db_items) {
+            // add more information of item
+            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
+            result.addItem(toClientInventory);
+        }
+
+//        result.setItems(new ArrayList<>());
         InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
         inventoryRequestMessage.setAction("list");
         result.setInventoryResultMessage((new InventoryHandler(session)).handle(inventoryRequestMessage, playerID));

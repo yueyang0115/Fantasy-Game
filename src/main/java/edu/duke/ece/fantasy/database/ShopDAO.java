@@ -25,16 +25,10 @@ public class ShopDAO {
     }
 
     public Shop createShop() {
-//        List<Item> items = new ArrayList<>();
-//        items.add(new Consumable("Potion", 10, 20));
-
         List<shopInventory> shopInventories = new ArrayList<>();
         Shop shop = new Shop();
-//        for (Item item : items) {
-        shopInventories.add(new shopInventory(new Consumable("Potion", 10, 20).toDBItem(), 20, shop));
-//        }
+        shopInventories.add(new shopInventory(new Potion().toDBItem(), 20, shop));
         shop.setItems(shopInventories);
-
         return shop;
     }
 

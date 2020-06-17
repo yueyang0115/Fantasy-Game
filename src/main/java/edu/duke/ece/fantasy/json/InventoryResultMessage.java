@@ -33,6 +33,10 @@ public class InventoryResultMessage {
         this.items = items;
     }
 
+    public void addItem(Inventory item) {
+        this.items.add(item);
+    }
+
     public String getResult() {
         return result;
     }

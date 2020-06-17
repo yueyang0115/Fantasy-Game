@@ -5,6 +5,6 @@ import edu.duke.ece.fantasy.database.Unit;
 
 public interface IItem {
 //    int getCost();
-    public void OnUse(Unit unit);
+//    public void OnUse(Unit unit);
 //    public DBItem toDBItem();
 }

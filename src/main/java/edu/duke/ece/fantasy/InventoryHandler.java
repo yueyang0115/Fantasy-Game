@@ -42,8 +42,6 @@ public class InventoryHandler {
                 if (itemPack.getAmount() == 0) {
                     session.delete(itemPack);
                 }
-//                session.update(player);
-//                session.update(unit);
                 resultMessage.setResult("valid");
             } else if (action.equals("drop")) {
 //                if (validate(player, itemPack)) {
@@ -60,10 +58,14 @@ public class InventoryHandler {
             resultMessage.setResult("invalid:" + e.getMessage());
         }
 
+        for (playerInventory db_item : player.getItems()) {
+            // add more information of item
+            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
+            resultMessage.addItem(toClientInventory);
+        }
 
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
         resultMessage.setAttributeResultMessage((new AttributeHandler(session)).handle(attributeRequestMessage, player_id));
-        resultMessage.setItems(new ArrayList<>(player.getItems()));
         resultMessage.setMoney(player.getMoney());
 
         return resultMessage;

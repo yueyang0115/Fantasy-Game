@@ -2,8 +2,11 @@ package edu.duke.ece.fantasy.Item;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import edu.duke.ece.fantasy.ObjectMapperFactory;
 import edu.duke.ece.fantasy.database.DBItem;
 import edu.duke.ece.fantasy.database.Unit;
+import org.json.JSONObject;
 
 public abstract class Item implements IItem {
     private String name;
@@ -35,11 +38,18 @@ public abstract class Item implements IItem {
         this.cost = cost;
     }
 
+//    public String getChangeableProperties(){
+//        return "";
+//    }
+
     public DBItem toDBItem() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return new DBItem(this.getClass().getName(), objectMapper.writeValueAsString(this));
-        } catch (Exception e) {
+        return new DBItem(this.getClass().getName(), "");
+    }
+
+    public DBItem toClient(){
+        try{
+            return new DBItem("", ObjectMapperFactory.getObjectMapper().writeValueAsString(this));
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }
