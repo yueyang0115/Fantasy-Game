@@ -1,12 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.GenericGenerator;
-import org.json.*;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "Territory")
@@ -16,8 +10,8 @@ public class Territory {
     WorldCoord coord;
 
 
-    @Column(name = "status", nullable = false)
-    private int status;
+    @Column(name = "tame", nullable = false)
+    private int tame;
 
     /*@JsonManagedReference
       @OneToMany(mappedBy = "territory", cascade = CascadeType.ALL)
@@ -30,9 +24,9 @@ public class Territory {
     }
 
 
-    public Territory(WorldCoord coord, int status) {
+    public Territory(WorldCoord coord, int tame) {
         this.coord = coord;
-        this.status = status;
+        this.tame = tame;
     }
 
 
@@ -53,12 +47,12 @@ public class Territory {
     }
 
 
-    public Integer getStatus() {
-        return status;
+    public Integer getTame() {
+        return tame;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setTame(int status) {
+        this.tame = status;
     }
 
   /*public void addMonster(Monster monster) {

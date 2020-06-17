@@ -1,10 +1,8 @@
 package edu.duke.ece.fantasy.database;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import edu.duke.ece.fantasy.TerritoryBlock;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -91,7 +89,7 @@ public class TerritoryDAO {
         if (t == null) { // don't have territory
             return false;
         }
-        t.setStatus(status);
+        t.setTame(status);
         session.update(t);
         return true;
     }
