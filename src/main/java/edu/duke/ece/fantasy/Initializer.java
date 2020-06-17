@@ -12,15 +12,42 @@ public class Initializer {
             // initialize database
             session.beginTransaction();
             // initialize terrain
-            TerrainDAO terrainDAO = new TerrainDAO(session);
-            terrainDAO.initialTerrain();
             // initialize item
-            ConsumableDAO consumableDAO = new ConsumableDAO(session);
-            consumableDAO.initial();
+//            ConsumableDAO consumableDAO = new ConsumableDAO(session);
+//            consumableDAO.initial();
+//            EquipmentDAO equipmentDAO = new EquipmentDAO(session);
+//            equipmentDAO.initial();
             // initialize shop
 //            List<Item> items = itemDAO.getAllItem();
 //            ShopDAO shopDAO = new ShopDAO(session);
 //            shopDAO.initialShop(items);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void test_initialize() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // initialize database
+            session.beginTransaction();
+            // initialize terrain
+            // initialize item
+//            ConsumableDAO consumableDAO = new ConsumableDAO(session);
+//            consumableDAO.initial();
+//            EquipmentDAO equipmentDAO = new EquipmentDAO(session);
+//            equipmentDAO.initial();
+
+            // initialize player
+            PlayerDAO playerDAO = new PlayerDAO(session);
+            Player player = playerDAO.getPlayer("test");
+            if (player == null) { // if test player doesn't exist
+                playerDAO.addPlayer("test", "test");
+            }
+            // initialize shop
+            ShopDAO shopDAO = new ShopDAO(session);
+            Shop shop = shopDAO.getShop(1);
+            if (shop == null) {
+                shopDAO.addShop(new WorldCoord(), shopDAO.createShop());
+            }
             session.getTransaction().commit();
         }
     }

@@ -1,43 +1,31 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.database.WorldCoord;
+
 public class BattleRequestMessage {
-    private int territoryID;
-    private int attackeeID;
-    private int attackerID;
+    private WorldCoord territoryCoord; //territoryCoord includes: x,y,wid
     private String action;//"attack" "escape" "start"
+    private BattleAction battleAction; //inclide attackerID, attackeeID, action("normal, magical")
 
     public BattleRequestMessage() {
     }
 
-    public BattleRequestMessage(int territoryID, int attackeeID, int attackerID, String action) {
-        this.territoryID = territoryID;
-        this.attackeeID = attackeeID;
-        this.attackerID = attackerID;
+    public BattleRequestMessage(WorldCoord territoryCoord, String action, BattleAction battleAction) {
+        this.territoryCoord = territoryCoord;
         this.action = action;
+        this.battleAction = battleAction;
     }
 
-    public int getTerritoryID() {
-        return territoryID;
+    public WorldCoord getTerritoryCoord() { return territoryCoord; }
+
+    public void setTerritoryCoord(WorldCoord territoryCoord) { this.territoryCoord = territoryCoord; }
+
+    public BattleAction getBattleAction() {
+        return battleAction;
     }
 
-    public void setTerritoryID(int territoryID) {
-        this.territoryID = territoryID;
-    }
-
-    public int getAttackeeID() {
-        return attackeeID;
-    }
-
-    public void setAttackeeID(int attackeeID) {
-        this.attackeeID = attackeeID;
-    }
-
-    public int getAttackerID() {
-        return attackerID;
-    }
-
-    public void setAttackerID(int attackerID) {
-        this.attackerID = attackerID;
+    public void setBattleAction(BattleAction battleAction) {
+        this.battleAction = battleAction;
     }
 
     public String getAction() {

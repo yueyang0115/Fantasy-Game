@@ -1,5 +1,9 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.Item.Consumable;
+import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.Item.Potion;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -16,52 +20,27 @@ public class ShopDAO {
         itemDAO = new ItemDAO(session);
     }
 
-    public Shop createShop(){
-        List<Item> items = itemDAO.getAllItem();
-        List<ItemPack> itemPacks = new ArrayList<>();
-        for(Item item:items){
-            itemPacks.add(new ItemPack(item,20));
-        }
+    public ShopDAO(){
+
+    }
+
+    public Shop createShop() {
+        List<shopInventory> shopInventories = new ArrayList<>();
         Shop shop = new Shop();
-        for(ItemPack itemPack:itemPacks){
-            shop.addInventory(itemPack);
-        }
-        session.save(shop);
+        shopInventories.add(new shopInventory(new Potion().toDBItem(), 20, shop));
+        shop.setItems(shopInventories);
         return shop;
     }
 
-    public Shop addShop(int territory_id, List<ItemPack> items) {
-        Shop shop = getShopByTerritoryID(territory_id);
-        if (shop == null) {
-            shop = new Shop("shop");
-//            shop.setInventory(items);
-            for(ItemPack item:items){
-                shop.addInventory(item);
-            }
-            session.save(shop);
-        }
+    public Shop addShop(WorldCoord where, Shop shop) {
+        shop.setCoord(where);
+        session.saveOrUpdate(shop);
         return shop;
     }
 
-    public Shop addShop(String name) {
-        Shop shop = getShop(name);
-        if (shop == null) {
-            shop = new Shop(name);
-            session.save(shop);
-        }
-        return shop;
-    }
-
-    public Shop getShop(String name) {
-        Query q = session.createQuery("From Shop s where s.name =:name");
-        q.setParameter("name", name);
-        Shop res = (Shop) q.uniqueResult();
-        return res;
-    }
-
-    public Shop getShopByTerritoryID(int territory_id) {
-        Query q = session.createQuery("From Shop s where s.territories =:id");
-        q.setParameter("id", territory_id);
+    public Shop getShop(WorldCoord coord) {
+        Query q = session.createQuery("From Shop s where s.coord =:coord");
+        q.setParameter("coord", coord);
         Shop res = (Shop) q.uniqueResult();
         return res;
     }

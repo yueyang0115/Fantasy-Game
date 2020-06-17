@@ -1,8 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.Polymorphism;
-import org.hibernate.annotations.PolymorphismType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,32 +10,34 @@ import java.util.List;
 @Entity
 @Table(name = "Shop")
 @PrimaryKeyJoinColumn(name = "ID")
-public class Shop extends Building implements Trader{
+public class Shop extends Building implements Trader {
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<ItemPack> inventory = new ArrayList<>();
+    @JsonIgnore
+    private List<shopInventory> items = new ArrayList<>();
 
     public Shop() {
         super("shop");
     }
 
-    public Shop(String name) {
-        super(name);
+    public Shop(WorldCoord coord) {
+        super("shop", coord);
     }
 
-    public Shop addInventory(ItemPack item) {
-        inventory.add(item);
+    public Shop addInventory(shopInventory item) {
+        items.add(item);
         item.setShop(this);
         return this;
     }
 
-    public List<ItemPack> getInventory() {
-        return inventory;
+    public List<shopInventory> getItems() {
+        return items;
     }
 
-    public void setInventory(List<ItemPack> inventory) {
-        this.inventory = inventory;
+    public void setItems(List<shopInventory> items) {
+        this.items = items;
     }
+
 
     @Override
     public boolean checkMoney(int required_money) {
@@ -44,9 +45,9 @@ public class Shop extends Building implements Trader{
     }
 
     @Override
-    public boolean checkItem(ItemPack itemPack, int amount) {
-        for (ItemPack item : inventory) {
-            if (item.getItem().getId() == itemPack.getItem().getId()) {
+    public boolean checkItem(Inventory inventory, int amount) {
+        for (Inventory item : items) {
+            if (item == inventory) { // if have this type of item
                 return item.getAmount() >= amount;
             }
         }
@@ -54,27 +55,26 @@ public class Shop extends Building implements Trader{
     }
 
     @Override
-    public void sellItem(ItemPack itemPack, int amount) {
-        int left_amount = itemPack.getAmount() - amount;
-        itemPack.setAmount(left_amount);
+    public void sellItem(Inventory inventory, int amount) {
+        int left_amount = inventory.getAmount() - amount;
+        inventory.setAmount(left_amount);
         if (left_amount == 0) {
-            this.getInventory().remove(itemPack);
-            itemPack.setShop(null);
+            this.getItems().remove(inventory);
         }
     }
 
     @Override
-    public void buyItem(ItemPack select_item, int amount) {
+    public void buyItem(Inventory select_item, int amount) {
         boolean find = false;
-        for (ItemPack item : inventory) {
-            if (item.getItem().getId() == select_item.getItem().getId()) { // if have this type of item
+        for (Inventory item : items) {
+            if (item.equals(select_item)) { // if have this type of item
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
             }
         }
         if (!find) {
-            ItemPack new_item = new ItemPack(select_item.getItem(), amount);
+            shopInventory new_item = new shopInventory(select_item.getDBItem(), amount, this);
             addInventory(new_item);
         }
     }

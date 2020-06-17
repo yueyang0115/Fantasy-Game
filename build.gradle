@@ -32,7 +32,7 @@ dependencies {
 
     // Use JUnit Jupiter API for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-
+    
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
 
@@ -43,7 +43,9 @@ dependencies {
     compile group: 'org.slf4j', name:'slf4j-simple', version: '1.7.21'
     compile group: 'org.jasypt', name: 'jasypt-hibernate5', version: '1.9.3'
 
-
+    //switch testing to h2
+    testImplementation group: "com.h2database", name:"h2", version:"1.4.200"
+    
 }
 
 test {

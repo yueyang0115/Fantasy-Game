@@ -12,54 +12,72 @@ import javax.persistence.*;
 public class Monster extends Unit{
 
     //@Column(name = "unit_type", unique = false, nullable = false, length = 100)
-    private String u_type = "monster";
+//    private String type = "monster";
 
-    @Column(name = "monster_type", unique = false, nullable = false, length = 100)
-    private String m_type;
+//    @Column(name = "monster_type", unique = false, nullable = false, length = 100)
+//    private String m_type;
 
-    @JsonBackReference
+    @Embedded
+    private WorldCoord coord;
+
+  /*@JsonBackReference
     @ManyToOne
     @JoinColumn(name="territory_id", nullable=false)
-    private Territory territory;
+    private Territory territory;*/
 
     public Monster(){
-
+        this.setType("monster");
     }
 
-    public Monster(String type,int hp,int atk,int speed){
-        this.m_type = type;
+    public Monster(String name,int hp,int atk,int speed){
+        this.setType("monster");
+        this.setName(name);
         this.setHp(hp);
         this.setAtk(atk);
         this.setSpeed(speed);
     }
 
     public Monster(Monster old_monster){
-        this.m_type = old_monster.getType();
+        this.setType("monster");
+        this.setName(old_monster.getType());
         this.setHp(old_monster.getHp());
         this.setAtk(old_monster.getAtk());
         this.setSpeed(old_monster.getSpeed());
     }
 
-    public String getType() {
-        return m_type;
+    public WorldCoord getCoord() { return coord; }
+
+    public void setCoord(WorldCoord coord) { this.coord = coord; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o.getClass().equals(Monster.class)) {
+            Monster m = (Monster) o;
+            return this.coord==m.coord && this.getId()==m.getId();
+        }
+        return false;
+    }
+    @Override
+    public int hashCode(){
+        return this.toString().hashCode();
+    }
+    @Override
+    public String toString(){
+        return (this.getId() + ":" + this.coord.getX() + "," + this.coord.getY());
     }
 
-    public void setType(String type) {
-        this.m_type = type;
-    }
-
-    public Territory getTerritory() {
-        return territory;
+  /*public Territory getTerritory() {
+    return territory;
     }
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
     }
-
+  */
     public JSONObject toJSON(){
         JSONObject monster_obj = new JSONObject();
 //        monster_obj.put("id",id);
-        monster_obj.put("type",m_type);
+//        monster_obj.put("type",m_type);
 //        monster_obj.put("hp",hp);
 //        monster_obj.put("atk",atk);
         return monster_obj;

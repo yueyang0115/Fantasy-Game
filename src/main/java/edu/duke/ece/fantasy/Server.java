@@ -1,7 +1,6 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.TerrainDAO;
 import org.hibernate.Session;
 
 import java.io.*;
@@ -24,6 +23,7 @@ public class Server {
             System.out.println("[DEBUG] Successfully built TCPserver");
         } catch (IOException e) {
             System.out.println("[DEBUG] Failed to build TCPserver");
+            e.printStackTrace();
         }
         this.UDPport = udpPort;
         try {
@@ -31,6 +31,7 @@ public class Server {
             System.out.println("[DEBUG] Successfully built UDPserver");
         } catch (IOException e) {
             System.out.println("[DEBUG] Failed to build UDPserver");
+            e.printStackTrace();
         }
         this.playerHandlerList = new ArrayList<>();
         //this.myMockDBprocessor = new MockDBprocessor();

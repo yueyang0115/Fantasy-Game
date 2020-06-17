@@ -36,17 +36,22 @@ public class TerritoryDAO {
         return result;
     }
 
+    public Session getSession() {
+        return session;
+    }
 
     // given coordination, return list of territory
-    public List<Territory> getTerritories(int wid, int x, int y, int x_block_num, int y_block_num) {
+    public List<Territory> getTerritories(WorldCoord where, int x_block_num, int y_block_num) {
         List<Territory> res = new ArrayList<>();
-
+        int wid = where.getWid();
+        int x = where.getX();
+        int y = where.getY();
         // get neighbor territories
         for (int i = 0; i < x_block_num; i++) {
             for (int j = 0; j < y_block_num; j++) {
-                int target_x = x + (i - x_block_num / 2) * 10;
-                int target_y = y + (j - y_block_num / 2) * 10;
-                Territory t = getTerritory(wid, target_x, target_y);
+                int target_x = x + i;
+                int target_y = y + j;
+                Territory t = getTerritory(new WorldCoord(wid, target_x, target_y));
                 if (t != null) {
 //                if (t != null && !t.getStatus().equals("unexplored")) {
                     res.add(t);
@@ -59,46 +64,30 @@ public class TerritoryDAO {
     }
 
 
-    public void addTerrainToTerritory(Territory territory, Terrain terrain) {
-        territory.setTerrain(terrain);
-        session.update(territory);
-    }
-
     public void addMonsterToTerritory(Territory territory, Monster monster) {
-        territory.addMonster(monster);
-        session.update(territory);
+        //territory.addMonster(monster);
+        //session.update(territory);
     }
 
-    public void addBuildingToTerritory(Territory territory, Building building) {
-        territory.setBuilding(building);
-        session.update(territory);
-    }
 
-    public Territory addTerritory(int wid, int x, int y, String status, Terrain terrain, List<Monster> monsters) throws IllegalArgumentException {
+
+    public Territory addTerritory(WorldCoord where, String status, String terrain, List<Monster> monsters) {
         // insert territory to world
-        TerrainDAO terrainDAO = new TerrainDAO(session);
-        // find the center of block
-        int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
-        int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-        Territory t = getTerritory(wid, center_x, center_y);
-        if (t != null) {
-            throw new IllegalArgumentException("already exist");
-        }
-        t = new Territory(wid, center_x, center_y, status);
+        Territory t = new Territory(where, status);
         // add terrain
 //        Terrain terrain = terrainDAO.getTerrain(terrain_type);
-        t.setTerrain(terrain);
+        t.setTerrainType(terrain);
         // add monster
-        for (Monster monster : monsters) {
+        /*for (Monster monster : monsters) {
             t.addMonster(monster);
-        }
+            }*/
         session.save(t);
         return t;
     }
 
 
-    public boolean updateTerritory(int wid, int x, int y, String status) {
-        Territory t = getTerritory(wid, x, y);
+    public boolean updateTerritory(WorldCoord where, String status) {
+        Territory t = getTerritory(where);
         if (t == null) { // don't have territory
             return false;
         }
@@ -107,14 +96,14 @@ public class TerritoryDAO {
         return true;
     }
 
-    public Territory getTerritory(int wid, int x, int y) {
+    public Territory getTerritory(WorldCoord where) {
         // select territory according to conditions
-        int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
-        int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-        Query q = session.createQuery("From Territory M where M.wid =:wid and M.x =:x and M.y = :y");
-        q.setParameter("wid", wid);
-        q.setParameter("x", center_x);
-        q.setParameter("y", center_y);
+        //       int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
+        //int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
+        Query q = session.createQuery("From Territory M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
+        q.setParameter("wid", where.getWid());
+        q.setParameter("x", where.getX());
+        q.setParameter("y", where.getY());
 //        q.setParameter("x", x);
 //        q.setParameter("y", y);
         Territory res = (Territory) q.uniqueResult();

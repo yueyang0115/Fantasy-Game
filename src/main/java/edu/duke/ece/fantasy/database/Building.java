@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-@Table(name="Building")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "Building")
 public class Building {
     @Id
     @GeneratedValue(generator = "increment")
@@ -22,9 +22,8 @@ public class Building {
     @Column(name = "name")
     private String name;
 
-    @JsonBackReference(value = "territory-building")
-    @OneToOne(mappedBy = "building",cascade = CascadeType.ALL)
-    private Territory territory;
+    @Embedded
+    private WorldCoord coord;
 
     public Building() {
     }
@@ -33,20 +32,25 @@ public class Building {
         this.name = name;
     }
 
+    public Building(String name, WorldCoord coord) {
+        this.name = name;
+        this.coord = coord;
+    }
+
+    public WorldCoord getCoord() {
+        return coord;
+    }
+
+    public void setCoord(WorldCoord coord) {
+        this.coord = coord;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Territory getTerritory() {
-        return territory;
-    }
-
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
     }
 
     public String getName() {

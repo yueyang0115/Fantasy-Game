@@ -1,21 +1,40 @@
 package edu.duke.ece.fantasy.json;
 
-import edu.duke.ece.fantasy.database.ItemPack;
+import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.database.Inventory;
+import edu.duke.ece.fantasy.database.playerInventory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryResultMessage {
-    private List<ItemPack> items = new ArrayList<>(); //all items of player
+    private AttributeResultMessage attributeResultMessage;
+    private List<Inventory> items = new ArrayList<>(); //all items of player
     private String result; //status: "valid","invalid"
     private int money;
 
-    public List<ItemPack> getItems() {
+    public InventoryResultMessage() {
+        super();
+    }
+
+    public AttributeResultMessage getAttributeResultMessage() {
+        return attributeResultMessage;
+    }
+
+    public void setAttributeResultMessage(AttributeResultMessage attributeResultMessage) {
+        this.attributeResultMessage = attributeResultMessage;
+    }
+
+    public List<Inventory> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemPack> items) {
+    public void setItems(List<Inventory> items) {
         this.items = items;
+    }
+
+    public void addItem(Inventory item) {
+        this.items.add(item);
     }
 
     public String getResult() {
@@ -26,9 +45,6 @@ public class InventoryResultMessage {
         this.result = result;
     }
 
-    public InventoryResultMessage() {
-        super();
-    }
 
     public int getMoney() {
         return money;

@@ -1,38 +1,32 @@
 package edu.duke.ece.fantasy.database;
 
+import edu.duke.ece.fantasy.Item.Consumable;
+import edu.duke.ece.fantasy.Item.Item;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class ConsumableDAO {
-    Session session;
+public class ConsumableDAO extends ItemDAO {
 
     public ConsumableDAO(Session session) {
-        this.session = session;
+        super(session);
     }
 
-    public List<Consumable> getAllConsumable() {
-        Query q = session.createQuery("SELECT C From Consumable C");
-        return q.getResultList();
-    }
-
-    public Consumable getConsumable(String name) {
-        Query q = session.createQuery("From Consumable C where C.name =:name");
-        q.setParameter("name", name);
-        Consumable res = (Consumable) q.uniqueResult();
-        return res;
-    }
-
-    public void addConsumable(String name, int cost, int hp) {
-        Consumable item = getConsumable(name);
-        if (item == null) {
-            item = new Consumable(name, cost, hp);
-            session.save(item);
-        }
-    }
-
-    public void initial() {
-        addConsumable("medicine", 10, 20);
-    }
+//    public List<Consumable> getAllConsumable() {
+//        Query q = session.createQuery("SELECT I From Consumable I");
+//        return q.getResultList();
+//    }
+//
+//    public void addConsumable(String name, int cost, int hp) {
+//        Item item = getItem(name);
+//        if (item == null) {
+//            item = new Consumable(name, cost, hp);
+//            session.save(item);
+//        }
+//    }
+//
+//    public void initial() {
+//        addConsumable("medicine", 10, 20);
+//    }
 }

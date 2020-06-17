@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import edu.duke.ece.fantasy.Item.Item;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -12,28 +13,16 @@ public class ItemDAO {
         this.session = session;
     }
 
-    public List<Item> getAllItem(){
-        Query q = session.createQuery("SELECT I From Item I");
-        return q.getResultList();
-    }
-
-    public Item getItem(String name) {
-        Query q = session.createQuery("From Item I where I.name =:name");
-        q.setParameter("name", name);
-        Item res = (Item) q.uniqueResult();
-        return res;
-    }
-
-//    public void addItem(String name, int cost) {
-//        Item item = getItem(name);
-//        if (item == null) {
-//            item = new Item(name, cost);
-//            session.save(item);
-//        }
+//    public List<String> getAllItem(){
+//        return ;
 //    }
-//
-//    public void initial() {
-//        addItem("medicine",10);
-//        addItem("sword",200);
+
+//    public Item getItem(String name) {
+//        Query q = session.createQuery("From Item I where I.name =:name");
+//        q.setParameter("name", name);
+//        Item res = (Item) q.uniqueResult();
+//        return res;
 //    }
+
+
 }

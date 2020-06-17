@@ -1,23 +1,35 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Item.IItem;
+import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
+import net.bytebuddy.implementation.bytecode.Addition;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ShopHandler {
     private ShopDAO shopDAO;
     private PlayerDAO playerDAO;
-    private ItemPackDAO itemPackDAO;
+    private playerInventoryDAO playerinventoryDAO;
+    private shopInventoryDAO shopInventoryDAO;
+    private InventoryDAO inventoryDAO;
     private Session session;
 
     public ShopHandler(Session session) {
         shopDAO = new ShopDAO(session);
         playerDAO = new PlayerDAO(session);
-        itemPackDAO = new ItemPackDAO(session);
+        playerinventoryDAO = new playerInventoryDAO(session);
+        shopInventoryDAO = new shopInventoryDAO(session);
+        inventoryDAO = new InventoryDAO(session);
         this.session = session;
+
     }
 
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
@@ -27,63 +39,65 @@ public class ShopHandler {
         // may need to check relationship of shop and territory
         Player player = playerDAO.getPlayer(playerID);
         ShopResultMessage result = new ShopResultMessage();
+
         if (action.equals("list")) {
             result.setResult("valid");
         } else if (action.equals("buy")) {
             try {
-                if (validate(shop, player, item_list)) {
-                    execute(shop, player, item_list);
-                    result.setResult("valid");
-                }
+                validateAndExecute(shop, player, item_list);
+                result.setResult("valid");
             } catch (Exception e) {
                 result.setResult("invalid:" + e.getMessage());
             }
         } else if (action.equals("sell")) {
             try {
-                if (validate(player, shop, item_list)) {
-                    execute(player, shop, item_list);
-                    result.setResult("valid");
-                }
+                validateAndExecute(player, shop, item_list);
+                result.setResult("valid");
             } catch (Exception e) {
                 result.setResult("invalid:" + e.getMessage());
             }
         }
-        session.update(shop);
-        session.update(player);
-        result.setItems(shop.getInventory());
-        result.setInventoryResultMessage((new InventoryHandler(session)).handle(playerID));
+        // get latest data from db(previous transaction may roll back)
+        shop = shopDAO.getShop(request.getShopID());
+        List<shopInventory> db_items = shop.getItems();
+
+        for (shopInventory db_item : db_items) {
+            // add more information of item
+            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
+            result.addItem(toClientInventory);
+        }
+
+//        result.setItems(new ArrayList<>());
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("list");
+        result.setInventoryResultMessage((new InventoryHandler(session)).handle(inventoryRequestMessage, playerID));
         return result;
     }
 
-    private boolean validate(Trader seller, Trader buyer, Map<Integer, Integer> item_list) throws Exception {
+    public void validateAndExecute(Trader seller, Trader buyer, Map<Integer, Integer> item_list) throws Exception {
         int required_money = 0;
-        for (Map.Entry item : item_list.entrySet()) {
-            ItemPack itemPack = itemPackDAO.getItemPack((Integer) item.getKey());
-            int amount = (Integer) item.getValue();
-            // check if seller have enough itemPack
-            if (!seller.checkItem(itemPack, amount)) {
-                throw new Exception("Seller don't have enough item" + "-" + itemPack.getItem().getName());
+        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
+            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
+            int amount = inventory_pair.getValue();
+            Item item_obj = inventory.getDBItem().toGameItem();
+            // check if seller have enough inventory
+            if (!seller.checkItem(inventory, amount)) {
+                session.getTransaction().rollback();
+                throw new Exception("Seller don't have enough item" + "-" + item_obj.getName());
             }
-            required_money += itemPack.getItem().getCost() * amount;
+            // deduce the amount of item from seller
+            seller.sellItem(inventory, amount);
+            // add the amount of item to buyer
+            buyer.buyItem(inventory, amount);
+            if (inventory.getAmount() == 0) { // delete record if it's amount is 0
+                session.delete(inventory);
+            }
+            required_money += item_obj.getCost() * amount;
         }
         // check if buyer have enough money
         if (!buyer.checkMoney(required_money)) {
+            session.getTransaction().rollback();
             throw new Exception("Don't have enough money");
-        }
-        return true;
-    }
-
-    private void execute(Trader seller, Trader buyer, Map<Integer, Integer> item_list) {
-        for (Map.Entry item : item_list.entrySet()) {
-            ItemPack itemPack = itemPackDAO.getItemPack((Integer) item.getKey());
-            int amount = (Integer) item.getValue();
-            // deduce the amount of item from seller
-            seller.sellItem(itemPack, amount);
-            // add the amount of item to buyer
-            buyer.buyItem(itemPack, amount);
-            if (itemPack.getPlayer() == null && itemPack.getShop() == null) {
-                session.delete(itemPack);
-            }
         }
     }
 

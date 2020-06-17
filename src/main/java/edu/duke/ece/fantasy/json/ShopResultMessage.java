@@ -1,16 +1,15 @@
 package edu.duke.ece.fantasy.json;
 
-import edu.duke.ece.fantasy.database.Item;
-import edu.duke.ece.fantasy.database.ItemPack;
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Soldier;
+import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.database.Inventory;
+import edu.duke.ece.fantasy.database.shopInventory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopResultMessage{
+public class ShopResultMessage {
     private InventoryResultMessage inventoryResultMessage;
-    private List<ItemPack> items = new ArrayList<>(); //all items in the territory
+    private List<Inventory> items = new ArrayList<>(); //all items in the shop
     private String result; //status: "valid","invalid"
 
     public ShopResultMessage() {
@@ -24,12 +23,16 @@ public class ShopResultMessage{
         this.inventoryResultMessage = inventoryResultMessage;
     }
 
-    public List<ItemPack> getItems() {
+    public List<Inventory> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemPack> items) {
+    public void setItems(List<Inventory> items) {
         this.items = items;
+    }
+
+    public void addItem(Inventory item) {
+        this.items.add(item);
     }
 
     public String getResult() {

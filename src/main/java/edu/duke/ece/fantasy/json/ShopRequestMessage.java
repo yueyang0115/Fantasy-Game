@@ -4,7 +4,6 @@ import java.util.Map;
 
 public class ShopRequestMessage {
     private int shopID;
-    private int territoryID;
     private Map<Integer,Integer> itemMap;
     private String action;//"list""buy""sell"
 
@@ -17,14 +16,6 @@ public class ShopRequestMessage {
 
     public void setShopID(int shopID) {
         this.shopID = shopID;
-    }
-
-    public int getTerritoryID() {
-        return territoryID;
-    }
-
-    public void setTerritoryID(int territoryID) {
-        this.territoryID = territoryID;
     }
 
     public String getAction() {

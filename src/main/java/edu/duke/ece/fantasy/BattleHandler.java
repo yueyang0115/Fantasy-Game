@@ -20,6 +20,7 @@ public class BattleHandler {
     public BattleHandler() {
     }
 
+    //return a list of battleResult because doBattle may contain results of multiple rounds
     public BattleResultMessage handle(BattleRequestMessage request, int playerID, Session session){
         this.session = session;
         myMonsterManger = new MonsterManger(session);
@@ -33,7 +34,7 @@ public class BattleHandler {
             return result;
         }
         else if(action.equals("start")){
-            return doStart(request, playerID);
+            return doStart(request,playerID);
         }
         else {
             return doBattle(request, playerID);
@@ -47,19 +48,16 @@ public class BattleHandler {
         BattleResultMessage result = new BattleResultMessage();
 
         // get monsters and soldiers engaged in the battle
-        int territoryID = request.getTerritoryID();
-        List<Monster> monsterList = myMonsterManger.getMonsters(territoryID);
+        WorldCoord where = request.getTerritoryCoord();
+        List<Monster> monsterList = myMonsterManger.getMonsters(where);
         List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
         // sort unit by speed and set the UnitQueue
         this.unitQueue = generateUnitQueue(monsterList, soldierList);
-        System.out.println(" outside generateUnitQueue, q.size() " + this.unitQueue.size());
         // make a list of unitIDs, corresponding units of these IDs are in same order with unitQueue
         List<Integer> unitIDList = generateIDList(unitQueue);
 
-        result.setMonsters(monsterList);
-        result.setSoldiers(soldierList);
+        result.setBattleInitInfo(new BattleInitInfo(monsterList,soldierList,unitIDList));
         result.setResult("continue");
-        result.setUnitIDs(unitIDList);
         return result;
     }
 
@@ -76,7 +74,6 @@ public class BattleHandler {
             while(!pq.isEmpty()) {
                 q.add(pq.poll());
             }
-            System.out.println(" in generateUnitQueue, q.size() " + q.size());
             return q;
     }
 
@@ -88,28 +85,50 @@ public class BattleHandler {
         return unitIDList;
     }
 
-    // handle "attack" message, use existing unitQueue and modify it*/
-    public BattleResultMessage doBattle(BattleRequestMessage request, int playerID){
+    // handle "attack" message, use existing unitQueue and modify it
+    public BattleResultMessage doBattle(BattleRequestMessage request, int playerID) {
         BattleResultMessage result = new BattleResultMessage();
+        List<BattleAction> actions = new ArrayList<>();
+        WorldCoord where = request.getTerritoryCoord();
+        int attackeeID = request.getBattleAction().getAttackee().getId();
+        int attackerID = request.getBattleAction().getAttacker().getId();
 
-        int territoryID = request.getTerritoryID();
-        int attackeeID = request.getAttackeeID();
-        int attackerID = request.getAttackerID();
+        BattleAction action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
+        actions.add(action);
+        setStatus(where,playerID,result);
+
+        //if the next attacker in UnitQueue is monster, server do another monster attack
+        while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
+            attackerID = this.unitQueue.peek().getId();
+            attackeeID = request.getBattleAction().getAttacker().getId();
+            action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
+            actions.add(action);
+            setStatus(where,playerID,result);
+        }
+
+        result.setActions(actions);
+        return result;
+    }
+
+    //set "win" "lose" "continue" status for BattleResultMsg
+    public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
+        List<Monster> monsterList = myMonsterManger.getMonsters(where);
+        List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
+        if(monsterList == null || monsterList.size() ==0) result.setResult("win");
+        else if(soldierList == null || soldierList.size() ==0) result.setResult("lose");
+        else result.setResult("continue");
+    }
+
+    public BattleAction doBattleOnce(int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
+        BattleAction action = new BattleAction();
         int deletedID = -1;
-
-        //check whether the monster exist in the territory
-//        Monster monster = myMonsterManger.getMonster(attackeeID);
-//        if(monster == null || monster.getTerritory().getId() != territoryID){
-//            result.setResult("invalid");
-//            return result;
-//        }
 
         //begin battle
         Unit attacker = myUnitManager.getUnit(attackerID);
         Unit attackee = myUnitManager.getUnit(attackeeID);
         if(attackee == null || attacker==null){
             result.setResult("invalid");
-            return result;
+            return null;
         }
         int attckeeHp = attackee.getHp();
         int attackerAtk = attacker.getAtk();
@@ -118,21 +137,17 @@ public class BattleHandler {
         myUnitManager.setUnitHp(attackeeID, newAttackeeHp);
 
         if(newAttackeeHp == 0){
-            result.setResult("win");
             deletedID = attackeeID;
             myUnitManager.deleteUnit(attackeeID);
         }
-        else{
-            result.setResult("continue");
-        }
 
         //update unitQueue
-        System.out.println(" before rollQueue, unitQueue.size() " + this.unitQueue.size());
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
-        result.setUnitIDs(generateIDList(unitQueue));
-        result.setMonsters(myMonsterManger.getMonsters(territoryID));
-        result.setSoldiers(mySoldierManger.getSoldiers(playerID));
-        return result;
+        action.setAttackee(new Unit(attackee));
+        action.setAttacker(new Unit(attacker));
+        action.setActionType("normal");
+        action.setUnits(generateIDList(unitQueue));
+        return action;
     }
 
     //rolls the queue, this round's attacker will be rolled to the back of the queue, delete units that lose the battle

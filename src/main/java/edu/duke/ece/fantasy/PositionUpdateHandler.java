@@ -1,71 +1,107 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.database.*;
-import org.hibernate.Session;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+
+import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.json.PositionRequestMessage;
+import edu.duke.ece.fantasy.json.PositionResultMessage;
+import org.hibernate.Session;
+
+import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
-    TerrainDAO terrainDAO;
     BuildingDAO buildingDAO;
     ShopDAO shopDAO;
-    ItemDAO itemDAO;
+    WorldDAO worldDAO;
+    MonsterManger monsterDAO;
+    //    ItemDAO itemDAO;
+
 //    int x_block_num;
 //    int y_block_num;
 
     public PositionUpdateHandler(Session session) {
         territoryDAO = new TerritoryDAO(session);
-        terrainDAO = new TerrainDAO(session);
         buildingDAO = new BuildingDAO(session);
         shopDAO = new ShopDAO(session);
-        itemDAO = new ItemDAO(session);
+        worldDAO = new WorldDAO(session);
+        monsterDAO = new MonsterManger(session);
+        //    itemDAO = new ItemDAO(session);
     }
 
-    public List<Territory> handle(int wid, int x, int y, int vision_x, int vision_y) {
-        List<Territory> res = new ArrayList<>();
-        int x_block_num = 20; // how large tileSet should we generate
-        int y_block_num = 20;
-        int x_size = x_block_num * 10;
-        int y_size = y_block_num * 10;
-        int start_x = (x / x_size) * x_size + ((x > 0) ? 5 : -5); // used for converting the generated tileSet index to game map index
-        int start_y = (y / y_size) * y_size + ((y > 0) ? 5 : -5);
-        int dir_x = (x > 0) ? 10 : -10;
-        int dir_y = (y > 0) ? 10 : -10;
-        RandomGenerator randomGenerator = new RandomGenerator();
-        if (territoryDAO.getTerritory(wid, x, y) == null) {
-            // check if need to generate new tile set
-            TileGenerator tileGenerator = new TileGenerator(x_block_num, y_block_num);  // generate tile set
-            TerritoryBlock[][] new_map = tileGenerator.GenerateTileSet();
-            for (int i = 0; i < y_block_num; i++) {
-                for (int j = 0; j < x_block_num; j++) {
-                    int new_x = new_map[i][j].getX() * dir_x + start_x;
-                    int new_y = new_map[i][j].getY() * dir_y + start_y;
-                    // add terrain
-                    Terrain terrain = terrainDAO.getTerrain(new_map[i][j].getType());
-                    // add monster
-                    List<Monster> monsters = new ArrayList<>();
-                    if (terrain.getType().equals("mountain") && !(new_x == x && new_y == y)) {
-                        monsters.add(new Monster("wolf", 10, 10, 10));
-                    }
-                    Territory territory = territoryDAO.addTerritory(wid, new_x, new_y, "unexplored", terrain, monsters);
-                    // add building
-                    if ((territory.getTerrain().getType().equals("grass") && randomGenerator.getRandomResult(30)) || (new_x == x && new_y == y)) {
-                        // create shop
-                        Shop shop = shopDAO.createShop();
-                        territoryDAO.addBuildingToTerritory(territory, shop);
-                    }
-                }
+    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg) {
+        //cachedMap = new HashMap<>();
+        PositionResultMessage positionResultMessage = new PositionResultMessage();
+        ArrayList<Territory> territoryList = new ArrayList<Territory>();
+        ArrayList<Monster> monsterList = new ArrayList<Monster>();
+        ArrayList<Building> buildingList = new ArrayList<>();
+        WorldInfo info = worldDAO.getInfo(wid);
+
+        List<WorldCoord> worldCoords = positionMsg.getCoords();
+        for (WorldCoord where : worldCoords) {
+            where.setWid(wid);
+            if (info == null) {
+                info = worldDAO.initWorld(where, "fixmelater", 20);//TODO: real player names.  Fix hardcoding of tile size
+            }
+            Territory t = territoryDAO.getTerritory(where);
+            if (t == null) {
+                //later we might add other world types.  Like you can teleport to fire or ice etc worlds.
+                //for now, wtype will always be "mainworld" but can change later.
+                String wtype = info.getWorldType();
+                TileGenerator gen = TileGenerator.forWorldType(wtype);
+                gen.generate(territoryDAO, monsterDAO, buildingDAO, where, info);
+                t = territoryDAO.getTerritory(where);
+            }
+//            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
+//                if (t.getStatus().equals("unexplored")) {
+//                    territoryDAO.updateTerritory(where, "explored");
+//                }
+//            }
+            territoryList.add(t);
+
+//            if (t.getTerrainType().equals("forest_dense")) {
+//                System.out.println("find forest_dense, should have a monster here");
+//            }
+            Monster m = monsterDAO.getMonsterWhere(where);
+            if (m != null) monsterList.add(m);
+
+            Building building = buildingDAO.getBuilding(where);
+
+            if (building != null) {
+                buildingList.add(building);
             }
         }
 
-        if (territoryDAO.getTerritory(wid, x, y).getStatus().equals("unexplored")) {
-            territoryDAO.updateTerritory(wid, x, y, "explored");
-        }
-        // get x_block_num*y_block_num blocks
-        res = territoryDAO.getTerritories(wid, x, y, vision_x, vision_y);
-        return res;
+        positionResultMessage.setTerritoryArray(territoryList);
+        positionResultMessage.setBuildingArray(buildingList);
+        positionResultMessage.setMonsterArray(monsterList);
+        return positionResultMessage;
+//        WorldCoord where = new WorldCoord(wid, x, y);
+
+
+//        for (int dx = -6; dx <= 6; dx++) {
+//          for (int dy = -8; dy <= 8; dy++) {
+//            //System.out.println("Doing dx=" + dx + ", dy = " + dy);
+//            where = new WorldCoord(wid, x + dx, y + dy);
+//            Territory t = territoryDAO.getTerritory(where);
+//            if (t == null) {
+//              //later we might add other world types.  Like you can teleport to fire or ice etc worlds.
+//              //for now, wtype will always be "mainworld" but can change later.
+//              String wtype = info.getWorldType();
+//              TileGenerator gen = TileGenerator.forWorldType(wtype);
+//              gen.generate(territoryDAO, where, info);
+//              t = territoryDAO.getTerritory(where);
+//            }
+//            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
+//              if (t.getStatus().equals("unexplored")) {
+//                territoryDAO.updateTerritory(where, "explored");
+//              }
+//            }
+//            res.add(t);
+//          }
+//        }
     }
 
 }

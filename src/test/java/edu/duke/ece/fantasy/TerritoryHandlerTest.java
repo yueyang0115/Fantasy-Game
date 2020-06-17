@@ -3,7 +3,6 @@ package edu.duke.ece.fantasy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.TerrainDAO;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.database.TerritoryDAO;
 import edu.duke.ece.fantasy.json.MessagesS2C;
@@ -28,12 +27,10 @@ class TerritoryHandlerTest {
     int y_block_num = 3;
     int wid = 0;
     int[] coor;
-    TerrainDAO terrainDAO;
 
     Session createSession() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         th = new TerritoryDAO(session);
-        terrainDAO = new TerrainDAO(session);
         coor = th.MillierConvertion(latitude, longitude);
         return session;
     }
@@ -71,20 +68,6 @@ class TerritoryHandlerTest {
 //            }
 //        }
 //    }
-
-
-
-    void printAsJson(List<Territory> res) {
-        MessagesS2C msg = new MessagesS2C();
-        PositionResultMessage positionResultMessage = new PositionResultMessage();
-        positionResultMessage.setTerritoryArray(res);
-        msg.setPositionResultMessage(positionResultMessage);
-        try {
-            logger.info(objectMapper.writeValueAsString(msg));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
