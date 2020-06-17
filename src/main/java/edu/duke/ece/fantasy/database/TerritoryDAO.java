@@ -71,7 +71,7 @@ public class TerritoryDAO {
 
 
 
-    public Territory addTerritory(WorldCoord where, String status, String terrain, List<Monster> monsters) {
+    public Territory addTerritory(WorldCoord where, int status, String terrain, List<Monster> monsters) {
         // insert territory to world
         Territory t = new Territory(where, status);
         // add terrain
@@ -86,7 +86,7 @@ public class TerritoryDAO {
     }
 
 
-    public boolean updateTerritory(WorldCoord where, String status) {
+    public boolean updateTerritory(WorldCoord where, int status) {
         Territory t = getTerritory(where);
         if (t == null) { // don't have territory
             return false;

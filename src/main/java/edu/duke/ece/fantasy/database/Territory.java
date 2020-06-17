@@ -17,7 +17,7 @@ public class Territory {
 
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private int status;
 
     /*@JsonManagedReference
       @OneToMany(mappedBy = "territory", cascade = CascadeType.ALL)
@@ -29,20 +29,8 @@ public class Territory {
 
     }
 
-    public Territory(Territory old_terr) {
-        this.coord = old_terr.coord;
-        this.status = old_terr.getStatus();
-        /*List<Monster> monsters = new ArrayList<>();
-        for(Monster monster:old_terr.getMonsters()){ // solve lazy initialize problem
-            Monster new_monster = new Monster(monster);
-            monsters.add(monster);
-        }
-        this.monsters = monsters;*/
 
-        this.terrainType = old_terr.getTerrainType();
-    }
-
-    public Territory(WorldCoord coord, String status) {
+    public Territory(WorldCoord coord, int status) {
         this.coord = coord;
         this.status = status;
     }
@@ -65,11 +53,11 @@ public class Territory {
     }
 
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

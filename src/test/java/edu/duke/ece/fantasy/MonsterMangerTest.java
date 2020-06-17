@@ -39,7 +39,7 @@ public class MonsterMangerTest {
     public void initMonster(){
         session.beginTransaction();
         
-        Territory t = new Territory(new WorldCoord(wid, x, y), "explored");
+        Territory t = new Territory(new WorldCoord(wid, x, y), 100);
         Monster m = new Monster("wolf", 97, 10,10);
         Monster m2 = new Monster("wolf", 98, 10,10);
         //t.addMonster(m);
