@@ -193,7 +193,7 @@ public class TileGenerator {
         if (!tdao.doesWorldHaveStartTile(info)) {
             //System.out.println("Putting start tile at " + info.getFirstTile());
             tdao.addTile(info.getFirstTile(), startTileName);
-            putTerrain(terdao, monsterDAO, buildingDAO, info.getFirstTile(), tilesByName.get(startTileName));
+            putTerrain(terdao, monsterDAO, buildingDAO, info.getFirstTile(), tilesByName.get(startTileName), 0);
         }
         //align "where" to a tile start.
         //System.out
@@ -233,36 +233,35 @@ public class TileGenerator {
                 Tile t = tdao.addTile(thisWc, selected.getId());
                 //System.out.println("tdao.addTile " + selected.getId());
                 existingTiles.put(thisWc, t);
-                putTerrain(terdao, monsterDAO, buildingDAO, thisWc, selected);
+                putTerrain(terdao, monsterDAO, buildingDAO, thisWc, selected, 100);
             }
         }
     }
 
-    private void putTerrain(TerritoryDAO terDAO, MonsterManger monsterDAO, BuildingDAO buildingDAO, WorldCoord where, TileInfo info) {
+    private void putTerrain(TerritoryDAO terDAO, MonsterManger monsterDAO, BuildingDAO buildingDAO, WorldCoord where, TileInfo info, int territory_status) {
         //    System.out.println("Putting terrain on ["+where.getX()+","+(where.getX()+tileWidth)+") y:["+where.getY()+","+(where.getY()+tileHeight)+")"+ System.currentTimeMillis());
 
-        ShopDAO shopDAO = new ShopDAO();
         Random rand = new Random();
         for (int x = 0; x < tileWidth; x++) {
             for (int y = 0; y < tileHeight; y++) {
                 Square s = info.getSquareAt(x, y);
                 WorldCoord place = new WorldCoord(where.getWid(), where.getX() + x, where.getY() + y);
                 //System.out.println("Territory at place: " + place);
-                terDAO.addTerritory(place, "unexplored", s.getImageName(), new ArrayList<Monster>());
+                terDAO.addTerritory(place, territory_status, s.getImageName(), new ArrayList<Monster>());
 
                 //TODO: yy: add monstef, use s.getImage Name to add a random monster
                 if (s.getImageName().equals("forest_dense")) {
                     //System.out.println("addMonster in " + place.getX() + "," + place.getY());
                     Monster m = new Monster("wolf", 60, 6, 10);
                     int randomNum = rand.nextInt(9) + 0;
-                    if(randomNum>=7){
+                    if (randomNum >= 7) {
                         monsterDAO.addMonster(m, place);
                     }
                 }
 
                 if (s.getImageName().equals("grass") && RandomGenerator.getRandomResult(40)) {
                     Shop shop = (new ShopDAO()).createShop();
-                    buildingDAO.addBuilding(place,shop);
+                    buildingDAO.addBuilding(place, shop);
                 }
             }
         }
