@@ -26,11 +26,13 @@ class ShopHandlerTest {
     PlayerDAO playerDAO;
     ObjectMapper objectMapper = new ObjectMapper();
     Logger logger = LoggerFactory.getLogger(ShopHandlerTest.class);
+    BuildingDAO buildingDAO;
 
     Session createSession() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         shopHandler = new ShopHandler(session);
         shopDAO = new ShopDAO(session);
+        buildingDAO = new BuildingDAO(session);
         playerDAO = new PlayerDAO(session);
         return session;
     }
@@ -38,10 +40,6 @@ class ShopHandlerTest {
 
     @Test
     void handle() {
-        Sword sword = new Sword();
-        DBItem tmp = sword.toDBItem();
-        System.out.println(tmp.getItem_properties());
-        Item tmp_item = tmp.toGameItem();
         try (Session session = createSession()) {
             (new Initializer()).test_initialize();
             session.beginTransaction();

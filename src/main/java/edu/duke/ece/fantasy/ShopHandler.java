@@ -32,6 +32,10 @@ public class ShopHandler {
 
     }
 
+    public void createShop(){
+
+    }
+
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
         String action = request.getAction();
         Shop shop = shopDAO.getShop(request.getShopID());
@@ -67,7 +71,6 @@ public class ShopHandler {
             result.addItem(toClientInventory);
         }
 
-//        result.setItems(new ArrayList<>());
         InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
         inventoryRequestMessage.setAction("list");
         result.setInventoryResultMessage((new InventoryHandler(session)).handle(inventoryRequestMessage, playerID));

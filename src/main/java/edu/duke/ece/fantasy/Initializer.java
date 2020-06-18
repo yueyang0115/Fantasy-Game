@@ -48,6 +48,9 @@ public class Initializer {
             if (shop == null) {
                 shopDAO.addShop(new WorldCoord(), shopDAO.createShop());
             }
+
+            BuildingDAO buildingDao = new BuildingDAO(session);
+            buildingDao.addBuilding(new Mine(new WorldCoord()));
             session.getTransaction().commit();
         }
     }

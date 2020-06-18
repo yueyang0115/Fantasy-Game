@@ -12,6 +12,8 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "ID")
 public class Shop extends Building implements Trader {
 
+    int cost = 20;
+
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<shopInventory> items = new ArrayList<>();
