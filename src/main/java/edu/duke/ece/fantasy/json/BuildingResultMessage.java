@@ -7,7 +7,7 @@ import java.util.List;
 public class BuildingResultMessage {
     List<String> BuildingList;
     Building building;
-    String result; // "success",""
+    String result; // "success","error"
 
     public List<String> getBuildingList() {
         return BuildingList;
