@@ -16,11 +16,12 @@ public class PlayerHandler extends Thread{
     private int wid;
     private WorldCoord[] currentCoord = new WorldCoord[1];
     private boolean[] canGenerateMonster  = new boolean[1];
+    private Timer generateMonsterTimer = new Timer();
+    private Timer checkUpdatedMonsterTimer = new Timer();
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
     private ObjectMapper myObjectMapper;
     private MessageHandler messageHandler;
-    private MonsterGenerator monsterGenerator;
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
     Logger log = LoggerFactory.getLogger(Player.class);
 
@@ -34,8 +35,8 @@ public class PlayerHandler extends Thread{
 
     public void run() {
         new Thread(()-> sendMessage()).start();
-        generateMonsters();
-        //new Thread(()->generateMonsterMessage()).start();
+        new Thread(()-> generateMonsters()).start();
+        new Thread(()-> checkUpdatedMonster()).start();
         receiveMessage();
     }
 
@@ -69,6 +70,7 @@ public class PlayerHandler extends Thread{
             }
         }
         TCPcommunicator.close();
+        stopTimer();
         System.out.println("[DEBUG] Client socket might closed, stop receiving, close corresponding thread in server");
     }
 
@@ -92,17 +94,26 @@ public class PlayerHandler extends Thread{
             }
         }
         TCPcommunicator.close();
+        stopTimer();
         System.out.println("[DEBUG] Client socket might closed, stop sending, close corresponding thread in server");
     }
 
     public void generateMonsters(){
-        Timer timer = new Timer();
-        timer.schedule(new MonsterGenerator(this.currentCoord, this.canGenerateMonster), 0, 1000);
+        while(!canGenerateMonster[0]){
+        }
+        generateMonsterTimer.schedule(new MonsterGenerator(this.currentCoord, this.canGenerateMonster), 0, 1000);
     }
 
-    public void generateMonsterMessage(){
-        Timer timer = new Timer();
-        timer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,1200);
+    public void checkUpdatedMonster(){
+        while(!canGenerateMonster[0]){
+        }
+        checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,5000);
     }
 
+    public void stopTimer(){
+        generateMonsterTimer.cancel();
+        generateMonsterTimer.purge();
+        checkUpdatedMonsterTimer.cancel();
+        checkUpdatedMonsterTimer.purge();
+    }
 }

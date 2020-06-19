@@ -31,7 +31,8 @@ public class MonsterDetector extends TimerTask {
     public void run() {
         if(!canGenerateMonster[0]) return;
         List<Monster> monsterList = monsterDAO.getUpdatedMonsters();
-        if(monsterList != null){
+        if(monsterList != null && monsterList.size() != 0){
+            session.beginTransaction();
             monsterDAO.setMonstersStatus(monsterList, false);
             MessagesS2C result = new MessagesS2C();
             PositionResultMessage positionMsg= new PositionResultMessage();
