@@ -12,12 +12,12 @@ import java.util.Random;
 import java.util.TimerTask;
 
 public class MonsterGenerator extends TimerTask {
-    private WorldCoord coord;
-    private boolean canGenerateMonster;
+    private WorldCoord[] coord;
+    private boolean[] canGenerateMonster;
     private MonsterManger monsterDAO;
     private Session session;
 
-    public MonsterGenerator(WorldCoord coord, boolean canGenerateMonster) {
+    public MonsterGenerator(WorldCoord[] coord, boolean[] canGenerateMonster) {
         this.canGenerateMonster = canGenerateMonster;
         this.coord = coord;
         this.session = HibernateUtil.getSessionFactory().openSession();
@@ -26,15 +26,15 @@ public class MonsterGenerator extends TimerTask {
 
     @Override
     public void run() {
-        if(!canGenerateMonster || this.coord == null) return;
-
+        System.out.println("coord is "+coord[0]+", can is "+canGenerateMonster[0]);
+        if(!canGenerateMonster[0] || this.coord[0].getWid() == -1) return;
         //TODO: yy: count num of monster in current tile, if < DEFINE_NUM, generate a new monster
         //TODO: yy: choose new coord according to coord's tame
         session.beginTransaction();
         WorldCoord newCoord = new WorldCoord();
-        newCoord.setWid(this.coord.getWid());
-        newCoord.setY(this.coord.getY());
-        newCoord.setX(this.coord.getX()+1);
+        newCoord.setWid(this.coord[0].getWid());
+        newCoord.setY(this.coord[0].getY());
+        newCoord.setX(this.coord[0].getX()+1);
         List<Monster> monsters = monsterDAO.getMonsters(newCoord);
         if(monsters.size() <= 2){
             Monster m = new Monster("wolf", 60, 6, 10);

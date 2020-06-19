@@ -17,10 +17,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MonsterDetector extends TimerTask {
     private Session session;
     private MonsterManger monsterDAO;
-    private boolean canGenerateMonster;
+    private boolean[] canGenerateMonster;
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
 
-    public MonsterDetector(boolean canGenerateMonster, LinkedBlockingQueue<MessagesS2C> messageS2CQueue){
+    public MonsterDetector(boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> messageS2CQueue){
         this.session = HibernateUtil.getSessionFactory().openSession();
         this.monsterDAO = new MonsterManger(session);
         this.canGenerateMonster = canGenerateMonster;
@@ -29,7 +29,7 @@ public class MonsterDetector extends TimerTask {
 
     @Override
     public void run() {
-        if(!canGenerateMonster) return;
+        if(!canGenerateMonster[0]) return;
         List<Monster> monsterList = monsterDAO.getUpdatedMonsters();
         if(monsterList != null){
             monsterDAO.setMonstersStatus(monsterList, false);
@@ -38,6 +38,7 @@ public class MonsterDetector extends TimerTask {
             positionMsg.setMonsterArray(monsterList);
             result.setPositionResultMessage(positionMsg);
             messageS2CQueue.offer(result);
+            session.getTransaction().commit();
         }
     }
 }

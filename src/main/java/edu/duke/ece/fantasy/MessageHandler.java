@@ -15,10 +15,12 @@ public class MessageHandler {
     private int wid;
     private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
-    private WorldCoord currentCoord;
-    private boolean canGenerateMonster;
+    private WorldCoord[] currentCoord;
+    private boolean[] canGenerateMonster;
 
-    public MessageHandler() {
+    public MessageHandler(WorldCoord[] currentCoord, boolean[] canGenerateMonster) {
+        this.currentCoord = currentCoord;
+        this.canGenerateMonster = canGenerateMonster;
     }
 
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
@@ -52,14 +54,15 @@ public class MessageHandler {
             }
 
             if (positionMsg != null) {
-                canGenerateMonster = true;
+                canGenerateMonster[0] = true;
                 session.beginTransaction();
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(session);
                 //PositionResultMessage positionResultMessage = new PositionResultMessage();
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
                 //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
-                currentCoord = positionMsg.getCurrentCoord();
+                currentCoord[0] = positionMsg.getCurrentCoord();
+                if(currentCoord[0] != null) currentCoord[0].setWid(wid);
                 result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
                 session.getTransaction().commit();
             }
@@ -115,12 +118,4 @@ public class MessageHandler {
 //            }
 //        }
 //    }
-
-    public int getWid() {
-        return this.wid;
-    }
-
-    public WorldCoord getCurrentCoord(){return this.currentCoord;}
-
-    public boolean getCanGenerateMonster(){ return this.canGenerateMonster; }
 }

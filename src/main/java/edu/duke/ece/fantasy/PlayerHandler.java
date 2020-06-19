@@ -14,13 +14,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerHandler extends Thread{
     private int wid;
-    private WorldCoord currentCoord;
-    private boolean canGenerateMonster;
+    private WorldCoord[] currentCoord = new WorldCoord[1];
+    private boolean[] canGenerateMonster  = new boolean[1];
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
-    private DBprocessor myDBprocessor;
     private ObjectMapper myObjectMapper;
-    MessageHandler messageHandler;
+    private MessageHandler messageHandler;
     private MonsterGenerator monsterGenerator;
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
     Logger log = LoggerFactory.getLogger(Player.class);
@@ -29,16 +28,15 @@ public class PlayerHandler extends Thread{
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
-        this.messageHandler = new MessageHandler();
-//        this.monsterHandler = new MonsterHandler();
+        this.messageHandler = new MessageHandler(currentCoord, canGenerateMonster);
         this.messageS2CQueue = new LinkedBlockingQueue<>();
     }
 
     public void run() {
-        new Thread(()-> receiveMessage()).start();
         new Thread(()-> sendMessage()).start();
-        new Thread(()->generateMonsters()).start();
-        new Thread(()->generateMonsterMessage()).start();
+        generateMonsters();
+        //new Thread(()->generateMonsterMessage()).start();
+        receiveMessage();
     }
 
     public void receiveMessage(){
@@ -52,9 +50,6 @@ public class PlayerHandler extends Thread{
 //                Instant start = Instant.now();
 
                 MessagesS2C result = messageHandler.handle(request);
-                wid = messageHandler.getWid();
-                currentCoord = messageHandler.getCurrentCoord();
-                canGenerateMonster = messageHandler.getCanGenerateMonster();
                 messageS2CQueue.offer(result);
 
 //                TCPcommunicator.send(result);
@@ -102,18 +97,12 @@ public class PlayerHandler extends Thread{
 
     public void generateMonsters(){
         Timer timer = new Timer();
-        while(!TCPcommunicator.isClosed()){
-            timer.schedule(new MonsterGenerator(this.currentCoord, canGenerateMonster), 0, 1000);
-        }
-        System.out.println("[DEBUG] Client socket might closed, stop generating monster");
+        timer.schedule(new MonsterGenerator(this.currentCoord, this.canGenerateMonster), 0, 1000);
     }
 
     public void generateMonsterMessage(){
         Timer timer = new Timer();
-        while(!TCPcommunicator.isClosed()){
-            timer.schedule(new MonsterDetector(canGenerateMonster, messageS2CQueue),0,1200);
-        }
-        System.out.println("[DEBUG] Client socket might closed, stop sending changed monster");
+        timer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,1200);
     }
 
 }
