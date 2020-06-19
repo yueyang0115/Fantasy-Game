@@ -9,9 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Timer;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerHandler extends Thread{
     private int wid;
@@ -23,7 +22,7 @@ public class PlayerHandler extends Thread{
     private ObjectMapper myObjectMapper;
     MessageHandler messageHandler;
     private MonsterGenerator monsterGenerator;
-    private Queue<MessagesS2C> messageS2CQueue;
+    private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
     Logger log = LoggerFactory.getLogger(Player.class);
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
@@ -32,21 +31,20 @@ public class PlayerHandler extends Thread{
         this.myObjectMapper = new ObjectMapper();
         this.messageHandler = new MessageHandler();
 //        this.monsterHandler = new MonsterHandler();
-        this.messageS2CQueue = new LinkedList<>();
+        this.messageS2CQueue = new LinkedBlockingQueue<>();
     }
 
     public void run() {
-        new Thread(()->startReceive()).start();
-        new Thread(()->startSend()).start();
-        //new Thread(()->startGenrateMonster()).start();
+        new Thread(()-> receiveMessage()).start();
+        new Thread(()-> sendMessage()).start();
+        new Thread(()->generateMonsters()).start();
+        new Thread(()->generateMonsterMessage()).start();
     }
 
-    public void startReceive(){
-        System.out.println("getting into receive");
+    public void receiveMessage(){
         while(!TCPcommunicator.isClosed()){
             try{
                 MessagesC2S request = TCPcommunicator.receive();
-                System.out.println("have received msg");
                 if(TCPcommunicator.isClosed()) break;
                 String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
@@ -75,16 +73,14 @@ public class PlayerHandler extends Thread{
                 }
             }
         }
-//        TCPcommunicator.close();
-        System.out.println("[DEBUG] Client socket might closed, close corresponding thread in server");
+        TCPcommunicator.close();
+        System.out.println("[DEBUG] Client socket might closed, stop receiving, close corresponding thread in server");
     }
 
-    public void startSend(){
-        System.out.println("getting into send");
+    public void sendMessage(){
         while(!TCPcommunicator.isClosed()){
             try {
                 if (!messageS2CQueue.isEmpty()) {
-                    System.out.println("queue is not Empty");
                     MessagesS2C msg = messageS2CQueue.poll();
                     TCPcommunicator.send(msg);
                     if (TCPcommunicator.isClosed()) break;
@@ -100,15 +96,24 @@ public class PlayerHandler extends Thread{
                 }
             }
         }
-//        TCPcommunicator.close();
-        System.out.println("[DEBUG] Client socket might closed, close corresponding thread in server");
+        TCPcommunicator.close();
+        System.out.println("[DEBUG] Client socket might closed, stop sending, close corresponding thread in server");
     }
 
-    public void startGenrateMonster(){
+    public void generateMonsters(){
+        Timer timer = new Timer();
         while(!TCPcommunicator.isClosed()){
-            Timer timer = new Timer();
             timer.schedule(new MonsterGenerator(this.currentCoord, canGenerateMonster), 0, 1000);
         }
+        System.out.println("[DEBUG] Client socket might closed, stop generating monster");
+    }
+
+    public void generateMonsterMessage(){
+        Timer timer = new Timer();
+        while(!TCPcommunicator.isClosed()){
+            timer.schedule(new MonsterDetector(canGenerateMonster, messageS2CQueue),0,1200);
+        }
+        System.out.println("[DEBUG] Client socket might closed, stop sending changed monster");
     }
 
 }

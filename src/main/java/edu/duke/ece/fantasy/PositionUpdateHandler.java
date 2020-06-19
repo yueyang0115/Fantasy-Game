@@ -66,7 +66,10 @@ public class PositionUpdateHandler {
 //            }
             List<Monster> monsters = monsterDAO.getMonsters(where);
             if (monsters != null){
-                for(Monster m: monsters) monsterList.add(m);
+                for(Monster m: monsters){
+                    monsterDAO.setMonsterStatus(m.getId(), false);
+                    monsterList.add(m);
+                }
             }
 
             Building building = buildingDAO.getBuilding(where);
