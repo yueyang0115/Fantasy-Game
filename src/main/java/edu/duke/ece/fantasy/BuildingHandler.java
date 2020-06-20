@@ -29,6 +29,7 @@ public class BuildingHandler {
 
     public BuildingResultMessage handle(BuildingRequestMessage buildingRequestMessage, int playerId) {
         BuildingResultMessage buildingResultMessage = new BuildingResultMessage();
+        buildingResultMessage.setAction(buildingRequestMessage.getAction());
         String action = buildingRequestMessage.getAction();
 
         WorldCoord coord = buildingRequestMessage.getCoord();
@@ -36,6 +37,7 @@ public class BuildingHandler {
         try {
             if (action.equals("createList")) {
                 // check territory status
+
                 Territory t = territoryDAO.getTerritory(coord);
                 if (t == null) {
                     throw new InvalidBuildingRequest("Selected territory doesn't exist");
