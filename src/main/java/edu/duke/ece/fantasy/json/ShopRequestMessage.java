@@ -1,21 +1,23 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.database.WorldCoord;
+
 import java.util.Map;
 
 public class ShopRequestMessage {
-    private int shopID;
-    private Map<Integer,Integer> itemMap;
+    private WorldCoord coord;
+    private Map<Integer, Integer> itemMap;
     private String action;//"list""buy""sell"
 
     public ShopRequestMessage() {
     }
 
-    public int getShopID() {
-        return shopID;
+    public WorldCoord getCoord() {
+        return coord;
     }
 
-    public void setShopID(int shopID) {
-        this.shopID = shopID;
+    public void setCoord(WorldCoord coord) {
+        this.coord = coord;
     }
 
     public String getAction() {

@@ -8,8 +8,17 @@ public class MessagesS2C {
     private ShopResultMessage shopResultMessage;
     private AttributeResultMessage attributeResultMessage;
     private InventoryResultMessage inventoryResultMessage;
+    private BuildingResultMessage buildingResultMessage;
 
     public MessagesS2C(){ }
+
+    public BuildingResultMessage getBuildingResultMessage() {
+        return buildingResultMessage;
+    }
+
+    public void setBuildingResultMessage(BuildingResultMessage buildingResultMessage) {
+        this.buildingResultMessage = buildingResultMessage;
+    }
 
     public MessagesS2C(LoginResultMessage msg){
         this.loginResultMessage = msg;

@@ -1,29 +1,27 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.Item.IItem;
 import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.building.Building;
+import edu.duke.ece.fantasy.building.Shop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
-import net.bytebuddy.implementation.bytecode.Addition;
 import org.hibernate.Session;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ShopHandler {
-    private ShopDAO shopDAO;
     private PlayerDAO playerDAO;
     private playerInventoryDAO playerinventoryDAO;
     private shopInventoryDAO shopInventoryDAO;
+    private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
     private Session session;
 
     public ShopHandler(Session session) {
-        shopDAO = new ShopDAO(session);
+        dbBuildingDAO = new DBBuildingDAO(session);
         playerDAO = new PlayerDAO(session);
         playerinventoryDAO = new playerInventoryDAO(session);
         shopInventoryDAO = new shopInventoryDAO(session);
@@ -32,13 +30,15 @@ public class ShopHandler {
 
     }
 
-    public void createShop(){
+    public void createShop() {
 
     }
 
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
         String action = request.getAction();
-        Shop shop = shopDAO.getShop(request.getShopID());
+//        DBShop DBShop = DBShopDAO.getShop(request.getShopID());
+        Shop shop = (Shop) dbBuildingDAO.getBuilding(request.getCoord()).toGameBuilding();
+        shop.loadInventory(session,request.getCoord());
         Map<Integer, Integer> item_list = request.getItemMap();
         // may need to check relationship of shop and territory
         Player player = playerDAO.getPlayer(playerID);
@@ -54,18 +54,19 @@ public class ShopHandler {
                 result.setResult("invalid:" + e.getMessage());
             }
         } else if (action.equals("sell")) {
-            try {
-                validateAndExecute(player, shop, item_list);
-                result.setResult("valid");
-            } catch (Exception e) {
-                result.setResult("invalid:" + e.getMessage());
-            }
+//            try {
+//                validateAndExecute(player, DBShop, item_list);
+//                result.setResult("valid");
+//            } catch (Exception e) {
+//                result.setResult("invalid:" + e.getMessage());
+//            }
         }
         // get latest data from db(previous transaction may roll back)
-        shop = shopDAO.getShop(request.getShopID());
-        List<shopInventory> db_items = shop.getItems();
+//        DBShop = DBShopDAO.getShop(request.getShopID());
+//        List<shopInventory> db_items = shop.getCurrent_inventory();
+        shop.loadInventory(session,request.getCoord());
 
-        for (shopInventory db_item : db_items) {
+        for (shopInventory db_item : shop.getCurrent_inventory()) {
             // add more information of item
             Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
             result.addItem(toClientInventory);

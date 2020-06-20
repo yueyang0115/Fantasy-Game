@@ -3,7 +3,7 @@ package edu.duke.ece.fantasy.database;
 import java.lang.reflect.InvocationTargetException;
 
 public interface Trader {
-    public int getId();
+//    public int getId();
 
     public boolean checkMoney(int required_money);
 

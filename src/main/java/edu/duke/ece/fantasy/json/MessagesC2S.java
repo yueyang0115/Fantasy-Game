@@ -8,8 +8,17 @@ public class MessagesC2S {
     private ShopRequestMessage shopRequestMessage;
     private AttributeRequestMessage attributeRequestMessage;
     private InventoryRequestMessage inventoryRequestMessage;
+    private BuildingRequestMessage buildingRequestMessage;
 
     public MessagesC2S(){ }
+
+    public BuildingRequestMessage getBuildingRequestMessage() {
+        return buildingRequestMessage;
+    }
+
+    public void setBuildingRequestMessage(BuildingRequestMessage buildingRequestMessage) {
+        this.buildingRequestMessage = buildingRequestMessage;
+    }
 
     public MessagesC2S(LoginRequestMessage loginRequestMessage) {
         this.loginRequestMessage = loginRequestMessage;

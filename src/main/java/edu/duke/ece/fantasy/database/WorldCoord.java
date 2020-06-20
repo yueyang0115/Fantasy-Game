@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 
 public class WorldCoord implements Serializable{
 
-
   private int wid;
 
   private int x;
