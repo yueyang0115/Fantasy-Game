@@ -24,7 +24,8 @@ public class BuildingHandler {
         DBBuildingDAO = new DBBuildingDAO(session);
         territoryDAO = new TerritoryDAO(session);
         this.session = session;
-        BaseBuildingMap.put("Shop", new Shop());
+        Shop shop = new Shop();
+        BaseBuildingMap.put(shop.getName(), shop);
     }
 
     public BuildingResultMessage handle(BuildingRequestMessage buildingRequestMessage, int playerId) {
