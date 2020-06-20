@@ -58,8 +58,8 @@ public class Building {
         return dbBuildingDAO.addBuilding(coord, this);
     }
 
-    public void onCreate(Session session, WorldCoord coord) {
+    public DBBuilding onCreate(Session session, WorldCoord coord) {
         this.coord = coord;
-        SaveToBuildingTable(session, coord);
+        return SaveToBuildingTable(session, coord);
     }
 }

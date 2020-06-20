@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.building.Shop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
 import edu.duke.ece.fantasy.json.BuildingResultMessage;
@@ -34,6 +35,7 @@ class BuildingHandlerTest {
     public void handle(){
         session.beginTransaction();
         handle_create_list();
+        handle_create();
     }
 
 
@@ -49,6 +51,20 @@ class BuildingHandlerTest {
             e.printStackTrace();
         }
 
+    }
+
+    public void handle_create(){
+        BuildingRequestMessage requestMessage = new BuildingRequestMessage();
+        requestMessage.setAction("create");
+        requestMessage.setBuildingName((new Shop()).getName());
+        requestMessage.setCoord(new WorldCoord());
+        Player player = playerDAO.getPlayer("test");
+        BuildingResultMessage res = buildingHandler.handle(requestMessage, player.getId());
+        try{
+            System.out.println(ObjectMapperFactory.getObjectMapper().writeValueAsString(res));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

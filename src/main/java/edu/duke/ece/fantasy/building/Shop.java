@@ -31,13 +31,15 @@ public class Shop extends Building implements Trader {
     }
 
     @Override
-    public void onCreate(Session session, WorldCoord coord) {
-        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
-        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
+    public DBBuilding onCreate(Session session, WorldCoord coord) {
+//        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
+//        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
+        DBBuilding dbBuilding = super.onCreate(session,coord);
         for (shopInventory inventory : possible_inventory) {
             inventory.setDBBuilding(dbBuilding);
             session.save(inventory);
         }
+        return dbBuilding;
     }
 
     public void loadInventory(Session session, WorldCoord coord) {

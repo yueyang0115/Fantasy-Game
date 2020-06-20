@@ -84,6 +84,7 @@ public class MessageHandler {
             if (shopRequestMessage != null) {
                 session.beginTransaction();
                 ShopHandler shopHandler = new ShopHandler(session);
+                if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(this.wid);
                 result.setShopResultMessage(shopHandler.handle(shopRequestMessage, playerID));
                 session.getTransaction().commit();
             }
