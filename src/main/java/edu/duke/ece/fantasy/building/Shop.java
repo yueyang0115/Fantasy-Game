@@ -17,7 +17,7 @@ public class Shop extends Building implements Trader {
     List<shopInventory> current_inventory = new ArrayList<>();
 
     public Shop() {
-        super("Shop", 200);
+        super("shop", 200);
         shopInventory shopInventory = new shopInventory(new Potion().toDBItem(), 20);
         possible_inventory.add(shopInventory);
     }
@@ -49,9 +49,45 @@ public class Shop extends Building implements Trader {
 
     @Override
     public boolean checkMoney(int required_money) {
-        return false;
+        return true;
     }
 
+//    @Override
+//    public boolean checkItem(Inventory inventory, int amount) {
+//        for (Inventory item : items) {
+//            if (item == inventory) { // if have this type of item
+//                return item.getAmount() >= amount;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public void sellItem(Inventory inventory, int amount) {
+//        int left_amount = inventory.getAmount() - amount;
+//        inventory.setAmount(left_amount);
+//        if (left_amount == 0) {
+//            this.getItems().remove(inventory);
+//        }
+//    }
+//
+//    @Override
+//    public void buyItem(Inventory select_item, int amount) {
+//        boolean find = false;
+//        for (Inventory item : items) {
+//            if (item.equals(select_item)) { // if have this type of item
+//                int init_amount = item.getAmount();
+//                item.setAmount(init_amount + amount);
+//                find = true;
+//            }
+//        }
+//        if (!find) {
+//            shopInventory new_item = new shopInventory(select_item.getDBItem(), amount, this);
+//            addInventory(new_item);
+//        }
+//    }
+
+//
     @Override
     public boolean checkItem(Inventory inventory, int amount) {
         return false;
