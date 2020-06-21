@@ -68,6 +68,7 @@ public class MessageHandler {
             }
 
             if (battleMsg != null) {
+                canGenerateMonster[0] = false;
                 session.beginTransaction();
                 if(battleMsg.getTerritoryCoord()!=null) battleMsg.getTerritoryCoord().setWid(this.wid);
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
@@ -83,6 +84,7 @@ public class MessageHandler {
             }
 
             if (shopRequestMessage != null) {
+                canGenerateMonster[0] = false;
                 session.beginTransaction();
                 ShopHandler shopHandler = new ShopHandler(session);
                 result.setShopResultMessage(shopHandler.handle(shopRequestMessage, playerID));
@@ -90,6 +92,7 @@ public class MessageHandler {
             }
 
             if(inventoryRequestMessage != null){
+                canGenerateMonster[0] = false;
                 session.beginTransaction();
                 InventoryHandler inventoryHandler = new InventoryHandler(session);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage,playerID));
