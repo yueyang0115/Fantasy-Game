@@ -101,7 +101,7 @@ public class BattleHandler {
         while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
             attackerID = this.unitQueue.peek().getId();
             attackeeID = request.getBattleAction().getAttacker().getId();
-            if(myMonsterManger.getMonster(attackeeID) == null || myMonsterManger.getMonster(attackerID) == null) continue;
+            if(myUnitManager.getUnit(attackeeID) == null || myUnitManager.getUnit(attackerID) == null) continue;
             action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);
