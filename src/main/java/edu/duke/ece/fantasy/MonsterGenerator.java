@@ -25,7 +25,7 @@ public class MonsterGenerator extends TimerTask {
     @Override
     public void run() {
         //System.out.println("coord is "+ currentCoords[0]+", can is "+canGenerateMonster[0]);
-        if(!canGenerateMonster[0] || this.currentCoords[0].getWid() == -1) return;
+        if(!canGenerateMonster[0] || this.currentCoords[0] ==null || this.currentCoords[0].getWid() == -1) return;
         session.beginTransaction();
 
         //if number of monsters in a range in in limited number, generate a new monster
