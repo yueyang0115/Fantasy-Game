@@ -27,6 +27,7 @@ class ShopHandlerTest {
     DBBuildingDAO DBBuildingDAO;
     shopInventoryDAO shopInventoryDAO;
     Session session;
+    WorldCoord shopCoord;
 
     public ShopHandlerTest() {
         session = HibernateUtil.getSessionFactory().openSession();
@@ -39,16 +40,17 @@ class ShopHandlerTest {
 
     @Test
     void handle() {
-        (new Initializer()).test_initialize(session);
+        (new Initializer()).initialize_test_player(session);
+        shopCoord = (new Initializer()).initialize_test_shop(session);
         session.beginTransaction();
-        DBBuildingDAO.getBuilding(new WorldCoord());
         handle_list();
         handle_buy();
+        session.close();
     }
 
     void handle_list() {
         ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-        shopRequestMessage.setCoord(new WorldCoord());
+        shopRequestMessage.setCoord(shopCoord);
         shopRequestMessage.setAction("list");
 
         Player player = playerDAO.getPlayer("test");
@@ -62,7 +64,7 @@ class ShopHandlerTest {
 
     void handle_buy() {
 //        List<shopInventory> itemPacks = new ArrayList<>(DBShop.getItems());
-        List<shopInventory> itemPacks = shopInventoryDAO.getInventories(new WorldCoord());
+        List<shopInventory> itemPacks = shopInventoryDAO.getInventories(shopCoord);
 
         for (int i = 0; i < itemPacks.size(); i++) {
             try {
@@ -98,7 +100,7 @@ class ShopHandlerTest {
                 // success buy again
                 player.setMoney(required_money);
                 resultMessage = buy_item(player, itemPack_id, 1);
-                assertEquals(0, resultMessage.getItems().size());
+
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));
@@ -113,10 +115,9 @@ class ShopHandlerTest {
 
     }
 
-    //
     ShopResultMessage buy_item(Player player, int inventory_id, int item_amount) {
         ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-        shopRequestMessage.setCoord(new WorldCoord());
+        shopRequestMessage.setCoord(shopCoord);
         shopRequestMessage.setAction("buy");
         Map<Integer, Integer> itemMap = new HashMap<>();
         itemMap.put(inventory_id, item_amount);

@@ -77,42 +77,6 @@ public class ShopHandler {
         return result;
     }
 
-
-//    private boolean checkItem(List<Inventory> ){
-//
-//    }
-//
-//    public void validate(List<Inventory> sellInventory, List<Inventory> buyInventory, Integer buyerMoney, Map<Integer, Integer> item_list) throws Exception {
-//        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
-//            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
-//            int amount = inventory_pair.getValue();
-//            Item item_obj = inventory.getDBItem().toGameItem();
-//            // check if seller have enough inventory
-//            if (!seller.checkItem(inventory, amount)) {
-//                session.getTransaction().rollback();
-//                throw new Exception("Seller don't have enough item" + "-" + item_obj.getName());
-//            }
-//            // deduce the amount of item from seller
-//            seller.sellItem(inventory, amount);
-//            // sell inventory update
-//            if (inventory.getAmount() == 0) { // delete record if it's amount is 0
-//                session.delete(inventory);
-//            } else { // update record
-//                session.update(inventory);
-//            }
-//            // add the amount of item to buyer
-//            Inventory buy_inventory = buyer.buyItem(inventory, amount);
-//            // buy inventory update
-//            session.saveOrUpdate(buy_inventory);
-//            required_money += item_obj.getCost() * amount;
-//        }
-//        // check if buyer have enough money
-//        if (!buyer.checkMoney(required_money)) {
-//            session.getTransaction().rollback();
-//            throw new Exception("Don't have enough money");
-//        }
-//    }
-
     public void validateAndExecute(Trader seller, Trader buyer, Map<Integer, Integer> item_list) throws InvalidShopRequest {
         int required_money = 0;
         for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
@@ -128,8 +92,6 @@ public class ShopHandler {
             // sell inventory update
             if (inventory.getAmount() == 0) { // delete record if it's amount is 0
                 session.delete(inventory);
-            } else { // update record
-                session.update(inventory);
             }
             // add the amount of item to buyer
             Inventory buy_inventory = buyer.buyItem(inventory, amount);

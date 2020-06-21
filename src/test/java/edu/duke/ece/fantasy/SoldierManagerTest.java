@@ -29,7 +29,7 @@ public class SoldierManagerTest {
         Player player = initPlayer();
         //getSoldierTest();
         getSoldiersTest(player);
-
+        session.close();
         //session.getTransaction().commit();
         //session.close(); call session.close() will write data to database
         //HibernateUtil.shutdown();
