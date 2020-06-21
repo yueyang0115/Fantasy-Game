@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 //
 class ShopHandlerTest {
     ShopHandler shopHandler;
@@ -97,6 +98,7 @@ class ShopHandlerTest {
                 // success buy again
                 player.setMoney(required_money);
                 resultMessage = buy_item(player, itemPack_id, 1);
+                assertEquals(0, resultMessage.getItems().size());
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));
@@ -110,7 +112,8 @@ class ShopHandlerTest {
         }
 
     }
-//
+
+    //
     ShopResultMessage buy_item(Player player, int inventory_id, int item_amount) {
         ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
         shopRequestMessage.setCoord(new WorldCoord());

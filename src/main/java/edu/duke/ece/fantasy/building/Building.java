@@ -14,6 +14,7 @@ public class Building {
     int cost;
     List<Prerequisite> prerequisites;
     Map<String, Building> UpgradeTo;
+    DBBuilding dbBuilding;
 
 
     public WorldCoord getCoord() {
@@ -53,13 +54,10 @@ public class Building {
         this.cost = cost;
     }
 
-    protected DBBuilding SaveToBuildingTable(Session session, WorldCoord coord) {
-        DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
-        return dbBuildingDAO.addBuilding(coord, this);
-    }
 
-    public DBBuilding onCreate(Session session, WorldCoord coord) {
+    public void onCreate(Session session, WorldCoord coord) {
         this.coord = coord;
-        return SaveToBuildingTable(session, coord);
+        DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
+        dbBuilding = dbBuildingDAO.addBuilding(coord, this);
     }
 }

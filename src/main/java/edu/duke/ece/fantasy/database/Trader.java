@@ -11,5 +11,5 @@ public interface Trader {
 
     public void sellItem(Inventory inventory, int amount);
 
-    public void buyItem(Inventory inventory, int amount);
+    public Inventory buyItem(Inventory inventory, int amount);
 }

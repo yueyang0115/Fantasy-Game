@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.duke.ece.fantasy.Item.IItem;
 import edu.duke.ece.fantasy.Item.Item;
@@ -41,7 +42,7 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
-    @JsonManagedReference(value = "player-items")
+    @JsonIgnore
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<playerInventory> items = new ArrayList<>();
 
@@ -161,11 +162,13 @@ public class Player implements Trader {
     }
 
     @Override
-    public void buyItem(Inventory select_item, int amount) {
+    public Inventory buyItem(Inventory select_item, int amount) {
         boolean find = false;
         Item item_obj = select_item.getDBItem().toGameItem();
+        Inventory record = null;
         for (Inventory item : items) {
             if (item.equals(select_item)) { // if have this type of item, add amount to existing object
+                record = item;
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
                 find = true;
@@ -173,8 +176,9 @@ public class Player implements Trader {
         }
         money -= amount * item_obj.getCost();
         if (!find) { // if don't have this type of item, create object
-            playerInventory new_record = new playerInventory(select_item.getDBItem(), amount, this);
-            addItem(new_record);
+            record = new playerInventory(select_item.getDBItem(), amount, this);
+            addItem((playerInventory) record);
         }
+        return record;
     }
 }

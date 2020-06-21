@@ -6,6 +6,7 @@ import edu.duke.ece.fantasy.Item.Potion;
 import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ public class Shop extends Building implements Trader {
 
     @JsonIgnore
     List<shopInventory> current_inventory = new ArrayList<>();
+
+    DBBuilding dbBuilding;
 
     public Shop() {
         super("shop", 200);
@@ -31,15 +34,14 @@ public class Shop extends Building implements Trader {
     }
 
     @Override
-    public DBBuilding onCreate(Session session, WorldCoord coord) {
+    public void onCreate(Session session, WorldCoord coord) {
 //        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
 //        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
-        DBBuilding dbBuilding = super.onCreate(session,coord);
+        super.onCreate(session, coord);
         for (shopInventory inventory : possible_inventory) {
             inventory.setDBBuilding(dbBuilding);
             session.save(inventory);
         }
-        return dbBuilding;
     }
 
     public void loadInventory(Session session, WorldCoord coord) {
@@ -48,35 +50,39 @@ public class Shop extends Building implements Trader {
 //        shopInventoryDAO.getInventory();
     }
 
+    public void saveInventory(Session session) {
+        for (Inventory item : current_inventory) {
+            session.update(item);
+        }
+    }
+
 
     @Override
     public boolean checkMoney(int required_money) {
         return true;
     }
 
+    @Override
+    public boolean checkItem(Inventory inventory, int amount) {
+        for (Inventory item : current_inventory) {
+            if (item.equals(inventory)) { // if have this type of item
+                return item.getAmount() >= amount;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void sellItem(Inventory inventory, int amount) {
+        int left_amount = inventory.getAmount() - amount;
+        inventory.setAmount(left_amount);
+    }
+
 //    @Override
-//    public boolean checkItem(Inventory inventory, int amount) {
-//        for (Inventory item : items) {
-//            if (item == inventory) { // if have this type of item
-//                return item.getAmount() >= amount;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public void sellItem(Inventory inventory, int amount) {
-//        int left_amount = inventory.getAmount() - amount;
-//        inventory.setAmount(left_amount);
-//        if (left_amount == 0) {
-//            this.getItems().remove(inventory);
-//        }
-//    }
-//
-//    @Override
-//    public void buyItem(Inventory select_item, int amount) {
+//    public Inventory buyItem(Inventory select_item, int amount) {
 //        boolean find = false;
-//        for (Inventory item : items) {
+//        Inventory
+//        for (Inventory item : current_inventory) {
 //            if (item.equals(select_item)) { // if have this type of item
 //                int init_amount = item.getAmount();
 //                item.setAmount(init_amount + amount);
@@ -89,19 +95,21 @@ public class Shop extends Building implements Trader {
 //        }
 //    }
 
+    @Override
+    public Inventory buyItem(Inventory inventory, int amount) {
+        return null;
+    }
+
 //
-    @Override
-    public boolean checkItem(Inventory inventory, int amount) {
-        return false;
-    }
+//    @Override
+//    public boolean checkItem(Inventory inventory, int amount) {
+//        return false;
+//    }
+//
+//    @Override
+//    public void sellItem(Inventory inventory, int amount) {
+//
+//    }
+//
 
-    @Override
-    public void sellItem(Inventory inventory, int amount) {
-
-    }
-
-    @Override
-    public void buyItem(Inventory inventory, int amount) {
-
-    }
 }
