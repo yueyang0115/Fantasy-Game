@@ -79,4 +79,16 @@ public class MonsterManger {
         }
         return monsterList;
     }
+
+    public Long countMonsters(WorldCoord where, int x_range, int y_range){
+        List<Monster> monsterList = new ArrayList<>();
+        Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid and M.coord.x between :xlower and :xupper and M.coord.y between :ylower and :yupper");
+        q.setParameter("wid", where.getWid());
+        q.setParameter("xlower", where.getX() - x_range/2);
+        q.setParameter("xupper", where.getX() + x_range/2);
+        q.setParameter("ylower", where.getY() - y_range/2);
+        q.setParameter("yupper", where.getY() + y_range/2);
+        Long cnt = (Long) q.uniqueResult();
+        return cnt;
+    }
 }

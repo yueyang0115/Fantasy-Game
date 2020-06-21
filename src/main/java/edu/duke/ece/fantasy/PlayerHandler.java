@@ -13,9 +13,8 @@ import java.util.Timer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerHandler extends Thread{
-    private int wid;
-    private WorldCoord[] currentCoord = new WorldCoord[1];
-    private boolean[] canGenerateMonster  = new boolean[1];
+    volatile WorldCoord[] currentCoord = new WorldCoord[1];
+    volatile boolean[] canGenerateMonster  = new boolean[1];
     private Timer generateMonsterTimer = new Timer();
     private Timer checkUpdatedMonsterTimer = new Timer();
     private TCPCommunicator TCPcommunicator;
@@ -31,6 +30,7 @@ public class PlayerHandler extends Thread{
         this.myObjectMapper = new ObjectMapper();
         this.messageHandler = new MessageHandler(currentCoord, canGenerateMonster);
         this.messageS2CQueue = new LinkedBlockingQueue<>();
+        canGenerateMonster[0] = false;
     }
 
     public void run() {
