@@ -24,13 +24,13 @@ public class MonsterGenerator extends TimerTask {
 
     @Override
     public void run() {
-        System.out.println("coord is "+ currentCoords[0]+", can is "+canGenerateMonster[0]);
+        //System.out.println("coord is "+ currentCoords[0]+", can is "+canGenerateMonster[0]);
         if(!canGenerateMonster[0] || this.currentCoords[0].getWid() == -1) return;
         session.beginTransaction();
 
         //if number of monsters in a range in in limited number, generate a new monster
         Long monsterNum = monsterDAO.countMonsters(currentCoords[0], X_RANGE, Y_RANGE);
-        System.out.println("monsterNum near currentCoord" + currentCoords[0]+ " is " + monsterNum);
+        //System.out.println("monsterNum near currentCoord" + currentCoords[0]+ " is " + monsterNum);
         if(monsterNum <= MONSTER_LIMIT){
             Monster m = new Monster("wolf", 60, 6, 10);
             WorldCoord where = generateCoord(currentCoords[0]);
