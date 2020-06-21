@@ -44,32 +44,30 @@ public class ShopHandler {
         Player player = playerDAO.getPlayer(playerID);
         ShopResultMessage result = new ShopResultMessage();
 
-        if (action.equals("list")) {
-            result.setResult("valid");
-        } else if (action.equals("buy")) {
-            try {
+        try {
+            if (action.equals("list")) {
+                result.setResult("valid");
+            } else if (action.equals("buy")) {
                 validateAndExecute(shop, player, item_list);
                 result.setResult("valid");
-            } catch (Exception e) {
-                result.setResult("invalid:" + e.getMessage());
+            } else if (action.equals("sell")) {
+                validateAndExecute(player, shop, item_list);
+                result.setResult("valid");
             }
-        } else if (action.equals("sell")) {
-//            try {
-//                validateAndExecute(player, DBShop, item_list);
-//                result.setResult("valid");
-//            } catch (Exception e) {
-//                result.setResult("invalid:" + e.getMessage());
-//            }
+        } catch (InvalidShopRequest e) {
+            session.getTransaction().rollback();
+            result.setResult("invalid:" + e.getMessage());
         }
+
         // get latest data from db(previous transaction may roll back)
 //        DBShop = DBShopDAO.getShop(request.getShopID());
 //        List<shopInventory> db_items = shop.getCurrent_inventory();
-//        shop.loadInventory(session, request.getCoord());
+        shop.loadInventory(session, request.getCoord());
 
-        for (shopInventory db_item : shop.getCurrent_inventory()) {
+        for (shopInventory inventory : shop.getCurrent_inventory()) {
             // add more information of item
-            if (db_item.getAmount() == 0) continue;
-            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
+            if (inventory.getAmount() == 0) continue;
+            Inventory toClientInventory = new Inventory(inventory.getId(), inventory.getDBItem().toGameItem().toClient(), inventory.getAmount());
             result.addItem(toClientInventory);
         }
 
@@ -123,7 +121,6 @@ public class ShopHandler {
             Item item_obj = inventory.getDBItem().toGameItem();
             // check if seller have enough inventory
             if (!seller.checkItem(inventory, amount)) {
-                session.getTransaction().rollback();
                 throw new InvalidShopRequest("Seller don't have enough item" + "-" + item_obj.getName());
             }
             // deduce the amount of item from seller
@@ -142,7 +139,6 @@ public class ShopHandler {
         }
         // check if buyer have enough money
         if (!buyer.checkMoney(required_money)) {
-            session.getTransaction().rollback();
             throw new InvalidShopRequest("Don't have enough money");
         }
     }

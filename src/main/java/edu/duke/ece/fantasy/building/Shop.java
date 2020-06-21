@@ -17,7 +17,6 @@ public class Shop extends Building implements Trader {
     @JsonIgnore
     List<shopInventory> current_inventory = new ArrayList<>();
 
-    DBBuilding dbBuilding;
 
     public Shop() {
         super("shop", 200);
@@ -50,12 +49,6 @@ public class Shop extends Building implements Trader {
 //        shopInventoryDAO.getInventory();
     }
 
-    public void saveInventory(Session session) {
-        for (Inventory item : current_inventory) {
-            session.update(item);
-        }
-    }
-
 
     @Override
     public boolean checkMoney(int required_money) {
@@ -78,38 +71,20 @@ public class Shop extends Building implements Trader {
         inventory.setAmount(left_amount);
     }
 
-//    @Override
-//    public Inventory buyItem(Inventory select_item, int amount) {
-//        boolean find = false;
-//        Inventory
-//        for (Inventory item : current_inventory) {
-//            if (item.equals(select_item)) { // if have this type of item
-//                int init_amount = item.getAmount();
-//                item.setAmount(init_amount + amount);
-//                find = true;
-//            }
-//        }
-//        if (!find) {
-//            shopInventory new_item = new shopInventory(select_item.getDBItem(), amount, this);
-//            addInventory(new_item);
-//        }
-//    }
-
     @Override
-    public Inventory buyItem(Inventory inventory, int amount) {
-        return null;
+    public Inventory buyItem(Inventory select_item, int amount) {
+        Inventory inventory = null;
+        for (Inventory item : current_inventory) {
+            if (item.equals(select_item)) { // if have this type of item
+                int init_amount = item.getAmount();
+                inventory = item;
+                item.setAmount(init_amount + amount);
+            }
+        }
+        if (inventory == null) {
+            inventory = new shopInventory(select_item.getDBItem(), amount, dbBuilding);
+        }
+        return inventory;
     }
-
-//
-//    @Override
-//    public boolean checkItem(Inventory inventory, int amount) {
-//        return false;
-//    }
-//
-//    @Override
-//    public void sellItem(Inventory inventory, int amount) {
-//
-//    }
-//
 
 }

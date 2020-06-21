@@ -42,7 +42,6 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<playerInventory> items = new ArrayList<>();
 
@@ -163,7 +162,6 @@ public class Player implements Trader {
 
     @Override
     public Inventory buyItem(Inventory select_item, int amount) {
-        boolean find = false;
         Item item_obj = select_item.getDBItem().toGameItem();
         Inventory record = null;
         for (Inventory item : items) {
@@ -171,11 +169,10 @@ public class Player implements Trader {
                 record = item;
                 int init_amount = item.getAmount();
                 item.setAmount(init_amount + amount);
-                find = true;
             }
         }
         money -= amount * item_obj.getCost();
-        if (!find) { // if don't have this type of item, create object
+        if (record == null) { // if don't have this type of item, create object
             record = new playerInventory(select_item.getDBItem(), amount, this);
             addItem((playerInventory) record);
         }
