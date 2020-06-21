@@ -10,8 +10,8 @@ public class MonsterGenerator extends TimerTask {
     public static int Y_RANGE = 20;
     public static int MONSTER_LIMIT = 2;
     public static int TAME_LIMIT = 0;
-    private WorldCoord[] currentCoords;
-    private boolean[] canGenerateMonster;
+    volatile WorldCoord[] currentCoords;
+    volatile boolean[] canGenerateMonster;
     private MonsterManger monsterDAO;
     private Session session;
 
