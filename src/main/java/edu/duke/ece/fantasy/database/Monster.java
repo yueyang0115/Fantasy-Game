@@ -20,6 +20,10 @@ public class Monster extends Unit{
     @Embedded
     private WorldCoord coord;
 
+    @Column(name = "need_update", unique = false, nullable = false)
+    private boolean needUpdate = true;
+
+
   /*@JsonBackReference
     @ManyToOne
     @JoinColumn(name="territory_id", nullable=false)
@@ -48,6 +52,10 @@ public class Monster extends Unit{
     public WorldCoord getCoord() { return coord; }
 
     public void setCoord(WorldCoord coord) { this.coord = coord; }
+
+    public boolean isNeedUpdate() { return needUpdate; }
+
+    public void setNeedUpdate(boolean needUpdate) { this.needUpdate = needUpdate; }
 
     @Override
     public boolean equals(Object o) {

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageHandlerTest {
-    MessageHandler mh = new MessageHandler();
+//    MessageHandler mh = new MessageHandler();
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test

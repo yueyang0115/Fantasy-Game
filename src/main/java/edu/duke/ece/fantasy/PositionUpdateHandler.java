@@ -61,8 +61,13 @@ public class PositionUpdateHandler {
 //            if (t.getTerrainType().equals("forest_dense")) {
 //                System.out.println("find forest_dense, should have a monster here");
 //            }
-            Monster m = monsterDAO.getMonsterWhere(where);
-            if (m != null) monsterList.add(m);
+            List<Monster> monsters = monsterDAO.getMonsters(where);
+            if (monsters != null){
+                for(Monster m: monsters){
+                    monsterDAO.setMonsterStatus(m.getId(), false);
+                    monsterList.add(m);
+                }
+            }
 
             DBBuilding building = DBBuildingDAO.getBuilding(where);
 

@@ -26,21 +26,12 @@ public class MonsterManger {
         return res;
     }
 
-    public Monster getMonsterWhere(WorldCoord where) {
-        Query q = session.createQuery("From Monster M where M.coord =: coord");
-        q.setParameter("coord", where);
-        Monster res = (Monster) q.uniqueResult();
-        return res;
-
-    }
-
     //get all monsters in the provided coord from database
     public List<Monster> getMonsters(WorldCoord where){
         List<Monster> monsterList = new ArrayList<>();
-        Query q2 = session.createQuery("From Monster M where M.coord.x =:x and M.coord.y =:y");
-        q2.setParameter("x", where.getX());
-        q2.setParameter("y", where.getY());
-        for(Object o : q2.list()) {
+        Query q = session.createQuery("From Monster M where M.coord =:coord");
+        q.setParameter("coord", where);
+        for(Object o : q.list()) {
             monsterList.add((Monster) o);
         }
         return monsterList;
@@ -64,5 +55,28 @@ public class MonsterManger {
             session.delete(monster);
             System.out.println("[DEBUG] Delete monster " + monsterID);
         }
+    }
+    
+    public void setMonsterStatus(int monsterID, boolean status){
+        Monster m = getMonster(monsterID);
+        if (m == null) { // don't have that monster
+            return;
+        }
+        m.setNeedUpdate(status);
+        session.update(m);
+    }
+
+    public void setMonstersStatus(List<Monster> monsterList, boolean status){
+        for(Monster m : monsterList) setMonsterStatus(m.getId(), false);
+    }
+
+    public List<Monster> getUpdatedMonsters(){
+        List<Monster> monsterList = new ArrayList<>();
+        Query q = session.createQuery("From Monster M where M.needUpdate =:needUpdate");
+        q.setParameter("needUpdate", true);
+        for(Object o : q.list()) {
+            monsterList.add((Monster) o);
+        }
+        return monsterList;
     }
 }
