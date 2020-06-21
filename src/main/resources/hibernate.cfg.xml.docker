@@ -25,11 +25,26 @@
         <property name="hibernate.hbm2ddl.auto">create-drop</property>
 
         <mapping class="edu.duke.ece.fantasy.database.Unit"/>
+                <mapping class="edu.duke.ece.fantasy.database.Monster"/>
+                <mapping class="edu.duke.ece.fantasy.database.Soldier"/>
+                <mapping class="edu.duke.ece.fantasy.database.Territory"/>
+                <mapping class="edu.duke.ece.fantasy.database.DBBuilding"/>
+                <mapping class="edu.duke.ece.fantasy.Item.Item"/>
+                <mapping class="edu.duke.ece.fantasy.database.Tile"/>
+                <mapping class="edu.duke.ece.fantasy.database.WorldInfo"/>
+                <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
+                <mapping class="edu.duke.ece.fantasy.Item.Equipment"/>
+                <mapping class="edu.duke.ece.fantasy.database.Inventory"/>
+                <mapping class="edu.duke.ece.fantasy.database.playerInventory"/>
+                <mapping class="edu.duke.ece.fantasy.database.shopInventory"/>
+                <mapping class="edu.duke.ece.fantasy.database.Player"/>
+                <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
+
+        <mapping class="edu.duke.ece.fantasy.database.Unit"/>
         <mapping class="edu.duke.ece.fantasy.database.Monster"/>
         <mapping class="edu.duke.ece.fantasy.database.Soldier"/>
         <mapping class="edu.duke.ece.fantasy.database.Territory"/>
-        <mapping class="edu.duke.ece.fantasy.database.Building"/>
-        <mapping class="edu.duke.ece.fantasy.database.Shop"/>
+        <mapping class="edu.duke.ece.fantasy.database.DBBuilding"/>
         <mapping class="edu.duke.ece.fantasy.Item.Item"/>
         <mapping class="edu.duke.ece.fantasy.database.Tile"/>
         <mapping class="edu.duke.ece.fantasy.database.WorldInfo"/>

@@ -2,15 +2,12 @@ package edu.duke.ece.fantasy.json;
 
 import edu.duke.ece.fantasy.database.WorldCoord;
 
-import java.util.Map;
+public class BuildingRequestMessage {
+    WorldCoord coord;
 
-public class ShopRequestMessage {
-    private WorldCoord coord;
-    private Map<Integer, Integer> itemMap;
-    private String action;//"list""buy""sell"
+    String action; //"createList","create","upgradeList","upgrade","destruct"
 
-    public ShopRequestMessage() {
-    }
+    String buildingName;
 
     public WorldCoord getCoord() {
         return coord;
@@ -28,11 +25,11 @@ public class ShopRequestMessage {
         this.action = action;
     }
 
-    public Map<Integer, Integer> getItemMap() {
-        return itemMap;
+    public String getBuildingName() {
+        return buildingName;
     }
 
-    public void setItemMap(Map<Integer, Integer> itemMap) {
-        this.itemMap = itemMap;
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
     }
 }

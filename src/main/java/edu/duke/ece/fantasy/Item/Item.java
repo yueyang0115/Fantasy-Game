@@ -13,7 +13,6 @@ public abstract class Item implements IItem {
 
     private int cost;
 
-
     public Item() {
     }
 
@@ -37,10 +36,6 @@ public abstract class Item implements IItem {
         this.name = name;
         this.cost = cost;
     }
-
-//    public String getChangeableProperties(){
-//        return "";
-//    }
 
     public DBItem toDBItem() {
         return new DBItem(this.getClass().getName(), "");

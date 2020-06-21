@@ -39,7 +39,6 @@ public class Server {
     }
 
     public void startGame() {
-        (new Initializer()).initialize();
         //myMockDBprocessor.create();
 //        myDBprocessor.connectDB();
         while (true) {

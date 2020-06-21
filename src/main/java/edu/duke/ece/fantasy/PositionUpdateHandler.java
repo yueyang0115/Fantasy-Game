@@ -2,7 +2,6 @@ package edu.duke.ece.fantasy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
@@ -13,8 +12,7 @@ import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
-    BuildingDAO buildingDAO;
-    ShopDAO shopDAO;
+    DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
     MonsterManger monsterDAO;
     //    ItemDAO itemDAO;
@@ -24,8 +22,7 @@ public class PositionUpdateHandler {
 
     public PositionUpdateHandler(Session session) {
         territoryDAO = new TerritoryDAO(session);
-        buildingDAO = new BuildingDAO(session);
-        shopDAO = new ShopDAO(session);
+        DBBuildingDAO = new DBBuildingDAO(session);
         worldDAO = new WorldDAO(session);
         monsterDAO = new MonsterManger(session);
         //    itemDAO = new ItemDAO(session);
@@ -36,7 +33,7 @@ public class PositionUpdateHandler {
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
         ArrayList<Monster> monsterList = new ArrayList<Monster>();
-        ArrayList<Building> buildingList = new ArrayList<>();
+        ArrayList<DBBuilding> buildingList = new ArrayList<>();
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
@@ -51,7 +48,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, monsterDAO, buildingDAO, where, info);
+                gen.generate(territoryDAO, monsterDAO, DBBuildingDAO, where, info);
                 t = territoryDAO.getTerritory(where);
             }
 //            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
@@ -72,7 +69,7 @@ public class PositionUpdateHandler {
                 }
             }
 
-            Building building = buildingDAO.getBuilding(where);
+            DBBuilding building = DBBuildingDAO.getBuilding(where);
 
             if (building != null) {
                 buildingList.add(building);

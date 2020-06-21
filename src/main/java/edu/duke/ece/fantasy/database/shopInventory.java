@@ -1,22 +1,21 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "shopInventory")
 public class shopInventory extends Inventory {
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
+    @JoinColumns({
+            @JoinColumn(name = "coord_wid", referencedColumnName = "wid"),
+            @JoinColumn(name = "coord_x", referencedColumnName = "x"),
+            @JoinColumn(name = "coord_y", referencedColumnName = "y")
+    })
+    private DBBuilding Shop;
 
     public shopInventory() {
     }
@@ -25,17 +24,17 @@ public class shopInventory extends Inventory {
         super(item, amount);
     }
 
-    public shopInventory(DBItem item, int amount, Shop shop) {
+    public shopInventory(DBItem item, int amount, DBBuilding DBShop) {
         super(item, amount);
-        this.shop = shop;
+        this.Shop = DBShop;
     }
 
-    public Shop getShop() {
-        return shop;
+    public DBBuilding getDBBuilding() {
+        return Shop;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
+    public void setDBBuilding(DBBuilding DBShop) {
+        this.Shop = DBShop;
     }
 
 

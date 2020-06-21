@@ -30,6 +30,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.8'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
 
+
     // Use JUnit Jupiter API for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
     
@@ -42,6 +43,7 @@ dependencies {
     compile group: 'org.slf4j', name:'slf4j-api', version: '1.7.21'
     compile group: 'org.slf4j', name:'slf4j-simple', version: '1.7.21'
     compile group: 'org.jasypt', name: 'jasypt-hibernate5', version: '1.9.3'
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.12'
 
     //switch testing to h2
     testImplementation group: "com.h2database", name:"h2", version:"1.4.200"

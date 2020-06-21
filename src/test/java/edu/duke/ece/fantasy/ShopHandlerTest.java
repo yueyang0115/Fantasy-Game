@@ -2,9 +2,7 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.Item.IItem;
 import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.Item.Sword;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
@@ -20,40 +18,39 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//
 class ShopHandlerTest {
     ShopHandler shopHandler;
-    ShopDAO shopDAO;
     PlayerDAO playerDAO;
     ObjectMapper objectMapper = new ObjectMapper();
     Logger logger = LoggerFactory.getLogger(ShopHandlerTest.class);
+    DBBuildingDAO DBBuildingDAO;
+    shopInventoryDAO shopInventoryDAO;
+    Session session;
+    WorldCoord shopCoord;
 
-    Session createSession() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public ShopHandlerTest() {
+        session = HibernateUtil.getSessionFactory().openSession();
         shopHandler = new ShopHandler(session);
-        shopDAO = new ShopDAO(session);
+        DBBuildingDAO = new DBBuildingDAO(session);
         playerDAO = new PlayerDAO(session);
-        return session;
+        shopInventoryDAO = new shopInventoryDAO(session);
     }
 
 
     @Test
     void handle() {
-        Sword sword = new Sword();
-        DBItem tmp = sword.toDBItem();
-        System.out.println(tmp.getItem_properties());
-        Item tmp_item = tmp.toGameItem();
-        try (Session session = createSession()) {
-            (new Initializer()).test_initialize();
-            session.beginTransaction();
-            Shop shop = shopDAO.getShop(1);
-            handle_list(shop);
-            handle_buy(shop);
-        }
+        (new Initializer()).initialize_test_player(session);
+        shopCoord = (new Initializer()).initialize_test_shop(session);
+        session.beginTransaction();
+        handle_list();
+        handle_buy();
+        session.close();
     }
 
-    void handle_list(Shop shop) {
+    void handle_list() {
         ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-        shopRequestMessage.setShopID(shop.getId());
+        shopRequestMessage.setCoord(shopCoord);
         shopRequestMessage.setAction("list");
 
         Player player = playerDAO.getPlayer("test");
@@ -65,8 +62,9 @@ class ShopHandlerTest {
         }
     }
 
-    void handle_buy(Shop shop) {
-        List<shopInventory> itemPacks = new ArrayList<>(shop.getItems());
+    void handle_buy() {
+//        List<shopInventory> itemPacks = new ArrayList<>(DBShop.getItems());
+        List<shopInventory> itemPacks = shopInventoryDAO.getInventories(shopCoord);
 
         for (int i = 0; i < itemPacks.size(); i++) {
             try {
@@ -79,19 +77,19 @@ class ShopHandlerTest {
 
                 // Don't have enough money
                 player.setMoney(required_money - 1);
-                ShopResultMessage resultMessage = buy_item(player, shop, itemPack_id, item_amount);
+                ShopResultMessage resultMessage = buy_item(player, itemPack_id, item_amount);
                 assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
                 assertNotEquals("valid", resultMessage.getResult());
 
                 // shop don't have enough item
                 player.setMoney(required_money);
-                buy_item(player, shop, itemPack_id, item_amount + 1);
+                buy_item(player, itemPack_id, item_amount + 1);
                 assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
                 assertNotEquals("valid", resultMessage.getResult());
 
                 // success
                 player.setMoney(required_money);
-                resultMessage = buy_item(player, shop, itemPack_id, item_amount - 1);
+                resultMessage = buy_item(player, itemPack_id, item_amount - 1);
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));
@@ -101,7 +99,8 @@ class ShopHandlerTest {
 
                 // success buy again
                 player.setMoney(required_money);
-                resultMessage = buy_item(player, shop, itemPack_id, 1);
+                resultMessage = buy_item(player, itemPack_id, 1);
+
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));
@@ -116,10 +115,9 @@ class ShopHandlerTest {
 
     }
 
-    ShopResultMessage buy_item(Player player, Shop shop, int inventory_id, int item_amount) {
-
+    ShopResultMessage buy_item(Player player, int inventory_id, int item_amount) {
         ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-        shopRequestMessage.setShopID(shop.getId());
+        shopRequestMessage.setCoord(shopCoord);
         shopRequestMessage.setAction("buy");
         Map<Integer, Integer> itemMap = new HashMap<>();
         itemMap.put(inventory_id, item_amount);
