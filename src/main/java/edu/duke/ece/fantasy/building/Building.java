@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.building;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.DBBuildingDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
@@ -14,8 +15,12 @@ public class Building {
     WorldCoord coord;
     String name;
     int cost;
+
+    @JsonIgnore
     List<Prerequisite> prerequisites = new ArrayList<>();
+    @JsonIgnore
     Map<String, Building> UpgradeTo = new HashMap<>();
+    @JsonIgnore
     DBBuilding dbBuilding;
 
 
