@@ -123,5 +123,7 @@ public class PlayerHandler extends Thread{
         generateMonsterTimer.purge();
         checkUpdatedMonsterTimer.cancel();
         checkUpdatedMonsterTimer.purge();
+        moveMonsterTimer.cancel();
+        moveMonsterTimer.purge();
     }
 }
