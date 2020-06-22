@@ -18,7 +18,7 @@ public abstract class Shop extends Building implements Trader {
     List<shopInventory> current_inventory = new ArrayList<>();
 
 
-    public Shop(String name,int cost) {
+    public Shop(String name, int cost) {
         super(name, cost);
     }
 
@@ -35,8 +35,11 @@ public abstract class Shop extends Building implements Trader {
 //        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
 //        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
         super.onCreate(session, coord);
+        // delete all old inventory
+        shopInventoryDAO shopinventoryDAO = new shopInventoryDAO(session);
+        shopinventoryDAO.deleteInventory(coord);
         for (shopInventory inventory : possible_inventory) {
-            inventory.setDBBuilding(dbBuilding);
+            inventory.setCoord(coord);
             session.save(inventory);
         }
     }
@@ -80,7 +83,7 @@ public abstract class Shop extends Building implements Trader {
             }
         }
         if (inventory == null) {
-            inventory = new shopInventory(select_item.getDBItem(), amount, dbBuilding);
+            inventory = new shopInventory(select_item.getDBItem(), amount, coord);
         }
         return inventory;
     }

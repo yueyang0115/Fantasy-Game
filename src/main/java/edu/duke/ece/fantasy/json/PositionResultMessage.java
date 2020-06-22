@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
@@ -9,7 +10,7 @@ import java.util.List;
 public class PositionResultMessage {
     private List<Territory> territoryArray;
     private List<Monster> monsterArray;
-    private List<DBBuilding> buildingArray;
+    private List<Building> buildingArray;
 
     public PositionResultMessage(){}
 
@@ -25,11 +26,11 @@ public class PositionResultMessage {
 
     public void setMonsterArray(List<Monster> monsterArray) { this.monsterArray = monsterArray; }
 
-    public List<DBBuilding> getBuildingArray() {
+    public List<Building> getBuildingArray() {
         return buildingArray;
     }
 
-    public void setBuildingArray(List<DBBuilding> buildingArray) {
+    public void setBuildingArray(List<Building> buildingArray) {
         this.buildingArray = buildingArray;
     }
 }

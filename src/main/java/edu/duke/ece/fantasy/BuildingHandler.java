@@ -53,7 +53,7 @@ public class BuildingHandler {
                 Building building = Create(buildingRequestMessage, playerId);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
-            } else if (action.equals("updateList")) {
+            } else if (action.equals("upgradeList")) {
                 // check if Building exist
                 DBBuilding dbBuilding = DBBuildingDAO.getBuilding(coord);
                 if (dbBuilding == null) {
@@ -61,7 +61,7 @@ public class BuildingHandler {
                 }
                 buildingResultMessage.setBuildingList(dbBuilding.toGameBuilding().getUpgradeList());
                 buildingResultMessage.setResult("success");
-            } else if (action.equals("update")) {
+            } else if (action.equals("upgrade")) {
                 Building building = Update(buildingRequestMessage, playerId);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
@@ -112,7 +112,7 @@ public class BuildingHandler {
         Building UpgradeFrom = dbBuilding.toGameBuilding();
 
         // check if update building is in the list
-        Building UpgradeTo = UpgradeFrom.getUpgradeTo().get("name");
+        Building UpgradeTo = UpgradeFrom.getUpgradeTo().get(name);
         if (UpgradeTo == null) {
             throw new InvalidBuildingRequest("Building type doesn't exist");
         }

@@ -20,8 +20,6 @@ public class Building {
     List<Prerequisite> prerequisites = new ArrayList<>();
     @JsonIgnore
     Map<String, Building> UpgradeTo = new HashMap<>();
-    @JsonIgnore
-    DBBuilding dbBuilding;
 
 
     public WorldCoord getCoord() {
@@ -32,6 +30,7 @@ public class Building {
         this.coord = coord;
     }
 
+    @JsonIgnore
     public List<Building> getUpgradeList() {
         return new ArrayList<>(UpgradeTo.values());
     }
@@ -79,9 +78,10 @@ public class Building {
         DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
         DBBuilding tmp = dbBuildingDAO.getBuilding(coord);
         if (tmp != null) { // delete existing building in this coord
-            session.delete(tmp);
+            tmp.setName(this.getClass().getName());
+        } else {
+            dbBuildingDAO.addBuilding(coord, this);
         }
-        dbBuilding = dbBuildingDAO.addBuilding(coord, this);
     }
 
 }

@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
@@ -33,7 +34,7 @@ public class PositionUpdateHandler {
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
         ArrayList<Monster> monsterList = new ArrayList<Monster>();
-        ArrayList<DBBuilding> buildingList = new ArrayList<>();
+        ArrayList<Building> buildingList = new ArrayList<>();
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
@@ -72,7 +73,7 @@ public class PositionUpdateHandler {
             DBBuilding building = DBBuildingDAO.getBuilding(where);
 
             if (building != null) {
-                buildingList.add(building);
+                buildingList.add(building.toGameBuilding());
             }
         }
 

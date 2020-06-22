@@ -42,7 +42,9 @@ public class DBBuilding {
 
     public Building toGameBuilding() {
         try {
-            return (Building) Class.forName(name).getDeclaredConstructor().newInstance();
+            Building res = (Building) Class.forName(name).getDeclaredConstructor().newInstance();
+            res.setCoord(coord);
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
