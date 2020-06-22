@@ -30,7 +30,10 @@ public class MonsterMover extends TimerTask {
 
         //get monsters within an area whenever getting into a new coord
         List<Monster> monsterList = monsterDAO.getMonstersInRange(currentCoords[0],X_RANGE,Y_RANGE);
-        if(monsterList == null || monsterList.size() == 0) return;
+        if(monsterList == null || monsterList.size() == 0){
+            session.getTransaction().commit();
+            return;
+        }
 
         Collections.sort(monsterList, new Comparator<Monster>(){
             @Override

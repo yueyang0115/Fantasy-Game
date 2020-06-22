@@ -37,7 +37,6 @@ public class MonsterDetector extends TimerTask {
             for(Monster m : monsterList){
                 System.out.println("getting changed m ID is" + m.getId() +",coord is "+m.getCoord());
             }
-            session.getTransaction().commit();
 
             MessagesS2C result = new MessagesS2C();
             PositionResultMessage positionMsg= new PositionResultMessage();
@@ -45,5 +44,10 @@ public class MonsterDetector extends TimerTask {
             result.setPositionResultMessage(positionMsg);
             messageS2CQueue.offer(result);
         }
+
+        for(Monster monster: monsterList){
+            session.evict(monster);
+        }
+        session.getTransaction().commit();
     }
 }
