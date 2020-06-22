@@ -8,7 +8,7 @@ import java.util.TimerTask;
 public class MonsterGenerator extends TimerTask {
     public static int X_RANGE = 20;
     public static int Y_RANGE = 20;
-    public static int MONSTER_LIMIT = 2;
+    public static int MONSTER_LIMIT = 1;
     public static int TAME_LIMIT = 0;
     volatile WorldCoord[] currentCoords;
     volatile boolean[] canGenerateMonster;
@@ -29,9 +29,9 @@ public class MonsterGenerator extends TimerTask {
         session.beginTransaction();
 
         //if number of monsters in a range in in limited number, generate a new monster
-        Long monsterNum = monsterDAO.countMonsters(currentCoords[0], X_RANGE, Y_RANGE);
+        Long monsterNum = monsterDAO.countMonstersInRange(currentCoords[0], X_RANGE, Y_RANGE);
         //System.out.println("monsterNum near currentCoord" + currentCoords[0]+ " is " + monsterNum);
-        if(monsterNum <= MONSTER_LIMIT){
+        if(monsterNum < MONSTER_LIMIT){
             Monster m = new Monster("wolf", 60, 6, 10);
             WorldCoord where = generateCoord(currentCoords[0]);
             monsterDAO.addMonster(m, where);
@@ -46,8 +46,8 @@ public class MonsterGenerator extends TimerTask {
         //int tame = new TerritoryDAO(session).getTerritory(newCoord).getTame();
         WorldCoord newCoord = new WorldCoord();
         newCoord.setWid(currentCoord.getWid());
-        newCoord.setY(currentCoord.getY());
-        newCoord.setX(currentCoord.getX()+1);
+        newCoord.setY(currentCoord.getY()+2);
+        newCoord.setX(currentCoord.getX()+2);
         return newCoord;
     }
 }

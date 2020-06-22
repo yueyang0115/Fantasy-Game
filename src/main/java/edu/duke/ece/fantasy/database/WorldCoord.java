@@ -25,6 +25,11 @@ public class WorldCoord implements Serializable{
     this.x=x;
     this.y=y;
   }
+  public WorldCoord(WorldCoord coord){
+    this.wid = coord.getWid();
+    this.x = coord.getX();
+    this.y = coord.getY();
+  }
     
   
   public int getWid() {

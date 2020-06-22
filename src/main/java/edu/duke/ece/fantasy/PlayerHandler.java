@@ -17,6 +17,7 @@ public class PlayerHandler extends Thread{
     volatile boolean[] canGenerateMonster  = new boolean[1];
     private Timer generateMonsterTimer = new Timer();
     private Timer checkUpdatedMonsterTimer = new Timer();
+    private Timer moveMonsterTimer = new Timer();
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
     private ObjectMapper myObjectMapper;
@@ -36,7 +37,8 @@ public class PlayerHandler extends Thread{
     public void run() {
         new Thread(()-> sendMessage()).start();
         new Thread(()-> generateMonsters()).start();
-        new Thread(()-> checkUpdatedMonster()).start();
+        new Thread(()-> checkUpdatedMonsters()).start();
+        new Thread(()-> moveMonsters()).start();
         receiveMessage();
     }
 
@@ -104,10 +106,16 @@ public class PlayerHandler extends Thread{
         generateMonsterTimer.schedule(new MonsterGenerator(this.currentCoord, this.canGenerateMonster), 0, 1000);
     }
 
-    public void checkUpdatedMonster(){
+    public void checkUpdatedMonsters(){
         while(!canGenerateMonster[0]){
         }
         checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,5000);
+    }
+
+    public void moveMonsters(){
+        while(!canGenerateMonster[0]){
+        }
+        moveMonsterTimer.schedule(new MonsterMover(this.currentCoord, this.canGenerateMonster), 0, 3000);
     }
 
     public void stopTimer(){
