@@ -1,13 +1,12 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.building.Building;
-import edu.duke.ece.fantasy.building.InvalidBuildingRequest;
-import edu.duke.ece.fantasy.building.Shop;
+import edu.duke.ece.fantasy.building.*;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
 import edu.duke.ece.fantasy.json.BuildingResultMessage;
 import org.hibernate.Session;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +23,10 @@ public class BuildingHandler {
         DBBuildingDAO = new DBBuildingDAO(session);
         territoryDAO = new TerritoryDAO(session);
         this.session = session;
-        Shop shop = new Shop();
+        Shop shop = new BaseShop();
+        Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
+        BaseBuildingMap.put(mine.getName(), mine);
     }
 
     public BuildingResultMessage handle(BuildingRequestMessage buildingRequestMessage, int playerId) {
@@ -43,7 +44,7 @@ public class BuildingHandler {
                     throw new InvalidBuildingRequest("Selected territory doesn't exist");
                 }
                 if (t.getTame() <= 10) {
-                    buildingResultMessage.addBuilding(new Shop());
+                    buildingResultMessage.setBuildingList(new ArrayList<>(BaseBuildingMap.values()));
                     buildingResultMessage.setResult("success");
                 } else {
                     throw new InvalidBuildingRequest("Selected territory's tame is too high");
@@ -91,7 +92,6 @@ public class BuildingHandler {
         building.onCreate(session, coord);
         return building;
     }
-
 
 
 }

@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class PlayerHandler extends Thread{
+public class PlayerHandler extends Thread {
     volatile WorldCoord[] currentCoord = new WorldCoord[1];
-    volatile boolean[] canGenerateMonster  = new boolean[1];
+    volatile boolean[] canGenerateMonster = new boolean[1];
 
     private Timer generateMonsterTimer = new Timer();
     private Timer checkUpdatedMonsterTimer = new Timer();
@@ -26,7 +26,7 @@ public class PlayerHandler extends Thread{
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
     Logger log = LoggerFactory.getLogger(Player.class);
 
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm) {
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
@@ -36,19 +36,19 @@ public class PlayerHandler extends Thread{
     }
 
     public void run() {
-        new Thread(()-> sendMessage()).start();
-        new Thread(()-> generateMonsters()).start();
-        new Thread(()-> checkUpdatedMonster()).start();
+        new Thread(() -> sendMessage()).start();
+        new Thread(() -> generateMonsters()).start();
+        new Thread(() -> checkUpdatedMonster()).start();
 //        new Thread(()-> generateResource(currentCoord)).start();
-        new Thread(()-> generateResource()).start();
+        new Thread(() -> generateResource()).start();
         receiveMessage();
     }
 
-    public void receiveMessage(){
-        while(!TCPcommunicator.isClosed()){
-            try{
+    public void receiveMessage() {
+        while (!TCPcommunicator.isClosed()) {
+            try {
                 MessagesC2S request = TCPcommunicator.receive();
-                if(TCPcommunicator.isClosed()) break;
+                if (TCPcommunicator.isClosed()) break;
                 String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
@@ -65,10 +65,9 @@ public class PlayerHandler extends Thread{
 //                Instant end = Instant.now();
 //                Duration timeElapsed  = Duration.between(start,end);
 //                log.info("time used in handling message is {} Nanoseconds",timeElapsed.getNano());
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
-                if(TCPcommunicator.isClosed()) {
+                if (TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");
                 }
             }
@@ -78,8 +77,8 @@ public class PlayerHandler extends Thread{
         System.out.println("[DEBUG] Client socket might closed, stop receiving, close corresponding thread in server");
     }
 
-    public void sendMessage(){
-        while(!TCPcommunicator.isClosed()){
+    public void sendMessage() {
+        while (!TCPcommunicator.isClosed()) {
             try {
                 if (!messageS2CQueue.isEmpty()) {
                     MessagesS2C msg = messageS2CQueue.poll();
@@ -89,10 +88,9 @@ public class PlayerHandler extends Thread{
                     result_str = myObjectMapper.writeValueAsString(msg);
                     System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
                 }
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
-                if(TCPcommunicator.isClosed()) {
+                if (TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");
                 }
             }
@@ -102,26 +100,26 @@ public class PlayerHandler extends Thread{
         System.out.println("[DEBUG] Client socket might closed, stop sending, close corresponding thread in server");
     }
 
-    public void generateMonsters(){
-        while(!canGenerateMonster[0]){
+    public void generateMonsters() {
+        while (!canGenerateMonster[0]) {
         }
         generateMonsterTimer.schedule(new MonsterGenerator(this.currentCoord, this.canGenerateMonster), 0, 1000);
     }
 
-    public void checkUpdatedMonster(){
-        while(!canGenerateMonster[0]){
+    public void checkUpdatedMonster() {
+        while (!canGenerateMonster[0]) {
         }
-        checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,5000);
+        checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue), 0, 5000);
     }
 
-    public void generateResource(){
-        while(currentCoord[0].getWid()==-1){
+    public void generateResource() {
+        while (currentCoord[0] == null) {
         }
-        System.out.println("get player's wid"+currentCoord[0].getWid());
-        generateResourceTimer.schedule(new ResourceGenerator(currentCoord[0]),0,1000);
+        System.out.println("get player's wid" + currentCoord[0].getWid());
+        generateResourceTimer.schedule(new ResourceGenerator(currentCoord[0]), 0, 1000);
     }
 
-    public void stopTimer(){
+    public void stopTimer() {
         generateMonsterTimer.cancel();
         generateMonsterTimer.purge();
         checkUpdatedMonsterTimer.cancel();

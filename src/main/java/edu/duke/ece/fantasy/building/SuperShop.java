@@ -1,25 +1,20 @@
 package edu.duke.ece.fantasy.building;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.Item.Potion;
+import edu.duke.ece.fantasy.Item.SuperPotion;
 import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public abstract class Shop extends Building implements Trader {
-    List<shopInventory> possible_inventory = new ArrayList<>();
+public class SuperShop extends Shop {
 
-    @JsonIgnore
-    List<shopInventory> current_inventory = new ArrayList<>();
-
-
-    public Shop(String name,int cost) {
-        super(name, cost);
+    public SuperShop() {
+        super("super_shop", 200);
+        shopInventory potion_Inventory = new shopInventory(new SuperPotion().toDBItem(), 20);
+        possible_inventory.add(potion_Inventory);
     }
 
     public List<shopInventory> getCurrent_inventory() {

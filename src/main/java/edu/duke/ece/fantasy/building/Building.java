@@ -5,6 +5,8 @@ import edu.duke.ece.fantasy.database.DBBuildingDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +14,8 @@ public class Building {
     WorldCoord coord;
     String name;
     int cost;
-    List<Prerequisite> prerequisites;
-    Map<String, Building> UpgradeTo;
+    List<Prerequisite> prerequisites = new ArrayList<>();
+    Map<String, Building> UpgradeTo = new HashMap<>();
     DBBuilding dbBuilding;
 
 

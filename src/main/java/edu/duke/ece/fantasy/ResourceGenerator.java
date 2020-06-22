@@ -20,11 +20,15 @@ public class ResourceGenerator extends TimerTask {
 
     @Override
     public void run() {
+        session.beginTransaction();
         PlayerDAO playerDAO = new PlayerDAO(session);
         Player player = playerDAO.getPlayerByWid(coord.getWid());
+//        System.out.println("Generating resource, speed:" + player.getMoneyGenerationSpeed());
         if (player.getMoney() + player.getMoneyGenerationSpeed() < 9999999) {
             player.setMoney(player.getMoney() + player.getMoneyGenerationSpeed());
         }
+        session.getTransaction().commit();
+        session.evict(player);
     }
 
 }

@@ -36,7 +36,7 @@ public class Player implements Trader {
     private int money;
 
     @Column(name = "MoneyGenerationSpeed")
-    private int MoneyGenerationSpeed = 1;
+    private int MoneyGenerationSpeed = 0;
 
     @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
     private int wid;
