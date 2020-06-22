@@ -57,12 +57,11 @@ public class MonsterMover extends TimerTask {
     private void moveMonster(Monster m){
         if(m == null || m.getCoord().equals(currentCoords[0])) return;
         System.out.println("moving monsterID " + m.getId());
-        WorldCoord startCoord = m.getCoord();
-        WorldCoord endCoord = currentCoords[0];
-        int startX = startCoord.getX();
-        int startY = startCoord.getY();
-        int endX = endCoord.getX();
-        int endY = endCoord.getY();
+        WorldCoord startCoord = new WorldCoord(m.getCoord());
+        int startX = m.getCoord().getX();
+        int startY = m.getCoord().getY();
+        int endX = currentCoords[0].getX();
+        int endY = currentCoords[0].getY();
 
         Random rand = new Random();
         int randomNum = rand.nextInt(9) + 0;
@@ -82,7 +81,7 @@ public class MonsterMover extends TimerTask {
         }
 
         if(moved) {
-            monsterDAO.updateMonsterCoord(m, startX, startY);
+            monsterDAO.updateMonsterCoord(m.getId(), startX, startY);
             monsterDAO.setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() +" from "+startCoord + "to "+startX+", "+startY);
         }

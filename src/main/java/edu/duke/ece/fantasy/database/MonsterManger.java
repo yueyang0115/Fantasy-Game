@@ -13,13 +13,13 @@ public class MonsterManger {
         this.session = session;
     }
 
-    public void addMonster(Monster m, WorldCoord where){
+    public synchronized void addMonster(Monster m, WorldCoord where){
         m.setCoord(where);
         session.save(m);
     }
 
     //get a monster from database based on the provided monsterID
-    public Monster getMonster(int monsterID) {
+    public synchronized Monster getMonster(int monsterID) {
         Query q = session.createQuery("From Monster M where M.id =:id");
         q.setParameter("id", monsterID);
         Monster res = (Monster) q.uniqueResult();
@@ -27,7 +27,7 @@ public class MonsterManger {
     }
 
     //get all monsters in the provided coord from database
-    public List<Monster> getMonsters(WorldCoord where){
+    public synchronized List<Monster> getMonsters(WorldCoord where){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.coord =:coord");
         q.setParameter("coord", where);
@@ -38,7 +38,7 @@ public class MonsterManger {
     }
 
     //update a monster's hp
-    public boolean setMonsterHp(int monsterID, int hp){
+    public synchronized boolean setMonsterHp(int monsterID, int hp){
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return false;
@@ -49,7 +49,7 @@ public class MonsterManger {
     }
 
     //delete a monster from database
-    public void deleteMonster(int monsterID){
+    public synchronized void deleteMonster(int monsterID){
         Monster monster;
         if ((monster = (Monster) session.get(Monster.class, monsterID)) != null) {
             session.delete(monster);
@@ -57,7 +57,7 @@ public class MonsterManger {
         }
     }
     
-    public void setMonsterStatus(int monsterID, boolean status){
+    public synchronized void setMonsterStatus(int monsterID, boolean status){
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return;
@@ -66,11 +66,11 @@ public class MonsterManger {
         session.update(m);
     }
 
-    public void setMonstersStatus(List<Monster> monsterList, boolean status){
+    public synchronized void setMonstersStatus(List<Monster> monsterList, boolean status){
         for(Monster m : monsterList) setMonsterStatus(m.getId(), false);
     }
 
-    public List<Monster> getUpdatedMonsters(){
+    public synchronized List<Monster> getUpdatedMonsters(){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.needUpdate =:needUpdate");
         q.setParameter("needUpdate", true);
@@ -80,7 +80,7 @@ public class MonsterManger {
         return monsterList;
     }
 
-    public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
+    public synchronized Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid and M.coord.x between :xlower and :xupper and M.coord.y between :ylower and :yupper");
         q.setParameter("wid", where.getWid());
@@ -92,7 +92,7 @@ public class MonsterManger {
         return cnt;
     }
 
-    public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
+    public synchronized List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x between :xlower and :xupper and M.coord.y between :ylower and :yupper");
         q.setParameter("wid", where.getWid());
@@ -106,7 +106,8 @@ public class MonsterManger {
         return monsterList;
     }
 
-    public void updateMonsterCoord(Monster m, int x, int y){
+    public synchronized void updateMonsterCoord(int monsterID, int x, int y){
+        Monster m = getMonster(monsterID);
         if(m != null){
             m.getCoord().setX(x);
             m.getCoord().setY(y);

@@ -109,13 +109,13 @@ public class PlayerHandler extends Thread{
     public void checkUpdatedMonsters(){
         while(!canGenerateMonster[0]){
         }
-        checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,5000);
+        checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,3000);
     }
 
     public void moveMonsters(){
         while(!canGenerateMonster[0]){
         }
-        moveMonsterTimer.schedule(new MonsterMover(this.currentCoord, this.canGenerateMonster), 0, 3000);
+        moveMonsterTimer.schedule(new MonsterMover(this.currentCoord, this.canGenerateMonster), 0, 7000);
     }
 
     public void stopTimer(){

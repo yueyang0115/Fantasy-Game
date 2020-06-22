@@ -30,16 +30,20 @@ public class MonsterDetector extends TimerTask {
     @Override
     public void run() {
         if(!canGenerateMonster[0]) return;
+        session.beginTransaction();
         List<Monster> monsterList = monsterDAO.getUpdatedMonsters();
         if(monsterList != null && monsterList.size() != 0){
-            session.beginTransaction();
             monsterDAO.setMonstersStatus(monsterList, false);
+            for(Monster m : monsterList){
+                System.out.println("getting changed m ID is" + m.getId() +",coord is "+m.getCoord());
+            }
+            session.getTransaction().commit();
+
             MessagesS2C result = new MessagesS2C();
             PositionResultMessage positionMsg= new PositionResultMessage();
             positionMsg.setMonsterArray(monsterList);
             result.setPositionResultMessage(positionMsg);
             messageS2CQueue.offer(result);
-            session.getTransaction().commit();
         }
     }
 }
