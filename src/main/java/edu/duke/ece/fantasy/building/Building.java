@@ -27,6 +27,18 @@ public class Building {
         this.coord = coord;
     }
 
+    public List<Building> getUpgradeList() {
+        return new ArrayList<>(UpgradeTo.values());
+    }
+
+    public Map<String, Building> getUpgradeTo() {
+        return UpgradeTo;
+    }
+
+    public void setUpgradeTo(Map<String, Building> upgradeTo) {
+        UpgradeTo = upgradeTo;
+    }
+
     public String getName() {
         return name;
     }
@@ -60,6 +72,11 @@ public class Building {
     public void onCreate(Session session, WorldCoord coord) {
         this.coord = coord;
         DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
+        DBBuilding tmp = dbBuildingDAO.getBuilding(coord);
+        if (tmp != null) { // delete existing building in this coord
+            session.delete(tmp);
+        }
         dbBuilding = dbBuildingDAO.addBuilding(coord, this);
     }
+
 }
