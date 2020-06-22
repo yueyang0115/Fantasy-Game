@@ -38,7 +38,6 @@ public class BuildingHandler {
         try {
             if (action.equals("createList")) {
                 // check territory status
-
                 Territory t = territoryDAO.getTerritory(coord);
                 if (t == null) {
                     throw new InvalidBuildingRequest("Selected territory doesn't exist");
@@ -92,5 +91,7 @@ public class BuildingHandler {
         building.onCreate(session, coord);
         return building;
     }
+
+
 
 }

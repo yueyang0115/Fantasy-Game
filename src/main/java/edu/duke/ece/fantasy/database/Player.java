@@ -35,6 +35,9 @@ public class Player implements Trader {
     @Column(name = "money")
     private int money;
 
+    @Column(name = "MoneyGenerationSpeed")
+    private int MoneyGenerationSpeed = 1;
+
     @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
     private int wid;
 
@@ -51,6 +54,14 @@ public class Player implements Trader {
     }
 
     public Player() {
+    }
+
+    public int getMoneyGenerationSpeed() {
+        return MoneyGenerationSpeed;
+    }
+
+    public void setMoneyGenerationSpeed(int moneyGenerationSpeed) {
+        MoneyGenerationSpeed = moneyGenerationSpeed;
     }
 
     public int getId() {

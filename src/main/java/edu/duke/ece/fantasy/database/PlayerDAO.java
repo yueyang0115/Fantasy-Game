@@ -31,6 +31,12 @@ public class PlayerDAO {
 
     }
 
+    public Player getPlayerByWid(int wid){
+        Query q = session.createQuery("From Player U where U.wid =:wid");
+        q.setParameter("wid", wid);
+        return (Player) q.uniqueResult();
+    }
+
     public Player getPlayer(int id){
         Query q = session.createQuery("From Player U where U.id =:id");
         q.setParameter("id", id);
