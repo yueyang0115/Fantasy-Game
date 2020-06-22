@@ -33,10 +33,11 @@ class BuildingHandlerTest {
 
 
     @Test
-    public void handle(){
+    public void handle() {
         session.beginTransaction();
         handle_create_list();
         handle_create();
+        handle_update();
     }
 
 
@@ -46,26 +47,34 @@ class BuildingHandlerTest {
         requestMessage.setCoord(new WorldCoord());
         Player player = playerDAO.getPlayer("test");
         BuildingResultMessage res = buildingHandler.handle(requestMessage, player.getId());
-        try{
+        try {
             System.out.println(ObjectMapperFactory.getObjectMapper().writeValueAsString(res));
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void handle_create(){
+    public void handle_create() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("create");
-        requestMessage.setBuildingName((new BaseShop()).getName());
+        String building_name = (new BaseShop()).getName();
+        requestMessage.setBuildingName(building_name);
         requestMessage.setCoord(new WorldCoord());
         Player player = playerDAO.getPlayer("test");
         BuildingResultMessage res = buildingHandler.handle(requestMessage, player.getId());
-        try{
+        assertEquals(building_name, res.getBuilding().getName());
+        // rebuild
+        res = buildingHandler.handle(requestMessage, player.getId());
+        assertNotEquals("success", res.getResult());
+        try {
             System.out.println(ObjectMapperFactory.getObjectMapper().writeValueAsString(res));
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void handle_update() {
+
+    }
 }
