@@ -40,7 +40,12 @@ public class PlayerDAO {
     public Player getPlayer(int id){
         Query q = session.createQuery("From Player U where U.id =:id");
         q.setParameter("id", id);
-        return (Player) q.uniqueResult();
+//        session.close();
+//        session.beginTransaction();
+        q.uniqueResult();
+        System.out.println("I'm in playerDAO:"+id);
+        Player p = (Player) q.uniqueResult();
+        return  p;
     }
 
     public Player getPlayer(String username) {
