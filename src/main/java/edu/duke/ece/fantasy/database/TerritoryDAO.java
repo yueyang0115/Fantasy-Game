@@ -45,8 +45,8 @@ public class TerritoryDAO {
         int x = where.getX();
         int y = where.getY();
         // get neighbor territories
-        for (int i = 0; i < x_block_num; i++) {
-            for (int j = 0; j < y_block_num; j++) {
+        for (int i = -x_block_num/2; i <= x_block_num/2; i++) {
+            for (int j = -y_block_num/2; j <= y_block_num/2; j++) {
                 int target_x = x + i;
                 int target_y = y + j;
                 Territory t = getTerritory(new WorldCoord(wid, target_x, target_y));
