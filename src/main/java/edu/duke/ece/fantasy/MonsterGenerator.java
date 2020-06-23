@@ -15,6 +15,7 @@ public class MonsterGenerator extends TimerTask {
     volatile WorldCoord[] currentCoords;
     volatile boolean[] canGenerateMonster;
     private MonsterManger monsterDAO;
+    private TerritoryDAO territoryDAO;
     private Session session;
 
     public MonsterGenerator(Session session, WorldCoord[] coord, boolean[] canGenerateMonster) {
@@ -22,6 +23,7 @@ public class MonsterGenerator extends TimerTask {
         this.currentCoords = coord;
         this.session = session;
         this.monsterDAO = new MonsterManger(session);
+        this.territoryDAO = new TerritoryDAO(session);
     }
 
     @Override
@@ -49,12 +51,15 @@ public class MonsterGenerator extends TimerTask {
     }
 
     //find a new coord to generate a new monster
-    public WorldCoord generateCoord(WorldCoord currentCoord){
+    public synchronized WorldCoord generateCoord(WorldCoord currentCoord){
         //int tame = new TerritoryDAO(session).getTerritory(newCoord).getTame();
-        WorldCoord newCoord = new WorldCoord();
-        newCoord.setWid(currentCoord.getWid());
-        newCoord.setY(currentCoord.getY()+2);
-        newCoord.setX(currentCoord.getX()+2);
-        return newCoord;
+//        WorldCoord newCoord = new WorldCoord();
+//        newCoord.setWid(currentCoord.getWid());
+//        newCoord.setY(currentCoord.getY()+2);
+//        newCoord.setX(currentCoord.getX()+2);
+//        return newCoord;
+        WorldCoord newCorod = territoryDAO.getWildestCoordInRange(currentCoord,10,10);
+        System.out.println("generate newCoord is "+newCorod);
+        return newCorod;
     }
 }

@@ -55,7 +55,6 @@ public class MessageHandler {
             }
 
             if (positionMsg != null) {
-                canGenerateMonster[0] = true;
                 session.beginTransaction();
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(session);
                 //PositionResultMessage positionResultMessage = new PositionResultMessage();
@@ -66,6 +65,7 @@ public class MessageHandler {
                 if(currentCoord[0] != null) currentCoord[0].setWid(wid);
                 result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
                 session.getTransaction().commit();
+                canGenerateMonster[0] = true;
             }
 
             if (battleMsg != null) {
