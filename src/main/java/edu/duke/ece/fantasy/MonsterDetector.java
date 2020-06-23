@@ -8,6 +8,8 @@ import edu.duke.ece.fantasy.database.MonsterManger;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +22,8 @@ public class MonsterDetector extends TimerTask {
     private boolean[] canGenerateMonster;
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
 
-    public MonsterDetector(boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> messageS2CQueue){
-        this.session = HibernateUtil.getSessionFactory().openSession();
+    public MonsterDetector(Session session, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> messageS2CQueue){
+        this.session = session;
         this.monsterDAO = new MonsterManger(session);
         this.canGenerateMonster = canGenerateMonster;
         this.messageS2CQueue = messageS2CQueue;
@@ -29,15 +31,17 @@ public class MonsterDetector extends TimerTask {
 
     @Override
     public void run() {
-        if(!canGenerateMonster[0]) return;
-        session.beginTransaction();
+        if(!session.getTransaction().isActive()) session.beginTransaction();
+        Transaction tx = session.getTransaction();
+
+        if(!canGenerateMonster[0]){
+            if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
+            return;
+        }
+
         List<Monster> monsterList = monsterDAO.getUpdatedMonsters();
         if(monsterList != null && monsterList.size() != 0){
             monsterDAO.setMonstersStatus(monsterList, false);
-            for(Monster m : monsterList){
-                System.out.println("getting changed m ID is" + m.getId() +",coord is "+m.getCoord());
-            }
-
             MessagesS2C result = new MessagesS2C();
             PositionResultMessage positionMsg= new PositionResultMessage();
             positionMsg.setMonsterArray(monsterList);
@@ -45,9 +49,9 @@ public class MonsterDetector extends TimerTask {
             messageS2CQueue.offer(result);
         }
 
-        for(Monster monster: monsterList){
-            session.evict(monster);
-        }
-        session.getTransaction().commit();
+//        for(Monster monster: monsterList){
+//            session.evict(monster);
+//        }
+        if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
     }
 }

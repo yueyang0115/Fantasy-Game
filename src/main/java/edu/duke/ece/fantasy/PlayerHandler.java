@@ -1,10 +1,12 @@
 package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ public class PlayerHandler extends Thread{
     private MessageHandler messageHandler;
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
     Logger log = LoggerFactory.getLogger(Player.class);
+    private Session monsterSession = HibernateUtil.getSessionFactory().openSession();
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
@@ -103,19 +106,19 @@ public class PlayerHandler extends Thread{
     public void generateMonsters(){
         while(!canGenerateMonster[0]){
         }
-        generateMonsterTimer.schedule(new MonsterGenerator(this.currentCoord, this.canGenerateMonster), 0, 1000);
+        generateMonsterTimer.schedule(new MonsterGenerator(monsterSession, this.currentCoord, this.canGenerateMonster), 0, 1000);
     }
 
     public void checkUpdatedMonsters(){
         while(!canGenerateMonster[0]){
         }
-        checkUpdatedMonsterTimer.schedule(new MonsterDetector(this.canGenerateMonster, this.messageS2CQueue),0,3000);
+        checkUpdatedMonsterTimer.schedule(new MonsterDetector(monsterSession, this.canGenerateMonster, this.messageS2CQueue),0,3000);
     }
 
     public void moveMonsters(){
         while(!canGenerateMonster[0]){
         }
-        moveMonsterTimer.schedule(new MonsterMover(this.currentCoord, this.canGenerateMonster), 0, 7000);
+        moveMonsterTimer.schedule(new MonsterMover(monsterSession, this.currentCoord, this.canGenerateMonster), 0, 7000);
     }
 
     public void stopTimer(){

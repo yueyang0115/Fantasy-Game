@@ -2,6 +2,8 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.util.TimerTask;
 
@@ -15,18 +17,23 @@ public class MonsterGenerator extends TimerTask {
     private MonsterManger monsterDAO;
     private Session session;
 
-    public MonsterGenerator(WorldCoord[] coord, boolean[] canGenerateMonster) {
+    public MonsterGenerator(Session session, WorldCoord[] coord, boolean[] canGenerateMonster) {
         this.canGenerateMonster = canGenerateMonster;
         this.currentCoords = coord;
-        this.session = HibernateUtil.getSessionFactory().openSession();
+        this.session = session;
         this.monsterDAO = new MonsterManger(session);
     }
 
     @Override
     public void run() {
+        if(!session.getTransaction().isActive()) session.beginTransaction();
+        Transaction tx = session.getTransaction();
+
         //System.out.println("coord is "+ currentCoords[0]+", can is "+canGenerateMonster[0]);
-        if(!canGenerateMonster[0] || this.currentCoords[0] ==null || this.currentCoords[0].getWid() == -1) return;
-        session.beginTransaction();
+        if(!canGenerateMonster[0] || this.currentCoords[0] ==null || this.currentCoords[0].getWid() == -1){
+            if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
+            return;
+        }
 
         //if number of monsters in a range in in limited number, generate a new monster
         Long monsterNum = monsterDAO.countMonstersInRange(currentCoords[0], X_RANGE, Y_RANGE);
@@ -38,7 +45,7 @@ public class MonsterGenerator extends TimerTask {
             System.out.println("generate a new monster in " + where.toString());
         }
 
-        session.getTransaction().commit();
+        if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
     }
 
     //find a new coord to generate a new monster
