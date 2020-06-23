@@ -98,10 +98,8 @@ public class TerritoryDAO {
         // select territory according to conditions
         //       int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
         //int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-        Query q = session.createQuery("From Territory M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
-        q.setParameter("wid", where.getWid());
-        q.setParameter("x", where.getX());
-        q.setParameter("y", where.getY());
+        Query q = session.createQuery("From Territory M where M.coord=:coord");
+        q.setParameter("coord",where);
 //        q.setParameter("x", x);
 //        q.setParameter("y", y);
         Territory res = (Territory) q.uniqueResult();
