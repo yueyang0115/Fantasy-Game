@@ -10,7 +10,7 @@ import java.util.TimerTask;
 public class MonsterGenerator extends TimerTask {
     public static int X_RANGE = 20;
     public static int Y_RANGE = 20;
-    public static int MONSTER_LIMIT = 1;
+    public static int MONSTER_LIMIT = 3;
     public static int TAME_LIMIT = 0;
     volatile WorldCoord[] currentCoords;
     volatile boolean[] canGenerateMonster;
@@ -58,7 +58,7 @@ public class MonsterGenerator extends TimerTask {
 //        newCoord.setY(currentCoord.getY()+2);
 //        newCoord.setX(currentCoord.getX()+2);
 //        return newCoord;
-        WorldCoord newCorod = territoryDAO.getWildestCoordInRange(currentCoord,10,10);
+        WorldCoord newCorod = territoryDAO.getWildestCoordInRange(currentCoord,20,20);
         System.out.println("generate newCoord is "+newCorod);
         return newCorod;
     }

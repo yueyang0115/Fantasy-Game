@@ -83,7 +83,7 @@ public class MonsterManger {
 //        for(Object o : q.list()) {
 //            monsterList.add((Monster) o);
 //        }
-        for(Iterator<Object> iterator = q.list().iterator(); iterator.hasNext();){
+        for(Iterator iterator = q.list().iterator(); iterator.hasNext();){
             Object o = iterator.next();
             monsterList.add((Monster) o);
         }
@@ -92,7 +92,7 @@ public class MonsterManger {
 
     public synchronized Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid and M.coord.x between :xlower and :xupper and M.coord.y between :ylower and :yupper");
+        Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid and M.coord.x >:xlower and M.coord.x <:xupper and M.coord.y >:ylower and M.coord.y < :yupper");
         q.setParameter("wid", where.getWid());
         q.setParameter("xlower", where.getX() - x_range/2);
         q.setParameter("xupper", where.getX() + x_range/2);
@@ -104,7 +104,7 @@ public class MonsterManger {
 
     public synchronized List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x between :xlower and :xupper and M.coord.y between :ylower and :yupper");
+        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x >:xlower and M.coord.x <:xupper and M.coord.y >:ylower and M.coord.y < :yupper");
         q.setParameter("wid", where.getWid());
         q.setParameter("xlower", where.getX() - x_range/2);
         q.setParameter("xupper", where.getX() + x_range/2);
@@ -113,7 +113,7 @@ public class MonsterManger {
 //        for(Object o : q.list()) {
 //            monsterList.add((Monster) o);
 //        }
-        for(Iterator<Object> iterator = q.list().iterator(); iterator.hasNext();){
+        for(Iterator iterator = q.list().iterator(); iterator.hasNext();){
             Object o = iterator.next();
             monsterList.add((Monster) o);
         }
