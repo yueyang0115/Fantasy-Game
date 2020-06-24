@@ -104,8 +104,12 @@ public class MonsterManger {
 
     public synchronized List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.coord.wid =:wid and M.coord.x >:xlower and M.coord.x <:xupper and M.coord.y >:ylower and M.coord.y < :yupper");
+        Query q = session.createQuery("From Monster M where M.coord.wid =:wid "
+                +" and M.coord.x >:xlower and M.coord.x <:xupper"
+                +" and M.coord.y >:ylower and M.coord.y < :yupper"
+                +" and M.coord != :coord ");
         q.setParameter("wid", where.getWid());
+        q.setParameter("coord", where);
         q.setParameter("xlower", where.getX() - x_range/2);
         q.setParameter("xupper", where.getX() + x_range/2);
         q.setParameter("ylower", where.getY() - y_range/2);

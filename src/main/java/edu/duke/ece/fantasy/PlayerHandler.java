@@ -2,50 +2,50 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Timer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerHandler extends Thread{
     volatile WorldCoord[] currentCoord = new WorldCoord[1];
     volatile boolean[] canGenerateMonster  = new boolean[1];
-    private Timer generateMonsterTimer = new Timer();
-    private Timer checkUpdatedMonsterTimer = new Timer();
-    private Timer moveMonsterTimer = new Timer();
+
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
     private ObjectMapper myObjectMapper;
     private MessageHandler messageHandler;
-    private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
-    Logger log = LoggerFactory.getLogger(Player.class);
-    private Session monsterSession = HibernateUtil.getSessionFactory().openSession();
+    private LinkedBlockingQueue<MessagesS2C> resultMsgQueue;
+    private LinkedBlockingQueue<MessagesC2S> requestMsgQueue;
+    private Session monsterSession ;
+    private TaskScheduler taskScheduler;
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
         this.messageHandler = new MessageHandler(currentCoord, canGenerateMonster);
-        this.messageS2CQueue = new LinkedBlockingQueue<>();
+        this.resultMsgQueue = new LinkedBlockingQueue<>();
+        this.requestMsgQueue = new LinkedBlockingQueue<>();
         canGenerateMonster[0] = false;
+        this.taskScheduler = new TaskScheduler();
+        this.monsterSession = HibernateUtil.getSessionFactory().openSession();
     }
 
     public void run() {
-        new Thread(()-> sendMessage()).start();
-        new Thread(()-> generateMonsters()).start();
-        new Thread(()-> checkUpdatedMonsters()).start();
-        new Thread(()-> moveMonsters()).start();
-        receiveMessage();
+        MonsterGenerator monsterGenerator = new MonsterGenerator(100, 300, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
+        MonsterMover monsterMover = new MonsterMover(200, 700, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
+        taskScheduler.addTask(monsterGenerator);
+        taskScheduler.addTask(monsterMover);
+        new Thread(()-> receiveMessage()).start();
+        new Thread(()-> handleAll() ).start();
+        sendMessage();
     }
 
-    public void receiveMessage(){
+    private void receiveMessage(){
         while(!TCPcommunicator.isClosed()){
             try{
                 MessagesC2S request = TCPcommunicator.receive();
@@ -53,20 +53,9 @@ public class PlayerHandler extends Thread{
                 String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
-//                Instant start = Instant.now();
-
-                MessagesS2C result = messageHandler.handle(request);
-                messageS2CQueue.offer(result);
-
-//                TCPcommunicator.send(result);
-//                if(TCPcommunicator.isClosed()) break;
-//                String result_str = "";
-//                result_str = myObjectMapper.writeValueAsString(result);
-//                System.out.println("[DEBUG] TCPcommunicator successfully send " +result_str);
-//                Instant end = Instant.now();
-//                Duration timeElapsed  = Duration.between(start,end);
-//                log.info("time used in handling message is {} Nanoseconds",timeElapsed.getNano());
+                requestMsgQueue.offer(request);
             }
+
             catch(IOException e){
                 e.printStackTrace();
                 if(TCPcommunicator.isClosed()) {
@@ -75,23 +64,20 @@ public class PlayerHandler extends Thread{
             }
         }
         TCPcommunicator.close();
-        stopTimer();
         System.out.println("[DEBUG] Client socket might closed, stop receiving, close corresponding thread in server");
     }
 
-    public void sendMessage(){
+    private void sendMessage(){
         while(!TCPcommunicator.isClosed()){
             try {
-                if (!messageS2CQueue.isEmpty()) {
-                    MessagesS2C msg = messageS2CQueue.poll();
-                    TCPcommunicator.send(msg);
-                    if (TCPcommunicator.isClosed()) break;
-                    String result_str = "";
-                    result_str = myObjectMapper.writeValueAsString(msg);
-                    System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
-                }
+                MessagesS2C msg = resultMsgQueue.take();
+                TCPcommunicator.send(msg);
+                if (TCPcommunicator.isClosed()) break;
+                String result_str = "";
+                result_str = myObjectMapper.writeValueAsString(msg);
+                System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
             }
-            catch(IOException e){
+            catch(IOException | InterruptedException e){
                 e.printStackTrace();
                 if(TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");
@@ -99,34 +85,25 @@ public class PlayerHandler extends Thread{
             }
         }
         TCPcommunicator.close();
-        stopTimer();
         System.out.println("[DEBUG] Client socket might closed, stop sending, close corresponding thread in server");
     }
 
-    public void generateMonsters(){
-        while(!canGenerateMonster[0]){
+    private void handleAll(){
+        while(!TCPcommunicator.isClosed()) {
+            long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
+            while(TimeUntilNextTask >= 0){
+                taskScheduler.runReadyTasks();
+                TimeUntilNextTask = taskScheduler.getTimeToNextTask();
+            }
+            MessagesC2S request = requestMsgQueue.poll();
+            if (request != null) {
+                MessagesS2C result = messageHandler.handle(request);
+                resultMsgQueue.offer(result);
+            }
         }
-        generateMonsterTimer.schedule(new MonsterGenerator(monsterSession, this.currentCoord, this.canGenerateMonster), 0, 1000);
     }
 
-    public void checkUpdatedMonsters(){
-        while(!canGenerateMonster[0]){
-        }
-        checkUpdatedMonsterTimer.schedule(new MonsterDetector(monsterSession, this.canGenerateMonster, this.messageS2CQueue),0,3000);
-    }
 
-    public void moveMonsters(){
-        while(!canGenerateMonster[0]){
-        }
-        moveMonsterTimer.schedule(new MonsterMover(monsterSession, this.currentCoord, this.canGenerateMonster), 0, 7000);
-    }
 
-    public void stopTimer(){
-        generateMonsterTimer.cancel();
-        generateMonsterTimer.purge();
-        checkUpdatedMonsterTimer.cancel();
-        checkUpdatedMonsterTimer.purge();
-        moveMonsterTimer.cancel();
-        moveMonsterTimer.purge();
-    }
+
 }

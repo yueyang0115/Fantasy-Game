@@ -4,70 +4,57 @@ import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.MonsterManger;
 import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.json.MessagesS2C;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class MonsterMover extends TimerTask {
-    volatile WorldCoord[] currentCoords;
-    volatile boolean[] canGenerateMonster;
+public class MonsterMover extends Task {
+
     private MonsterManger monsterDAO;
-    private Session session;
-    public static int X_RANGE = 20;
-    public static int Y_RANGE = 20;
 
-    public MonsterMover(Session session, WorldCoord[] coord, boolean[] canGenerateMonster){
-        this.canGenerateMonster = canGenerateMonster;
-        this.currentCoords = coord;
-        this.session = session;
+    public MonsterMover(int when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+        super(when, repeatedInterval, repeating, session, coord, canGenerateMonster, resultMsgQueue);
         this.monsterDAO = new MonsterManger(session);
     }
 
+
     @Override
-    public void run() {
-        if(!canGenerateMonster[0] || this.currentCoords[0] ==null || this.currentCoords[0].getWid() == -1) return;
-        if(!session.getTransaction().isActive()) session.beginTransaction();
-        Transaction tx = session.getTransaction();
+    public void doTask() {
+        if(!canGenerateMonster[0] || this.coord[0] ==null || this.coord[0].getWid() == -1) return;
+        session.beginTransaction();
 
         //get monsters within an area whenever getting into a new coord
-        List<Monster> monsterList = monsterDAO.getMonstersInRange(currentCoords[0],X_RANGE,Y_RANGE);
-        if(monsterList == null || monsterList.size() == 0){
-            if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
-            return;
-        }
+        List<Monster> monsterList = monsterDAO.getMonstersInRange(coord[0],X_RANGE,Y_RANGE);
+//        if(monsterList == null || monsterList.size() == 0){
+//            if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
+//            return;
+//        }
 
-        Collections.sort(monsterList, new Comparator<Monster>(){
-            @Override
-            public int compare(Monster o1, Monster o2) {
-                return o1.getId() - o2.getId();
-            }
-        });
-
-        // choose a new moving monster whenever old one is beaten, arrived in currentCoord and get into new coord
-        Monster movingMonster = null;
-        for(Monster m:monsterList){
-            if(!m.getCoord().equals(currentCoords[0])){
-                movingMonster = m;
-                break;
-            }
-        }
-
-        if(movingMonster != null){
+        if(monsterList != null && monsterList.size() != 0){
+            Collections.sort(monsterList, new Comparator<Monster>(){
+                @Override
+                public int compare(Monster o1, Monster o2) {
+                    return o1.getId() - o2.getId();
+                }
+            });
+            Monster movingMonster = monsterList.get(0);
             moveMonster(movingMonster);
         }
 
-        if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
+        session.getTransaction().commit();
     }
 
-    private synchronized void moveMonster(Monster m){
-        if(m == null || m.getCoord().equals(currentCoords[0])) return;
+    private void moveMonster(Monster m){
+        if(m == null || m.getCoord().equals(coord[0])) return;
         WorldCoord startCoord = new WorldCoord(m.getCoord());
         int startX = m.getCoord().getX();
         int startY = m.getCoord().getY();
-        int endX = currentCoords[0].getX();
-        int endY = currentCoords[0].getY();
+        int endX = coord[0].getX();
+        int endY = coord[0].getY();
 
         Random rand = new Random();
         int randomNum = rand.nextInt(9) + 0;
@@ -90,6 +77,7 @@ public class MonsterMover extends TimerTask {
             monsterDAO.updateMonsterCoord(m.getId(), startX, startY);
             monsterDAO.setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() +" from "+startCoord + " to "+startX+", "+startY);
+            putMonsterInResultMsgQueue(m);
         }
     }
 
