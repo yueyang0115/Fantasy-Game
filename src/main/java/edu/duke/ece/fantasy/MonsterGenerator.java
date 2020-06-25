@@ -43,7 +43,7 @@ public class MonsterGenerator extends Task {
 
     //find a new coord to generate a new monster
     private WorldCoord generateCoord(WorldCoord currentCoord){
-        WorldCoord newCorod = territoryDAO.getWildestCoordInRange(currentCoord,20,20);
+        WorldCoord newCorod = territoryDAO.getWildestCoordInRange(currentCoord,X_RANGE,Y_RANGE);
         System.out.println("generate newCoord is "+newCorod);
         return newCorod;
     }

@@ -24,8 +24,8 @@ public abstract class Task {
     protected WorldCoord[] coord;
     protected boolean[] canGenerateMonster;
 
-    public static int X_RANGE = 20;
-    public static int Y_RANGE = 20;
+    public static int X_RANGE = 10;
+    public static int Y_RANGE = 10;
 
     public Task(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         this.when = when;

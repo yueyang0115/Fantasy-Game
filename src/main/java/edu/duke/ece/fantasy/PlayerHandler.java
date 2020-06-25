@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayerHandler extends Thread{
-    volatile WorldCoord[] currentCoord = new WorldCoord[1];
-    volatile boolean[] canGenerateMonster  = new boolean[1];
+    private WorldCoord[] currentCoord = new WorldCoord[1];
+    private boolean[] canGenerateMonster  = new boolean[1];
 
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;

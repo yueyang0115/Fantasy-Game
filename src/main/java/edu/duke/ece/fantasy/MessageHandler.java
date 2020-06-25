@@ -15,8 +15,8 @@ public class MessageHandler {
     private int wid;
     private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
-    volatile WorldCoord[] currentCoord;
-    volatile boolean[] canGenerateMonster;
+    private WorldCoord[] currentCoord;
+    private boolean[] canGenerateMonster;
 
     public MessageHandler(WorldCoord[] currentCoord, boolean[] canGenerateMonster) {
         this.currentCoord = currentCoord;
