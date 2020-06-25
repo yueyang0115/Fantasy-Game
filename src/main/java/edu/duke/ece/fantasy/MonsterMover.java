@@ -16,7 +16,7 @@ public class MonsterMover extends Task {
 
     private MonsterManger monsterDAO;
 
-    public MonsterMover(int when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+    public MonsterMover(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         super(when, repeatedInterval, repeating, session, coord, canGenerateMonster, resultMsgQueue);
         this.monsterDAO = new MonsterManger(session);
     }

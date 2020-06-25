@@ -36,8 +36,8 @@ public class PlayerHandler extends Thread{
     }
 
     public void run() {
-        MonsterGenerator monsterGenerator = new MonsterGenerator(100, 300, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
-        MonsterMover monsterMover = new MonsterMover(200, 700, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
+        MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
+        MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
         taskScheduler.addTask(monsterGenerator);
         taskScheduler.addTask(monsterMover);
         new Thread(()-> receiveMessage()).start();
@@ -91,9 +91,11 @@ public class PlayerHandler extends Thread{
     private void handleAll(){
         while(!TCPcommunicator.isClosed()) {
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
-            while(TimeUntilNextTask >= 0){
+//            System.out.println("in playerHandler, TimeUntilNextTask is "+TimeUntilNextTask);
+            if(TimeUntilNextTask <= 0){
                 taskScheduler.runReadyTasks();
-                TimeUntilNextTask = taskScheduler.getTimeToNextTask();
+//                TimeUntilNextTask = taskScheduler.getTimeToNextTask();
+//                System.out.println("in playerHandler, TimeUntilNextTask is "+TimeUntilNextTask);
             }
             MessagesC2S request = requestMsgQueue.poll();
             if (request != null) {
@@ -102,8 +104,6 @@ public class PlayerHandler extends Thread{
             }
         }
     }
-
-
 
 
 }

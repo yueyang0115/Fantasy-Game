@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class Task {
-    private int when; // the time when the task should be executed
+    private long when; // the time when the task should be executed
     private int repeatedInterval;
     private boolean repeating;
     private MonsterManger monsterDAO;
@@ -27,12 +27,16 @@ public abstract class Task {
     public static int X_RANGE = 20;
     public static int Y_RANGE = 20;
 
-    public Task(int when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+    public Task(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         this.when = when;
         this.repeatedInterval = repeatedInterval;
         this.repeating = repeating;
+
         this.session = session;
         this.resultMsgQueue = resultMsgQueue;
+        this.coord = coord;
+        this.canGenerateMonster = canGenerateMonster;
+        this.monsterDAO = new MonsterManger(session);
     }
 
     abstract void doTask();
@@ -41,9 +45,9 @@ public abstract class Task {
 
     public void setRepeatedInterval(int repeatedInterval) { this.repeatedInterval = repeatedInterval; }
 
-    public int getWhen() { return when; }
+    public long getWhen() { return when; }
 
-    public void setWhen(int when) { this.when = when; }
+    public void setWhen(long when) { this.when = when; }
 
     public void updateWhen(){ this.when += repeatedInterval; }
 

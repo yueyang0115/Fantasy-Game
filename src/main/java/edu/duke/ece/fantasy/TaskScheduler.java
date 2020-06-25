@@ -10,7 +10,7 @@ public class TaskScheduler {
         tasksQueue = new PriorityQueue<>(new Comparator<Task>() {
             @Override
             public int compare(Task task1, Task task2) {
-                return Integer.compare(task1.getWhen(),task2.getWhen());
+                return Long.compare(task1.getWhen(),task2.getWhen());
             }
         });
     }
@@ -18,6 +18,8 @@ public class TaskScheduler {
     public long getTimeToNextTask(){
         if(!tasksQueue.isEmpty()){
             long now = System.currentTimeMillis();
+//            System.out.println("in getTimeToNextTask, now is "+now);
+//            System.out.println("in getTimeToNextTask, tasksQueue.peek().getWhen() is "+tasksQueue.peek().getWhen());
             return tasksQueue.peek().getWhen() - now;
         }
         return Integer.MAX_VALUE;
@@ -25,8 +27,10 @@ public class TaskScheduler {
 
     public void runReadyTasks(){
         long now = System.currentTimeMillis();
+        //System.out.println("in runReadyTasks, now is "+ now);
         while(!tasksQueue.isEmpty()){
             Task task = tasksQueue.peek();
+//            System.out.println("in runReadyTasks, tasksQueue.peek().getWhen() is "+tasksQueue.peek().getWhen());
             //This task is ready
             if(task.getWhen() <= now ){
                 task.doTask();

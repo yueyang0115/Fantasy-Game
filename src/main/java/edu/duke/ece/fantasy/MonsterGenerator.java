@@ -12,7 +12,7 @@ public class MonsterGenerator extends Task {
     private MonsterManger monsterDAO;
     private TerritoryDAO territoryDAO;
 
-    public MonsterGenerator(int when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         super(when, repeatedInterval, repeating, session, coord, canGenerateMonster, resultMsgQueue);
         monsterDAO = new MonsterManger(session);
         territoryDAO = new TerritoryDAO(session);
@@ -21,15 +21,15 @@ public class MonsterGenerator extends Task {
     @Override
     public void doTask() {
         session.beginTransaction();
-//        if(!canGenerateMonster[0] || this.coord[0] ==null || this.coord[0].getWid() == -1){
-//            session.getTransaction().commit();
-//            return;
-//        }
+        if(!canGenerateMonster[0] || this.coord[0] ==null || this.coord[0].getWid() == -1){
+            session.getTransaction().commit();
+            return;
+        }
 
-        if(canGenerateMonster[0] && this.coord[0] != null && this.coord[0].getWid() != -1 ) {
+        else{
             //if number of monsters in an area is in limited number, generate a new monster
             Long monsterNum = monsterDAO.countMonstersInRange(coord[0], X_RANGE, Y_RANGE);
-            //System.out.println("monsterNum near currentCoord" + currentCoords[0]+ " is " + monsterNum);
+            System.out.println("monsterNum near currentCoord" + coord[0]+ " is " + monsterNum);
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
                 WorldCoord where = generateCoord(coord[0]);
