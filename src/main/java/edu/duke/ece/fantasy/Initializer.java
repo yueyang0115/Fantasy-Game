@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.building.BaseShop;
 import edu.duke.ece.fantasy.building.Shop;
+import edu.duke.ece.fantasy.building.SuperShop;
 import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 
@@ -36,7 +37,7 @@ public class Initializer {
         DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
         DBBuilding building = dbBuildingDAO.getBuilding(shopCoord);
         if (building == null) {
-            Shop shop = new BaseShop();
+            Shop shop = new SuperShop();
             shop.onCreate(session, shopCoord);
         }
         session.getTransaction().commit();

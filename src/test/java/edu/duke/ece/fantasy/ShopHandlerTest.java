@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+//
 class ShopHandlerTest {
     ShopHandler shopHandler;
     PlayerDAO playerDAO;
@@ -35,16 +35,17 @@ class ShopHandlerTest {
         DBBuildingDAO = new DBBuildingDAO(session);
         playerDAO = new PlayerDAO(session);
         shopInventoryDAO = new shopInventoryDAO(session);
-        (new Initializer()).initialize_test_player(session);
-        shopCoord = (new Initializer()).initialize_test_shop(session);
     }
 
 
     @Test
     void handle() {
+        (new Initializer()).initialize_test_player(session);
+        shopCoord = (new Initializer()).initialize_test_shop(session);
         session.beginTransaction();
         handle_list();
         handle_buy();
+        session.close();
     }
 
     void handle_list() {
@@ -54,12 +55,11 @@ class ShopHandlerTest {
 
         Player player = playerDAO.getPlayer("test");
         ShopResultMessage resultMessage = shopHandler.handle(shopRequestMessage, player.getId());
-
-//        try {
-//            logger.info(objectMapper.writeValueAsString(resultMessage));
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            logger.info(objectMapper.writeValueAsString(resultMessage));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     void handle_buy() {
@@ -73,24 +73,23 @@ class ShopHandlerTest {
                 int itemPack_id = select_item.getId();
                 int item_amount = select_item.getAmount();
                 int required_money = item_obj.getCost() * item_amount;
-                ShopResultMessage resultMessage;
                 Player player = playerDAO.getPlayer("test");
+
                 // Don't have enough money
                 player.setMoney(required_money - 1);
-                resultMessage = buy_item(player, itemPack_id, item_amount);
-//                assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
+                ShopResultMessage resultMessage = buy_item(player, itemPack_id, item_amount);
+                assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
                 assertNotEquals("valid", resultMessage.getResult());
 
                 // shop don't have enough item
                 player.setMoney(required_money);
-                resultMessage = buy_item(player, itemPack_id, item_amount + 1);
-//                assertEquals(item_amount,);
+                buy_item(player, itemPack_id, item_amount + 1);
+                assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
                 assertNotEquals("valid", resultMessage.getResult());
 
                 // success
                 player.setMoney(required_money);
                 resultMessage = buy_item(player, itemPack_id, item_amount - 1);
-//                assertEquals(1, resultMessage.getItems().get(0).getAmount());
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));
@@ -100,14 +99,15 @@ class ShopHandlerTest {
 
                 // success buy again
                 player.setMoney(required_money);
-//                logger.info("player:"+player.getId()+" item:"+itemPack_id);
                 resultMessage = buy_item(player, itemPack_id, 1);
+
                 assertEquals("valid", resultMessage.getResult());
                 try {
                     logger.info(objectMapper.writeValueAsString(resultMessage));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
