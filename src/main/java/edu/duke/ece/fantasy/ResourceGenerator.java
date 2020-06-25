@@ -9,17 +9,18 @@ import org.hibernate.Session;
 
 import java.util.TimerTask;
 
-public class ResourceGenerator extends TimerTask {
+public class ResourceGenerator extends Task {
     Session session;
     WorldCoord coord;
 
-    public ResourceGenerator(WorldCoord coord) {
+    public ResourceGenerator(long when,WorldCoord coord) {
         session = HibernateUtil.getSessionFactory().openSession();
         this.coord = coord;
+        super(when,1000,true,session);
     }
 
     @Override
-    public void run() {
+    void doTask() {
         session.beginTransaction();
         PlayerDAO playerDAO = new PlayerDAO(session);
         Player player = playerDAO.getPlayerByWid(coord.getWid());
@@ -28,7 +29,7 @@ public class ResourceGenerator extends TimerTask {
             player.setMoney(player.getMoney() + player.getMoneyGenerationSpeed());
         }
         session.getTransaction().commit();
-        session.evict(player);
+//        session.evict(player);
     }
 
 }
