@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MonsterMover extends Task {
+public class MonsterMover extends MonsterTask {
 
     private MonsterManger monsterDAO;
 
