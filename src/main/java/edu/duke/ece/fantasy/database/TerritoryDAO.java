@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -105,5 +106,28 @@ public class TerritoryDAO {
         Territory res = (Territory) q.uniqueResult();
         return res;
 
+    }
+
+    public synchronized WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range){
+        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid and T.coord.x >:xlower and T.coord.x <:xupper and T.coord.y >:ylower and T.coord.y < :yupper"
+                +" and not exists (from Monster M where M.coord = T.coord)"
+                +" order by T.tame"
+        ).setMaxResults(1);
+        q.setParameter("wid", where.getWid());
+        q.setParameter("xlower", where.getX() - x_range/2);
+        q.setParameter("xupper", where.getX() + x_range/2);
+        q.setParameter("ylower", where.getY() - y_range/2);
+        q.setParameter("yupper", where.getY() + y_range/2);
+
+        Territory t = (Territory) q.uniqueResult();
+        WorldCoord res = t.getCoord();
+
+//        List<Territory> territories = q.list();
+//        Territory t = territories.get(0);
+//        System.out.println("query out wildest territory is " + t);
+//        WorldCoord res = t.getCoord();
+//        System.out.println("query out coord is " +  res);
+
+        return res;
     }
 }
