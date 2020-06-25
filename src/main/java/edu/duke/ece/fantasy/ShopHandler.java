@@ -95,6 +95,16 @@ public class ShopHandler {
             if (!seller.checkItem(inventory, amount)) {
                 throw new InvalidShopRequest("Seller don't have enough item" + "-" + item_obj.getName());
             }
+            required_money += item_obj.getCost() * amount;
+            // check if buyer have enough money
+            if (!buyer.checkMoney(required_money)) {
+                throw new InvalidShopRequest("Don't have enough money");
+            }
+        }
+
+        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
+            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
+            int amount = inventory_pair.getValue();
             // deduce the amount of item from seller
             seller.sellItem(inventory, amount);
             // sell inventory update
@@ -105,12 +115,8 @@ public class ShopHandler {
             Inventory buy_inventory = buyer.buyItem(inventory, amount);
             // buy inventory update
             session.saveOrUpdate(buy_inventory);
-            required_money += item_obj.getCost() * amount;
         }
-        // check if buyer have enough money
-        if (!buyer.checkMoney(required_money)) {
-            throw new InvalidShopRequest("Don't have enough money");
-        }
+
     }
 
 }
