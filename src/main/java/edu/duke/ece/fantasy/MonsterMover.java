@@ -1,13 +1,10 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.MonsterManger;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -38,7 +35,10 @@ public class MonsterMover extends Task {
             Collections.sort(monsterList, new Comparator<Monster>(){
                 @Override
                 public int compare(Monster o1, Monster o2) {
-                    return o1.getId() - o2.getId();
+//                    return o1.getId() - o2.getId();
+                    double distance1 = Math.pow(o1.getCoord().getX()-coord[0].getX(),2) + Math.pow(o1.getCoord().getY()-coord[0].getY(),2);
+                    double distance2 = Math.pow(o2.getCoord().getX()-coord[0].getX(),2) + Math.pow(o2.getCoord().getY()-coord[0].getY(),2);
+                    return Double.compare(distance1, distance2);
                 }
             });
             Monster movingMonster = monsterList.get(0);
