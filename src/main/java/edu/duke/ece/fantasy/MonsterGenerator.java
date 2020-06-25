@@ -29,7 +29,6 @@ public class MonsterGenerator extends Task {
         else{
             //if number of monsters in an area is in limited number, generate a new monster
             Long monsterNum = monsterDAO.countMonstersInRange(coord[0], X_RANGE, Y_RANGE);
-            System.out.println("monsterNum near currentCoord" + coord[0]+ " is " + monsterNum);
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
                 WorldCoord where = generateCoord(coord[0]);
@@ -44,7 +43,6 @@ public class MonsterGenerator extends Task {
     //find a new coord to generate a new monster
     private WorldCoord generateCoord(WorldCoord currentCoord){
         WorldCoord newCorod = territoryDAO.getWildestCoordInRange(currentCoord,X_RANGE,Y_RANGE);
-        System.out.println("generate newCoord is "+newCorod);
         return newCorod;
     }
 }
