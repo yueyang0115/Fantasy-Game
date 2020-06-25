@@ -15,6 +15,7 @@ public class TaskScheduler {
         });
     }
 
+    //how much time left before the next task to be executed
     public long getTimeToNextTask(){
         if(!tasksQueue.isEmpty()){
             long now = System.currentTimeMillis();
@@ -25,13 +26,12 @@ public class TaskScheduler {
         return Integer.MAX_VALUE;
     }
 
+    // this method will be called when the first task in queue should be executed
     public void runReadyTasks(){
         long now = System.currentTimeMillis();
-        //System.out.println("in runReadyTasks, now is "+ now);
         while(!tasksQueue.isEmpty()){
             Task task = tasksQueue.peek();
-//            System.out.println("in runReadyTasks, tasksQueue.peek().getWhen() is "+tasksQueue.peek().getWhen());
-            //This task is ready
+            //if: the task is ready
             if(task.getWhen() <= now ){
                 task.doTask();
                 tasksQueue.poll();
@@ -41,8 +41,10 @@ public class TaskScheduler {
                     tasksQueue.offer(task);
                 }
             }
-            // all tasks should be executed in the future
-            else break;
+            // else: all tasks should be executed in the future
+            else{
+                break;
+            }
         }
     }
 

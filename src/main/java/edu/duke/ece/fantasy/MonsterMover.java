@@ -26,12 +26,9 @@ public class MonsterMover extends Task {
 
         //get monsters within an area whenever getting into a new coord
         List<Monster> monsterList = monsterDAO.getMonstersInRange(coord[0],X_RANGE,Y_RANGE);
-//        if(monsterList == null || monsterList.size() == 0){
-//            if(tx.getStatus() != TransactionStatus.COMMITTED) tx.commit();
-//            return;
-//        }
-
+        //if has monsters in this area
         if(monsterList != null && monsterList.size() != 0){
+            //sort all monsters according to its distance from currentCoord
             Collections.sort(monsterList, new Comparator<Monster>(){
                 @Override
                 public int compare(Monster o1, Monster o2) {
@@ -41,6 +38,7 @@ public class MonsterMover extends Task {
                     return Double.compare(distance1, distance2);
                 }
             });
+            //choose the monster which is nearest to currentCoord and move it
             Monster movingMonster = monsterList.get(0);
             moveMonster(movingMonster);
         }
@@ -59,6 +57,7 @@ public class MonsterMover extends Task {
         Random rand = new Random();
         boolean moved = false;
 
+        // move monster's x coordinate
         if(startX != endX){
             int randomNum = rand.nextInt(9) + 0;
             if(randomNum %2 == 0){
@@ -66,6 +65,7 @@ public class MonsterMover extends Task {
                 moved = true;
             }
         }
+        // move monster's y coordinate
         if(startY != endY){
             int randomNum = rand.nextInt(9) + 0;
             if(randomNum %2 == 0){
@@ -73,11 +73,12 @@ public class MonsterMover extends Task {
                 moved = true;
             }
         }
-
+        //update moved monster data in database,
         if(moved) {
             monsterDAO.updateMonsterCoord(m.getId(), startX, startY);
             monsterDAO.setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() +" from "+startCoord + " to "+startX+", "+startY);
+            //save the changed monster message in resultMsgQueue
             putMonsterInResultMsgQueue(m);
         }
     }

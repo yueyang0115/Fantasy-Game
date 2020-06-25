@@ -90,13 +90,14 @@ public class PlayerHandler extends Thread{
 
     private void handleAll(){
         while(!TCPcommunicator.isClosed()) {
+            //handle server automatically generated tasks
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
-//            System.out.println("in playerHandler, TimeUntilNextTask is "+TimeUntilNextTask);
             if(TimeUntilNextTask <= 0){
+                // at least the first task should be executed
                 taskScheduler.runReadyTasks();
-//                TimeUntilNextTask = taskScheduler.getTimeToNextTask();
-//                System.out.println("in playerHandler, TimeUntilNextTask is "+TimeUntilNextTask);
             }
+
+            //handle server in-response-to-client tasks
             MessagesC2S request = requestMsgQueue.poll();
             if (request != null) {
                 MessagesS2C result = messageHandler.handle(request);

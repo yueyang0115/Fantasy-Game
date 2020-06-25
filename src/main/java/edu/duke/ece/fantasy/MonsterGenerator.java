@@ -27,12 +27,13 @@ public class MonsterGenerator extends Task {
         }
 
         else{
-            //if number of monsters in an area is in limited number, generate a new monster
+            //if number of monsters in an area is within limited number, generate a new monster
             Long monsterNum = monsterDAO.countMonstersInRange(coord[0], X_RANGE, Y_RANGE);
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
                 WorldCoord where = generateCoord(coord[0]);
                 monsterDAO.addMonster(m, where);
+                //save the changed monster message in resultMsgQueue
                 putMonsterInResultMsgQueue(m);
                 System.out.println("generate a new monster in " + where.toString());
             }
