@@ -3,6 +3,8 @@ package edu.duke.ece.fantasy;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.duke.ece.fantasy.building.Building;
+import edu.duke.ece.fantasy.building.Castle;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
@@ -15,6 +17,8 @@ public class PositionUpdateHandler {
     DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
     MonsterManger monsterDAO;
+    PlayerDAO playerDAO;
+    Session session;
     //    ItemDAO itemDAO;
 
 //    int x_block_num;
@@ -25,6 +29,8 @@ public class PositionUpdateHandler {
         DBBuildingDAO = new DBBuildingDAO(session);
         worldDAO = new WorldDAO(session);
         monsterDAO = new MonsterManger(session);
+        playerDAO = new PlayerDAO(session);
+        this.session = session;
         //    itemDAO = new ItemDAO(session);
     }
 
@@ -33,15 +39,18 @@ public class PositionUpdateHandler {
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         ArrayList<Territory> territoryList = new ArrayList<Territory>();
         ArrayList<Monster> monsterList = new ArrayList<Monster>();
-        ArrayList<DBBuilding> buildingList = new ArrayList<>();
+        ArrayList<Building> buildingList = new ArrayList<>();
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
+        WorldCoord currentCoord = positionMsg.getCurrentCoord();
+        currentCoord.setWid(wid);
+        if (info == null) { // generate info
+            info = worldDAO.initWorld(currentCoord, playerDAO.getPlayerByWid(wid).getUsername(), 20);//TODO: Fix hardcoding of tile size
+        }
+
         for (WorldCoord where : worldCoords) {
             where.setWid(wid);
-            if (info == null) {
-                info = worldDAO.initWorld(where, "fixmelater", 20);//TODO: real player names.  Fix hardcoding of tile size
-            }
             Territory t = territoryDAO.getTerritory(where);
             if (t == null) {
                 //later we might add other world types.  Like you can teleport to fire or ice etc worlds.
@@ -49,21 +58,20 @@ public class PositionUpdateHandler {
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
                 gen.generate(territoryDAO, monsterDAO, DBBuildingDAO, where, info);
+
+                if (currentCoord.equals(info.getStartCoords())) { // add castle to start point
+                    (new Castle()).onCreate(session, currentCoord);
+                }
                 t = territoryDAO.getTerritory(where);
             }
-//            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
-//                if (t.getStatus().equals("unexplored")) {
-//                    territoryDAO.updateTerritory(where, "explored");
-//                }
-//            }
-            territoryList.add(t);
 
+            territoryList.add(t);
 //            if (t.getTerrainType().equals("forest_dense")) {
 //                System.out.println("find forest_dense, should have a monster here");
 //            }
             List<Monster> monsters = monsterDAO.getMonsters(where);
-            if (monsters != null){
-                for(Monster m: monsters){
+            if (monsters != null) {
+                for (Monster m : monsters) {
                     monsterDAO.setMonsterStatus(m.getId(), false);
                     monsterList.add(m);
                 }
@@ -72,9 +80,13 @@ public class PositionUpdateHandler {
             DBBuilding building = DBBuildingDAO.getBuilding(where);
 
             if (building != null) {
-                buildingList.add(building);
+                buildingList.add(building.toGameBuilding());
             }
         }
+
+
+
+
 
         positionResultMessage.setTerritoryArray(territoryList);
         positionResultMessage.setBuildingArray(buildingList);

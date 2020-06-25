@@ -23,7 +23,7 @@ public class PlayerHandler extends Thread{
     private Session monsterSession ;
     private TaskScheduler taskScheduler;
 
-    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm){
+    public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm) {
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
@@ -49,7 +49,7 @@ public class PlayerHandler extends Thread{
         while(!TCPcommunicator.isClosed()){
             try{
                 MessagesC2S request = TCPcommunicator.receive();
-                if(TCPcommunicator.isClosed()) break;
+                if (TCPcommunicator.isClosed()) break;
                 String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
@@ -58,7 +58,7 @@ public class PlayerHandler extends Thread{
 
             catch(IOException e){
                 e.printStackTrace();
-                if(TCPcommunicator.isClosed()) {
+                if (TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");
                 }
             }
@@ -79,7 +79,7 @@ public class PlayerHandler extends Thread{
             }
             catch(IOException | InterruptedException e){
                 e.printStackTrace();
-                if(TCPcommunicator.isClosed()) {
+                if (TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");
                 }
             }

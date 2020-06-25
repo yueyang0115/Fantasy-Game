@@ -9,13 +9,16 @@ import javax.persistence.*;
 public class shopInventory extends Inventory {
 
 //    @JsonIgnore
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "coord_wid", referencedColumnName = "wid"),
-            @JoinColumn(name = "coord_x", referencedColumnName = "x"),
-            @JoinColumn(name = "coord_y", referencedColumnName = "y")
-    })
-    private DBBuilding Shop;
+//    @ManyToOne
+//    @JoinColumns({
+//            @JoinColumn(name = "coord_wid", referencedColumnName = "wid"),
+//            @JoinColumn(name = "coord_x", referencedColumnName = "x"),
+//            @JoinColumn(name = "coord_y", referencedColumnName = "y")
+//    })
+
+    @Embedded
+    private WorldCoord coord;
+//    private DBBuilding Shop;
 
     public shopInventory() {
     }
@@ -24,18 +27,16 @@ public class shopInventory extends Inventory {
         super(item, amount);
     }
 
-    public shopInventory(DBItem item, int amount, DBBuilding DBShop) {
+    public shopInventory(DBItem item, int amount, WorldCoord coord) {
         super(item, amount);
-        this.Shop = DBShop;
+        this.coord = coord;
     }
 
-    public DBBuilding getDBBuilding() {
-        return Shop;
+    public WorldCoord getCoord() {
+        return coord;
     }
 
-    public void setDBBuilding(DBBuilding DBShop) {
-        this.Shop = DBShop;
+    public void setCoord(WorldCoord coord) {
+        this.coord = coord;
     }
-
-
 }

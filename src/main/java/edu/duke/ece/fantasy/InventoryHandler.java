@@ -15,9 +15,11 @@ public class InventoryHandler {
     InventoryDAO inventoryDAO;
     UnitManager unitManager;
     Session session;
+    playerInventoryDAO playerInventoryDAO;
 
     public InventoryHandler(Session session) {
         playerDAO = new PlayerDAO(session);
+        playerInventoryDAO = new playerInventoryDAO(session);
         inventoryDAO = new InventoryDAO(session);
         unitManager = new UnitManager(session);
         this.session = session;
@@ -58,7 +60,8 @@ public class InventoryHandler {
             resultMessage.setResult("invalid:" + e.getMessage());
         }
 
-        for (playerInventory db_item : player.getItems()) {
+        List<playerInventory> playerInventoryList = playerInventoryDAO.getInventories(player);
+        for (playerInventory db_item : playerInventoryList) {
             // add more information of item
             Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
             resultMessage.addItem(toClientInventory);

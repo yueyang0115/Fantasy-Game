@@ -3,6 +3,9 @@ package edu.duke.ece.fantasy.database;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import javax.persistence.TypedQuery;
+import java.util.List;
+
 public class playerInventoryDAO {
     Session session;
 
@@ -17,4 +20,10 @@ public class playerInventoryDAO {
 //        Inventory res = (Inventory) q.uniqueResult();
 //        return res;
 //    }
+
+    public List<playerInventory> getInventories(Player player) {
+        TypedQuery<playerInventory> q = session.createQuery("From playerInventory I where I.player=:player order by I.id", playerInventory.class);
+        q.setParameter("player", player);
+        return q.getResultList();
+    }
 }

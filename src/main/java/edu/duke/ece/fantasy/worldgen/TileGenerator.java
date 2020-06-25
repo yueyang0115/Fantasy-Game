@@ -191,7 +191,7 @@ public class TileGenerator {
         if (!tdao.doesWorldHaveStartTile(info)) {
             //System.out.println("Putting start tile at " + info.getFirstTile());
             tdao.addTile(info.getFirstTile(), startTileName);
-            putTerrain(terdao, monsterDAO, DBBuildingDAO, info.getFirstTile(), tilesByName.get(startTileName), 0);
+            putTerrain(terdao, monsterDAO, DBBuildingDAO, info.getFirstTile(), tilesByName.get(startTileName), 100);
         }
         //align "where" to a tile start.
         //System.out

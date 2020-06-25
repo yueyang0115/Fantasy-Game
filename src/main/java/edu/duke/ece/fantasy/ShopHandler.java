@@ -35,14 +35,22 @@ public class ShopHandler {
     }
 
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
+
         String action = request.getAction();
 //        DBShop DBShop = DBShopDAO.getShop(request.getShopID());
+
         Shop shop = (Shop) dbBuildingDAO.getBuilding(request.getCoord()).toGameBuilding();
         shop.loadInventory(session, request.getCoord());
+
         Map<Integer, Integer> item_list = request.getItemMap();
         // may need to check relationship of shop and territory
+        System.out.println("I'm in buying handle:"+playerID+action);
+
         Player player = playerDAO.getPlayer(playerID);
+        System.out.println("I'm in buying handle:"+2);
+
         ShopResultMessage result = new ShopResultMessage();
+
 
         try {
             if (action.equals("list")) {
@@ -58,7 +66,6 @@ public class ShopHandler {
             session.getTransaction().rollback();
             result.setResult("invalid:" + e.getMessage());
         }
-
         // get latest data from db(previous transaction may roll back)
 //        DBShop = DBShopDAO.getShop(request.getShopID());
 //        List<shopInventory> db_items = shop.getCurrent_inventory();
@@ -79,6 +86,7 @@ public class ShopHandler {
 
     public void validateAndExecute(Trader seller, Trader buyer, Map<Integer, Integer> item_list) throws InvalidShopRequest {
         int required_money = 0;
+
         for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
             Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
             int amount = inventory_pair.getValue();
