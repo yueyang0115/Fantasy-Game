@@ -57,17 +57,18 @@ public class MonsterMover extends Task {
         int endY = coord[0].getY();
 
         Random rand = new Random();
-        int randomNum = rand.nextInt(9) + 0;
         boolean moved = false;
 
         if(startX != endX){
+            int randomNum = rand.nextInt(9) + 0;
             if(randomNum %2 == 0){
                 startX = startX < endX? startX+1 : startX-1;
                 moved = true;
             }
         }
         if(startY != endY){
-            if(randomNum %2 == 1){
+            int randomNum = rand.nextInt(9) + 0;
+            if(randomNum %2 == 0){
                 startY = startY < endY? startY+1 : startY-1;
                 moved = true;
             }
