@@ -45,6 +45,7 @@ class PositionUpdateHandlerTest {
             }
             PositionRequestMessage positionRequestMessage = new PositionRequestMessage();
             positionRequestMessage.setCoords(coords);
+            positionRequestMessage.setCurrentCoord(coords.get(0));
             PositionResultMessage res = positionUpdateHandler.handle(1, positionRequestMessage);
             try {
                 logger.info(objectMapper.writeValueAsString(res));

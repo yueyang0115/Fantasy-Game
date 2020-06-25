@@ -45,7 +45,6 @@ class ShopHandlerTest {
         session.beginTransaction();
         handle_list();
         handle_buy();
-        session.close();
     }
 
     void handle_list() {
