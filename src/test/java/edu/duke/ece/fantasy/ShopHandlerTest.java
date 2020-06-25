@@ -40,9 +40,10 @@ class ShopHandlerTest {
 
     @Test
     void handle() {
-        (new Initializer()).initialize_test_player(session);
-        shopCoord = (new Initializer()).initialize_test_shop(session);
         session.beginTransaction();
+        Initializer initializer = new Initializer(session);
+        initializer.initialize_test_player();
+        shopCoord = initializer.initialize_test_shop();
         handle_list();
         handle_buy();
     }
@@ -60,6 +61,7 @@ class ShopHandlerTest {
             e.printStackTrace();
         }
     }
+
 
     void handle_buy() {
 //        List<shopInventory> itemPacks = new ArrayList<>(DBShop.getItems());

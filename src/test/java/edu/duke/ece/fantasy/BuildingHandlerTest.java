@@ -27,7 +27,7 @@ class BuildingHandlerTest {
         buildingHandler = new BuildingHandler(session);
         playerDAO = new PlayerDAO(session);
         territoryDAO = new TerritoryDAO(session);
-        (new Initializer()).initialize_test_player(session);
+        (new Initializer(session)).initialize_test_player();
         territoryDAO.addTerritory(new WorldCoord(), 0, "grass", null);
     }
 

@@ -51,7 +51,6 @@ public class ShopHandler {
 
         ShopResultMessage result = new ShopResultMessage();
 
-
         try {
             if (action.equals("list")) {
                 result.setResult("valid");
@@ -63,7 +62,7 @@ public class ShopHandler {
                 result.setResult("valid");
             }
         } catch (InvalidShopRequest e) {
-            session.getTransaction().rollback();
+//            session.getTransaction().rollback();
             result.setResult("invalid:" + e.getMessage());
         }
         // get latest data from db(previous transaction may roll back)

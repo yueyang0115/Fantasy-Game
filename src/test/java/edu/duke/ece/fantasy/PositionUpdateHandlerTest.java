@@ -34,7 +34,7 @@ class PositionUpdateHandlerTest {
     void handle() {
         try (Session session = createSession()) {
 //            (new Initializer()).test_initialize(session);
-            (new Initializer()).initialize_test_player(session);
+            (new Initializer(session)).initialize_test_player();
             session.beginTransaction();
             TerritoryHandlerTest th = new TerritoryHandlerTest();
             List<WorldCoord> coords = new ArrayList<>();
