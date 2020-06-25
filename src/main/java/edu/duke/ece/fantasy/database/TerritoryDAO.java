@@ -113,7 +113,7 @@ public class TerritoryDAO {
                 +" and T.coord.x >:xlower and T.coord.x <:xupper"
                 +" and T.coord.y >:ylower and T.coord.y <:yupper"
                 +" and not exists (from Monster M where M.coord = T.coord)"
-                +" order by T.tame"
+                +" order by T.tame DESC"
         ).setMaxResults(1);
         q.setParameter("wid", where.getWid());
         q.setParameter("xlower", where.getX() - x_range/2);
