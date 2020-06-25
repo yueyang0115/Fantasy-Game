@@ -7,6 +7,9 @@ import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,16 +41,20 @@ class ShopHandlerTest {
     }
 
 
-    @Test
-    void handle() {
+    @BeforeEach
+    void start() {
         session.beginTransaction();
         Initializer initializer = new Initializer(session);
         initializer.initialize_test_player();
         shopCoord = initializer.initialize_test_shop();
-        handle_list();
-        handle_buy();
     }
 
+    @AfterEach
+    void shutdown(){
+        session.getTransaction().rollback();
+    }
+
+    @Test
     void handle_list() {
         ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
         shopRequestMessage.setCoord(shopCoord);
@@ -62,7 +69,7 @@ class ShopHandlerTest {
         }
     }
 
-
+    @Test
     void handle_buy() {
 //        List<shopInventory> itemPacks = new ArrayList<>(DBShop.getItems());
         List<shopInventory> itemPacks = shopInventoryDAO.getInventories(shopCoord);

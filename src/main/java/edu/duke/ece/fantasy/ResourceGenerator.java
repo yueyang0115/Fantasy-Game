@@ -11,25 +11,26 @@ import java.util.TimerTask;
 
 public class ResourceGenerator extends Task {
     Session session;
-    WorldCoord coord;
+    WorldCoord[] coord;
 
-    public ResourceGenerator(long when,WorldCoord coord) {
-        session = HibernateUtil.getSessionFactory().openSession();
+    public ResourceGenerator(long when, WorldCoord[] coord, Session session) {
+        super(when, 1000, true);
         this.coord = coord;
-        super(when,1000,true,session);
+        this.session = session;
     }
 
     @Override
     void doTask() {
+        if(coord[0]==null) return;
         session.beginTransaction();
         PlayerDAO playerDAO = new PlayerDAO(session);
-        Player player = playerDAO.getPlayerByWid(coord.getWid());
+        Player player = playerDAO.getPlayerByWid(coord[0].getWid());
 //        System.out.println("Generating resource, speed:" + player.getMoneyGenerationSpeed());
         if (player.getMoney() + player.getMoneyGenerationSpeed() < 9999999) {
             player.setMoney(player.getMoney() + player.getMoneyGenerationSpeed());
         }
         session.getTransaction().commit();
-//        session.evict(player);
+        session.evict(player);
     }
 
 }

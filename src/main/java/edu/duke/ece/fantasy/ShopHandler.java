@@ -44,10 +44,8 @@ public class ShopHandler {
 
         Map<Integer, Integer> item_list = request.getItemMap();
         // may need to check relationship of shop and territory
-        System.out.println("I'm in buying handle:"+playerID+action);
 
         Player player = playerDAO.getPlayer(playerID);
-        System.out.println("I'm in buying handle:"+2);
 
         ShopResultMessage result = new ShopResultMessage();
 
