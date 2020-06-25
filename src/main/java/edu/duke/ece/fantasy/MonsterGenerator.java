@@ -6,15 +6,13 @@ import org.hibernate.Session;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MonsterGenerator extends Task {
+public class MonsterGenerator extends MonsterTask {
     private int MONSTER_LIMIT = 3;
     private static int TAME_LIMIT = 0;
-    private MonsterManger monsterDAO;
     private TerritoryDAO territoryDAO;
 
     public MonsterGenerator(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         super(when, repeatedInterval, repeating, session, coord, canGenerateMonster, resultMsgQueue);
-        monsterDAO = new MonsterManger(session);
         territoryDAO = new TerritoryDAO(session);
     }
 

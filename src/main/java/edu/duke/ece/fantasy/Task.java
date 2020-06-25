@@ -17,26 +17,11 @@ public abstract class Task {
     private long when; // the time when the task should be executed
     private int repeatedInterval;
     private boolean repeating;
-    private MonsterManger monsterDAO;
 
-    protected LinkedBlockingQueue<MessagesS2C> resultMsgQueue;
-    protected Session session;
-    protected WorldCoord[] coord;
-    protected boolean[] canGenerateMonster;
-
-    public static int X_RANGE = 10;
-    public static int Y_RANGE = 10;
-
-    public Task(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+    public Task(long when, int repeatedInterval, boolean repeating) {
         this.when = when;
         this.repeatedInterval = repeatedInterval;
         this.repeating = repeating;
-
-        this.session = session;
-        this.resultMsgQueue = resultMsgQueue;
-        this.coord = coord;
-        this.canGenerateMonster = canGenerateMonster;
-        this.monsterDAO = new MonsterManger(session);
     }
 
     abstract void doTask();
@@ -52,18 +37,5 @@ public abstract class Task {
     public void updateWhen(){ this.when += repeatedInterval; }
 
     public boolean isRepeating() { return repeating; }
-
-    public void putMonsterInResultMsgQueue(Monster m){
-        // generate a new resultMsg for the changed monster, add the new Msg into resultMsgQueue
-        MessagesS2C result = new MessagesS2C();
-        PositionResultMessage positionMsg= new PositionResultMessage();
-        List<Monster> monsterList = new ArrayList<>();
-        monsterList.add(m);
-        positionMsg.setMonsterArray(monsterList);
-        result.setPositionResultMessage(positionMsg);
-        resultMsgQueue.offer(result);
-        //change the monster's needUpdate field
-        monsterDAO.setMonsterStatus(m.getId(), false);
-    }
 
 }
