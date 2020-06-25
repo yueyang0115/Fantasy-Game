@@ -18,8 +18,8 @@ public class MonsterTask extends Task{
     protected boolean[] canGenerateMonster;
     protected MonsterManger monsterDAO;
 
-    protected int X_RANGE = 20;
-    protected int Y_RANGE = 20;
+    protected int X_RANGE = 10;
+    protected int Y_RANGE = 10;
 
     public MonsterTask(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         super(when, repeatedInterval, repeating);
