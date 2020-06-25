@@ -1,13 +1,12 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.building.Building;
-import edu.duke.ece.fantasy.building.InvalidBuildingRequest;
-import edu.duke.ece.fantasy.building.Shop;
+import edu.duke.ece.fantasy.building.*;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
 import edu.duke.ece.fantasy.json.BuildingResultMessage;
 import org.hibernate.Session;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +23,10 @@ public class BuildingHandler {
         DBBuildingDAO = new DBBuildingDAO(session);
         territoryDAO = new TerritoryDAO(session);
         this.session = session;
-        Shop shop = new Shop();
+        Shop shop = new BaseShop();
+        Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
+        BaseBuildingMap.put(mine.getName(), mine);
     }
 
     public BuildingResultMessage handle(BuildingRequestMessage buildingRequestMessage, int playerId) {
@@ -38,25 +39,32 @@ public class BuildingHandler {
         try {
             if (action.equals("createList")) {
                 // check territory status
-
                 Territory t = territoryDAO.getTerritory(coord);
                 if (t == null) {
                     throw new InvalidBuildingRequest("Selected territory doesn't exist");
                 }
-                if (t.getTame() <= 10) {
-                    buildingResultMessage.addBuilding(new Shop());
-                    buildingResultMessage.setResult("success");
-                } else {
+                if (t.getTame() > 10) {
                     throw new InvalidBuildingRequest("Selected territory's tame is too high");
-//                    buildingResultMessage.setResult("Selected territory's tame is too high");
                 }
+                buildingResultMessage.setBuildingList(new ArrayList<>(BaseBuildingMap.values()));
+                buildingResultMessage.setResult("success");
             } else if (action.equals("create")) {
                 // create different building
                 Building building = Create(buildingRequestMessage, playerId);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
-            } else if (action.equals("update")) {
-
+            } else if (action.equals("upgradeList")) {
+                // check if Building exist
+                DBBuilding dbBuilding = DBBuildingDAO.getBuilding(coord);
+                if (dbBuilding == null) {
+                    throw new InvalidBuildingRequest("Selected building doesn't exist");
+                }
+                buildingResultMessage.setBuildingList(dbBuilding.toGameBuilding().getUpgradeList());
+                buildingResultMessage.setResult("success");
+            } else if (action.equals("upgrade")) {
+                Building building = Update(buildingRequestMessage, playerId);
+                buildingResultMessage.setBuilding(building);
+                buildingResultMessage.setResult("success");
             }
         } catch (InvalidBuildingRequest e) {
             buildingResultMessage.setResult("Fail-" + e.getMessage());
@@ -87,10 +95,40 @@ public class BuildingHandler {
             throw new InvalidBuildingRequest("Don't have enough resource");
         }
         player.setMoney(left_money);
-        session.update(player);
 
         building.onCreate(session, coord);
         return building;
     }
+
+    private Building Update(BuildingRequestMessage buildingRequestMessage, int playerId) throws InvalidBuildingRequest {
+        WorldCoord coord = buildingRequestMessage.getCoord();
+        String name = buildingRequestMessage.getBuildingName();
+
+        // check if territory have building
+        DBBuilding dbBuilding = DBBuildingDAO.getBuilding(coord);
+        if (dbBuilding == null) {
+            throw new InvalidBuildingRequest("Selected building doesn't exist");
+        }
+        Building UpgradeFrom = dbBuilding.toGameBuilding();
+
+        // check if update building is in the list
+        Building UpgradeTo = UpgradeFrom.getUpgradeTo().get(name);
+        if (UpgradeTo == null) {
+            throw new InvalidBuildingRequest("Building type doesn't exist");
+        }
+
+        Player player = playerDAO.getPlayer(playerId);
+
+        // deduce money
+        int left_money = player.getMoney() - UpgradeTo.getCost();
+        if (left_money < 0) {
+            throw new InvalidBuildingRequest("Don't have enough resource");
+        }
+        player.setMoney(left_money);
+
+        UpgradeTo.onCreate(session, coord);
+        return UpgradeTo;
+    }
+
 
 }
