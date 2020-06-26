@@ -36,7 +36,7 @@ class PositionUpdateHandlerTest {
             session.beginTransaction();
             (new Initializer(session)).initialize_test_player();
             Player player = playerDAO.getPlayer("test");
-            TerritoryHandlerTest th = new TerritoryHandlerTest();
+            player = playerDAO.getPlayerByWid(player.getWid()); // TODO: wid return give null pointer
             List<WorldCoord> coords = new ArrayList<>();
             for (int i=0;i<100;i+=10){
                 for (int j=0;j<100;j+=10){
