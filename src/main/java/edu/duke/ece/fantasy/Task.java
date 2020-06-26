@@ -24,6 +24,7 @@ public abstract class Task {
         this.repeating = repeating;
     }
 
+    //TODO : doTask() pass in metaDA0
     abstract void doTask();
 
     public int getRepeatedInterval() { return repeatedInterval; }
