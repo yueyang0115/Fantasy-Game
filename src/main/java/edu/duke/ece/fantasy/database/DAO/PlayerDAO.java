@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy.database.DAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
+import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;

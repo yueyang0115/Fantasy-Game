@@ -18,8 +18,9 @@ public class MetaDAO {
     MonsterDAO monsterDAO;
     SoldierDAO soldierDAO;
     UnitDAO unitDAO;
+    Session session;
 
-    public MetaDAO(Session session){
+    public MetaDAO(Session session) {
         playerDAO = new PlayerDAO(session);
         inventoryDAO = new InventoryDAO(session);
         tileDAO = new TileDAO(session);
@@ -31,6 +32,7 @@ public class MetaDAO {
         monsterDAO = new MonsterDAO(session);
         soldierDAO = new SoldierDAO(session);
         unitDAO = new UnitDAO(session);
+        this.session = session;
     }
 
     public PlayerDAO getPlayerDAO() {
@@ -61,11 +63,23 @@ public class MetaDAO {
         return shopInventoryDAO;
     }
 
-    public TerritoryDAO getTerritoryDAO() { return territoryDAO; }
+    public TerritoryDAO getTerritoryDAO() {
+        return territoryDAO;
+    }
 
-    public MonsterDAO getMonsterDAO(){ return monsterDAO; }
+    public MonsterDAO getMonsterDAO() {
+        return monsterDAO;
+    }
 
-    public SoldierDAO getSoldierDAO(){ return soldierDAO; }
+    public SoldierDAO getSoldierDAO() {
+        return soldierDAO;
+    }
 
-    public UnitDAO getUnitDAO() { return unitDAO; }
+    public UnitDAO getUnitDAO() {
+        return unitDAO;
+    }
+
+    public Session getSession() {
+        return session;
+    }
 }

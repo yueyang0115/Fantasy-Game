@@ -26,6 +26,7 @@ public class BuildingHandler {
         playerDAO = metaDAO.getPlayerDAO();
         DBBuildingDAO = metaDAO.getDbBuildingDAO();
         territoryDAO = metaDAO.getTerritoryDAO();
+        session = metaDAO.getSession();
         Shop shop = new BaseShop();
         Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
