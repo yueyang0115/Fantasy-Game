@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -45,8 +46,8 @@ public class TerritoryDAO {
         int x = where.getX();
         int y = where.getY();
         // get neighbor territories
-        for (int i = 0; i < x_block_num; i++) {
-            for (int j = 0; j < y_block_num; j++) {
+        for (int i = -x_block_num/2; i <= x_block_num/2; i++) {
+            for (int j = -y_block_num/2; j <= y_block_num/2; j++) {
                 int target_x = x + i;
                 int target_y = y + j;
                 Territory t = getTerritory(new WorldCoord(wid, target_x, target_y));
@@ -98,14 +99,36 @@ public class TerritoryDAO {
         // select territory according to conditions
         //       int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
         //int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-        Query q = session.createQuery("From Territory M where M.coord.wid =:wid and M.coord.x =:x and M.coord.y = :y");
-        q.setParameter("wid", where.getWid());
-        q.setParameter("x", where.getX());
-        q.setParameter("y", where.getY());
+        Query q = session.createQuery("From Territory M where M.coord=:coord");
+        q.setParameter("coord",where);
 //        q.setParameter("x", x);
 //        q.setParameter("y", y);
         Territory res = (Territory) q.uniqueResult();
         return res;
 
+    }
+
+    public synchronized WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range){
+        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
+                +" and T.coord.x >:xlower and T.coord.x <:xupper"
+                +" and T.coord.y >:ylower and T.coord.y <:yupper"
+                +" and not exists (from Monster M where M.coord = T.coord)"
+                +" order by T.tame DESC"
+        ).setMaxResults(1);
+        q.setParameter("wid", where.getWid());
+        q.setParameter("xlower", where.getX() - x_range/2);
+        q.setParameter("xupper", where.getX() + x_range/2);
+        q.setParameter("ylower", where.getY() - y_range/2);
+        q.setParameter("yupper", where.getY() + y_range/2);
+
+        Territory t = (Territory) q.uniqueResult();
+        WorldCoord res = t.getCoord();
+
+        return res;
+    }
+
+    public int getTameByCoord(WorldCoord where){
+        Territory t = getTerritory(where);
+        return t.getTame();
     }
 }

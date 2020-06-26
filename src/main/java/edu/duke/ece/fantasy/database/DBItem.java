@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.ObjectMapperFactory;
 
 import javax.persistence.Embeddable;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class DBItem {
     }
 
     public Item toGameItem() {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
         try {
             if (!item_properties.equals("")) {
                 return (Item) objectMapper.readValue(item_properties, Class.forName(item_class));

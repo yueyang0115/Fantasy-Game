@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Table(name = "playerInventory")
 public class playerInventory extends Inventory {
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "player_id")
     private Player player;

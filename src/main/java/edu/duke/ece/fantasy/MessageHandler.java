@@ -15,13 +15,12 @@ public class MessageHandler {
     private int wid;
     private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
-    private TCPCommunicator TCPcm;
+    private WorldCoord[] currentCoord;
+    private boolean[] canGenerateMonster;
 
-    public MessageHandler() {
-    }
-
-    public MessageHandler(TCPCommunicator TCPcm) {
-        this.TCPcm = TCPcm;
+    public MessageHandler(WorldCoord[] currentCoord, boolean[] canGenerateMonster) {
+        this.currentCoord = currentCoord;
+        this.canGenerateMonster = canGenerateMonster;
     }
 
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
@@ -36,10 +35,12 @@ public class MessageHandler {
         AttributeRequestMessage attributeMsg = input.getAttributeRequestMessage();
         ShopRequestMessage shopRequestMessage = input.getShopRequestMessage();
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
+        BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
         //System.out.println("incoming message: " + input);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             if (loginMsg != null) {
                 session.beginTransaction();
+                //TODO, pass in metaDAO, LoginHandler lh = new LoginHandler(session, metaDAO);
                 LoginHandler lh = new LoginHandler(session);
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
@@ -61,13 +62,19 @@ public class MessageHandler {
 //                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
 //                log.info("wid is {} when handle positionMsg",wid);
                 //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
+                currentCoord[0] = positionMsg.getCurrentCoord();
+                if(currentCoord[0] != null) currentCoord[0].setWid(wid);
                 result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
                 session.getTransaction().commit();
+                canGenerateMonster[0] = true;
+                //TODO:player.setStatus
             }
 
             if (battleMsg != null) {
+                canGenerateMonster[0] = false;
+                //TODO:player.setStatus
                 session.beginTransaction();
-                if(battleMsg.getTerritoryCoord()!=null) battleMsg.getTerritoryCoord().setWid(this.wid);
+                if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(this.wid);
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
                 result.setBattleResultMessage(battleResult);
                 session.getTransaction().commit();
@@ -81,19 +88,32 @@ public class MessageHandler {
             }
 
             if (shopRequestMessage != null) {
+                canGenerateMonster[0] = false;
+                //TODO:player.setStatus
                 session.beginTransaction();
                 ShopHandler shopHandler = new ShopHandler(session);
+                if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(this.wid);
                 result.setShopResultMessage(shopHandler.handle(shopRequestMessage, playerID));
                 session.getTransaction().commit();
             }
 
             if(inventoryRequestMessage != null){
+                canGenerateMonster[0] = false;
+                //TODO:player.setStatus
                 session.beginTransaction();
                 InventoryHandler inventoryHandler = new InventoryHandler(session);
-                result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage,playerID));
+                result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, playerID));
                 session.getTransaction().commit();
             }
 
+            if (buildingRequestMessage != null) {
+                //TODO:player.setStatus
+                session.beginTransaction();
+                BuildingHandler buildingHandler = new BuildingHandler(session);
+                if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(this.wid);
+                result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, playerID));
+                session.getTransaction().commit();
+            }
 
         }
         return result;
@@ -116,8 +136,4 @@ public class MessageHandler {
 //            }
 //        }
 //    }
-
-    public int getWid() {
-        return this.wid;
-    }
 }

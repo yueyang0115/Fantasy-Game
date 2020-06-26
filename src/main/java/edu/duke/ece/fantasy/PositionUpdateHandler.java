@@ -2,8 +2,9 @@ package edu.duke.ece.fantasy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 
+import edu.duke.ece.fantasy.building.Building;
+import edu.duke.ece.fantasy.building.Castle;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
@@ -13,10 +14,11 @@ import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
-    BuildingDAO buildingDAO;
-    ShopDAO shopDAO;
+    DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
     MonsterManger monsterDAO;
+    PlayerDAO playerDAO;
+    Session session;
     //    ItemDAO itemDAO;
 
 //    int x_block_num;
@@ -24,10 +26,11 @@ public class PositionUpdateHandler {
 
     public PositionUpdateHandler(Session session) {
         territoryDAO = new TerritoryDAO(session);
-        buildingDAO = new BuildingDAO(session);
-        shopDAO = new ShopDAO(session);
+        DBBuildingDAO = new DBBuildingDAO(session);
         worldDAO = new WorldDAO(session);
         monsterDAO = new MonsterManger(session);
+        playerDAO = new PlayerDAO(session);
+        this.session = session;
         //    itemDAO = new ItemDAO(session);
     }
 
@@ -40,39 +43,50 @@ public class PositionUpdateHandler {
         WorldInfo info = worldDAO.getInfo(wid);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
+        WorldCoord currentCoord = positionMsg.getCurrentCoord();
+        currentCoord.setWid(wid);
+        if (info == null) { // generate info
+            info = worldDAO.initWorld(currentCoord, playerDAO.getPlayerByWid(wid).getUsername(), 20);//TODO: Fix hardcoding of tile size
+        }
+
         for (WorldCoord where : worldCoords) {
             where.setWid(wid);
-            if (info == null) {
-                info = worldDAO.initWorld(where, "fixmelater", 20);//TODO: real player names.  Fix hardcoding of tile size
-            }
             Territory t = territoryDAO.getTerritory(where);
             if (t == null) {
                 //later we might add other world types.  Like you can teleport to fire or ice etc worlds.
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, monsterDAO, buildingDAO, where, info);
+                gen.generate(territoryDAO, monsterDAO, DBBuildingDAO, where, info);
+
+                if (currentCoord.equals(info.getStartCoords())) { // add castle to start point
+                    (new Castle()).onCreate(session, currentCoord);
+                }
                 t = territoryDAO.getTerritory(where);
             }
-//            if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) {
-//                if (t.getStatus().equals("unexplored")) {
-//                    territoryDAO.updateTerritory(where, "explored");
-//                }
-//            }
-            territoryList.add(t);
 
+            territoryList.add(t);
 //            if (t.getTerrainType().equals("forest_dense")) {
 //                System.out.println("find forest_dense, should have a monster here");
 //            }
-            Monster m = monsterDAO.getMonsterWhere(where);
-            if (m != null) monsterList.add(m);
+            List<Monster> monsters = monsterDAO.getMonsters(where);
+            if (monsters != null) {
+                for (Monster m : monsters) {
+                    monsterDAO.setMonsterStatus(m.getId(), false);
+                    monsterList.add(m);
+                }
+            }
 
-            Building building = buildingDAO.getBuilding(where);
+            DBBuilding building = DBBuildingDAO.getBuilding(where);
 
             if (building != null) {
-                buildingList.add(building);
+                buildingList.add(building.toGameBuilding());
             }
         }
+
+
+
+
 
         positionResultMessage.setTerritoryArray(territoryList);
         positionResultMessage.setBuildingArray(buildingList);

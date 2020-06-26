@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.Random;
 
 import edu.duke.ece.fantasy.database.*;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,13 +185,13 @@ public class TileGenerator {
     }
 
     //I hate how tightly coupled this it to the database :(
-    public void generate(TerritoryDAO terdao, MonsterManger monsterDAO, BuildingDAO buildingDAO, WorldCoord where, WorldInfo info) {
+    public void generate(TerritoryDAO terdao, MonsterManger monsterDAO, DBBuildingDAO DBBuildingDAO, WorldCoord where, WorldInfo info) {
         TileDAO tdao = new TileDAO(terdao);
         //if the world doesn't have a start tile, lets put one in it.
         if (!tdao.doesWorldHaveStartTile(info)) {
             //System.out.println("Putting start tile at " + info.getFirstTile());
             tdao.addTile(info.getFirstTile(), startTileName);
-            putTerrain(terdao, monsterDAO, buildingDAO, info.getFirstTile(), tilesByName.get(startTileName), 0);
+            putTerrain(terdao, monsterDAO, DBBuildingDAO, info.getFirstTile(), tilesByName.get(startTileName), 100);
         }
         //align "where" to a tile start.
         //System.out
@@ -233,12 +231,12 @@ public class TileGenerator {
                 Tile t = tdao.addTile(thisWc, selected.getId());
                 //System.out.println("tdao.addTile " + selected.getId());
                 existingTiles.put(thisWc, t);
-                putTerrain(terdao, monsterDAO, buildingDAO, thisWc, selected, 100);
+                putTerrain(terdao, monsterDAO, DBBuildingDAO, thisWc, selected, 100);
             }
         }
     }
 
-    private void putTerrain(TerritoryDAO terDAO, MonsterManger monsterDAO, BuildingDAO buildingDAO, WorldCoord where, TileInfo info, int territory_status) {
+    private void putTerrain(TerritoryDAO terDAO, MonsterManger monsterDAO, DBBuildingDAO DBBuildingDAO, WorldCoord where, TileInfo info, int territory_status) {
         //    System.out.println("Putting terrain on ["+where.getX()+","+(where.getX()+tileWidth)+") y:["+where.getY()+","+(where.getY()+tileHeight)+")"+ System.currentTimeMillis());
 
         Random rand = new Random();
@@ -249,20 +247,16 @@ public class TileGenerator {
                 //System.out.println("Territory at place: " + place);
                 terDAO.addTerritory(place, territory_status, s.getImageName(), new ArrayList<Monster>());
 
-                //TODO: yy: add monstef, use s.getImage Name to add a random monster
-                if (s.getImageName().equals("forest_dense")) {
-                    //System.out.println("addMonster in " + place.getX() + "," + place.getY());
-                    Monster m = new Monster("wolf", 60, 6, 10);
-                    int randomNum = rand.nextInt(9) + 0;
-                    if (randomNum >= 7) {
-                        monsterDAO.addMonster(m, place);
-                    }
-                }
+//                //TODO: yy: add monstef, use s.getImage Name to add a random monster
+//                if (s.getImageName().equals("forest_dense")) {
+//                    //System.out.println("addMonster in " + place.getX() + "," + place.getY());
+//                    Monster m = new Monster("wolf", 60, 6, 10);
+//                    int randomNum = rand.nextInt(9) + 0;
+//                    if (randomNum >= 7) {
+//                        monsterDAO.addMonster(m, place);
+//                    }
+//                }
 
-                if (s.getImageName().equals("grass") && RandomGenerator.getRandomResult(40)) {
-                    Shop shop = (new ShopDAO()).createShop();
-                    buildingDAO.addBuilding(place, shop);
-                }
             }
         }
     }

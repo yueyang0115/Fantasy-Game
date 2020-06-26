@@ -1,22 +1,24 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "shopInventory")
 public class shopInventory extends Inventory {
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumns({
+//            @JoinColumn(name = "coord_wid", referencedColumnName = "wid"),
+//            @JoinColumn(name = "coord_x", referencedColumnName = "x"),
+//            @JoinColumn(name = "coord_y", referencedColumnName = "y")
+//    })
+
+    @Embedded
+    private WorldCoord coord;
+//    private DBBuilding Shop;
 
     public shopInventory() {
     }
@@ -25,18 +27,16 @@ public class shopInventory extends Inventory {
         super(item, amount);
     }
 
-    public shopInventory(DBItem item, int amount, Shop shop) {
+    public shopInventory(DBItem item, int amount, WorldCoord coord) {
         super(item, amount);
-        this.shop = shop;
+        this.coord = coord;
     }
 
-    public Shop getShop() {
-        return shop;
+    public WorldCoord getCoord() {
+        return coord;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
+    public void setCoord(WorldCoord coord) {
+        this.coord = coord;
     }
-
-
 }

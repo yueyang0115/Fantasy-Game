@@ -40,7 +40,7 @@ public class Server {
 
     public void startGame() {
         (new Initializer()).initialize();
-        //myMockDBprocessor.create();
+//        myMockDBprocessor.create();
 //        myDBprocessor.connectDB();
         while (true) {
             PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));

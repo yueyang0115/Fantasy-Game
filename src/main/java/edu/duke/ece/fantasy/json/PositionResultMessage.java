@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.json;
 
-import edu.duke.ece.fantasy.database.Building;
+import edu.duke.ece.fantasy.building.Building;
+import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
 
