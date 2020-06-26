@@ -2,10 +2,7 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.Territory;
-import edu.duke.ece.fantasy.database.TerritoryDAO;
-import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
@@ -21,11 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class PositionUpdateHandlerTest {
     PositionUpdateHandler positionUpdateHandler;
     ObjectMapper objectMapper = new ObjectMapper();
+    PlayerDAO playerDAO;
     Logger logger = LoggerFactory.getLogger(PositionUpdateHandlerTest.class);
 
     Session createSession() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         positionUpdateHandler = new PositionUpdateHandler(session);
+        playerDAO = new PlayerDAO(session);
         return session;
     }
 
@@ -36,17 +35,18 @@ class PositionUpdateHandlerTest {
 //            (new Initializer()).test_initialize(session);
             session.beginTransaction();
             (new Initializer(session)).initialize_test_player();
+            Player player = playerDAO.getPlayer("test");
             TerritoryHandlerTest th = new TerritoryHandlerTest();
             List<WorldCoord> coords = new ArrayList<>();
             for (int i=0;i<100;i+=10){
                 for (int j=0;j<100;j+=10){
-                    coords.add(new WorldCoord(0, i, j));
+                    coords.add(new WorldCoord(player.getWid(), i, j));
                 }
             }
             PositionRequestMessage positionRequestMessage = new PositionRequestMessage();
             positionRequestMessage.setCoords(coords);
             positionRequestMessage.setCurrentCoord(coords.get(0));
-            PositionResultMessage res = positionUpdateHandler.handle(1, positionRequestMessage);
+            PositionResultMessage res = positionUpdateHandler.handle(player.getWid(), positionRequestMessage);
             try {
                 logger.info(objectMapper.writeValueAsString(res));
             } catch (JsonProcessingException e) {
