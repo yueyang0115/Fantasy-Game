@@ -28,6 +28,7 @@ public class TaskScheduler {
 
     // this method will be called when the first task in queue should be executed
     public void runReadyTasks(){
+        // inject metaDAO
         long now = System.currentTimeMillis();
         while(!tasksQueue.isEmpty()){
             Task task = tasksQueue.peek();

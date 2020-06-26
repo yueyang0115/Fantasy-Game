@@ -39,7 +39,10 @@ public class Server {
     }
 
     public void startGame() {
-        (new Initializer()).initialize();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.getTransaction().commit();
+        }
 //        myMockDBprocessor.create();
 //        myDBprocessor.connectDB();
         while (true) {

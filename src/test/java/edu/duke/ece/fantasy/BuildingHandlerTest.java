@@ -6,6 +6,8 @@ import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
 import edu.duke.ece.fantasy.json.BuildingResultMessage;
 import org.hibernate.Session;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,20 +29,33 @@ class BuildingHandlerTest {
         buildingHandler = new BuildingHandler(session);
         playerDAO = new PlayerDAO(session);
         territoryDAO = new TerritoryDAO(session);
-        (new Initializer()).initialize_test_player(session);
+        (new Initializer(session)).initialize_test_player();
         territoryDAO.addTerritory(new WorldCoord(), 0, "grass", null);
     }
 
 
-    @Test
-    public void handle() {
+    @BeforeEach
+    void start() {
         session.beginTransaction();
-        handle_create_list();
-        handle_create();
-        handle_update();
+        Initializer initializer = new Initializer(session);
+        initializer.initialize_test_player();
     }
 
+    @AfterEach
+    void shutdown(){
+        session.getTransaction().rollback();
+    }
 
+//    @Test
+//    public void handle() {
+//        session.beginTransaction();
+//        handle_create_list();
+//        handle_create();
+//        handle_update();
+//        session.close();
+//    }
+
+    @Test
     public void handle_create_list() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("createList");
@@ -55,6 +70,7 @@ class BuildingHandlerTest {
 
     }
 
+    @Test
     public void handle_create() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("create");
