@@ -23,6 +23,7 @@ public class InventoryHandler {
         inventoryDAO = metaDAO.getInventoryDAO();
         unitDAO = metaDAO.getUnitDAO();
         this.metaDAO = metaDAO;
+        session = metaDAO.getSession();
     }
 
     public InventoryResultMessage handle(InventoryRequestMessage request, int player_id) {
