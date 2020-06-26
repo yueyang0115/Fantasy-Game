@@ -1,21 +1,20 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.building.Shop;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
 
-import java.util.List;
 import java.util.Map;
 
 public class ShopHandler {
     private PlayerDAO playerDAO;
-    private playerInventoryDAO playerinventoryDAO;
-    private shopInventoryDAO shopInventoryDAO;
+    private PlayerInventoryDAO playerinventoryDAO;
+    private ShopInventoryDAO shopInventoryDAO;
     private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
     private Session session;
@@ -23,8 +22,8 @@ public class ShopHandler {
     public ShopHandler(Session session) {
         dbBuildingDAO = new DBBuildingDAO(session);
         playerDAO = new PlayerDAO(session);
-        playerinventoryDAO = new playerInventoryDAO(session);
-        shopInventoryDAO = new shopInventoryDAO(session);
+        playerinventoryDAO = new PlayerInventoryDAO(session);
+        shopInventoryDAO = new ShopInventoryDAO(session);
         inventoryDAO = new InventoryDAO(session);
         this.session = session;
 
@@ -44,13 +43,10 @@ public class ShopHandler {
 
         Map<Integer, Integer> item_list = request.getItemMap();
         // may need to check relationship of shop and territory
-        System.out.println("I'm in buying handle:"+playerID+action);
 
         Player player = playerDAO.getPlayer(playerID);
-        System.out.println("I'm in buying handle:"+2);
 
         ShopResultMessage result = new ShopResultMessage();
-
 
         try {
             if (action.equals("list")) {
@@ -63,7 +59,7 @@ public class ShopHandler {
                 result.setResult("valid");
             }
         } catch (InvalidShopRequest e) {
-            session.getTransaction().rollback();
+//            session.getTransaction().rollback();
             result.setResult("invalid:" + e.getMessage());
         }
         // get latest data from db(previous transaction may roll back)
@@ -95,6 +91,16 @@ public class ShopHandler {
             if (!seller.checkItem(inventory, amount)) {
                 throw new InvalidShopRequest("Seller don't have enough item" + "-" + item_obj.getName());
             }
+            required_money += item_obj.getCost() * amount;
+            // check if buyer have enough money
+            if (!buyer.checkMoney(required_money)) {
+                throw new InvalidShopRequest("Don't have enough money");
+            }
+        }
+
+        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
+            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
+            int amount = inventory_pair.getValue();
             // deduce the amount of item from seller
             seller.sellItem(inventory, amount);
             // sell inventory update
@@ -105,12 +111,8 @@ public class ShopHandler {
             Inventory buy_inventory = buyer.buyItem(inventory, amount);
             // buy inventory update
             session.saveOrUpdate(buy_inventory);
-            required_money += item_obj.getCost() * amount;
         }
-        // check if buyer have enough money
-        if (!buyer.checkMoney(required_money)) {
-            throw new InvalidShopRequest("Don't have enough money");
-        }
+
     }
 
 }

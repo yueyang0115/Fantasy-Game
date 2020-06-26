@@ -36,18 +36,16 @@ public class PlayerHandler extends Thread{
         sendMessage();
     }
 
-    private void receiveMessage(){
-        while(!TCPcommunicator.isClosed()){
-            try{
+    private void receiveMessage() {
+        while (!TCPcommunicator.isClosed()) {
+            try {
                 MessagesC2S request = TCPcommunicator.receive();
                 if (TCPcommunicator.isClosed()) break;
                 String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
                 requestMsgQueue.offer(request);
-            }
-
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
                 if (TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");
@@ -58,8 +56,8 @@ public class PlayerHandler extends Thread{
         System.out.println("[DEBUG] Client socket might closed, stop receiving, close corresponding thread in server");
     }
 
-    private void sendMessage(){
-        while(!TCPcommunicator.isClosed()){
+    private void sendMessage() {
+        while (!TCPcommunicator.isClosed()) {
             try {
                 MessagesS2C msg = resultMsgQueue.take();
                 TCPcommunicator.send(msg);
@@ -67,8 +65,7 @@ public class PlayerHandler extends Thread{
                 String result_str = "";
                 result_str = myObjectMapper.writeValueAsString(msg);
                 System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
-            }
-            catch(IOException | InterruptedException e){
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
                 if (TCPcommunicator.isClosed()) {
                     System.out.println("[DEBUG] Client socket might closed, prepare to exit");

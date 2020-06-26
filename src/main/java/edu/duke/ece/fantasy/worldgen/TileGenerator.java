@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Random;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
+import edu.duke.ece.fantasy.database.DAO.TileDAO;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

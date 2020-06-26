@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.task;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import org.hibernate.Session;
 

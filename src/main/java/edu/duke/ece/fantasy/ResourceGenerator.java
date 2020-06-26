@@ -1,28 +1,26 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
-import java.util.TimerTask;
-
-public class ResourceGenerator extends TimerTask {
+public class ResourceGenerator extends Task {
     Session session;
-    WorldCoord coord;
+    WorldCoord[] coord;
 
-    public ResourceGenerator(WorldCoord coord) {
-        session = HibernateUtil.getSessionFactory().openSession();
+    public ResourceGenerator(long when, WorldCoord[] coord, Session session) {
+        super(when, 1000, true);
         this.coord = coord;
+        this.session = session;
     }
 
     @Override
-    public void run() {
+    void doTask() {
+        if(coord[0]==null) return;
         session.beginTransaction();
         PlayerDAO playerDAO = new PlayerDAO(session);
-        Player player = playerDAO.getPlayerByWid(coord.getWid());
+        Player player = playerDAO.getPlayerByWid(coord[0].getWid());
 //        System.out.println("Generating resource, speed:" + player.getMoneyGenerationSpeed());
         if (player.getMoney() + player.getMoneyGenerationSpeed() < 9999999) {
             player.setMoney(player.getMoney() + player.getMoneyGenerationSpeed());

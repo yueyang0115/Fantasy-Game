@@ -1,5 +1,6 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.Inventory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

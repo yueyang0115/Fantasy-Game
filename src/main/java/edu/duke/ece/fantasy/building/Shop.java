@@ -1,15 +1,12 @@
 package edu.duke.ece.fantasy.building;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.Item.Potion;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.ShopInventoryDAO;
 import org.hibernate.Session;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class Shop extends Building implements Trader {
     List<shopInventory> possible_inventory = new ArrayList<>();
@@ -36,7 +33,7 @@ public abstract class Shop extends Building implements Trader {
 //        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
         super.onCreate(session, coord);
         // delete all old inventory
-        shopInventoryDAO shopinventoryDAO = new shopInventoryDAO(session);
+        ShopInventoryDAO shopinventoryDAO = new ShopInventoryDAO(session);
         shopinventoryDAO.deleteInventory(coord);
         for (shopInventory inventory : possible_inventory) {
             inventory.setCoord(coord);
@@ -45,7 +42,7 @@ public abstract class Shop extends Building implements Trader {
     }
 
     public void loadInventory(Session session, WorldCoord coord) {
-        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
+        ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO(session);
         current_inventory = shopInventoryDAO.getInventories(coord);
 //        shopInventoryDAO.getInventory();
     }

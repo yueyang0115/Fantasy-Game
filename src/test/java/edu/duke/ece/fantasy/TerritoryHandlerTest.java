@@ -1,19 +1,11 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.Territory;
-import edu.duke.ece.fantasy.database.TerritoryDAO;
-import edu.duke.ece.fantasy.json.MessagesS2C;
-import edu.duke.ece.fantasy.json.PositionResultMessage;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TerritoryHandlerTest {
     TerritoryDAO th;

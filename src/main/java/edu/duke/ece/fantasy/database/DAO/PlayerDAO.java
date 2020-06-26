@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Player.Status;
@@ -23,8 +23,8 @@ public class PlayerDAO {
         Player player = new Player(username, encryptPassword);
 
         //add one default soldier for each player
-        Soldier soldier = new Soldier("soldier",50,5,20);
-        Soldier soldier2 = new Soldier("soldier",48,3,18);
+        Soldier soldier = new Soldier("soldier", 50, 5, 20);
+        Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
         player.addSoldier(soldier);
         player.addSoldier(soldier2);
 
@@ -34,34 +34,30 @@ public class PlayerDAO {
 
     }
 
-    public Player getPlayerByWid(int wid){
-        Query q = session.createQuery("From Player U where U.wid =:wid");
+    public Player getPlayerByWid(int wid) {
+        Query<Player> q = session.createQuery("From Player U where U.wid =:wid", Player.class);
         q.setParameter("wid", wid);
-        return (Player) q.uniqueResult();
+        return q.uniqueResult();
     }
 
-    public Player getPlayer(int id){
-        Query q = session.createQuery("From Player U where U.id =:id");
+    public Player getPlayer(int id) {
+        Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
         q.setParameter("id", id);
-//        session.close();
-//        session.beginTransaction();
         q.uniqueResult();
-        System.out.println("I'm in playerDAO:"+id);
-        Player p = (Player) q.uniqueResult();
-        return  p;
+        return q.uniqueResult();
     }
 
     public Player getPlayer(String username) {
-        Query q = session.createQuery("From Player U where U.username =:username");
+        Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
         q.setParameter("username", username);
-        return (Player) q.uniqueResult();
+        return q.uniqueResult();
     }
 
     public Player getPlayer(String username, String password) {
         // select territory according to conditions
-        Query q = session.createQuery("From Player U where U.username =:username");
+        Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
         q.setParameter("username", username);
-        Player res = (Player) q.uniqueResult();
+        Player res = q.uniqueResult();
         if (res == null) {
             return null;
         }

@@ -1,7 +1,10 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
 import java.util.HashMap;
 
+import edu.duke.ece.fantasy.database.Tile;
+import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.WorldInfo;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

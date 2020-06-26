@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 

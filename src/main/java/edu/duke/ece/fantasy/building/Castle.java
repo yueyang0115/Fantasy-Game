@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.building;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import org.hibernate.Session;
 
 import java.util.List;

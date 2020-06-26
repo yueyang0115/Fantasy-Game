@@ -1,15 +1,18 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.building.BaseShop;
 import edu.duke.ece.fantasy.building.Shop;
+import edu.duke.ece.fantasy.building.SuperShop;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import org.hibernate.Session;
 
 public class Initializer {
 
     private Session session;
 
-    public Initializer() {
+    public Initializer(Session session) {
+        this.session = session;
     }
 
     public void initialize() {
@@ -19,35 +22,35 @@ public class Initializer {
         }
     }
 
-    public void initialize_test_player(Session session) {
-        session.beginTransaction();
+    public void initialize_test_player() {
+//        session.beginTransaction();
         PlayerDAO playerDAO = new PlayerDAO(session);
         Player player = playerDAO.getPlayer("test");
         if (player == null) { // if test player doesn't exist
             playerDAO.addPlayer("test", "test");
         }
-        session.getTransaction().commit();
+//        session.getTransaction().commit();
     }
 
-    public WorldCoord initialize_test_shop(Session session) {
+    public WorldCoord initialize_test_shop() {
         // create shop in WorldCoord
         WorldCoord shopCoord = new WorldCoord(-1, 100, 100);
-        session.beginTransaction();
+//        session.beginTransaction();
         DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
         DBBuilding building = dbBuildingDAO.getBuilding(shopCoord);
         if (building == null) {
-            Shop shop = new BaseShop();
+            Shop shop = new SuperShop();
             shop.onCreate(session, shopCoord);
         }
-        session.getTransaction().commit();
+//        session.getTransaction().commit();
         return shopCoord;
     }
 
-    public void test_initialize(Session session) {
+    public void test_initialize() {
         // initialize player
-        initialize_test_player(session);
+        initialize_test_player();
         // initialize shop
-        initialize_test_shop(session);
+        initialize_test_shop();
     }
 
 
