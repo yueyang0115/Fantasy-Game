@@ -18,13 +18,14 @@ public class MonsterGenerator extends MonsterTask {
 
     @Override
     public void doTask() {
-        session.beginTransaction();
+
+        //TODO: player.getCoord // player.getStatus ==
         if(!canGenerateMonster[0] || this.coord[0] ==null || this.coord[0].getWid() == -1){
-            session.getTransaction().commit();
             return;
         }
 
         else{
+            session.beginTransaction();
             //if number of monsters in an area is within limited number, generate a new monster
             Long monsterNum = monsterDAO.countMonstersInRange(coord[0], X_RANGE, Y_RANGE);
             if (monsterNum < MONSTER_LIMIT) {
@@ -35,8 +36,8 @@ public class MonsterGenerator extends MonsterTask {
                 putMonsterInResultMsgQueue(m);
                 System.out.println("generate a new monster in " + where.toString());
             }
+            session.getTransaction().commit();
         }
-        session.getTransaction().commit();
     }
 
     //find a new coord to generate a new monster
