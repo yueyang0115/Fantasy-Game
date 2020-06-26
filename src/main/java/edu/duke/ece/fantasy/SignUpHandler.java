@@ -1,19 +1,18 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.json.SignUpRequestMessage;
 import edu.duke.ece.fantasy.json.SignUpResultMessage;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SignUpHandler {
-    private PlayerDAO playerDAO;
+    private MetaDAO metaDAO;
     Logger logger = LoggerFactory.getLogger(SignUpHandler.class);
 
-    public SignUpHandler(Session session) {
-        this.playerDAO = new PlayerDAO(session);
+    public SignUpHandler(MetaDAO metaDAO) {
+        this.metaDAO = metaDAO;
     }
 
     public SignUpResultMessage handle(SignUpRequestMessage input) {
@@ -21,9 +20,9 @@ public class SignUpHandler {
         String username = input.getUsername();
         String password = input.getPassword();
 
-        Player player = playerDAO.getPlayer(username);
+        Player player = metaDAO.getPlayerDAO().getPlayer(username);
         if (player == null) {
-            playerDAO.addPlayer(username, password);
+            metaDAO.getPlayerDAO().addPlayer(username, password);
             result.setStatus("success");
             System.out.println("[DEBUG] SignUp succeed");
             logger.debug("[DEBUG] SignUp succeed");

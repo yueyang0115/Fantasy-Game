@@ -2,14 +2,11 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 public class MessageHandler {
     private BattleHandler myBattleHandler = new BattleHandler();
@@ -61,7 +58,7 @@ public class MessageHandler {
             if (battleMsg != null) {
                 sharedData.getPlayer().setStatus(Player.Status.INBATTLE);
                 if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWid());
-                BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId());
+                BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
             }
 

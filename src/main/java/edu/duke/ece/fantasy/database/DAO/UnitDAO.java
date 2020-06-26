@@ -1,15 +1,16 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.Unit;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnitManager {
+public class UnitDAO {
     private Session session;
 
-    public UnitManager(Session session) {
+    public UnitDAO(Session session) {
         this.session = session;
     }
 

@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy;
 import edu.duke.ece.fantasy.building.*;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
@@ -21,11 +22,10 @@ public class BuildingHandler {
     Map<String, Building> BaseBuildingMap = new HashMap<>();
     //("shop",shop);
 
-    public BuildingHandler(Session session) {
-        playerDAO = new PlayerDAO(session);
-        DBBuildingDAO = new DBBuildingDAO(session);
-        territoryDAO = new TerritoryDAO(session);
-        this.session = session;
+    public BuildingHandler(MetaDAO metaDAO) {
+        playerDAO = metaDAO.getPlayerDAO();
+        DBBuildingDAO = metaDAO.getDbBuildingDAO();
+        territoryDAO = metaDAO.getTerritoryDAO();
         Shop shop = new BaseShop();
         Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);

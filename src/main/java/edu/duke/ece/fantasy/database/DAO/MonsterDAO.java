@@ -1,5 +1,7 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.Monster;
+import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -7,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MonsterManger {
+public class MonsterDAO {
     private Session session;
 
-    public MonsterManger(Session session) {
+    public MonsterDAO(Session session) {
         this.session = session;
     }
 

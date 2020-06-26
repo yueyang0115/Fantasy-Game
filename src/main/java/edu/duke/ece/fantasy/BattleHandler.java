@@ -1,15 +1,18 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
+import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
+import edu.duke.ece.fantasy.database.DAO.SoldierDAO;
+import edu.duke.ece.fantasy.database.DAO.UnitDAO;
 import edu.duke.ece.fantasy.json.*;
-import org.hibernate.Session;
 
 import java.util.*;
 
 public class BattleHandler {
-    private MonsterManger myMonsterManger;
-    private SoldierManger mySoldierManger;
-    private UnitManager myUnitManager;
+    private MonsterDAO monsterDAO;
+    private SoldierDAO soldierDAO;
+    private UnitDAO unitDAO;
 
     /* unitQueue: keep track of the unit's attack order, it is first sorted by unit's speed
     the units will take turns to attack in the order of the queue,
@@ -21,9 +24,9 @@ public class BattleHandler {
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
     public BattleResultMessage handle(BattleRequestMessage request, int playerID, MetaDAO metaDAO){
-        myMonsterManger = metaDAO.getMonsterDAO();
-        mySoldierManger = metaDAO.getSoldierDAO();
-        myUnitManager = metaDAO.getUnitDAO();
+        monsterDAO = metaDAO.getMonsterDAO();
+        soldierDAO = metaDAO.getSoldierDAO();
+        unitDAO = metaDAO.getUnitDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){
@@ -47,8 +50,8 @@ public class BattleHandler {
 
         // get monsters and soldiers engaged in the battle
         WorldCoord where = request.getTerritoryCoord();
-        List<Monster> monsterList = myMonsterManger.getMonsters(where);
-        List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
+        List<Monster> monsterList = monsterDAO.getMonsters(where);
+        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         // sort unit by speed and set the UnitQueue
         this.unitQueue = generateUnitQueue(monsterList, soldierList);
         // make a list of unitIDs, corresponding units of these IDs are in same order with unitQueue
@@ -99,7 +102,7 @@ public class BattleHandler {
         while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
             attackerID = this.unitQueue.peek().getId();
             attackeeID = request.getBattleAction().getAttacker().getId();
-            if(myUnitManager.getUnit(attackeeID) == null || myUnitManager.getUnit(attackerID) == null) continue;
+            if(unitDAO.getUnit(attackeeID) == null || unitDAO.getUnit(attackerID) == null) continue;
             action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);
@@ -111,8 +114,8 @@ public class BattleHandler {
 
     //set "win" "lose" "continue" status for BattleResultMsg
     public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
-        List<Monster> monsterList = myMonsterManger.getMonsters(where);
-        List<Soldier> soldierList = mySoldierManger.getSoldiers(playerID);
+        List<Monster> monsterList = monsterDAO.getMonsters(where);
+        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         if(monsterList == null || monsterList.size() ==0) result.setResult("win");
         else if(soldierList == null || soldierList.size() ==0) result.setResult("lose");
         else result.setResult("continue");
@@ -123,8 +126,8 @@ public class BattleHandler {
         int deletedID = -1;
 
         //begin battle
-        Unit attacker = myUnitManager.getUnit(attackerID);
-        Unit attackee = myUnitManager.getUnit(attackeeID);
+        Unit attacker = unitDAO.getUnit(attackerID);
+        Unit attackee = unitDAO.getUnit(attackeeID);
         if(attackee == null || attacker==null){
             result.setResult("invalid");
             return null;
@@ -133,11 +136,11 @@ public class BattleHandler {
         int attackerAtk = attacker.getAtk();
         int newAttackeeHp = Math.max(attckeeHp - attackerAtk, 0);
         attackee.setHp(newAttackeeHp);
-        myUnitManager.setUnitHp(attackeeID, newAttackeeHp);
+        unitDAO.setUnitHp(attackeeID, newAttackeeHp);
 
         if(newAttackeeHp == 0){
             deletedID = attackeeID;
-            myUnitManager.deleteUnit(attackeeID);
+            unitDAO.deleteUnit(attackeeID);
         }
 
         //update unitQueue

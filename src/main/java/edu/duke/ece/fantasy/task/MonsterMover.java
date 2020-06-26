@@ -1,18 +1,19 @@
 package edu.duke.ece.fantasy.task;
 
+import edu.duke.ece.fantasy.SharedData;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesS2C;
-import org.hibernate.Session;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MonsterMover extends MonsterScheduledTask {
 
-    public MonsterMover(long when, int repeatedInterval, boolean repeating, MetaDAO metaDAO, Player player, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
-        super(when, repeatedInterval, repeating, metaDAO, player, resultMsgQueue);
+    public MonsterMover(long when, int repeatedInterval, boolean repeating, MetaDAO metaDAO, SharedData sharedData, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+        super(when, repeatedInterval, repeating, metaDAO, sharedData, resultMsgQueue);
     }
 
 
@@ -21,7 +22,7 @@ public class MonsterMover extends MonsterScheduledTask {
         if(!canGenerateMonster()) return;
 
         //get monsters within an area whenever getting into a new coord
-        List<Monster> monsterList = monsterDAO.getMonstersInRange(player.getCurrentCoord(),X_RANGE,Y_RANGE);
+        List<Monster> monsterList = metaDAO.getMonsterDAO().getMonstersInRange(player.getCurrentCoord(),X_RANGE,Y_RANGE);
         //if has monsters in this area
         if(monsterList != null && monsterList.size() != 0){
             //sort all monsters according to its distance from currentCoord
@@ -29,8 +30,8 @@ public class MonsterMover extends MonsterScheduledTask {
                 @Override
                 public int compare(Monster o1, Monster o2) {
 //                    return o1.getId() - o2.getId();
-                    double distance1 = Math.pow(o1.getCoord().getX()-player.getCurrentCoord().getX(),2) + Math.pow(o1.getCoord().getY()-coord[0].getY(),2);
-                    double distance2 = Math.pow(o2.getCoord().getX()-player.getCurrentCoord().getX(),2) + Math.pow(o2.getCoord().getY()-coord[0].getY(),2);
+                    double distance1 = Math.pow(o1.getCoord().getX()-player.getCurrentCoord().getX(),2) + Math.pow(o1.getCoord().getY()-player.getCurrentCoord().getY(),2);
+                    double distance2 = Math.pow(o2.getCoord().getX()-player.getCurrentCoord().getX(),2) + Math.pow(o2.getCoord().getY()-player.getCurrentCoord().getY(),2);
                     return Double.compare(distance1, distance2);
                 }
             });
@@ -69,8 +70,8 @@ public class MonsterMover extends MonsterScheduledTask {
         }
         //update moved monster data in database,
         if(moved) {
-            monsterDAO.updateMonsterCoord(m.getId(), startX, startY);
-            monsterDAO.setMonsterStatus(m.getId(), true);
+            metaDAO.getMonsterDAO().updateMonsterCoord(m.getId(), startX, startY);
+            metaDAO.getMonsterDAO().setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() +" from "+startCoord + " to "+startX+", "+startY);
             //save the changed monster message in resultMsgQueue
             putMonsterInResultMsgQueue(m);
