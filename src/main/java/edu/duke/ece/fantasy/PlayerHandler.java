@@ -88,6 +88,7 @@ public class PlayerHandler extends Thread {
     }
 
     private void handleAll() {
+
         while (!TCPcommunicator.isClosed()) {
             //handle server automatically generated tasks
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();

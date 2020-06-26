@@ -19,7 +19,6 @@ import java.util.List;
 @Entity
 @Table(name = "Player")
 public class Player implements Trader {
-
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -35,8 +34,10 @@ public class Player implements Trader {
     @Column(name = "money")
     private int money;
 
-    @Column(name = "MoneyGenerationSpeed")
-    private int MoneyGenerationSpeed = 0;
+//   TODO: private int currentState;
+
+    @Column(name = "moneyGenerationSpeed")
+    private int MoneyGenerationSpeed = 0; // TODO:change name
 
     @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
     private int wid;
