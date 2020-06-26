@@ -1,16 +1,16 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class TaskScheduler {
-    private PriorityQueue<Task> tasksQueue;
+    private PriorityQueue<ScheduledTask> tasksQueue;
 
     public TaskScheduler() {
-        tasksQueue = new PriorityQueue<>(new Comparator<Task>() {
+        tasksQueue = new PriorityQueue<>(new Comparator<ScheduledTask>() {
             @Override
-            public int compare(Task task1, Task task2) {
-                return Long.compare(task1.getWhen(),task2.getWhen());
+            public int compare(ScheduledTask scheduledTask1, ScheduledTask scheduledTask2) {
+                return Long.compare(scheduledTask1.getWhen(), scheduledTask2.getWhen());
             }
         });
     }
@@ -23,22 +23,22 @@ public class TaskScheduler {
 //            System.out.println("in getTimeToNextTask, tasksQueue.peek().getWhen() is "+tasksQueue.peek().getWhen());
             return tasksQueue.peek().getWhen() - now;
         }
-        return Integer.MAX_VALUE;
+        return Long.MAX_VALUE;
     }
 
     // this method will be called when the first task in queue should be executed
     public void runReadyTasks(){
         long now = System.currentTimeMillis();
         while(!tasksQueue.isEmpty()){
-            Task task = tasksQueue.peek();
+            ScheduledTask scheduledTask = tasksQueue.peek();
             //if: the task is ready
-            if(task.getWhen() <= now ){
-                task.doTask();
+            if(scheduledTask.getWhen() <= now ){
+                scheduledTask.doTask();
                 tasksQueue.poll();
                 //if the task should be done repeatedly, update the next time to do it, add it back to queue
-                if(task.isRepeating()){
-                    task.updateWhen();
-                    tasksQueue.offer(task);
+                if(scheduledTask.isRepeating()){
+                    scheduledTask.updateWhen();
+                    tasksQueue.offer(scheduledTask);
                 }
             }
             // else: all tasks should be executed in the future
@@ -48,8 +48,8 @@ public class TaskScheduler {
         }
     }
 
-    public void addTask(Task task){
-        this.tasksQueue.offer(task);
+    public void addTask(ScheduledTask scheduledTask){
+        this.tasksQueue.offer(scheduledTask);
     }
 
 }
