@@ -4,17 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.ShopInventoryDAO;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,8 @@ class ShopHandlerTest {
     PlayerDAO playerDAO;
     ObjectMapper objectMapper = new ObjectMapper();
     Logger logger = LoggerFactory.getLogger(ShopHandlerTest.class);
-    DBBuildingDAO DBBuildingDAO;
-    shopInventoryDAO shopInventoryDAO;
+    edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
+    ShopInventoryDAO shopInventoryDAO;
     Session session;
     WorldCoord shopCoord;
 
@@ -37,7 +38,7 @@ class ShopHandlerTest {
         shopHandler = new ShopHandler(session);
         DBBuildingDAO = new DBBuildingDAO(session);
         playerDAO = new PlayerDAO(session);
-        shopInventoryDAO = new shopInventoryDAO(session);
+        shopInventoryDAO = new ShopInventoryDAO(session);
     }
 
 

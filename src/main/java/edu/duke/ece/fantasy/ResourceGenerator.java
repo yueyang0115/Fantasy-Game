@@ -1,13 +1,9 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
-
-import java.util.TimerTask;
 
 public class ResourceGenerator extends Task {
     Session session;

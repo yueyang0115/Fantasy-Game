@@ -1,7 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.json.LoginRequestMessage;
 import edu.duke.ece.fantasy.json.LoginResultMessage;
 import org.hibernate.Session;

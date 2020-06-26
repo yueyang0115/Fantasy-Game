@@ -6,6 +6,10 @@ import java.util.List;
 import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.building.Castle;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
+import edu.duke.ece.fantasy.database.DAO.WorldDAO;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
@@ -14,7 +18,7 @@ import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
-    DBBuildingDAO DBBuildingDAO;
+    edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
     MonsterManger monsterDAO;
     PlayerDAO playerDAO;

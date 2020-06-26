@@ -1,13 +1,14 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.InventoryDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerInventoryDAO;
 import edu.duke.ece.fantasy.json.AttributeRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryResultMessage;
 import org.hibernate.Session;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryHandler {
@@ -15,11 +16,11 @@ public class InventoryHandler {
     InventoryDAO inventoryDAO;
     UnitManager unitManager;
     Session session;
-    playerInventoryDAO playerInventoryDAO;
+    PlayerInventoryDAO playerInventoryDAO;
 
     public InventoryHandler(Session session) {
         playerDAO = new PlayerDAO(session);
-        playerInventoryDAO = new playerInventoryDAO(session);
+        playerInventoryDAO = new PlayerInventoryDAO(session);
         inventoryDAO = new InventoryDAO(session);
         unitManager = new UnitManager(session);
         this.session = session;

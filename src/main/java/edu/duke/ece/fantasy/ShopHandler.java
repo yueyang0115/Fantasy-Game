@@ -1,21 +1,20 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.building.Shop;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
 
-import java.util.List;
 import java.util.Map;
 
 public class ShopHandler {
     private PlayerDAO playerDAO;
-    private playerInventoryDAO playerinventoryDAO;
-    private shopInventoryDAO shopInventoryDAO;
+    private PlayerInventoryDAO playerinventoryDAO;
+    private ShopInventoryDAO shopInventoryDAO;
     private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
     private Session session;
@@ -23,8 +22,8 @@ public class ShopHandler {
     public ShopHandler(Session session) {
         dbBuildingDAO = new DBBuildingDAO(session);
         playerDAO = new PlayerDAO(session);
-        playerinventoryDAO = new playerInventoryDAO(session);
-        shopInventoryDAO = new shopInventoryDAO(session);
+        playerinventoryDAO = new PlayerInventoryDAO(session);
+        shopInventoryDAO = new ShopInventoryDAO(session);
         inventoryDAO = new InventoryDAO(session);
         this.session = session;
 

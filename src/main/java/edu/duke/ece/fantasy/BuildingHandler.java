@@ -2,6 +2,9 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.building.*;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
 import edu.duke.ece.fantasy.json.BuildingResultMessage;
 import org.hibernate.Session;
@@ -12,7 +15,7 @@ import java.util.Map;
 
 public class BuildingHandler {
     PlayerDAO playerDAO;
-    DBBuildingDAO DBBuildingDAO;
+    edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
     TerritoryDAO territoryDAO;
     Session session;
     Map<String, Building> BaseBuildingMap = new HashMap<>();

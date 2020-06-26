@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Soldier;

@@ -2,7 +2,7 @@ package edu.duke.ece.fantasy.building;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.duke.ece.fantasy.database.DBBuilding;
-import edu.duke.ece.fantasy.database.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 

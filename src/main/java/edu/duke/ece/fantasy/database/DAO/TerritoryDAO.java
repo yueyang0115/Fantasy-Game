@@ -1,9 +1,11 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import edu.duke.ece.fantasy.database.Monster;
+import edu.duke.ece.fantasy.database.Territory;
+import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;

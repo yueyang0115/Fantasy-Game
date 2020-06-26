@@ -1,8 +1,9 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.building.BaseShop;
-import edu.duke.ece.fantasy.building.Shop;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
 import edu.duke.ece.fantasy.json.BuildingResultMessage;
 import org.hibernate.Session;

@@ -1,15 +1,17 @@
-package edu.duke.ece.fantasy.database;
+package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.shopInventory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class shopInventoryDAO {
+public class ShopInventoryDAO {
     Session session;
 
-    public shopInventoryDAO(Session session) {
+    public ShopInventoryDAO(Session session) {
         this.session = session;
     }
 

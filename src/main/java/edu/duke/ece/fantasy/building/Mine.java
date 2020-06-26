@@ -2,7 +2,7 @@ package edu.duke.ece.fantasy.building;
 
 
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 
