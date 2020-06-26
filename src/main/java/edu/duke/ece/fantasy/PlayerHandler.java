@@ -9,6 +9,7 @@ import org.hibernate.Session;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerHandler extends Thread{
     private WorldCoord[] currentCoord = new WorldCoord[1];
@@ -89,20 +90,34 @@ public class PlayerHandler extends Thread{
     }
 
     private void handleAll(){
+        //TODO:
+        //Session session = HibernateUtil.getSessionFactory().openSession();
+        //MetaDao metaDAO = new MetaDAO(session);
+
         while(!TCPcommunicator.isClosed()) {
+            //TODO: session.beginTransaction();
             //handle server automatically generated tasks
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
             if(TimeUntilNextTask <= 0){
                 // at least the first task should be executed
+                //TODO : runReadyTask pass in metaDA0, taskScheduler.runReadyTasks(metaDA0);
                 taskScheduler.runReadyTasks();
             }
+            TimeUntilNextTask = taskScheduler.getTimeToNextTask();
 
             //handle server in-response-to-client tasks
-            MessagesC2S request = requestMsgQueue.poll();
-            if (request != null) {
-                MessagesS2C result = messageHandler.handle(request);
-                resultMsgQueue.offer(result);
+            MessagesC2S request = null;
+            try {
+                request = requestMsgQueue.poll(TimeUntilNextTask, TimeUnit.MILLISECONDS);
+                if (request != null) {
+                    //TODO : handle pass in metaDAO, MessagesS2C result = messageHandler.handle(metaDAO, request);
+                    MessagesS2C result = messageHandler.handle(request);
+                    resultMsgQueue.offer(result);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            //todo: session.getTransaction().commit();
         }
     }
 

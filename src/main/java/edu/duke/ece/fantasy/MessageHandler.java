@@ -40,6 +40,7 @@ public class MessageHandler {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             if (loginMsg != null) {
                 session.beginTransaction();
+                //TODO, pass in metaDAO, LoginHandler lh = new LoginHandler(session, metaDAO);
                 LoginHandler lh = new LoginHandler(session);
                 result.setLoginResultMessage(lh.handle(loginMsg));
                 wid = result.getLoginResultMessage().getWid();
@@ -66,10 +67,12 @@ public class MessageHandler {
                 result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
                 session.getTransaction().commit();
                 canGenerateMonster[0] = true;
+                //TODO:player.setStatus
             }
 
             if (battleMsg != null) {
                 canGenerateMonster[0] = false;
+                //TODO:player.setStatus
                 session.beginTransaction();
                 if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(this.wid);
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
@@ -86,6 +89,7 @@ public class MessageHandler {
 
             if (shopRequestMessage != null) {
                 canGenerateMonster[0] = false;
+                //TODO:player.setStatus
                 session.beginTransaction();
                 ShopHandler shopHandler = new ShopHandler(session);
                 if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(this.wid);
@@ -95,6 +99,7 @@ public class MessageHandler {
 
             if(inventoryRequestMessage != null){
                 canGenerateMonster[0] = false;
+                //TODO:player.setStatus
                 session.beginTransaction();
                 InventoryHandler inventoryHandler = new InventoryHandler(session);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, playerID));
@@ -102,6 +107,7 @@ public class MessageHandler {
             }
 
             if (buildingRequestMessage != null) {
+                //TODO:player.setStatus
                 session.beginTransaction();
                 BuildingHandler buildingHandler = new BuildingHandler(session);
                 if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(this.wid);
