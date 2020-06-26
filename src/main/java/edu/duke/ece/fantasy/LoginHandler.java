@@ -8,9 +8,11 @@ import org.hibernate.Session;
 
 public class LoginHandler {
     private PlayerDAO playerDAO;
+    private SharedData sharedData;
 
-    public LoginHandler(Session session){
-        this.playerDAO = new PlayerDAO(session);
+    public LoginHandler(MetaDAO metaDAO, SharedData sharedData){
+        this.playerDAO = metaDAO.getPlayerDAO();
+        this.sharedData = sharedData;
     }
 
     public LoginResultMessage handle(LoginRequestMessage input){
@@ -25,6 +27,7 @@ public class LoginHandler {
             result.setWid(player.getWid());
             result.setId(player.getId());
             System.out.println("[DEBUG] Login success");
+            sharedData.setPlayer(player);
         }
         else{
             result.setStatus("fail");

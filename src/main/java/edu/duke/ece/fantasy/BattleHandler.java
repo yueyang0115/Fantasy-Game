@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import java.util.*;
 
 public class BattleHandler {
-    private Session session;
     private MonsterManger myMonsterManger;
     private SoldierManger mySoldierManger;
     private UnitManager myUnitManager;
@@ -21,11 +20,10 @@ public class BattleHandler {
     }
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
-    public BattleResultMessage handle(BattleRequestMessage request, int playerID, Session session){
-        this.session = session;
-        myMonsterManger = new MonsterManger(session);
-        mySoldierManger = new SoldierManger(session);
-        myUnitManager = new UnitManager(session);
+    public BattleResultMessage handle(BattleRequestMessage request, int playerID, MetaDAO metaDAO){
+        myMonsterManger = metaDAO.getMonsterDAO();
+        mySoldierManger = metaDAO.getSoldierDAO();
+        myUnitManager = metaDAO.getUnitDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){

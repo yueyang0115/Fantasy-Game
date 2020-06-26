@@ -2,49 +2,37 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
+import edu.duke.ece.fantasy.task.MonsterGenerator;
+import edu.duke.ece.fantasy.task.MonsterMover;
+import edu.duke.ece.fantasy.task.TaskScheduler;
 import org.hibernate.Session;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class PlayerHandler extends Thread {
-    private WorldCoord[] currentCoord = new WorldCoord[1];
-    private boolean[] canGenerateMonster = new boolean[1];
-
+public class PlayerHandler extends Thread{
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
     private ObjectMapper myObjectMapper;
-    private MessageHandler messageHandler;
     private LinkedBlockingQueue<MessagesS2C> resultMsgQueue;
     private LinkedBlockingQueue<MessagesC2S> requestMsgQueue;
-    private Session monsterSession;
-    private TaskScheduler taskScheduler;
 
     public PlayerHandler(TCPCommunicator TCPcm, UDPCommunicator UDPcm) {
         this.TCPcommunicator = TCPcm;
         this.UDPcommunicator = UDPcm;
         this.myObjectMapper = new ObjectMapper();
-        this.messageHandler = new MessageHandler(currentCoord, canGenerateMonster);
         this.resultMsgQueue = new LinkedBlockingQueue<>();
         this.requestMsgQueue = new LinkedBlockingQueue<>();
-        canGenerateMonster[0] = false;
-        this.taskScheduler = new TaskScheduler();
-        this.monsterSession = HibernateUtil.getSessionFactory().openSession();
     }
 
     public void run() {
-        MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
-        MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, monsterSession, currentCoord, canGenerateMonster, resultMsgQueue);
-        ResourceGenerator resourceGenerator = new ResourceGenerator(System.currentTimeMillis(), currentCoord, monsterSession);
-        taskScheduler.addTask(monsterGenerator);
-        taskScheduler.addTask(monsterMover);
-        taskScheduler.addTask(resourceGenerator);
-        new Thread(() -> receiveMessage()).start();
-        new Thread(() -> handleAll()).start();
+        new Thread(()-> receiveMessage()).start();
+        new Thread(()-> handleAll() ).start();
         sendMessage();
     }
 
@@ -89,34 +77,44 @@ public class PlayerHandler extends Thread {
     }
 
     private void handleAll(){
-        //TODO:
-        //Session session = HibernateUtil.getSessionFactory().openSession();
-        //MetaDao metaDAO = new MetaDAO(session);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        MetaDAO metaDAO = new MetaDAO(session);
+        SharedData sharedData = new SharedData();
+        MessageHandler messageHandler = new MessageHandler(metaDAO, sharedData);
+        TaskScheduler taskScheduler = new TaskScheduler();
 
+        boolean taskIsAdded = false;
         while(!TCPcommunicator.isClosed()) {
-            //TODO: session.beginTransaction();
+            session.beginTransaction();
             //handle server automatically generated tasks
+            if(!taskIsAdded && sharedData.getPlayer() != null) {
+                MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, metaDAO, sharedData, resultMsgQueue);
+                MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, metaDAO, sharedData,  resultMsgQueue);
+                taskScheduler.addTask(monsterGenerator);
+                taskScheduler.addTask(monsterMover);
+                taskIsAdded = true;
+            }
+
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
             if (TimeUntilNextTask <= 0) {
                 // at least the first task should be executed
-                //TODO : runReadyTask pass in metaDA0, taskScheduler.runReadyTasks(metaDA0);
                 taskScheduler.runReadyTasks();
             }
             TimeUntilNextTask = taskScheduler.getTimeToNextTask();
 
             //handle server in-response-to-client tasks
-            MessagesC2S request = null;
+            MessagesC2S request;
             try {
                 request = requestMsgQueue.poll(TimeUntilNextTask, TimeUnit.MILLISECONDS);
                 if (request != null) {
-                    //TODO : handle pass in metaDAO, MessagesS2C result = messageHandler.handle(metaDAO, request);
                     MessagesS2C result = messageHandler.handle(request);
                     resultMsgQueue.offer(result);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //todo: session.getTransaction().commit();
+
+            session.getTransaction().commit();
         }
     }
 

@@ -1,10 +1,13 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
+
+import static edu.duke.ece.fantasy.database.Player.Status.*;
 
 public class PlayerDAO {
     private Session session;
@@ -63,5 +66,16 @@ public class PlayerDAO {
         } else {
             return null;
         }
+    }
+
+    public void setStatus(Player p, Status status){
+        p.setStatus(status);
+        session.update(p);
+    }
+
+    public void setCurrentCoord(Player p, WorldCoord currentCoord){
+        p.setCurrentCoord(currentCoord);
+        session.update(p);
+        //TODO: ???????
     }
 }

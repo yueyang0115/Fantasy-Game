@@ -1,8 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import edu.duke.ece.fantasy.Item.IItem;
 import edu.duke.ece.fantasy.Item.Item;
 import org.hibernate.annotations.*;
 
@@ -11,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +16,11 @@ import java.util.List;
 @Entity
 @Table(name = "Player")
 public class Player implements Trader {
+    public enum Status
+    {
+        INBUILDING, INBATTLE, INMAIN, INBAG;
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -34,13 +36,17 @@ public class Player implements Trader {
     @Column(name = "money")
     private int money;
 
-//   TODO: private int currentState;
-
     @Column(name = "moneyGenerationSpeed")
-    private int MoneyGenerationSpeed = 0; // TODO:change name
+    private int moneyGenerationSpeed = 0;
 
     @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
     private int wid;
+
+    @Column(name = "status", nullable = false)
+    private Status status = Status.INMAIN;
+
+    @Column(name = "currentCoord")
+    private WorldCoord currentCoord;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
@@ -57,12 +63,20 @@ public class Player implements Trader {
     public Player() {
     }
 
+    public Status getStatus() { return status; }
+
+    public void setStatus(Status status) { this.status = status; }
+
+    public WorldCoord getCurrentCoord() { return currentCoord; }
+
+    public void setCurrentCoord(WorldCoord currentCoord) { this.currentCoord = currentCoord; }
+
     public int getMoneyGenerationSpeed() {
-        return MoneyGenerationSpeed;
+        return moneyGenerationSpeed;
     }
 
     public void setMoneyGenerationSpeed(int moneyGenerationSpeed) {
-        MoneyGenerationSpeed = moneyGenerationSpeed;
+        this.moneyGenerationSpeed = moneyGenerationSpeed;
     }
 
     public int getId() {

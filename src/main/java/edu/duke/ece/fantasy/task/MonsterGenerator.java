@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
@@ -7,37 +7,32 @@ import org.hibernate.Session;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MonsterGenerator extends MonsterTask {
+public class MonsterGenerator extends MonsterScheduledTask {
     private int MONSTER_LIMIT = 3;
     private static int TAME_LIMIT = 0;
     private TerritoryDAO territoryDAO;
 
-    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
-        super(when, repeatedInterval, repeating, session, coord, canGenerateMonster, resultMsgQueue);
-        territoryDAO = new TerritoryDAO(session);
+    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, MetaDAO metaDAO, Player player, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+        super(when, repeatedInterval, repeating, metaDAO, player, resultMsgQueue);
+        territoryDAO = metaDAO.getTerritoryDAO();
     }
 
     @Override
     public void doTask() {
 
-        //TODO: player.getCoord // player.getStatus ==
-        if(!canGenerateMonster[0] || this.coord[0] ==null || this.coord[0].getWid() == -1){
-            return;
-        }
+        if(!canGenerateMonster()) return;
 
         else{
-            session.beginTransaction();
             //if number of monsters in an area is within limited number, generate a new monster
-            Long monsterNum = monsterDAO.countMonstersInRange(coord[0], X_RANGE, Y_RANGE);
+            Long monsterNum = monsterDAO.countMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
-                WorldCoord where = generateCoord(coord[0]);
+                WorldCoord where = generateCoord(player.getCurrentCoord());
                 monsterDAO.addMonster(m, where);
                 //save the changed monster message in resultMsgQueue
                 putMonsterInResultMsgQueue(m);
                 System.out.println("generate a new monster in " + where.toString());
             }
-            session.getTransaction().commit();
         }
     }
 
