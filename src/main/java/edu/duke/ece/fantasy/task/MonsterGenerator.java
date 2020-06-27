@@ -3,7 +3,6 @@ package edu.duke.ece.fantasy.task;
 import edu.duke.ece.fantasy.SharedData;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
-import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,7 +18,7 @@ public class MonsterGenerator extends MonsterScheduledTask {
     @Override
     public void doTask() {
 
-        if(!canGenerateMonster()) return;
+        if(cannotGenerateMonster()) return;
 
         else{
             //if number of monsters in an area is within limited number, generate a new monster
@@ -27,10 +26,12 @@ public class MonsterGenerator extends MonsterScheduledTask {
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
                 WorldCoord where = generateCoord(player.getCurrentCoord());
-                metaDAO.getMonsterDAO().addMonster(m, where);
-                //save the changed monster message in resultMsgQueue
-                putMonsterInResultMsgQueue(m);
-                System.out.println("generate a new monster in " + where.toString());
+                if(where != null) {
+                    metaDAO.getMonsterDAO().addMonster(m, where);
+                    //save the changed monster message in resultMsgQueue
+                    putMonsterInResultMsgQueue(m);
+                    System.out.println("generate a new monster in " + where.toString());
+                }
             }
         }
     }

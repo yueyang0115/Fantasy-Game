@@ -3,7 +3,6 @@ package edu.duke.ece.fantasy.task;
 import edu.duke.ece.fantasy.SharedData;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 
@@ -19,7 +18,7 @@ public class MonsterMover extends MonsterScheduledTask {
 
     @Override
     public void doTask() {
-        if(!canGenerateMonster()) return;
+        if(cannotGenerateMonster()) return;
 
         //get monsters within an area whenever getting into a new coord
         List<Monster> monsterList = metaDAO.getMonsterDAO().getMonstersInRange(player.getCurrentCoord(),X_RANGE,Y_RANGE);
