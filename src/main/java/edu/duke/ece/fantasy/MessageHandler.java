@@ -34,8 +34,9 @@ public class MessageHandler {
             if (loginMsg != null) {
                 LoginHandler lh = new LoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
-                System.out.println("inmessageHandler, sharedData coord is "+sharedData.getPlayer().getCurrentCoord());
-
+                System.out.println("in messageHandler, sharedData.id is "+sharedData.getPlayer().getId());
+                System.out.println("in messageHandler, sharedData.wid is "+sharedData.getPlayer().getWid());
+                System.out.println("in messageHandler, sharedData.coord is "+sharedData.getPlayer().getCurrentCoord());
             }
 
             if (signupMsg != null) {

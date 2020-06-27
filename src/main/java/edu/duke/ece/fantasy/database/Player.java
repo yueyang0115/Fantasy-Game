@@ -45,8 +45,11 @@ public class Player implements Trader {
     @Column(name = "status", nullable = false)
     private Status status = Status.INMAIN;
 
-    @Column(name = "currentCoord")
-    private WorldCoord currentCoord;
+    @Column(name = "coordX")
+    private int coordX;
+
+    @Column(name = "coordY")
+    private int coordY;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
@@ -67,9 +70,12 @@ public class Player implements Trader {
 
     public void setStatus(Status status) { this.status = status; }
 
-    public WorldCoord getCurrentCoord() { return currentCoord; }
+    public WorldCoord getCurrentCoord() { return new WorldCoord(wid,coordX,coordY); }
 
-    public void setCurrentCoord(WorldCoord currentCoord) { this.currentCoord = currentCoord; }
+    public void setCurrentCoord(WorldCoord currentCoord) {
+        this.coordX = currentCoord.getX();
+        this.coordY = currentCoord.getY();
+    }
 
     public int getMoneyGenerationSpeed() {
         return moneyGenerationSpeed;
