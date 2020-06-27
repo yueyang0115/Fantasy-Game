@@ -25,6 +25,7 @@ public class LoginHandler {
         if(player != null){
             System.out.println("inLoginHandler, player.id is "+player.getId());
             System.out.println("inLoginHandler, player.wid is "+ player.getWid());
+            System.out.println("inLoginHandler, player.username is "+ player.getUsername());
             result.setStatus("success");
             result.setWid(player.getWid());
             result.setId(player.getId());
