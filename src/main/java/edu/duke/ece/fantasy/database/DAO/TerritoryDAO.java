@@ -124,6 +124,7 @@ public class TerritoryDAO {
         q.setParameter("yupper", where.getY() + y_range/2);
 
         Territory t = (Territory) q.uniqueResult();
+        System.out.println("in territoryDAO, get territory t is "+t);
         WorldCoord res = t.getCoord();
 
         return res;

@@ -32,12 +32,6 @@ public class MessageHandler {
             if (loginMsg != null) {
                 LoginHandler lh = new LoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
-                System.out.println("in messageHandler, sharedData.id is "+sharedData.getPlayer().getId());
-                System.out.println("in messageHandler, sharedData.wid is "+sharedData.getPlayer().getWid());
-                System.out.println("in messageHandler, sharedData.coord is "+sharedData.getPlayer().getCurrentCoord());
-
-                System.out.println("in messageHandler, loginResult.id is "+result.getLoginResultMessage().getId());
-                System.out.println("in messageHandler, loginResult.wid is "+result.getLoginResultMessage().getWid());
             }
 
             if (signupMsg != null) {
@@ -47,13 +41,11 @@ public class MessageHandler {
 
             if (positionMsg != null) {
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);
-                //PositionResultMessage positionResultMessage = new PositionResultMessage();
-//                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
-//                log.info("wid is {} when handle positionMsg",wid);
-                //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
                 result.setPositionResultMessage(positionUpdateHandler.handle(sharedData.getPlayer().getWid(), positionMsg));
+                // we add wid field in currentCoord from the client-sent-msg
                 WorldCoord currentCoord  = positionMsg.getCurrentCoord();
                 currentCoord.setWid(sharedData.getPlayer().getWid());
+                // update player info in sharedData between taskScheduler and messageHandler
                 sharedData.getPlayer().setStatus(Player.Status.INMAIN);
                 sharedData.getPlayer().setCurrentCoord(currentCoord);
             }
