@@ -40,6 +40,7 @@ public class Player implements Trader {
     private int moneyGenerationSpeed = 0;
 
     @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
+    @Generated(GenerationTime.INSERT)
     private int wid;
 
     @Column(name = "status", nullable = false)
