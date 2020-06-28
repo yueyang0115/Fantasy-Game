@@ -35,7 +35,7 @@ public class PositionUpdateHandler {
         worldDAO = metaDAO.getWorldDAO();
         monsterDAO = metaDAO.getMonsterDAO();
         playerDAO = metaDAO.getPlayerDAO();
-
+        session = metaDAO.getSession();
         //    itemDAO = new ItemDAO(session);
     }
 
