@@ -77,6 +77,5 @@ public class PlayerDAO {
     public void setCurrentCoord(Player p, WorldCoord currentCoord){
         p.setCurrentCoord(currentCoord);
         session.update(p);
-        //TODO: ???????
     }
 }

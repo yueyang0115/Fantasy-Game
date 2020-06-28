@@ -23,15 +23,11 @@ public class LoginHandler {
         Player player = playerDAO.getPlayer(username,password);
 
         if(player != null){
-            System.out.println("inLoginHandler, player.id is "+player.getId());
-            System.out.println("inLoginHandler, player.wid is "+ player.getWid());
-            System.out.println("inLoginHandler, player.username is "+ player.getUsername());
             result.setStatus("success");
             result.setWid(player.getWid());
             result.setId(player.getId());
             System.out.println("[DEBUG] Login success");
             sharedData.setPlayer(player);
-            System.out.println("inLoginHandler, sharedData coord is "+sharedData.getPlayer().getCurrentCoord());
         }
         else{
             result.setStatus("fail");
