@@ -44,7 +44,7 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
 
     public boolean cannotGenerateMonster(){
         return player.getStatus() != Player.Status.INMAIN
-                || player.getCurrentCoord()!= null
-                || player.getCurrentCoord().getWid() == -1;
+                || player.getCurrentCoord() == null
+                || metaDAO.getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
     }
 }

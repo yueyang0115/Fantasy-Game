@@ -78,14 +78,15 @@ public class PlayerHandler extends Thread{
     private void handleAll(){
         Session session = HibernateUtil.getSessionFactory().openSession();
         MetaDAO metaDAO = new MetaDAO(session);
-        SharedData sharedData = new SharedData();
+        SharedData sharedData = new SharedData(); // sharing player info between taskScheduler and messageHandler
         MessageHandler messageHandler = new MessageHandler(metaDAO, sharedData);
         TaskScheduler taskScheduler = new TaskScheduler();
 
         boolean taskIsAdded = false;
         while(!TCPcommunicator.isClosed()) {
             session.beginTransaction();
-            //handle server automatically generated tasks
+
+            //after login, sharedData will hold a player and at that time we add tasks in taskScheduler
             if(!taskIsAdded && sharedData.getPlayer() != null) {
                 MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, metaDAO, sharedData, resultMsgQueue);
                 MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, metaDAO, sharedData,  resultMsgQueue);
@@ -94,6 +95,7 @@ public class PlayerHandler extends Thread{
                 taskIsAdded = true;
             }
 
+            //handle server automatically generated tasks
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
             if (TimeUntilNextTask <= 0) {
                 // at least the first task should be executed

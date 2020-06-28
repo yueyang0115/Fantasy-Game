@@ -17,7 +17,6 @@ public class MonsterGenerator extends MonsterScheduledTask {
 
     @Override
     public void doTask() {
-
         if(cannotGenerateMonster()) return;
 
         else{

@@ -1,10 +1,8 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.json.*;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +28,10 @@ public class MessageHandler {
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
         BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
         //System.out.println("incoming message: " + input);
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
             if (loginMsg != null) {
                 LoginHandler lh = new LoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
-                System.out.println("in messageHandler, sharedData.id is "+sharedData.getPlayer().getId());
-                System.out.println("in messageHandler, sharedData.wid is "+sharedData.getPlayer().getWid());
-                System.out.println("in messageHandler, sharedData.coord is "+sharedData.getPlayer().getCurrentCoord());
             }
 
             if (signupMsg != null) {
@@ -45,15 +40,12 @@ public class MessageHandler {
             }
 
             if (positionMsg != null) {
-                session.beginTransaction();
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);
-                //PositionResultMessage positionResultMessage = new PositionResultMessage();
-//                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
-//                log.info("wid is {} when handle positionMsg",wid);
-                //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
                 result.setPositionResultMessage(positionUpdateHandler.handle(sharedData.getPlayer().getWid(), positionMsg));
+                // we add wid field in currentCoord from the client-sent-msg
                 WorldCoord currentCoord  = positionMsg.getCurrentCoord();
                 currentCoord.setWid(sharedData.getPlayer().getWid());
+                // update player info in sharedData between taskScheduler and messageHandler
                 sharedData.getPlayer().setStatus(Player.Status.INMAIN);
                 sharedData.getPlayer().setCurrentCoord(currentCoord);
             }
@@ -75,7 +67,6 @@ public class MessageHandler {
                 ShopHandler shopHandler = new ShopHandler(metaDAO);
                 if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(sharedData.getPlayer().getWid());
                 result.setShopResultMessage(shopHandler.handle(shopRequestMessage, sharedData.getPlayer().getId()));
-                session.getTransaction().commit();
             }
 
             if(inventoryRequestMessage != null){
@@ -91,7 +82,6 @@ public class MessageHandler {
                 result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, sharedData.getPlayer().getId()));
             }
 
-        }
         return result;
     }
 
