@@ -23,14 +23,9 @@ public class PositionUpdateHandler {
     MonsterManger monsterDAO;
     PlayerDAO playerDAO;
     Session session;
-    ArrayList<Territory> territoryList = new ArrayList<Territory>();
-    ArrayList<Monster> monsterList = new ArrayList<Monster>();
+    ArrayList<Territory> territoryList = new ArrayList<>();
+    ArrayList<Monster> monsterList = new ArrayList<>();
     ArrayList<Building> buildingList = new ArrayList<>();
-
-    //    ItemDAO itemDAO;
-
-//    int x_block_num;
-//    int y_block_num;
 
     public PositionUpdateHandler(Session session) {
         territoryDAO = new TerritoryDAO(session);
@@ -52,7 +47,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, monsterDAO, DBBuildingDAO, where, info);
+                gen.generate(territoryDAO, where, info);
             }
         }
     }
@@ -94,8 +89,7 @@ public class PositionUpdateHandler {
 
         if (isNewWorld) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
-              the territory's tame
-            */
+              the territory's tame*/
             (new Castle()).onCreate(session, info.getStartCoords());
         }
 

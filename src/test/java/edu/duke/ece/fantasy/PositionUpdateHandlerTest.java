@@ -1,26 +1,41 @@
-//package edu.duke.ece.fantasy;
-//
-//import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import edu.duke.ece.fantasy.database.*;
-//import edu.duke.ece.fantasy.json.PositionRequestMessage;
-//import edu.duke.ece.fantasy.json.PositionResultMessage;
-//import org.hibernate.Session;
-//import org.junit.jupiter.api.Test;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class PositionUpdateHandlerTest {
-//    PositionUpdateHandler positionUpdateHandler;
-//    ObjectMapper objectMapper = new ObjectMapper();
+package edu.duke.ece.fantasy;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.json.PositionRequestMessage;
+import edu.duke.ece.fantasy.json.PositionResultMessage;
+import org.hibernate.Session;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class PositionUpdateHandlerTest {
+    PositionUpdateHandler positionUpdateHandler;
+    ObjectMapper objectMapper = new ObjectMapper();
 //    PlayerDAO playerDAO;
-//    Logger logger = LoggerFactory.getLogger(PositionUpdateHandlerTest.class);
-//
+    Logger logger = LoggerFactory.getLogger(PositionUpdateHandlerTest.class);
+
+    @Test
+    void shouldGenerateTerritoryWithNewIndex(){
+
+    }
+
+    @Test
+    void shouldNotGenerateTerritoryWithOldIndex(){
+        
+    }
+
+    @Test
+    void shouldReturnSameTerritoryWithSameIndex(){
+
+    }
+
 //    Session createSession() {
 //        Session session = HibernateUtil.getSessionFactory().openSession();
 //        positionUpdateHandler = new PositionUpdateHandler(session);
@@ -36,7 +51,7 @@
 //            session.beginTransaction();
 //            (new Initializer(session)).initialize_test_player();
 //            Player player = playerDAO.getPlayer("test");
-//            player = playerDAO.getPlayerByWid(player.getWid()); // TODO: wid return give null pointer
+//            player = playerDAO.getPlayerByWid(player.getWid());
 //            List<WorldCoord> coords = new ArrayList<>();
 //            for (int i=0;i<100;i+=10){
 //                for (int j=0;j<100;j+=10){
@@ -54,4 +69,4 @@
 //            }
 //        }
 //    }
-//}
+}
