@@ -1,30 +1,26 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.MonsterManger;
+import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MonsterDetector extends TimerTask {
     private Session session;
-    private MonsterManger monsterDAO;
+    private MonsterDAO monsterDAO;
     private boolean[] canGenerateMonster;
     private LinkedBlockingQueue<MessagesS2C> messageS2CQueue;
 
     public MonsterDetector(Session session, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> messageS2CQueue){
         this.session = session;
-        this.monsterDAO = new MonsterManger(session);
+        this.monsterDAO = new MonsterDAO(session);
         this.canGenerateMonster = canGenerateMonster;
         this.messageS2CQueue = messageS2CQueue;
     }

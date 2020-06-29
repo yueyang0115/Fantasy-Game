@@ -1,12 +1,13 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 
-public class MonsterMangerTest {
-    private MonsterManger myMonsterManger;
+public class MonsterDAOTest {
+    private MonsterDAO monsterDAO;
     private Session session;
     private TerritoryDAO territoryDAO;
     private int wid = -3;
@@ -14,9 +15,9 @@ public class MonsterMangerTest {
     private int y = 5;
 
 
-    public MonsterMangerTest(){
+    public MonsterDAOTest(){
         this.session = createSession();
-        this.myMonsterManger = new MonsterManger(this.session);
+        this.monsterDAO = new MonsterDAO(this.session);
         this.territoryDAO = new TerritoryDAO(session);
     }
 

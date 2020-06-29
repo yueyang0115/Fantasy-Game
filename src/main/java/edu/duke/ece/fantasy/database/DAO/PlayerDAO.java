@@ -1,10 +1,14 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
+import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
+
+import static edu.duke.ece.fantasy.database.Player.Status.*;
 
 public class PlayerDAO {
     private Session session;
@@ -34,20 +38,20 @@ public class PlayerDAO {
     public Player getPlayerByWid(int wid) {
         Query<Player> q = session.createQuery("From Player U where U.wid =:wid", Player.class);
         q.setParameter("wid", wid);
-        return q.uniqueResult();
+        return (Player) q.uniqueResult();
     }
 
     public Player getPlayer(int id) {
         Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
         q.setParameter("id", id);
         q.uniqueResult();
-        return q.uniqueResult();
+        return (Player) q.uniqueResult();
     }
 
     public Player getPlayer(String username) {
         Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
         q.setParameter("username", username);
-        return q.uniqueResult();
+        return (Player) q.uniqueResult();
     }
 
     public Player getPlayer(String username, String password) {
@@ -63,5 +67,15 @@ public class PlayerDAO {
         } else {
             return null;
         }
+    }
+
+    public void setStatus(Player p, Status status){
+        p.setStatus(status);
+        session.update(p);
+    }
+
+    public void setCurrentCoord(Player p, WorldCoord currentCoord){
+        p.setCurrentCoord(currentCoord);
+        session.update(p);
     }
 }

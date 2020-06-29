@@ -1,33 +1,32 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
+import edu.duke.ece.fantasy.SharedData;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.MonsterManger;
-import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
-import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MonsterTask extends Task{
+public abstract class MonsterScheduledTask extends ScheduledTask {
     protected LinkedBlockingQueue<MessagesS2C> resultMsgQueue;
-    protected Session session;
-    protected WorldCoord[] coord;
-    protected boolean[] canGenerateMonster;
-    protected MonsterManger monsterDAO;
+    protected MetaDAO metaDAO;
+    protected SharedData sharedData;
+    protected Player player;
 
     protected int X_RANGE = 10;
     protected int Y_RANGE = 10;
 
-    public MonsterTask(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+    public MonsterScheduledTask(long when, int repeatedInterval, boolean repeating, MetaDAO metaDAO, SharedData sharedData, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
         super(when, repeatedInterval, repeating);
-        this.session = session;
+        this.metaDAO = metaDAO;
         this.resultMsgQueue = resultMsgQueue;
-        this.coord = coord;
-        this.canGenerateMonster = canGenerateMonster;
-        this.monsterDAO = new MonsterManger(session);
+        this.sharedData = sharedData;
+        this.player = sharedData.getPlayer();
     }
 
     public void putMonsterInResultMsgQueue(Monster m){
@@ -40,10 +39,12 @@ public class MonsterTask extends Task{
         result.setPositionResultMessage(positionMsg);
         resultMsgQueue.offer(result);
         //change the monster's needUpdate field
-        monsterDAO.setMonsterStatus(m.getId(), false);
+        metaDAO.getMonsterDAO().setMonsterStatus(m.getId(), false);
     }
 
-    @Override
-    void doTask() {
+    public boolean cannotGenerateMonster(){
+        return player.getStatus() != Player.Status.INMAIN
+                || player.getCurrentCoord() == null
+                || metaDAO.getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
     }
 }

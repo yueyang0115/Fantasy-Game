@@ -11,6 +11,7 @@ import java.util.Random;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.database.DAO.TileDAO;
 import org.json.JSONArray;
@@ -189,6 +190,7 @@ public class TileGenerator {
 
     //I hate how tightly coupled this it to the database :(
     public void generate(TerritoryDAO terdao, WorldCoord where, WorldInfo info) {
+
         TileDAO tdao = new TileDAO(terdao);
         //if the world doesn't have a start tile, lets put one in it.
         if (!tdao.doesWorldHaveStartTile(info)) {
@@ -240,6 +242,7 @@ public class TileGenerator {
     }
 
     private void putTerrain(TerritoryDAO terDAO, WorldCoord where, TileInfo info, int territory_status) {
+
         //    System.out.println("Putting terrain on ["+where.getX()+","+(where.getX()+tileWidth)+") y:["+where.getY()+","+(where.getY()+tileHeight)+")"+ System.currentTimeMillis());
 
         Random rand = new Random();
