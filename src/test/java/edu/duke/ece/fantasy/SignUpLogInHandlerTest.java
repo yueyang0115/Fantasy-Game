@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.json.*;
@@ -26,8 +27,10 @@ public class SignUpLogInHandlerTest {
 
     public SignUpLogInHandlerTest(){
         this.session = createSession();
-        this.sh = new SignUpHandler(this.session);
-        this.lh = new LoginHandler(this.session);
+        MetaDAO metaDAO = new MetaDAO(session);
+        SharedData sharedData = new SharedData();
+        this.sh = new SignUpHandler(metaDAO);
+        this.lh = new LoginHandler(metaDAO, sharedData);
     }
 
     //@Test

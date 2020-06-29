@@ -1,9 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.DAO.InventoryDAO;
-import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
-import edu.duke.ece.fantasy.database.DAO.PlayerInventoryDAO;
+import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.AttributeRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryResultMessage;
@@ -14,16 +12,18 @@ import java.util.List;
 public class InventoryHandler {
     PlayerDAO playerDAO;
     InventoryDAO inventoryDAO;
-    UnitManager unitManager;
+    UnitDAO unitDAO;
     Session session;
     PlayerInventoryDAO playerInventoryDAO;
+    MetaDAO metaDAO;
 
-    public InventoryHandler(Session session) {
-        playerDAO = new PlayerDAO(session);
-        playerInventoryDAO = new PlayerInventoryDAO(session);
-        inventoryDAO = new InventoryDAO(session);
-        unitManager = new UnitManager(session);
-        this.session = session;
+    public InventoryHandler(MetaDAO metaDAO) {
+        playerDAO = metaDAO.getPlayerDAO();
+        playerInventoryDAO = metaDAO.getPlayerInventoryDAO();
+        inventoryDAO = metaDAO.getInventoryDAO();
+        unitDAO = metaDAO.getUnitDAO();
+        this.metaDAO = metaDAO;
+        session = metaDAO.getSession();
     }
 
     public InventoryResultMessage handle(InventoryRequestMessage request, int player_id) {
@@ -33,7 +33,7 @@ public class InventoryHandler {
         Player player = playerDAO.getPlayer(player_id);
         int item_id = request.getInventoryID();
         Inventory itemPack = inventoryDAO.getInventory(item_id);
-        Unit unit = unitManager.getUnit(request.getUnitID());
+        Unit unit = unitDAO.getUnit(request.getUnitID());
         try {
             if (action.equals("list")) {
                 resultMessage.setResult("valid");
@@ -69,7 +69,7 @@ public class InventoryHandler {
         }
 
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
-        resultMessage.setAttributeResultMessage((new AttributeHandler(session)).handle(attributeRequestMessage, player_id));
+        resultMessage.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, player_id));
         resultMessage.setMoney(player.getMoney());
 
         return resultMessage;

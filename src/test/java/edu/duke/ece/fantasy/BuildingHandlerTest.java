@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.building.BaseShop;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.BuildingRequestMessage;
@@ -27,7 +28,8 @@ class BuildingHandlerTest {
 
     public BuildingHandlerTest() {
         session = HibernateUtil.getSessionFactory().openSession();
-        buildingHandler = new BuildingHandler(session);
+        MetaDAO metaDAO = new MetaDAO(session);
+        buildingHandler = new BuildingHandler(metaDAO);
         playerDAO = new PlayerDAO(session);
         territoryDAO = new TerritoryDAO(session);
         (new Initializer(session)).initialize_test_player();

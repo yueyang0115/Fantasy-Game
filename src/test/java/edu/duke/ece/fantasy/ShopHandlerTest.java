@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.DAO.ShopInventoryDAO;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
@@ -35,10 +36,11 @@ class ShopHandlerTest {
 
     public ShopHandlerTest() {
         session = HibernateUtil.getSessionFactory().openSession();
-        shopHandler = new ShopHandler(session);
-        DBBuildingDAO = new DBBuildingDAO(session);
-        playerDAO = new PlayerDAO(session);
-        shopInventoryDAO = new ShopInventoryDAO(session);
+        MetaDAO metaDAO = new MetaDAO(session);
+        shopHandler = new ShopHandler(metaDAO);
+        DBBuildingDAO = metaDAO.getDbBuildingDAO();
+        playerDAO = metaDAO.getPlayerDAO();
+        shopInventoryDAO = metaDAO.getShopInventoryDAO();
     }
 
 

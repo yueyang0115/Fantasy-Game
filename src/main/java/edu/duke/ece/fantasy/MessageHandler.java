@@ -1,30 +1,21 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.json.*;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
 public class MessageHandler {
-    private int wid;
-    private int playerID;
     private BattleHandler myBattleHandler = new BattleHandler();
-    private WorldCoord[] currentCoord;
-    private boolean[] canGenerateMonster;
-
-    public MessageHandler(WorldCoord[] currentCoord, boolean[] canGenerateMonster) {
-        this.currentCoord = currentCoord;
-        this.canGenerateMonster = canGenerateMonster;
-    }
-
+    private MetaDAO metaDAO;
+    private SharedData sharedData;
     Logger log = LoggerFactory.getLogger(MessageHandler.class);
-    ObjectMapper objectMapper = new ObjectMapper();
+
+    public MessageHandler(MetaDAO metaDAO, SharedData sharedData) {
+        this.metaDAO = metaDAO;
+        this.sharedData = sharedData;
+    }
 
     public MessagesS2C handle(MessagesC2S input) {
         MessagesS2C result = new MessagesS2C();
@@ -37,85 +28,60 @@ public class MessageHandler {
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
         BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
         //System.out.println("incoming message: " + input);
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
             if (loginMsg != null) {
-                session.beginTransaction();
-                //TODO, pass in metaDAO, LoginHandler lh = new LoginHandler(session, metaDAO);
-                LoginHandler lh = new LoginHandler(session);
+                LoginHandler lh = new LoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
-                wid = result.getLoginResultMessage().getWid();
-                playerID = result.getLoginResultMessage().getId();
-                session.getTransaction().commit();
             }
 
             if (signupMsg != null) {
-                session.beginTransaction();
-                SignUpHandler sh = new SignUpHandler(session);
+                SignUpHandler sh = new SignUpHandler(metaDAO);
                 result.setSignUpResultMessage(sh.handle(signupMsg));
-                session.getTransaction().commit();
             }
 
             if (positionMsg != null) {
-                session.beginTransaction();
-                PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(session);
-                //PositionResultMessage positionResultMessage = new PositionResultMessage();
-//                th.addTerritories(wid, positionMsg.getX(), positionMsg.getY());
-//                log.info("wid is {} when handle positionMsg",wid);
-                //positionResultMessage.setTerritoryArray(positionUpdateHandler.handle(wid, positionMsg));
-                currentCoord[0] = positionMsg.getCurrentCoord();
-                if(currentCoord[0] != null) currentCoord[0].setWid(wid);
-                result.setPositionResultMessage(positionUpdateHandler.handle(wid, positionMsg));
-                session.getTransaction().commit();
-                canGenerateMonster[0] = true;
-                //TODO:player.setStatus
+                PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);
+                result.setPositionResultMessage(positionUpdateHandler.handle(sharedData.getPlayer().getWid(), positionMsg));
+                // we add wid field in currentCoord from the client-sent-msg
+                WorldCoord currentCoord  = positionMsg.getCurrentCoord();
+                currentCoord.setWid(sharedData.getPlayer().getWid());
+                // update player info in sharedData between taskScheduler and messageHandler
+                sharedData.getPlayer().setStatus(Player.Status.INMAIN);
+                sharedData.getPlayer().setCurrentCoord(currentCoord);
             }
 
             if (battleMsg != null) {
-                canGenerateMonster[0] = false;
-                //TODO:player.setStatus
-                session.beginTransaction();
-                if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(this.wid);
-                BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, playerID, session);
+                sharedData.getPlayer().setStatus(Player.Status.INBATTLE);
+                if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWid());
+                BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
-                session.getTransaction().commit();
             }
 
             if (attributeMsg != null) {
-                session.beginTransaction();
-                AttributeHandler ah = new AttributeHandler(session);
-                result.setAttributeResultMessage(ah.handle(attributeMsg, playerID));
-                session.getTransaction().commit();
+                AttributeHandler ah = new AttributeHandler(metaDAO);
+                result.setAttributeResultMessage(ah.handle(attributeMsg, sharedData.getPlayer().getId()));
             }
 
             if (shopRequestMessage != null) {
-                canGenerateMonster[0] = false;
-                //TODO:player.setStatus
-                session.beginTransaction();
-                ShopHandler shopHandler = new ShopHandler(session);
-                if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(this.wid);
-                result.setShopResultMessage(shopHandler.handle(shopRequestMessage, playerID));
-                session.getTransaction().commit();
+                sharedData.getPlayer().setStatus(Player.Status.INBUILDING);
+                ShopHandler shopHandler = new ShopHandler(metaDAO);
+                if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(sharedData.getPlayer().getWid());
+                result.setShopResultMessage(shopHandler.handle(shopRequestMessage, sharedData.getPlayer().getId()));
             }
 
             if(inventoryRequestMessage != null){
-                canGenerateMonster[0] = false;
-                //TODO:player.setStatus
-                session.beginTransaction();
-                InventoryHandler inventoryHandler = new InventoryHandler(session);
-                result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, playerID));
-                session.getTransaction().commit();
+                sharedData.getPlayer().setStatus(Player.Status.INBAG);
+                InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
+                result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, sharedData.getPlayer().getId()));
             }
 
             if (buildingRequestMessage != null) {
-                //TODO:player.setStatus
-                session.beginTransaction();
-                BuildingHandler buildingHandler = new BuildingHandler(session);
-                if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(this.wid);
-                result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, playerID));
-                session.getTransaction().commit();
+                sharedData.getPlayer().setStatus(Player.Status.INMAIN);
+                BuildingHandler buildingHandler = new BuildingHandler(metaDAO);
+                if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(sharedData.getPlayer().getWid());
+                result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, sharedData.getPlayer().getId()));
             }
 
-        }
         return result;
     }
 

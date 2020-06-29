@@ -18,15 +18,16 @@ public class ShopHandler {
     private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
     private Session session;
+    private MetaDAO metaDAO;
 
-    public ShopHandler(Session session) {
-        dbBuildingDAO = new DBBuildingDAO(session);
-        playerDAO = new PlayerDAO(session);
-        playerinventoryDAO = new PlayerInventoryDAO(session);
-        shopInventoryDAO = new ShopInventoryDAO(session);
-        inventoryDAO = new InventoryDAO(session);
-        this.session = session;
-
+    public ShopHandler(MetaDAO metaDAO) {
+        this.metaDAO = metaDAO;
+        dbBuildingDAO = metaDAO.getDbBuildingDAO();
+        playerDAO = metaDAO.getPlayerDAO();
+        playerinventoryDAO = metaDAO.getPlayerInventoryDAO();
+        shopInventoryDAO = metaDAO.getShopInventoryDAO();
+        inventoryDAO = metaDAO.getInventoryDAO();
+        this.session = metaDAO.getSession();
     }
 
     public void createShop() {
@@ -76,7 +77,7 @@ public class ShopHandler {
 
         InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
         inventoryRequestMessage.setAction("list");
-        result.setInventoryResultMessage((new InventoryHandler(session)).handle(inventoryRequestMessage, playerID));
+        result.setInventoryResultMessage((new InventoryHandler(metaDAO)).handle(inventoryRequestMessage, playerID));
         return result;
     }
 

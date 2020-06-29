@@ -1,28 +1,27 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
+import edu.duke.ece.fantasy.SharedData;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.MonsterManger;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesS2C;
-import org.hibernate.Session;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MonsterMover extends MonsterTask {
+public class MonsterMover extends MonsterScheduledTask {
 
-    public MonsterMover(long when, int repeatedInterval, boolean repeating, Session session, WorldCoord[] coord, boolean[] canGenerateMonster, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
-        super(when, repeatedInterval, repeating, session, coord, canGenerateMonster, resultMsgQueue);
+    public MonsterMover(long when, int repeatedInterval, boolean repeating, MetaDAO metaDAO, SharedData sharedData, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+        super(when, repeatedInterval, repeating, metaDAO, sharedData, resultMsgQueue);
     }
 
 
     @Override
     public void doTask() {
-        if(!canGenerateMonster[0] || this.coord[0] ==null || this.coord[0].getWid() == -1) return;
-        session.beginTransaction();
+        if(cannotGenerateMonster()) return;
 
         //get monsters within an area whenever getting into a new coord
-        List<Monster> monsterList = monsterDAO.getMonstersInRange(coord[0],X_RANGE,Y_RANGE);
+        List<Monster> monsterList = metaDAO.getMonsterDAO().getMonstersInRange(player.getCurrentCoord(),X_RANGE,Y_RANGE);
         //if has monsters in this area
         if(monsterList != null && monsterList.size() != 0){
             //sort all monsters according to its distance from currentCoord
@@ -30,8 +29,8 @@ public class MonsterMover extends MonsterTask {
                 @Override
                 public int compare(Monster o1, Monster o2) {
 //                    return o1.getId() - o2.getId();
-                    double distance1 = Math.pow(o1.getCoord().getX()-coord[0].getX(),2) + Math.pow(o1.getCoord().getY()-coord[0].getY(),2);
-                    double distance2 = Math.pow(o2.getCoord().getX()-coord[0].getX(),2) + Math.pow(o2.getCoord().getY()-coord[0].getY(),2);
+                    double distance1 = Math.pow(o1.getCoord().getX()-player.getCurrentCoord().getX(),2) + Math.pow(o1.getCoord().getY()-player.getCurrentCoord().getY(),2);
+                    double distance2 = Math.pow(o2.getCoord().getX()-player.getCurrentCoord().getX(),2) + Math.pow(o2.getCoord().getY()-player.getCurrentCoord().getY(),2);
                     return Double.compare(distance1, distance2);
                 }
             });
@@ -39,17 +38,15 @@ public class MonsterMover extends MonsterTask {
             Monster movingMonster = monsterList.get(0);
             moveMonster(movingMonster);
         }
-
-        session.getTransaction().commit();
     }
 
     private void moveMonster(Monster m){
-        if(m == null || m.getCoord().equals(coord[0])) return;
+        if(m == null || m.getCoord().equals(player.getCurrentCoord())) return;
         WorldCoord startCoord = new WorldCoord(m.getCoord());
         int startX = m.getCoord().getX();
         int startY = m.getCoord().getY();
-        int endX = coord[0].getX();
-        int endY = coord[0].getY();
+        int endX = player.getCurrentCoord().getX();
+        int endY = player.getCurrentCoord().getY();
 
         Random rand = new Random();
         boolean moved = false;
@@ -72,8 +69,8 @@ public class MonsterMover extends MonsterTask {
         }
         //update moved monster data in database,
         if(moved) {
-            monsterDAO.updateMonsterCoord(m.getId(), startX, startY);
-            monsterDAO.setMonsterStatus(m.getId(), true);
+            metaDAO.getMonsterDAO().updateMonsterCoord(m.getId(), startX, startY);
+            metaDAO.getMonsterDAO().setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() +" from "+startCoord + " to "+startX+", "+startY);
             //save the changed monster message in resultMsgQueue
             putMonsterInResultMsgQueue(m);

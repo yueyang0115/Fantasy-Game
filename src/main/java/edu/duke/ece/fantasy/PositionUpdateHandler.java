@@ -6,10 +6,7 @@ import java.util.List;
 import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.building.Castle;
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
-import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
-import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
-import edu.duke.ece.fantasy.database.DAO.WorldDAO;
+import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
@@ -20,7 +17,7 @@ public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
     edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
-    MonsterManger monsterDAO;
+    MonsterDAO monsterDAO;
     PlayerDAO playerDAO;
     Session session;
     ArrayList<Territory> territoryList = new ArrayList<Territory>();
@@ -32,14 +29,13 @@ public class PositionUpdateHandler {
 //    int x_block_num;
 //    int y_block_num;
 
-    public PositionUpdateHandler(Session session) {
-        territoryDAO = new TerritoryDAO(session);
-        DBBuildingDAO = new DBBuildingDAO(session);
-        worldDAO = new WorldDAO(session);
-        monsterDAO = new MonsterManger(session);
-        playerDAO = new PlayerDAO(session);
-        this.session = session;
-
+    public PositionUpdateHandler(MetaDAO metaDAO) {
+        territoryDAO = metaDAO.getTerritoryDAO();
+        DBBuildingDAO = metaDAO.getDbBuildingDAO();
+        worldDAO = metaDAO.getWorldDAO();
+        monsterDAO = metaDAO.getMonsterDAO();
+        playerDAO = metaDAO.getPlayerDAO();
+        session = metaDAO.getSession();
         //    itemDAO = new ItemDAO(session);
     }
 
