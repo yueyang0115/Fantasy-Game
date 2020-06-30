@@ -13,8 +13,6 @@ import java.util.Map;
 
 public class ShopHandler {
     private PlayerDAO playerDAO;
-    private PlayerInventoryDAO playerinventoryDAO;
-    private ShopInventoryDAO shopInventoryDAO;
     private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
     private Session session;
@@ -24,14 +22,10 @@ public class ShopHandler {
         this.metaDAO = metaDAO;
         dbBuildingDAO = metaDAO.getDbBuildingDAO();
         playerDAO = metaDAO.getPlayerDAO();
-        playerinventoryDAO = metaDAO.getPlayerInventoryDAO();
-        shopInventoryDAO = metaDAO.getShopInventoryDAO();
+//        playerinventoryDAO = metaDAO.getPlayerInventoryDAO();
+//        shopInventoryDAO = metaDAO.getShopInventoryDAO();
         inventoryDAO = metaDAO.getInventoryDAO();
         this.session = metaDAO.getSession();
-    }
-
-    public void createShop() {
-
     }
 
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
@@ -40,7 +34,7 @@ public class ShopHandler {
 //        DBShop DBShop = DBShopDAO.getShop(request.getShopID());
 
         Shop shop = (Shop) dbBuildingDAO.getBuilding(request.getCoord()).toGameBuilding();
-        shop.loadInventory(session, request.getCoord());
+        shop.loadInventory(metaDAO, request.getCoord());
 
         Map<Integer, Integer> item_list = request.getItemMap();
         // may need to check relationship of shop and territory
@@ -66,7 +60,7 @@ public class ShopHandler {
         // get latest data from db(previous transaction may roll back)
 //        DBShop = DBShopDAO.getShop(request.getShopID());
 //        List<shopInventory> db_items = shop.getCurrent_inventory();
-        shop.loadInventory(session, request.getCoord());
+//        shop.loadInventory(metaDAO, request.getCoord());
 
         for (shopInventory inventory : shop.getCurrent_inventory()) {
             // add more information of item
@@ -75,9 +69,6 @@ public class ShopHandler {
             result.addItem(toClientInventory);
         }
 
-        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
-        inventoryRequestMessage.setAction("list");
-        result.setInventoryResultMessage((new InventoryHandler(metaDAO)).handle(inventoryRequestMessage, playerID));
         return result;
     }
 

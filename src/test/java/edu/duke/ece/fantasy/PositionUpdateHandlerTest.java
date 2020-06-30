@@ -3,9 +3,12 @@ package edu.duke.ece.fantasy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.PositionRequestMessage;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 import org.hibernate.Session;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,25 +17,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class PositionUpdateHandlerTest {
-    PositionUpdateHandler positionUpdateHandler;
     ObjectMapper objectMapper = new ObjectMapper();
-//    PlayerDAO playerDAO;
+    //    PlayerDAO playerDAO;
     Logger logger = LoggerFactory.getLogger(PositionUpdateHandlerTest.class);
+    MetaDAO mockMetaDAO = mock(MetaDAO.class);
+    PositionUpdateHandler positionUpdateHandler;
+    WorldDAO mockWorldDAO = mock(WorldDAO.class);
+    TerritoryDAO mockTerritoryDAO;
+    DBBuildingDAO mockDBBuildingDAO;
+    MonsterDAO mockMonsterDAO;
+    PlayerDAO mockPlayerDAO;
 
-    @Test
-    void shouldGenerateTerritoryWithNewIndex(){
+    @BeforeEach
+    void setUp() {
+        when(mockMetaDAO.getWorldDAO()).thenReturn(mockWorldDAO);
+        positionUpdateHandler = new PositionUpdateHandler(mockMetaDAO);
 
     }
 
     @Test
-    void shouldNotGenerateTerritoryWithOldIndex(){
-        
+    void shouldGenerateTerritoryWithNewIndex() {
+//        WorldCoord fakeCoord = new WorldCoord();
+//
+//        PositionRequestMessage mockMessage = mock(PositionRequestMessage.class);
+//        when(mockMessage.getCurrentCoord()).thenReturn(fakeCoord);
+//        when(mockMessage.getCoords()).thenReturn(List.of(fakeCoord));
+//
+//        when(mockWorldDAO.getInfo(anyInt())).thenReturn(null);
+//
+//        PositionResultMessage positionResultMessage = positionUpdateHandler.handle(0, mockMessage);
     }
 
     @Test
-    void shouldReturnSameTerritoryWithSameIndex(){
+    void shouldNotGenerateTerritoryWithOldIndex() {
+
+    }
+
+    @Test
+    void shouldReturnSameTerritoryWithSameIndex() {
 
     }
 

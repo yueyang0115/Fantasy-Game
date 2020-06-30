@@ -15,7 +15,7 @@ import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
-    edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
+    DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
     MonsterDAO monsterDAO;
     PlayerDAO playerDAO;

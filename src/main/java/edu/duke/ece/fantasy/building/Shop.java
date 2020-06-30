@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy.building;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.ShopInventoryDAO;
 import org.hibernate.Session;
 
@@ -22,6 +23,9 @@ public abstract class Shop extends Building implements Trader {
     public List<shopInventory> getCurrent_inventory() {
         return current_inventory;
     }
+    public List<shopInventory> getPossible_inventory() {
+        return possible_inventory;
+    }
 
     public void setCurrent_inventory(List<shopInventory> current_inventory) {
         this.current_inventory = current_inventory;
@@ -41,8 +45,8 @@ public abstract class Shop extends Building implements Trader {
         }
     }
 
-    public void loadInventory(Session session, WorldCoord coord) {
-        ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO(session);
+    public void loadInventory(MetaDAO metaDAO, WorldCoord coord) {
+        ShopInventoryDAO shopInventoryDAO = metaDAO.getShopInventoryDAO();
         current_inventory = shopInventoryDAO.getInventories(coord);
 //        shopInventoryDAO.getInventory();
     }

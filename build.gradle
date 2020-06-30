@@ -47,7 +47,9 @@ dependencies {
 
     //switch testing to h2
     testImplementation group: "com.h2database", name:"h2", version:"1.4.200"
-    
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
 }
 
 test {

@@ -72,6 +72,10 @@ public class Building {
         this.cost = cost;
     }
 
+    public DBBuilding toDBBuilding(){
+        DBBuilding res = new DBBuilding(this.getClass().getName());
+        return res;
+    }
 
     public void onCreate(Session session, WorldCoord coord) {
         this.coord = coord;
