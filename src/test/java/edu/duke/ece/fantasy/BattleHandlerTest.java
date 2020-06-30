@@ -2,6 +2,9 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
+import edu.duke.ece.fantasy.json.BattleAction;
+import edu.duke.ece.fantasy.json.BattleRequestMessage;
+import edu.duke.ece.fantasy.json.BattleResultMessage;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -16,8 +19,9 @@ public class BattleHandlerTest {
     MetaDAO mockedMetaDAO;
 
     public BattleHandlerTest(){
-        Monster m1 = new Monster("testwolf",3,3,5);
+        Monster m1 = new Monster("testwolf",30,3,5);
         m1.setId(2);
+        m1.setCoord(new WorldCoord(1,1,1));
         monsterList.add(m1);
         Soldier s1 = new Soldier("soldier", 50, 5, 20);
         s1.setId(1);
@@ -79,10 +83,33 @@ public class BattleHandlerTest {
     }
 
     public void testStart(){
+        BattleRequestMessage request = new BattleRequestMessage(new WorldCoord(),"start",new BattleAction());
+        BattleResultMessage result = bh.handle(request,1,mockedMetaDAO);
 
+        assertEquals(result.getResult(),"continue");
+        assertEquals(result.getBattleInitInfo().getMonsters(),monsterList);
+        assertEquals(result.getBattleInitInfo().getSoldiers(),soldierList);
+        Queue<Unit> q = bh.generateUnitQueue(monsterList,soldierList);
+        List<Integer> unitIDList= bh.generateIDList(q);
+        assertEquals(result.getBattleInitInfo().getUnits(),unitIDList);
     }
 
     public void testBattle(){
+        Unit u1 = mockedMetaDAO.getUnitDAO().getUnit(1);
+        Unit u2 = mockedMetaDAO.getUnitDAO().getUnit(2);
+        BattleAction action = new BattleAction(u1, u2, "normal", new ArrayList<Integer>() {});
+        BattleRequestMessage request = new BattleRequestMessage(new WorldCoord(1,1,1),"attack", action);
+        BattleResultMessage result = bh.handle(request,1,mockedMetaDAO);
 
+        assertEquals(result.getResult(),"continue");
+        Queue<Unit> q = bh.generateUnitQueue(monsterList,soldierList);
+        q = bh.rollUnitQueue(q,-1);
+        List<Integer> unitIDList= bh.generateIDList(q);
+        assertEquals(result.getActions().get(0).getUnits(),unitIDList);
+
+        assertEquals(result.getActions().get(0).getAttacker().getId(),1);
+        assertEquals(result.getActions().get(0).getAttackee().getId(),2);
+        assertEquals(result.getActions().get(0).getAttackee().getHp(),25);
+        assertEquals(result.getActions().get(1).getAttacker().getId(),2);
     }
 }
