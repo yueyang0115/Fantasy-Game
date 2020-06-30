@@ -2,9 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
-import edu.duke.ece.fantasy.json.BattleAction;
-import edu.duke.ece.fantasy.json.BattleRequestMessage;
-import edu.duke.ece.fantasy.json.BattleResultMessage;
+import edu.duke.ece.fantasy.json.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -59,6 +57,8 @@ public class BattleHandlerTest {
         rollUnitQueueTest();
         testStart();
         testBattle();
+        testEscape();
+        testMessageHandler();
     }
 
     public void generateUnitQueueTest(){
@@ -111,5 +111,21 @@ public class BattleHandlerTest {
         assertEquals(result.getActions().get(0).getAttackee().getId(),2);
         assertEquals(result.getActions().get(0).getAttackee().getHp(),25);
         assertEquals(result.getActions().get(1).getAttacker().getId(),2);
+    }
+
+    public void testEscape(){
+        BattleRequestMessage request = new BattleRequestMessage(new WorldCoord(),"escape",new BattleAction());
+        BattleResultMessage result = bh.handle(request,1, mockedMetaDAO);
+        assertEquals(result.getResult(),"escaped");
+    }
+
+    public void testMessageHandler(){
+        SharedData sharedData = new SharedData();
+        sharedData.setPlayer(new Player());
+        MessageHandler mh = new MessageHandler(mockedMetaDAO, sharedData);
+        BattleRequestMessage battleRequest = new BattleRequestMessage(new WorldCoord(),"escape",new BattleAction());
+        MessagesC2S request = new MessagesC2S(battleRequest);
+        MessagesS2C result = mh.handle(request);
+        assertEquals(result.getBattleResultMessage().getResult(),"escaped");
     }
 }
