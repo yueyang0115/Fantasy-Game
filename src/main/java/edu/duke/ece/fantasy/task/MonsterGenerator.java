@@ -26,6 +26,7 @@ public class MonsterGenerator extends MonsterScheduledTask {
                 Monster m = new Monster("wolf", 60, 6, 10);
                 WorldCoord where = generateCoord(player.getCurrentCoord());
                 if(where != null) {
+                    m.setCoord(where);
                     metaDAO.getMonsterDAO().addMonster(m, where);
                     //save the changed monster message in resultMsgQueue
                     putMonsterInResultMsgQueue(m);
