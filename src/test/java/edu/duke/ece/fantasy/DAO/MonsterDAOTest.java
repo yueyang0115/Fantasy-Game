@@ -1,41 +1,54 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.DAO;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import org.hibernate.Session;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class MonsterDAOTest {
     private MonsterDAO monsterDAO;
-    private Session session;
+    public static Session session;
     private TerritoryDAO territoryDAO;
     private int wid = -3;
     private int x = 5;
     private int y = 5;
 
 
-    public MonsterDAOTest(){
-        this.session = createSession();
-        this.monsterDAO = new MonsterDAO(this.session);
-        this.territoryDAO = new TerritoryDAO(session);
+//    public MonsterDAOTest(){
+//        this.
+//        this.monsterDAO = new MonsterDAO(this.session);
+//        this.territoryDAO = new TerritoryDAO(session);
+//    }
+//
+//    private Session createSession() {
+//        Session session =
+//        return session;
+//    }
+
+    @BeforeAll
+    public static void setUpSession(){
+        System.out.println("executing beforeAll in MonsterDAO");
+        session = HibernateUtil.getSessionFactory().openSession();
     }
 
-    private Session createSession() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        return session;
+    @AfterAll
+    public static void closeSession(){
+        System.out.println("executing afterAll in MonsterDAO");
+        session.close();
     }
-
     @Test
     public void testAll(){
         initMonster();
-        //getMonsterTest();
-        getMonstersTest();
-        setMonsterHpTest();
-//        session.close();
-        //session.getTransaction().commit();
-        //session.close(); call session.close() will write data to database
-        //HibernateUtil.shutdown();
+//        //getMonsterTest();
+//        getMonstersTest();
+//        setMonsterHpTest();
+////        session.close();
+//        //session.getTransaction().commit();
+//        //session.close(); call session.close() will write data to database
+//        //HibernateUtil.shutdown();
     }
 
     public void initMonster(){
@@ -52,6 +65,7 @@ public class MonsterDAOTest {
 //        session.getTransaction().commit();
         Long count = (Long) session.createQuery("select count(*) from Monster ").uniqueResult();
         System.out.println("Monster num in database is "+count.intValue());
+        session.getTransaction().rollback();
     }
 
     public void getMonsterTest(){
