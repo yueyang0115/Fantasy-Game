@@ -16,13 +16,13 @@ public class MonsterDAO {
         this.session = session;
     }
 
-    public synchronized void addMonster(Monster m, WorldCoord where){
+    public void addMonster(Monster m, WorldCoord where){
         m.setCoord(where);
         session.save(m);
     }
 
     //get a monster from database based on the provided monsterID
-    public synchronized Monster getMonster(int monsterID) {
+    public Monster getMonster(int monsterID) {
         Query q = session.createQuery("From Monster M where M.id =:id");
         q.setParameter("id", monsterID);
         Monster res = (Monster) q.uniqueResult();
@@ -30,7 +30,7 @@ public class MonsterDAO {
     }
 
     //get all monsters in the provided coord from database
-    public synchronized List<Monster> getMonsters(WorldCoord where){
+    public List<Monster> getMonsters(WorldCoord where){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.coord =:coord");
         q.setParameter("coord", where);
@@ -42,7 +42,7 @@ public class MonsterDAO {
     }
 
     //update a monster's hp
-    public synchronized boolean setMonsterHp(int monsterID, int hp){
+    public boolean setMonsterHp(int monsterID, int hp){
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return false;
@@ -53,7 +53,7 @@ public class MonsterDAO {
     }
 
     //delete a monster from database
-    public synchronized void deleteMonster(int monsterID){
+    public void deleteMonster(int monsterID){
         Monster monster;
         if ((monster = (Monster) session.get(Monster.class, monsterID)) != null) {
             session.delete(monster);
@@ -61,7 +61,7 @@ public class MonsterDAO {
         }
     }
     
-    public synchronized void setMonsterStatus(int monsterID, boolean status){
+    public void setMonsterStatus(int monsterID, boolean status){
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return;
@@ -70,15 +70,15 @@ public class MonsterDAO {
         session.update(m);
     }
 
-    public synchronized void setMonstersStatus(List<Monster> monsterList, boolean status){
+    public void setMonstersStatus(List<Monster> monsterList, boolean status){
         //for(Monster m : monsterList) setMonsterStatus(m.getId(), false);
         for(Iterator<Monster> iterator = monsterList.iterator(); iterator.hasNext();){
             Monster m = iterator.next();
-            setMonsterStatus(m.getId(), false);
+            setMonsterStatus(m.getId(), status);
         }
     }
 
-    public synchronized List<Monster> getUpdatedMonsters(){
+    public List<Monster> getUpdatedMonsters(){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.needUpdate =:needUpdate");
         q.setParameter("needUpdate", true);
@@ -92,7 +92,7 @@ public class MonsterDAO {
         return monsterList;
     }
 
-    public synchronized Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
+    public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid"
                 +" and M.coord.x >:xlower and M.coord.x <:xupper"
@@ -107,7 +107,8 @@ public class MonsterDAO {
         return cnt;
     }
 
-    public synchronized List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
+    //get the monsters near a coord, not include the coord
+    public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.coord.wid =:wid "
                 +" and M.coord.x >:xlower and M.coord.x <:xupper"
@@ -130,7 +131,7 @@ public class MonsterDAO {
         return monsterList;
     }
 
-    public synchronized void updateMonsterCoord(int monsterID, int x, int y){
+    public void updateMonsterCoord(int monsterID, int x, int y){
         Monster m = getMonster(monsterID);
         if(m != null){
             m.getCoord().setX(x);
