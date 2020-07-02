@@ -61,12 +61,13 @@ public class InventoryHandler {
             resultMessage.setResult("invalid:" + e.getMessage());
         }
 
-        List<playerInventory> playerInventoryList = playerInventoryDAO.getInventories(player);
-        for (playerInventory db_item : playerInventoryList) {
+        List<Inventory> playerInventoryList = playerInventoryDAO.getInventories(player);
+        for (Inventory eachInventory : playerInventoryList) {
             // add more information of item
-            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
-            resultMessage.addItem(toClientInventory);
+//            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
+            eachInventory.setDBItem(eachInventory.getDBItem().toGameItem().toClient());
         }
+        resultMessage.setItems(playerInventoryList);
 
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
         resultMessage.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, player_id));

@@ -23,6 +23,7 @@ public abstract class Shop extends Building implements Trader {
     public List<shopInventory> getCurrent_inventory() {
         return current_inventory;
     }
+
     public List<shopInventory> getPossible_inventory() {
         return possible_inventory;
     }
@@ -45,10 +46,9 @@ public abstract class Shop extends Building implements Trader {
         }
     }
 
-    public void loadInventory(MetaDAO metaDAO, WorldCoord coord) {
+    public List<Inventory> getInventory(MetaDAO metaDAO) {
         ShopInventoryDAO shopInventoryDAO = metaDAO.getShopInventoryDAO();
-        current_inventory = shopInventoryDAO.getInventories(coord);
-//        shopInventoryDAO.getInventory();
+        return shopInventoryDAO.getInventories(coord);
     }
 
 
@@ -59,34 +59,51 @@ public abstract class Shop extends Building implements Trader {
 
     @Override
     public boolean checkItem(Inventory inventory, int amount) {
-        for (Inventory item : current_inventory) {
-            if (item.equals(inventory)) { // if have this type of item
-                return item.getAmount() >= amount;
-            }
-        }
+//        for (Inventory item : getInventory()) {
+//            if (item.equals(inventory)) { // if have this type of item
+//                return item.getAmount() >= amount;
+//            }
+//        }
         return false;
     }
 
+//    @Override
+//    public void sellItem(Inventory inventory, int amount) {
+//        int left_amount = inventory.getAmount() - amount;
+//        inventory.setAmount(left_amount);
+//    }
+
     @Override
-    public void sellItem(Inventory inventory, int amount) {
-        int left_amount = inventory.getAmount() - amount;
-        inventory.setAmount(left_amount);
+    public void addMoney(int money) { //TODO: may need an adapter
     }
 
     @Override
-    public Inventory buyItem(Inventory select_item, int amount) {
-        Inventory inventory = null;
-        for (Inventory item : current_inventory) {
-            if (item.equals(select_item)) { // if have this type of item
-                int init_amount = item.getAmount();
-                inventory = item;
-                item.setAmount(init_amount + amount);
-            }
-        }
-        if (inventory == null) {
-            inventory = new shopInventory(select_item.getDBItem(), amount, coord);
-        }
-        return inventory;
+    public void subtractMoney(int money) {
     }
+
+    @Override
+    public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
+        shopInventory shopInventory = new shopInventory(inventory.getDBItem(), inventory.getAmount(), coord);
+        metaDAO.getSession().save(shopInventory);
+        return shopInventory;
+//        ShopInventoryDAO shopInventoryDAO = metaDAO.getShopInventoryDAO();
+//        return shopInventoryDAO.addInventory(inventory,coord);
+    }
+
+//    @Override
+    //    public Inventory buyItem(Inventory select_item, int amount) {
+//        Inventory inventory = null;
+//        for (Inventory item : current_inventory) { // get
+//            if (item.equals(select_item)) { // if have this type of item
+//                int init_amount = item.getAmount();
+//                inventory = item;
+//                item.setAmount(init_amount + amount);
+//            }
+//        }
+//        if (inventory == null) {
+//            inventory = new shopInventory(select_item.getDBItem(), amount, coord);
+//        }
+//        return inventory;
+//    }
 
 }

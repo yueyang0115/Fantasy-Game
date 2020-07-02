@@ -64,7 +64,7 @@ public class Inventory {
         if (this == o) return true;
         if (!(o instanceof Inventory)) return false;
         Inventory inventory = (Inventory) o;
-        return Objects.equals(item, inventory.item);
+        return Objects.equals(item, inventory.item)||Objects.equals(id,inventory.id);
     }
 
     @Override

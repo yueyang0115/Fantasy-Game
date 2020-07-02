@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.database.shopInventory;
 import org.hibernate.Session;
@@ -15,10 +16,10 @@ public class ShopInventoryDAO {
         this.session = session;
     }
 
-//    public shopInventory addInventory(DBItem item, int amount, DBBuilding DBShop) {
-//        shopInventory new_inventory = new shopInventory(item, amount, DBShop);
-//        session.save(new_inventory);
-//        return new_inventory;
+//    public shopInventory addInventory(Inventory inventory,WorldCoord where) {
+//        shopInventory newInventory = new shopInventory(inventory.getDBItem(), inventory.getAmount(), where);
+//        session.save(newInventory);
+//        return newInventory;
 //    }
 
     public void deleteInventory(WorldCoord coord) {
@@ -35,8 +36,8 @@ public class ShopInventoryDAO {
 //        return res;
 //    }
 
-    public List<shopInventory> getInventories(WorldCoord coord) {
-        TypedQuery<shopInventory> q = session.createQuery("From shopInventory I where I.coord=:coord", shopInventory.class);
+    public List<Inventory> getInventories(WorldCoord coord) {
+        TypedQuery<Inventory> q = session.createQuery("From shopInventory I where I.coord=:coord", Inventory.class);
         q.setParameter("coord", coord);
         return q.getResultList();
     }

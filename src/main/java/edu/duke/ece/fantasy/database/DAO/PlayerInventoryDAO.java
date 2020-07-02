@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.playerInventory;
 import org.hibernate.Session;
@@ -23,8 +24,8 @@ public class PlayerInventoryDAO {
 //        return res;
 //    }
 
-    public List<playerInventory> getInventories(Player player) {
-        TypedQuery<playerInventory> q = session.createQuery("From playerInventory I where I.player=:player order by I.id", playerInventory.class);
+    public List<Inventory> getInventories(Player player) {
+        TypedQuery<Inventory> q = session.createQuery("From playerInventory I where I.player=:player order by I.id", Inventory.class);
         q.setParameter("player", player);
         return q.getResultList();
     }

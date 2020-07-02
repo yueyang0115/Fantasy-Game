@@ -9,6 +9,7 @@ import edu.duke.ece.fantasy.json.ShopRequestMessage;
 import edu.duke.ece.fantasy.json.ShopResultMessage;
 import org.hibernate.Session;
 
+import java.util.List;
 import java.util.Map;
 
 public class ShopHandler {
@@ -17,40 +18,41 @@ public class ShopHandler {
     private InventoryDAO inventoryDAO;
     private Session session;
     private MetaDAO metaDAO;
+    private PlayerInventoryDAO playerInventoryDAO;
+    private ShopInventoryDAO shopInventoryDAO;
 
     public ShopHandler(MetaDAO metaDAO) {
         this.metaDAO = metaDAO;
         dbBuildingDAO = metaDAO.getDbBuildingDAO();
         playerDAO = metaDAO.getPlayerDAO();
-//        playerinventoryDAO = metaDAO.getPlayerInventoryDAO();
-//        shopInventoryDAO = metaDAO.getShopInventoryDAO();
+        playerInventoryDAO = metaDAO.getPlayerInventoryDAO();
+        shopInventoryDAO = metaDAO.getShopInventoryDAO();
         inventoryDAO = metaDAO.getInventoryDAO();
         this.session = metaDAO.getSession();
     }
 
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
-
+        Player player = playerDAO.getPlayer(playerID);
         String action = request.getAction();
 //        DBShop DBShop = DBShopDAO.getShop(request.getShopID());
 
         Shop shop = (Shop) dbBuildingDAO.getBuilding(request.getCoord()).toGameBuilding();
-        shop.loadInventory(metaDAO, request.getCoord());
-
-        Map<Integer, Integer> item_list = request.getItemMap();
-        // may need to check relationship of shop and territory
-
-        Player player = playerDAO.getPlayer(playerID);
+        List<Inventory> selectedInventory = request.getSelectedItems();
+        List<Inventory> playerInventory = playerInventoryDAO.getInventories(player);
+        List<Inventory> shopInventory = shopInventoryDAO.getInventories(request.getCoord());
 
         ShopResultMessage result = new ShopResultMessage();
 
         try {
             if (action.equals("list")) {
-                result.setResult("valid");
+                result.setResult("valid");//TODO:return
             } else if (action.equals("buy")) {
-                validateAndExecute(shop, player, item_list);
+                validate(shopInventory, selectedInventory, player);
+                execute(shopInventory, playerInventory, selectedInventory, player, shop);
                 result.setResult("valid");
             } else if (action.equals("sell")) {
-                validateAndExecute(player, shop, item_list);
+                validate(playerInventory, selectedInventory, player);
+                execute(playerInventory, shopInventory, selectedInventory, shop, player);
                 result.setResult("valid");
             }
         } catch (InvalidShopRequest e) {
@@ -61,50 +63,96 @@ public class ShopHandler {
 //        DBShop = DBShopDAO.getShop(request.getShopID());
 //        List<shopInventory> db_items = shop.getCurrent_inventory();
 //        shop.loadInventory(metaDAO, request.getCoord());
-
-        for (shopInventory inventory : shop.getCurrent_inventory()) {
+//        addInfoStoredInClass(shopInventory);
+        for (Inventory inventory : shopInventory) {
             // add more information of item
-            if (inventory.getAmount() == 0) continue;
-            Inventory toClientInventory = new Inventory(inventory.getId(), inventory.getDBItem().toGameItem().toClient(), inventory.getAmount());
-            result.addItem(toClientInventory);
+//            if (inventory.getAmount() == 0) continue;
+            inventory.setDBItem(inventory.getDBItem().toGameItem().toClient());
         }
-
+        result.setItems(shopInventory);
         return result;
+//        return null;
     }
 
-    public void validateAndExecute(Trader seller, Trader buyer, Map<Integer, Integer> item_list) throws InvalidShopRequest {
+    private void addInfoStoredInClass(List<Inventory> resultInventoryList) {
+
+    }
+
+
+    private Inventory findInventoryFromList(List<Inventory> InventoryList, Inventory selectedInventory) {
+        Inventory pairedInventory = null;
+        for (Inventory sellerInventory : InventoryList) {
+            if (sellerInventory.equals(selectedInventory)) { // check if seller have same item
+                pairedInventory = sellerInventory;
+                break;
+            }
+        }
+        return pairedInventory;
+    }
+
+    private void validate(List<Inventory> sellerInventoryList, List<Inventory> selectedInventoryList, Trader buyer) throws InvalidShopRequest {
         int required_money = 0;
 
-        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
-            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
-            int amount = inventory_pair.getValue();
-            Item item_obj = inventory.getDBItem().toGameItem();
-            // check if seller have enough inventory
-            if (!seller.checkItem(inventory, amount)) {
-                throw new InvalidShopRequest("Seller don't have enough item" + "-" + item_obj.getName());
+        for (Inventory selectedInventory : selectedInventoryList) {
+            int selectedAmount = selectedInventory.getAmount();
+            Item selectedItem = selectedInventory.getDBItem().toGameItem();
+            Inventory pairedInventory = findInventoryFromList(sellerInventoryList, selectedInventory);//TODO: may use hashMap instead
+            if (pairedInventory == null) {
+                throw new InvalidShopRequest("Seller don't have item" + "-" + selectedItem.getName());
             }
-            required_money += item_obj.getCost() * amount;
-            // check if buyer have enough money
-            if (!buyer.checkMoney(required_money)) {
-                throw new InvalidShopRequest("Don't have enough money");
+            if (pairedInventory.getAmount() < selectedAmount) { // check if seller have enough item
+                throw new InvalidShopRequest("Seller don't have enough item" + "-" + selectedItem.getName());
             }
+            required_money += selectedItem.getCost();
         }
-
-        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
-            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
-            int amount = inventory_pair.getValue();
-            // deduce the amount of item from seller
-            seller.sellItem(inventory, amount);
-            // sell inventory update
-            if (inventory.getAmount() == 0) { // delete record if it's amount is 0
-                session.delete(inventory);
-            }
-            // add the amount of item to buyer
-            Inventory buy_inventory = buyer.buyItem(inventory, amount);
-            // buy inventory update
-            session.saveOrUpdate(buy_inventory);
+        if (!buyer.checkMoney(required_money)) {
+            throw new InvalidShopRequest("Don't have enough money");
         }
-
     }
+
+    private void execute(List<Inventory> sellerInventoryList, List<Inventory> buyerInventoryList, List<Inventory> selectedInventoryList, Trader buyer, Trader seller) {
+        for (Inventory selectedInventory : selectedInventoryList) {
+            int selectedAmount = selectedInventory.getAmount();
+            Item selectedItem = selectedInventory.getDBItem().toGameItem();
+            int totalCost = selectedItem.getCost() * selectedAmount;
+            // operation for seller
+            Inventory pairedInventoryForSeller = findInventoryFromList(sellerInventoryList, selectedInventory);//TODO: may use hashMap instead
+            int leftAmount = pairedInventoryForSeller.getAmount() - selectedAmount;
+            pairedInventoryForSeller.setAmount(leftAmount);
+            if (leftAmount == 0) { // delete the Inventory if its amount is 0
+                sellerInventoryList.remove(pairedInventoryForSeller);
+                session.delete(pairedInventoryForSeller);
+            }
+            seller.addMoney(totalCost);
+            // operation for buyer
+            Inventory pairedInventoryForBuyer = findInventoryFromList(buyerInventoryList, selectedInventory);
+            if (pairedInventoryForBuyer != null) {
+                pairedInventoryForBuyer.setAmount(selectedAmount + pairedInventoryForBuyer.getAmount());
+            } else {
+                Inventory createdInventory = buyer.addInventory(metaDAO, selectedInventory);
+                buyerInventoryList.add(createdInventory);
+            }
+            buyer.subtractMoney(totalCost);
+        }
+    }
+
+//    private void execute(Trader seller, Trader buyer, Map<Integer, Integer> item_list){
+//        for (Map.Entry<Integer, Integer> inventory_pair : item_list.entrySet()) {
+//            Inventory inventory = inventoryDAO.getInventory(inventory_pair.getKey());
+//            int amount = inventory_pair.getValue();
+//            // deduce the amount of item from seller
+//            seller.sellItem(inventory, amount);
+////            seller.
+//            // sell inventory update
+//            if (inventory.getAmount() == 0) { // delete record if it's amount is 0
+//                session.delete(inventory);
+//            }
+//            // add the amount of item to buyer
+//            buyer.get;
+//            Inventory buy_inventory = buyer.buyItem(inventory, amount);
+//            // buy inventory update
+//            session.saveOrUpdate(buy_inventory);
+//        }
+//    }
 
 }

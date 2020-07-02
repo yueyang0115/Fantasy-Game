@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -188,27 +189,43 @@ public class Player implements Trader {
     }
 
     @Override
-    public void sellItem(Inventory inventory, int amount) {
-        money += amount * inventory.getDBItem().toGameItem().getCost();
-        reduceItem(inventory, amount);
+    public void addMoney(int money) {
+        this.money += money;
     }
 
     @Override
-    public Inventory buyItem(Inventory select_item, int amount) {
-        Item item_obj = select_item.getDBItem().toGameItem();
-        Inventory record = null;
-        for (Inventory item : items) {
-            if (item.equals(select_item)) { // if have this type of item, add amount to existing object
-                record = item;
-                int init_amount = item.getAmount();
-                item.setAmount(init_amount + amount);
-            }
-        }
-        money -= amount * item_obj.getCost();
-        if (record == null) { // if don't have this type of item, create object
-            record = new playerInventory(select_item.getDBItem(), amount, this);
-            addItem((playerInventory) record);
-        }
-        return record;
+    public void subtractMoney(int money) {
+        this.money -= money;
     }
+
+    @Override
+    public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
+        playerInventory playerInventory = new playerInventory(inventory.getDBItem(),inventory.getAmount(),this);
+        metaDAO.getSession().save(playerInventory);
+        return playerInventory;
+    }
+//    @Override
+//    public void sellItem(Inventory inventory, int amount) {
+//        money += amount * inventory.getDBItem().toGameItem().getCost();
+//        reduceItem(inventory, amount);
+//    }
+//
+//    @Override
+//    public Inventory buyItem(Inventory select_item, int amount) {
+//        Item item_obj = select_item.getDBItem().toGameItem();
+//        Inventory record = null;
+//        for (Inventory item : items) {
+//            if (item.equals(select_item)) { // if have this type of item, add amount to existing object
+//                record = item;
+//                int init_amount = item.getAmount();
+//                item.setAmount(init_amount + amount);
+//            }
+//        }
+//        money -= amount * item_obj.getCost();
+//        if (record == null) { // if don't have this type of item, create object
+//            record = new playerInventory(select_item.getDBItem(), amount, this);
+//            addItem((playerInventory) record);
+//        }
+//        return record;
+//    }
 }
