@@ -7,15 +7,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "shopInventory")
 public class shopInventory extends Inventory {
-
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumns({
-//            @JoinColumn(name = "coord_wid", referencedColumnName = "wid"),
-//            @JoinColumn(name = "coord_x", referencedColumnName = "x"),
-//            @JoinColumn(name = "coord_y", referencedColumnName = "y")
-//    })
-
     @Embedded
     private WorldCoord coord;
 //    private DBBuilding Shop;

@@ -23,7 +23,7 @@ public class ShopInventoryDAO {
 //    }
 
     public void deleteInventory(WorldCoord coord) {
-        Query q = session.createQuery("delete From shopInventory I where I.coord = :coord");
+        Query<shopInventory> q = session.createQuery("delete From shopInventory I where I.coord = :coord", shopInventory.class);
         q.setParameter("coord", coord);
         q.executeUpdate();
     }

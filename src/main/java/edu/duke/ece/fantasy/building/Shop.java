@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Shop extends Building implements Trader {
+    @JsonIgnore
     List<shopInventory> possible_inventory = new ArrayList<>();
 
     @JsonIgnore

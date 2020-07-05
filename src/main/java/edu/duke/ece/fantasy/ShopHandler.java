@@ -60,22 +60,13 @@ public class ShopHandler {
             result.setResult("invalid:" + e.getMessage());
         }
         // get latest data from db(previous transaction may roll back)
-//        DBShop = DBShopDAO.getShop(request.getShopID());
-//        List<shopInventory> db_items = shop.getCurrent_inventory();
-//        shop.loadInventory(metaDAO, request.getCoord());
-//        addInfoStoredInClass(shopInventory);
         for (Inventory inventory : shopInventory) {
             // add more information of item
-//            if (inventory.getAmount() == 0) continue;
             inventory.setDBItem(inventory.getDBItem().toGameItem().toClient());
         }
         result.setItems(shopInventory);
         return result;
 //        return null;
-    }
-
-    private void addInfoStoredInClass(List<Inventory> resultInventoryList) {
-
     }
 
 
