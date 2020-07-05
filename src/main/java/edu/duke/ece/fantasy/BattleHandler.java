@@ -117,7 +117,10 @@ public class BattleHandler {
     public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
         List<Monster> monsterList = monsterDAO.getMonsters(where);
         List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
-        if(monsterList == null || monsterList.size() ==0) result.setResult("win");
+        if(monsterList == null || monsterList.size() ==0){
+            result.setResult("win");
+            territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y);
+        }
         else if(soldierList == null || soldierList.size() ==0) result.setResult("lose");
         else result.setResult("continue");
     }
@@ -142,7 +145,6 @@ public class BattleHandler {
         if(newAttackeeHp == 0){
             deletedID = attackeeID;
             unitDAO.deleteUnit(attackeeID);
-            if(attackee instanceof Monster) territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y);
         }
 
         //update unitQueue
