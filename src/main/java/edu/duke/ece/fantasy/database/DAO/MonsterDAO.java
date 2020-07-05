@@ -95,8 +95,8 @@ public class MonsterDAO {
     public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid"
-                +" and M.coord.x >:xlower and M.coord.x <:xupper"
-                +" and M.coord.y >:ylower and M.coord.y <:yupper"
+                +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
+                +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
         );
         q.setParameter("wid", where.getWid());
         q.setParameter("xlower", where.getX() - x_range/2);
@@ -111,8 +111,8 @@ public class MonsterDAO {
     public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.coord.wid =:wid "
-                +" and M.coord.x >:xlower and M.coord.x <:xupper"
-                +" and M.coord.y >:ylower and M.coord.y <:yupper"
+                +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
+                +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
                 +" and M.coord != :coord "
         );
         q.setParameter("wid", where.getWid());

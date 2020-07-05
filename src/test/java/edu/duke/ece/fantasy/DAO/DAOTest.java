@@ -23,14 +23,14 @@ public class DAOTest {
 
     @BeforeAll
     public static void setUpSession(){
-        System.out.println("executing beforeAll in DAOTest");
+        //System.out.println("executing beforeAll in DAOTest");
         session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
     }
 
     @AfterAll
     public static void closeSession(){
-        System.out.println("executing afterAll in DAOTest");
+        //System.out.println("executing afterAll in DAOTest");
         session.getTransaction().rollback();
         session.close();
     }
@@ -49,7 +49,7 @@ public class DAOTest {
     }
 
     public void testPlayerDAO(){
-        System.out.println("test playerDAO");
+        //System.out.println("test playerDAO");
 
         Player p = playerDAO.getPlayer("testname");
         int id = p.getId();
@@ -58,7 +58,7 @@ public class DAOTest {
     }
 
     public void testMonsterDAO(){
-        System.out.println("test monsterDAO");
+        //System.out.println("test monsterDAO");
 
         Monster m1 = new Monster("wolf",60,6,10);
         Monster m2 = new Monster("wolf",70,7,20);
@@ -71,8 +71,8 @@ public class DAOTest {
         int id = DBmonster1.getId();
         int id2 = monsterDAO.getMonsters(coord2).get(0).getId();
         assertEquals(monsterDAO.getMonster(id), DBmonster1);
-        assertEquals(monsterDAO.countMonstersInRange(coord1,6,6),2);
-        List<Monster> DBmonsterList = monsterDAO.getMonstersInRange(new WorldCoord(1,0,0),6,6);
+        assertEquals(monsterDAO.countMonstersInRange(coord1,4,4),2);
+        List<Monster> DBmonsterList = monsterDAO.getMonstersInRange(new WorldCoord(1,0,0),4,4);
         assertEquals(DBmonsterList.size(),2);
 
         monsterDAO.setMonsterHp(id,100);
@@ -86,7 +86,7 @@ public class DAOTest {
     }
 
     public void testSoldierUnitDAO(){
-        System.out.println("test soldierDAO");
+        //System.out.println("test soldierDAO");
 
         Player p = playerDAO.getPlayer("testname");
         int playerID = p.getId();
@@ -102,6 +102,8 @@ public class DAOTest {
         int hp = unit.getHp();
         unitDAO.setUnitHp(soldierID,hp-5);
         assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
+        unitDAO.deleteUnit(soldierID);
+        assertEquals(session.get(Unit.class, soldierID),null);
     }
 
 }
