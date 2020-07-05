@@ -1,10 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.DAO.MetaDAO;
-import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
-import edu.duke.ece.fantasy.database.DAO.SoldierDAO;
-import edu.duke.ece.fantasy.database.DAO.UnitDAO;
+import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.*;
 
 import java.util.*;
@@ -13,6 +10,9 @@ public class BattleHandler {
     private MonsterDAO monsterDAO;
     private SoldierDAO soldierDAO;
     private UnitDAO unitDAO;
+    private TerritoryDAO territoryDAO;
+    public static int TAME_RANGE_X = 3;
+    public static int TAME_RANGE_Y = 3;
 
     /* unitQueue: keep track of the unit's attack order, it is first sorted by unit's speed
     the units will take turns to attack in the order of the queue,
@@ -27,6 +27,7 @@ public class BattleHandler {
         monsterDAO = metaDAO.getMonsterDAO();
         soldierDAO = metaDAO.getSoldierDAO();
         unitDAO = metaDAO.getUnitDAO();
+        territoryDAO = metaDAO.getTerritoryDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){
@@ -141,6 +142,7 @@ public class BattleHandler {
         if(newAttackeeHp == 0){
             deletedID = attackeeID;
             unitDAO.deleteUnit(attackeeID);
+            if(attackee instanceof Monster) territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y);
         }
 
         //update unitQueue

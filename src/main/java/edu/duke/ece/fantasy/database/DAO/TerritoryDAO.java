@@ -133,4 +133,29 @@ public class TerritoryDAO {
         Territory t = getTerritory(where);
         return t.getTame();
     }
+
+    public void updateTameByRange(WorldCoord where, int x_range, int y_range){
+        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
+                +" and T.coord.x >:xlower and T.coord.x <:xupper"
+                +" and T.coord.y >:ylower and T.coord.y <:yupper"
+                +" and not exists (from Monster M where M.coord = T.coord)"
+        );
+        q.setParameter("wid", where.getWid());
+        q.setParameter("xlower", where.getX() - x_range/2);
+        q.setParameter("xupper", where.getX() + x_range/2);
+        q.setParameter("ylower", where.getY() - y_range/2);
+        q.setParameter("yupper", where.getY() + y_range/2);
+
+        //reduced surrounded ares's tame by 5
+        for(Object o : q.list()) {
+            Territory t = (Territory) o;
+            t.setTame(Math.max(t.getTame()-5, 0));
+            session.update(t);
+        }
+
+        //reduce center area's tame by 10
+        Territory tCenter = getTerritory(where);
+        tCenter.setTame(Math.max(tCenter.getTame()-10, 0));
+        session.update(tCenter);
+    }
 }
