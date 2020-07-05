@@ -91,7 +91,7 @@ public class PositionUpdateHandler {
         if (isNewWorld) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
               the territory's tame*/
-            (new Castle()).onCreate(session, info.getStartCoords());
+            (new Castle()).onCreate(new MetaDAO(session), info.getStartCoords());
         }
 
         GetCoordInfo(worldCoords);

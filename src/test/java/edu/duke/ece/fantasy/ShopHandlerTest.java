@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.Item.Potion;
+import edu.duke.ece.fantasy.Item.SuperPotion;
 import edu.duke.ece.fantasy.building.BaseShop;
 import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.building.Shop;
@@ -28,6 +29,7 @@ class ShopHandlerTest {
     ShopHandler shopHandler;
     private PlayerDAO mockPlayerDAO;
     private Player playerWithEnoughMoney = mock(Player.class);
+    private Player playerWithoutEnoughMoney = mock(Player.class);
     private int testPlayerId = 1;
     private DBBuildingDAO mockDbBuildingDAO;
     private InventoryDAO mockInventoryDAO;
@@ -37,9 +39,8 @@ class ShopHandlerTest {
     private MetaDAO mockMetaDAO;
     private PlayerInventoryDAO mockPlayerInventoryDAO;
     private BaseShop baseShop = new BaseShop();
-    private int item1Amount = 20;
-    private DBItem item1 = new Potion().toDBItem();
-    private Inventory inventory1 = new Inventory(item1, item1Amount);
+    private Inventory inventory1 = new Inventory(new Potion().toDBItem(), 20);
+    private Inventory inventory2 = new Inventory(new SuperPotion().toDBItem(), 20);
     private List<Inventory> shopInventories = new ArrayList<>(Arrays.asList(inventory1));
     ObjectMapper objectMapper = new ObjectMapper();
     Logger logger = LoggerFactory.getLogger(ShopHandlerTest.class);
@@ -68,7 +69,9 @@ class ShopHandlerTest {
 
         when(mockDbBuildingDAO.getBuilding(shopCoord)).thenReturn(new BaseShop().toDBBuilding());
         when(mockShopInventoryDAO.getInventories(shopCoord)).thenReturn(shopInventories);
+        when(mockPlayerInventoryDAO.getInventories(any())).thenReturn(new ArrayList<>());
         when(playerWithEnoughMoney.checkMoney(anyInt())).thenReturn(true);
+        when(playerWithoutEnoughMoney.checkMoney(anyInt())).thenReturn(false);
 
         for (int i = 0; i < shopInventories.size(); i++) { // set up id for each inventory
             shopInventories.get(i).setId(i);
@@ -101,18 +104,52 @@ class ShopHandlerTest {
 
     @Test
     void shopInventoryShouldDecreaseWhenPlayerBuySucceed() {
-        playerWithEnoughMoney.setMoney(item1Amount * item1.toGameItem().getCost());
         when(mockPlayerDAO.getPlayer(testPlayerId)).thenReturn(playerWithEnoughMoney);
 
-        List<Inventory> inventories = mockShopInventoryDAO.getInventories(shopCoord);
         shopHandler = new ShopHandler(mockMetaDAO);
 
         List<Inventory> selectedInventoryList = new ArrayList<>();
-        selectedInventoryList.add(new Inventory(item1, item1Amount));
+        for (Inventory inventory : shopInventories) {
+            selectedInventoryList.add(new Inventory(inventory.getDBItem(), inventory.getAmount()));
+        }
 
         ShopResultMessage res = shopHandler.handle(generateShopBuyRequest(selectedInventoryList), testPlayerId);
         for (int i = 0; i < res.getItems().size(); i++) {
             assertEquals(0, res.getItems().get(i).getAmount());
+        }
+    }
+
+    @Test
+    void shopInventoryShouldNotDecreaseWhenPlayerDontHaveEnoughMoney() {
+        when(mockPlayerDAO.getPlayer(testPlayerId)).thenReturn(playerWithoutEnoughMoney);
+
+        shopHandler = new ShopHandler(mockMetaDAO);
+
+        List<Inventory> selectedInventoryList = new ArrayList<>();
+        for (Inventory inventory : shopInventories) {
+            selectedInventoryList.add(new Inventory(inventory.getDBItem(), inventory.getAmount()));
+        }
+
+        ShopResultMessage res = shopHandler.handle(generateShopBuyRequest(selectedInventoryList), testPlayerId);
+        for (int i = 0; i < res.getItems().size(); i++) {
+            assertEquals(shopInventories.get(i).getAmount(), res.getItems().get(i).getAmount());
+        }
+    }
+
+    @Test
+    void shopInventoryShouldNotDecreaseWhenPlayerBuyMoreItem() {
+        when(mockPlayerDAO.getPlayer(testPlayerId)).thenReturn(playerWithoutEnoughMoney);
+
+        shopHandler = new ShopHandler(mockMetaDAO);
+
+        List<Inventory> selectedInventoryList = new ArrayList<>();
+        for (Inventory inventory : shopInventories) {
+            selectedInventoryList.add(new Inventory(inventory.getDBItem(), inventory.getAmount()+1));
+        }
+
+        ShopResultMessage res = shopHandler.handle(generateShopBuyRequest(selectedInventoryList), testPlayerId);
+        for (int i = 0; i < res.getItems().size(); i++) {
+            assertEquals(shopInventories.get(i).getAmount(), res.getItems().get(i).getAmount());
         }
     }
 
@@ -125,66 +162,4 @@ class ShopHandlerTest {
         return shopRequestMessage;
     }
 
-//    void handle_buy() {
-////        List<shopInventory> itemPacks = new ArrayList<>(DBShop.getItems());
-//        List<shopInventory> itemPacks = shopInventoryDAO.getInventories(shopCoord);
-//
-//        for (int i = 0; i < itemPacks.size(); i++) {
-//            try {
-//                shopInventory select_item = itemPacks.get(i);
-//                Item item_obj = select_item.getDBItem().toGameItem();
-//                int itemPack_id = select_item.getId();
-//                int item_amount = select_item.getAmount();
-//                int required_money = item_obj.getCost() * item_amount;
-//                Player player = playerDAO.getPlayer("test");
-//
-//                // Don't have enough money
-//                player.setMoney(required_money - 1);
-//                ShopResultMessage resultMessage = buy_item(player, itemPack_id, item_amount);
-//                assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
-//                assertNotEquals("valid", resultMessage.getResult());
-//
-//                // shop don't have enough item
-//                player.setMoney(required_money);
-//                buy_item(player, itemPack_id, item_amount + 1);
-//                assertEquals(item_amount, resultMessage.getItems().get(0).getAmount());
-//                assertNotEquals("valid", resultMessage.getResult());
-//
-//                // success
-//                player.setMoney(required_money);
-//                resultMessage = buy_item(player, itemPack_id, item_amount - 1);
-//                assertEquals("valid", resultMessage.getResult());
-//                try {
-//                    logger.info(objectMapper.writeValueAsString(resultMessage));
-//                } catch (JsonProcessingException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                // success buy again
-//                player.setMoney(required_money);
-//                resultMessage = buy_item(player, itemPack_id, 1);
-//
-//                assertEquals("valid", resultMessage.getResult());
-//                try {
-//                    logger.info(objectMapper.writeValueAsString(resultMessage));
-//                } catch (JsonProcessingException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//    }
-
-//    ShopResultMessage buy_item(Player player, int inventory_id, int item_amount) {
-//        ShopRequestMessage shopRequestMessage = new ShopRequestMessage();
-//        shopRequestMessage.setCoord(shopCoord);
-//        shopRequestMessage.setAction("buy");
-//        Map<Integer, Integer> itemMap = new HashMap<>();
-//        itemMap.put(inventory_id, item_amount);
-//        shopRequestMessage.setItemMap(itemMap);
-//        return shopHandler.handle(shopRequestMessage, player.getId());
-//    }
 }

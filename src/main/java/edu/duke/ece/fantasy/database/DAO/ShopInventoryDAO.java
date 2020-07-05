@@ -16,14 +16,12 @@ public class ShopInventoryDAO {
         this.session = session;
     }
 
-//    public shopInventory addInventory(Inventory inventory,WorldCoord where) {
-//        shopInventory newInventory = new shopInventory(inventory.getDBItem(), inventory.getAmount(), where);
-//        session.save(newInventory);
-//        return newInventory;
-//    }
+    public void addInventory(Inventory inventory) {
+        session.save(inventory);
+    }
 
     public void deleteInventory(WorldCoord coord) {
-        Query<shopInventory> q = session.createQuery("delete From shopInventory I where I.coord = :coord", shopInventory.class);
+        Query q = session.createQuery("delete From shopInventory I where I.coord = :coord");
         q.setParameter("coord", coord);
         q.executeUpdate();
     }

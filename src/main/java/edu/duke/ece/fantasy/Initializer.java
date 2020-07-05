@@ -32,25 +32,11 @@ public class Initializer {
 //        session.getTransaction().commit();
     }
 
-    public WorldCoord initialize_test_shop() {
-        // create shop in WorldCoord
-        WorldCoord shopCoord = new WorldCoord(-1, 100, 100);
-//        session.beginTransaction();
-        DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
-        DBBuilding building = dbBuildingDAO.getBuilding(shopCoord);
-        if (building == null) {
-            Shop shop = new SuperShop();
-            shop.onCreate(session, shopCoord);
-        }
-//        session.getTransaction().commit();
-        return shopCoord;
-    }
 
     public void test_initialize() {
         // initialize player
         initialize_test_player();
         // initialize shop
-        initialize_test_shop();
     }
 
 

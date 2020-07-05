@@ -72,9 +72,9 @@ public class ShopHandler {
 
     private Inventory findInventoryFromList(List<Inventory> InventoryList, Inventory selectedInventory) {
         Inventory pairedInventory = null;
-        for (Inventory sellerInventory : InventoryList) {
-            if (sellerInventory.equals(selectedInventory)) { // check if seller have same item
-                pairedInventory = sellerInventory;
+        for (Inventory inventory : InventoryList) {
+            if (inventory.equals(selectedInventory)) { // check if inventoryList have the same item as selectedInventory
+                pairedInventory = inventory;
                 break;
             }
         }

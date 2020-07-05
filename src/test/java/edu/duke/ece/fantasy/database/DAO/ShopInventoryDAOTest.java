@@ -13,24 +13,26 @@ import java.util.List;
 
 class ShopInventoryDAOTest {
     private static Session session;
+    private MetaDAO metaDAO;
 
     @BeforeAll
-    static void setUp(){
+    static void setUp() {
         session = HibernateUtil.getSessionFactory().openSession();
     }
 
     @BeforeEach
-    void SetUpEach(){
+    void SetUpEach() {
         session.beginTransaction();
+        metaDAO = new MetaDAO(session);
     }
 
     @AfterEach
-    void shutDownEach(){
+    void shutDownEach() {
         session.getTransaction().rollback();
     }
 
     @AfterAll
-    static void shutDownAll(){
+    static void shutDownAll() {
         session.close();
     }
 
@@ -38,10 +40,8 @@ class ShopInventoryDAOTest {
     void getInventories() {
         ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO(session);
         Shop baseShop = new BaseShop();
-        baseShop.onCreate(session,new WorldCoord());
+        baseShop.onCreate(metaDAO, new WorldCoord());
         List<Inventory> res = shopInventoryDAO.getInventories(new WorldCoord());
-        if(res.get(0).getClass().equals(shopInventory.class)){
-            int i=1;
-        }
+
     }
 }

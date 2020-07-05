@@ -34,16 +34,15 @@ public abstract class Shop extends Building implements Trader {
     }
 
     @Override
-    public void onCreate(Session session, WorldCoord coord) {
+    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
 //        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
-//        shopInventoryDAO shopInventoryDAO = new shopInventoryDAO(session);
-        super.onCreate(session, coord);
+        super.onCreate(metaDAO, coord);
         // delete all old inventory
-        ShopInventoryDAO shopinventoryDAO = new ShopInventoryDAO(session);
+        ShopInventoryDAO shopinventoryDAO = metaDAO.getShopInventoryDAO();
         shopinventoryDAO.deleteInventory(coord);
         for (shopInventory inventory : possible_inventory) {
             inventory.setCoord(coord);
-            session.save(inventory);
+            shopinventoryDAO.addInventory(inventory);
         }
     }
 
