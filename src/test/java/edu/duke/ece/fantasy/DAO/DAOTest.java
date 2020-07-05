@@ -1,12 +1,10 @@
 package edu.duke.ece.fantasy.DAO;
 
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
+import edu.duke.ece.fantasy.database.DAO.SoldierDAO;
 import edu.duke.ece.fantasy.database.DAO.UnitDAO;
-import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DAOTest {
     public static Session session;
+    private PlayerDAO playerDAO;
+    private SoldierDAO soldierDAO;
+    private MonsterDAO monsterDAO;
+    private UnitDAO unitDAO;
 
     @BeforeAll
     public static void setUpSession(){
@@ -35,15 +37,20 @@ public class DAOTest {
 
     @Test
     public void TestAll(){
+        playerDAO = new PlayerDAO(session);
+        monsterDAO = new MonsterDAO(session);
+        soldierDAO = new SoldierDAO(session);
+        unitDAO = new UnitDAO(session);
+        playerDAO.addPlayer("testname","testpassword");
+
         testPlayerDAO();
         testMonsterDAO();
+        testSoldierUnitDAO();
     }
 
     public void testPlayerDAO(){
         System.out.println("test playerDAO");
-        PlayerDAO playerDAO = new PlayerDAO(this.session);
 
-        playerDAO.addPlayer("testname","testpassword");
         Player p = playerDAO.getPlayer("testname");
         int id = p.getId();
         int wid = p.getWid();
@@ -52,7 +59,6 @@ public class DAOTest {
 
     public void testMonsterDAO(){
         System.out.println("test monsterDAO");
-        MonsterDAO monsterDAO = new MonsterDAO(this.session);
 
         Monster m1 = new Monster("wolf",60,6,10);
         Monster m2 = new Monster("wolf",70,7,20);
@@ -77,6 +83,25 @@ public class DAOTest {
         assertEquals(monsterDAO.getMonster(id).getCoord(),new WorldCoord(1,-1,1));
         assertEquals(monsterDAO.getMonster(id).isNeedUpdate(),false);
         assertEquals(monsterDAO.getMonster(id2).isNeedUpdate(),false);
+    }
+
+    public void testSoldierUnitDAO(){
+        System.out.println("test soldierDAO");
+
+        Player p = playerDAO.getPlayer("testname");
+        int playerID = p.getId();
+        List<Soldier> soldierDAOList = soldierDAO.getSoldiers(playerID);
+        int soldierID = soldierDAOList.get(0).getId();
+        Soldier soldier = soldierDAO.getSoldier(soldierID);
+        assertEquals(soldier,soldierDAOList.get(0));
+        assertEquals(soldier.getHp(),soldierDAOList.get(0).getHp());
+
+        Unit unit = unitDAO.getUnit(soldierID);
+        assertEquals(unit.getHp(), soldier.getHp());
+        assertEquals(unit.getSpeed(), soldier.getSpeed());
+        int hp = unit.getHp();
+        unitDAO.setUnitHp(soldierID,hp-5);
+        assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
     }
 
 }
