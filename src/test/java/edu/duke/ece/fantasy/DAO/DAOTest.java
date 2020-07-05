@@ -1,10 +1,7 @@
 package edu.duke.ece.fantasy.DAO;
 
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
-import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
-import edu.duke.ece.fantasy.database.DAO.SoldierDAO;
-import edu.duke.ece.fantasy.database.DAO.UnitDAO;
+import edu.duke.ece.fantasy.database.DAO.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class DAOTest {
     public static Session session;
@@ -20,6 +18,7 @@ public class DAOTest {
     private SoldierDAO soldierDAO;
     private MonsterDAO monsterDAO;
     private UnitDAO unitDAO;
+    private TerritoryDAO territoryDAO;
 
     @BeforeAll
     public static void setUpSession(){
@@ -41,10 +40,13 @@ public class DAOTest {
         monsterDAO = new MonsterDAO(session);
         soldierDAO = new SoldierDAO(session);
         unitDAO = new UnitDAO(session);
+        territoryDAO = new TerritoryDAO(session);
+
         playerDAO.addPlayer("testname","testpassword");
 
         testPlayerDAO();
         testMonsterDAO();
+        testTerritoryDAO();
         testSoldierUnitDAO();
     }
 
@@ -104,6 +106,35 @@ public class DAOTest {
         assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
         unitDAO.deleteUnit(soldierID);
         assertEquals(session.get(Unit.class, soldierID),null);
+    }
+
+    public void testTerritoryDAO(){
+        WorldCoord center = new WorldCoord(1,0,0);
+        territoryDAO.addTerritory(new WorldCoord(1,-1,-1),90,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,-1,0),90,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,-1,1),90,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,0,-1),90,"grass",null);
+        territoryDAO.addTerritory(center,100,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,0,1),90,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,1,-1),90,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,1,0),90,"grass",null);
+        territoryDAO.addTerritory(new WorldCoord(1,1,1),95,"grass",null);
+        Monster m = new Monster("testWolf",50,5,15);
+        monsterDAO.addMonster(m,center);
+
+        List<Territory> territoryList = territoryDAO.getTerritories(center,3,3);
+        assertEquals(territoryList.size(),9);
+        assertEquals(territoryList.get(0),territoryDAO.getTerritory(new WorldCoord(1,-1,-1)));
+
+        WorldCoord wildestCoord = territoryDAO.getWildestCoordInRange(center,3,3);
+        assertEquals(wildestCoord,new WorldCoord(1,1,1));
+
+        territoryDAO.updateTameByRange(center,3,3);
+        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,-1,-1)).getTame(),90);
+        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,-1,1)).getTame(),90);
+        assertNotEquals(territoryDAO.getTerritory(center).getTame(),100);
+        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,1,1)).getTame(),95);
+        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,1,-1)).getTame(),90);
     }
 
 }
