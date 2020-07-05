@@ -32,8 +32,8 @@ public class Unit {
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
-    @Embedded
-    private List<DBItem> equipments = new ArrayList<>();
+//    @Embedded
+//    private List<DBItem> equipments = new ArrayList<>();
 
     public Unit(){}
 
