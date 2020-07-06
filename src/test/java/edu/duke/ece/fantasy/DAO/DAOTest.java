@@ -129,7 +129,7 @@ public class DAOTest {
         WorldCoord wildestCoord = territoryDAO.getWildestCoordInRange(center,3,3);
         assertEquals(wildestCoord,new WorldCoord(1,1,1));
 
-        territoryDAO.updateTameByRange(center,3,3);
+        territoryDAO.updateTameByRange(center,3,3,10,5);
         assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,-1,-1)).getTame(),90);
         assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,-1,1)).getTame(),90);
         assertNotEquals(territoryDAO.getTerritory(center).getTame(),100);
