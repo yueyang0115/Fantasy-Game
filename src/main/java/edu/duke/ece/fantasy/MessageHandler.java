@@ -27,9 +27,9 @@ public class MessageHandler {
         ShopRequestMessage shopRequestMessage = input.getShopRequestMessage();
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
         BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
-        //System.out.println("incoming message: " + input);
 
             if (loginMsg != null) {
+                // if login succeed, sharedData will hold login-player's info
                 LoginHandler lh = new LoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
             }
@@ -42,7 +42,8 @@ public class MessageHandler {
             if (positionMsg != null) {
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);
                 result.setPositionResultMessage(positionUpdateHandler.handle(sharedData.getPlayer().getWid(), positionMsg));
-                // we add wid field in currentCoord from the client-sent-msg
+                // received currentCoord in the request only hold x/y_coord, not hold wid
+                // we add wid to it
                 WorldCoord currentCoord  = positionMsg.getCurrentCoord();
                 currentCoord.setWid(sharedData.getPlayer().getWid());
                 // update player info in sharedData between taskScheduler and messageHandler
@@ -52,6 +53,7 @@ public class MessageHandler {
 
             if (battleMsg != null) {
                 sharedData.getPlayer().setStatus(Player.Status.INBATTLE);
+                // add wid to the received currentCoord in the request
                 if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWid());
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
@@ -84,22 +86,4 @@ public class MessageHandler {
 
         return result;
     }
-
-//    public void sendResult(MessagesS2C result){
-//        try {
-//            this.TCPcm.send(result);
-//            if (this.TCPcm.isClosed()){
-//                return;
-//            }
-//            String result_str = "";
-//            result_str = new ObjectMapper().writeValueAsString(result);
-//            System.out.println("[DEBUG] TCPcommunicator successfully send " + result_str);
-//        }
-//        catch(IOException e){
-//            e.printStackTrace();
-//            if(this.TCPcm.isClosed()) {
-//                System.out.println("[DEBUG] In messageHandler, Client socket might closed, prepare to exit");
-//            }
-//        }
-//    }
 }

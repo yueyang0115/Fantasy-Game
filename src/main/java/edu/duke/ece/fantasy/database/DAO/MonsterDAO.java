@@ -16,6 +16,7 @@ public class MonsterDAO {
         this.session = session;
     }
 
+    // add monster to the given coord
     public void addMonster(Monster m, WorldCoord where){
         m.setCoord(where);
         session.save(m);
@@ -52,7 +53,8 @@ public class MonsterDAO {
         return true;
     }
 
-    
+
+    // change monster's needUpdate field to the given status
     public void setMonsterStatus(int monsterID, boolean status){
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
@@ -62,6 +64,7 @@ public class MonsterDAO {
         session.update(m);
     }
 
+    // change given monsters' needUpdate field to the given status
     public void setMonstersStatus(List<Monster> monsterList, boolean status){
         //for(Monster m : monsterList) setMonsterStatus(m.getId(), false);
         for(Iterator<Monster> iterator = monsterList.iterator(); iterator.hasNext();){
@@ -70,6 +73,7 @@ public class MonsterDAO {
         }
     }
 
+    // count num of monsters within an area
     public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid"
@@ -85,7 +89,7 @@ public class MonsterDAO {
         return cnt;
     }
 
-    //get the monsters near a coord, not include the coord
+    //get all monsters within an area, not including monsters that located in the center
     public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = new ArrayList<>();
         Query q = session.createQuery("From Monster M where M.coord.wid =:wid "
@@ -109,6 +113,7 @@ public class MonsterDAO {
         return monsterList;
     }
 
+    // update monster's coord to the given x and y
     public void updateMonsterCoord(int monsterID, int x, int y){
         Monster m = getMonster(monsterID);
         if(m != null){

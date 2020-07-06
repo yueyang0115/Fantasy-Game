@@ -5,8 +5,12 @@ import edu.duke.ece.fantasy.database.Soldier;
 import java.util.*;
 
 public class BattleResultMessage {
+    // battleInitInfo is set only when request is "start"
     private BattleInitInfo battleInitInfo;
-    private String result; //status: "win","lose","continue","escaped","invalid"
+    // final battle status: "win","lose","continue","escaped"
+    private String result;
+    // details of each round's battle, including each round's attacker and attackee, result and units order in next round
+    // since monster can attack soldier back, one request can has more than one battle action
     private List<BattleAction> actions;
 
     public BattleResultMessage() {

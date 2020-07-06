@@ -119,7 +119,8 @@ public class BattleHandler {
         List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         if(monsterList == null || monsterList.size() ==0){
             result.setResult("win");
-            territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y);
+            //change around area's tame
+            territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y,10,5);
         }
         else if(soldierList == null || soldierList.size() ==0) result.setResult("lose");
         else result.setResult("continue");

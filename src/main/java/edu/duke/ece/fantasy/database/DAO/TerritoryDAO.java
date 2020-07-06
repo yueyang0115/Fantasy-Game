@@ -110,7 +110,8 @@ public class TerritoryDAO {
 
     }
 
-    public synchronized WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range){
+    // find a coord with the largest tame within an area, the coord cannot hold monsters
+    public WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range){
         Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
                 +" and T.coord.x >=:xlower and T.coord.x <=:xupper"
                 +" and T.coord.y >=:ylower and T.coord.y <=:yupper"
@@ -129,12 +130,14 @@ public class TerritoryDAO {
         return res;
     }
 
+    // get given coord's tame
     public int getTameByCoord(WorldCoord where){
         Territory t = getTerritory(where);
         return t.getTame();
     }
 
-    public void updateTameByRange(WorldCoord where, int x_range, int y_range){
+    // change territory's tame within an area, center tame reduced by centerReduce, others reduced by otherReduce
+    public void updateTameByRange(WorldCoord where, int x_range, int y_range, int centerReduce, int otherReduce){
         Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
                 +" and T.coord.x >=:xlower and T.coord.x <=:xupper"
                 +" and T.coord.y >=:ylower and T.coord.y <=:yupper"
@@ -147,16 +150,15 @@ public class TerritoryDAO {
         q.setParameter("ylower", where.getY() - y_range/2);
         q.setParameter("yupper", where.getY() + y_range/2);
 
-        //reduced surrounded ares's tame by 5
+        //reduced surrounded ares's tame
         for(Object o : q.list()) {
             Territory t = (Territory) o;
-            t.setTame(Math.max(t.getTame()-5, 0));
+            t.setTame(Math.max(t.getTame()-otherReduce, 0));
             session.update(t);
         }
-
-        //reduce center area's tame by 10
+        //reduce center area's tame
         Territory tCenter = getTerritory(where);
-        tCenter.setTame(Math.max(tCenter.getTame()-10, 0));
+        tCenter.setTame(Math.max(tCenter.getTame()-centerReduce, 0));
         session.update(tCenter);
     }
 }

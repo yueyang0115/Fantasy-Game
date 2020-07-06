@@ -7,6 +7,7 @@ public class TaskScheduler {
     private PriorityQueue<ScheduledTask> tasksQueue;
 
     public TaskScheduler() {
+        // unexecuted tasks in taskQueue are sorted by their start time in ascending order
         tasksQueue = new PriorityQueue<>(new Comparator<ScheduledTask>() {
             @Override
             public int compare(ScheduledTask scheduledTask1, ScheduledTask scheduledTask2) {
@@ -15,7 +16,7 @@ public class TaskScheduler {
         });
     }
 
-    //how much time left before the next task to be executed
+    //return how much time left before the next task to be executed
     public long getTimeToNextTask(){
         if(!tasksQueue.isEmpty()){
             long now = System.currentTimeMillis();
@@ -26,9 +27,9 @@ public class TaskScheduler {
         return Long.MAX_VALUE;
     }
 
-    // this method will be called when the first task in queue should be executed
+    // run all ready tasks in queue
+    // this method is called when at least first task in queue should be executed
     public void runReadyTasks(){
-        // inject metaDAO
         long now = System.currentTimeMillis();
         while(!tasksQueue.isEmpty()){
             ScheduledTask scheduledTask = tasksQueue.peek();
@@ -49,6 +50,7 @@ public class TaskScheduler {
         }
     }
 
+    // add tasks in queue
     public void addTask(ScheduledTask scheduledTask){
         this.tasksQueue.offer(scheduledTask);
     }

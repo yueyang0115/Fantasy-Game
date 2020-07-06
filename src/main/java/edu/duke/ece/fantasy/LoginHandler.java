@@ -27,6 +27,7 @@ public class LoginHandler {
             result.setWid(player.getWid());
             result.setId(player.getId());
             System.out.println("[DEBUG] Login success");
+            // login success, make sharedData hold the login-player's info
             sharedData.setPlayer(player);
         }
         else{
