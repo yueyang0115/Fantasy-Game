@@ -52,14 +52,6 @@ public class MonsterDAO {
         return true;
     }
 
-    //delete a monster from database
-    public void deleteMonster(int monsterID){
-        Monster monster;
-        if ((monster = (Monster) session.get(Monster.class, monsterID)) != null) {
-            session.delete(monster);
-            System.out.println("[DEBUG] Delete monster " + monsterID);
-        }
-    }
     
     public void setMonsterStatus(int monsterID, boolean status){
         Monster m = getMonster(monsterID);
@@ -76,20 +68,6 @@ public class MonsterDAO {
             Monster m = iterator.next();
             setMonsterStatus(m.getId(), status);
         }
-    }
-
-    public List<Monster> getUpdatedMonsters(){
-        List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.needUpdate =:needUpdate");
-        q.setParameter("needUpdate", true);
-//        for(Object o : q.list()) {
-//            monsterList.add((Monster) o);
-//        }
-        for(Iterator iterator = q.list().iterator(); iterator.hasNext();){
-            Object o = iterator.next();
-            monsterList.add((Monster) o);
-        }
-        return monsterList;
     }
 
     public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
