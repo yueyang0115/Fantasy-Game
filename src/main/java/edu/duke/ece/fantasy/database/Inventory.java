@@ -59,6 +59,10 @@ public class Inventory {
         this.amount = amount;
     }
 
+    public void reduceAmount(int reduceAmount){
+        amount -= reduceAmount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

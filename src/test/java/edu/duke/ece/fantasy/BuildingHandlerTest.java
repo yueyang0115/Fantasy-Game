@@ -23,7 +23,6 @@ class BuildingHandlerTest {
     private TerritoryDAO mockTerritoryDAO = mock(TerritoryDAO.class);
     private DBBuildingDAO mockDBBuildingDAO = mock(DBBuildingDAO.class);
     private ShopInventoryDAO mockShopInventoryDAO = mock(ShopInventoryDAO.class);
-//    private TerritoryDAO territoryDAO = ;
     private int testPlayerId = 1;
     private Player testPlayer = new Player();
     private WorldCoord selectedCoord = new WorldCoord();
@@ -58,27 +57,18 @@ class BuildingHandlerTest {
     }
 
     @AfterEach
-    void shutdown(){
+    void shutdown() {
     }
-
-//    @Test
-//    public void handle() {
-//        session.beginTransaction();
-//        handle_create_list();
-//        handle_create();
-//        handle_update();
-//        session.close();
-//    }
 
     @Test
     public void shouldReturnCreateListWithCorrectCoord() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("createList");
         requestMessage.setCoord(selectedCoord);
-        when(mockTerritoryDAO.getTerritory(selectedCoord)).thenReturn(new Territory(selectedCoord,0));
+        when(mockTerritoryDAO.getTerritory(selectedCoord)).thenReturn(new Territory(selectedCoord, 0));
 //        Player player = playerDAO.getPlayer("test");
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertEquals("success",res.getResult());
+        assertEquals("success", res.getResult());
     }
 
     @Test
@@ -86,47 +76,47 @@ class BuildingHandlerTest {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("createList");
         requestMessage.setCoord(selectedCoord);
-        when(mockTerritoryDAO.getTerritory(selectedCoord)).thenReturn(new Territory(selectedCoord,99));
+        when(mockTerritoryDAO.getTerritory(selectedCoord)).thenReturn(new Territory(selectedCoord, 99));
 //        Player player = playerDAO.getPlayer("test");
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertNotEquals("success",res.getResult());
+        assertNotEquals("success", res.getResult());
     }
 
     @Test
-    public void shouldReturnUpdateListWithCorrectCoord(){
+    public void shouldReturnUpdateListWithCorrectCoord() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("upgradeList");
         requestMessage.setCoord(selectedCoord);
         when(mockDBBuildingDAO.getBuilding(selectedCoord)).thenReturn(new BaseShop().toDBBuilding());
 
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertEquals("success",res.getResult());
+        assertEquals("success", res.getResult());
     }
 
     @Test
-    public void shouldReturnUpdateListWithWrongCoord(){
+    public void shouldReturnUpdateListWithWrongCoord() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("upgradeList");
         requestMessage.setCoord(selectedCoord);
         when(mockDBBuildingDAO.getBuilding(selectedCoord)).thenReturn(null);
 
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertNotEquals("success",res.getResult());
+        assertNotEquals("success", res.getResult());
     }
 
     @Test
-    public void shouldNotCreateBuildingWithWrongName(){
+    public void shouldNotCreateBuildingWithWrongName() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("create");
         requestMessage.setCoord(selectedCoord);
         requestMessage.setBuildingName("wrongName");
 
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertNotEquals("success",res.getResult());
+        assertNotEquals("success", res.getResult());
     }
 
     @Test
-    public void shouldCreateBuildingWithRightCondition(){
+    public void shouldCreateBuildingWithRightCondition() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("create");
         requestMessage.setCoord(selectedCoord);
@@ -135,11 +125,11 @@ class BuildingHandlerTest {
         testPlayer.setMoney(new BaseShop().getCost());
 
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertEquals("success",res.getResult());
+        assertEquals("success", res.getResult());
     }
 
     @Test
-    public void shouldNotUpdateWithWrongCoord(){
+    public void shouldNotUpdateWithWrongCoord() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("update");
         requestMessage.setCoord(selectedCoord);
@@ -147,11 +137,11 @@ class BuildingHandlerTest {
         when(mockDBBuildingDAO.getBuilding(selectedCoord)).thenReturn(null);
 
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertNotEquals("success",res.getResult());
+        assertNotEquals("success", res.getResult());
     }
 
     @Test
-    public void shouldUpgradeBuildingWithRightCondition(){
+    public void shouldUpgradeBuildingWithRightCondition() {
         BuildingRequestMessage requestMessage = new BuildingRequestMessage();
         requestMessage.setAction("upgrade");
         requestMessage.setCoord(selectedCoord);
@@ -162,7 +152,7 @@ class BuildingHandlerTest {
         testPlayer.setMoney(new SuperShop().getCost());
 
         BuildingResultMessage res = buildingHandler.handle(requestMessage, testPlayerId);
-        assertEquals("success",res.getResult());
+        assertEquals("success", res.getResult());
     }
 
 }

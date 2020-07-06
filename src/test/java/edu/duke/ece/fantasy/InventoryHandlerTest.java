@@ -1,107 +1,100 @@
-//package edu.duke.ece.fantasy;
-//
-//import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import edu.duke.ece.fantasy.Item.Item;
-//import edu.duke.ece.fantasy.database.*;
-//import edu.duke.ece.fantasy.json.InventoryRequestMessage;
-//import edu.duke.ece.fantasy.json.InventoryResultMessage;
-//import org.hibernate.Session;
-//import org.junit.jupiter.api.Test;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class InventoryHandlerTest {
-//    ItemDAO itemDAO;
-//    InventoryDAO inventoryDAO;
-//    PlayerDAO playerDAO;
-//    Session session;
-//    InventoryHandler inventoryHandler;
-//    List<Item> items;
-//    List<ItemPack> itemPacks = new ArrayList<>();
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    Logger logger = LoggerFactory.getLogger(InventoryHandlerTest.class);
-//
-//    InventoryHandlerTest() {
-//        (new Initializer()).initialize();
-//        session = HibernateUtil.getSessionFactory().openSession();
-//        itemDAO = new ItemDAO(session);
-//        playerDAO = new PlayerDAO(session);
-//        inventoryDAO = new InventoryDAO(session);
-//        inventoryHandler = new InventoryHandler(session);
-//        items = itemDAO.getAllItem();
-//
-//    }
-//
-//    void initial_player() {
+package edu.duke.ece.fantasy;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.duke.ece.fantasy.Item.Item;
+import edu.duke.ece.fantasy.Item.Potion;
+import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.*;
+import edu.duke.ece.fantasy.json.BuildingResultMessage;
+import edu.duke.ece.fantasy.json.InventoryRequestMessage;
+import edu.duke.ece.fantasy.json.InventoryResultMessage;
+import org.hibernate.Session;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class InventoryHandlerTest {
+    PlayerDAO mockPlayerDAO = mock(PlayerDAO.class);
+    InventoryDAO mockInventoryDAO = mock(InventoryDAO.class);
+    UnitDAO mockUnitDAO = mock(UnitDAO.class);
+    Session mockSession = mock(Session.class);
+    SoldierDAO mockSoldierDAO = mock(SoldierDAO.class);
+    PlayerInventoryDAO mockPlayerInventoryDAO = mock(PlayerInventoryDAO.class);
+    MetaDAO mockMetaDAO = mock(MetaDAO.class);
+    InventoryHandler inventoryHandler;
+    Unit testUnit = new Monster("wolf", 0, 0, 0);
+    Player testPlayer = new Player();
+    int testPlayerId = 1;
+    int testItemId = 99;
+    playerInventory selectedInventory = new playerInventory(new Potion().toDBItem(), 20, testPlayer);
+    List<Inventory> playerInventories = new ArrayList<>(Arrays.asList(selectedInventory));
+
+    @BeforeEach
+    void setUp() {
 //        session.beginTransaction();
-//        for (Item item : items) { // add itempack
-//            itemPacks.add(new ItemPack(item, 20));
-//        }
-//        Player player = playerDAO.getPlayer("test");
-//        if (player == null) { // if test player doesn't exist
-//            playerDAO.addPlayer("test", "test");
-//            player = playerDAO.getPlayer("test");
-//        }
-//        for (ItemPack itemPack : itemPacks) {
-//            player.addItem(itemPack);
-//        }
-//        session.update(player);
-////        session.getTransaction().commit();
-//    }
-//
-//    @Test
-//    void handle() {
-//        Player player = playerDAO.getPlayer("test");
-//        initial_player();
-//
-//        handle_list();
-//        handle_use();
-//    }
-//
-//
-//    void handle_list() {
-//        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
-//        inventoryRequestMessage.setAction("list");
-//        Player player = playerDAO.getPlayer("test");
-//        InventoryResultMessage resultMessage = new InventoryResultMessage();
-//
-//        for (ItemPack itemPack : itemPacks) {
-//            int itemPack_id = itemPack.getId();
-//            inventoryRequestMessage.setInventoryID(itemPack_id);
-//            resultMessage = inventoryHandler.handle(inventoryRequestMessage, player.getId());
-//            assertEquals("valid", resultMessage.getResult());
-//        }
-//        try {
-//            logger.info(objectMapper.writeValueAsString(resultMessage));
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    void handle_use() {
-//        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
-//        inventoryRequestMessage.setAction("use");
-//        Player player = playerDAO.getPlayer("test");
-//        InventoryResultMessage resultMessage = new InventoryResultMessage();
-//
-//        for (ItemPack itemPack : itemPacks) {
-//            int i = itemPack.getAmount()-1;
-//            int itemPack_id = itemPack.getId();
-//            inventoryRequestMessage.setInventoryID(itemPack_id);
-//            resultMessage = inventoryHandler.handle(inventoryRequestMessage, player.getId());
-//            assertEquals(i, itemPack.getAmount());
-//        }
-//        try {
-//            logger.info(objectMapper.writeValueAsString(resultMessage));
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//}
+//        Initializer initializer = new Initializer(session);
+//        initializer.initialize_test_player();
+        when(mockMetaDAO.getPlayerDAO()).thenReturn(mockPlayerDAO);
+        when(mockMetaDAO.getUnitDAO()).thenReturn(mockUnitDAO);
+        when(mockMetaDAO.getInventoryDAO()).thenReturn(mockInventoryDAO);
+        when(mockMetaDAO.getSession()).thenReturn(mockSession);
+        when(mockMetaDAO.getPlayerInventoryDAO()).thenReturn(mockPlayerInventoryDAO);
+        when(mockMetaDAO.getSoldierDAO()).thenReturn(mockSoldierDAO);
+
+        when(mockUnitDAO.getUnit(anyInt())).thenReturn(testUnit);
+        when(mockPlayerInventoryDAO.getInventories(testPlayer)).thenReturn(playerInventories);
+        when(mockPlayerInventoryDAO.getInventory(testItemId)).thenReturn(selectedInventory);
+        when(mockPlayerDAO.getPlayer(testPlayerId)).thenReturn(testPlayer);
+        inventoryHandler = new InventoryHandler(mockMetaDAO);
+//        when(mockPlayerDAO.getPlayer()).thenReturn();
+//        when().thenReturn();
+    }
+
+    @AfterEach
+    void shutdown() {
+    }
+
+
+    @Test
+    void shouldReturnListWithListCMD() {
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("list");
+        when(mockPlayerDAO.getPlayer(testPlayerId)).thenReturn(testPlayer);
+
+        InventoryResultMessage res = inventoryHandler.handle(inventoryRequestMessage, testPlayerId);
+        assertEquals("valid", res.getResult());
+    }
+
+    @Test
+    void shouldUseItemWithRightId() {
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("use");
+        inventoryRequestMessage.setInventoryID(testItemId);
+        InventoryResultMessage res = inventoryHandler.handle(inventoryRequestMessage, testPlayerId);
+
+        assertEquals("valid",res.getResult());
+    }
+
+    @Test
+    void shouldNotUseItemWithWrongId(){
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("use");
+        inventoryRequestMessage.setInventoryID(testItemId-1);
+        InventoryResultMessage res = inventoryHandler.handle(inventoryRequestMessage, testPlayerId);
+
+        assertNotEquals("valid",res.getResult());
+    }
+}

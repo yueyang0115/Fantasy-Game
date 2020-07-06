@@ -38,13 +38,9 @@ class ShopHandlerTest {
     private UnitDAO mockUnitDAO;
     private MetaDAO mockMetaDAO;
     private PlayerInventoryDAO mockPlayerInventoryDAO;
-    private BaseShop baseShop = new BaseShop();
     private Inventory inventory1 = new Inventory(new Potion().toDBItem(), 20);
     private Inventory inventory2 = new Inventory(new SuperPotion().toDBItem(), 20);
     private List<Inventory> shopInventories = new ArrayList<>(Arrays.asList(inventory1));
-    ObjectMapper objectMapper = new ObjectMapper();
-    Logger logger = LoggerFactory.getLogger(ShopHandlerTest.class);
-    ShopInventoryDAO shopInventoryDAO;
     WorldCoord shopCoord = new WorldCoord();
 
     @BeforeEach
