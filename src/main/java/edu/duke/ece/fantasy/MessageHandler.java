@@ -68,6 +68,11 @@ public class MessageHandler {
             }
 
             if (shopRequestMessage != null) {
+                if(sharedData.getPlayer().getStatus()==Player.Status.INBUILDING){ // make sure only send redirect once
+                    RedirectMessage redirectMessage = new RedirectMessage();
+                    redirectMessage.setDestination("shop");
+                    result.setRedirectMessage(redirectMessage);
+                }
                 sharedData.getPlayer().setStatus(Player.Status.INBUILDING);
 
                 ShopHandler shopHandler = new ShopHandler(metaDAO);
@@ -79,22 +84,21 @@ public class MessageHandler {
                 InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
                 shopInventoryRequestMessage.setAction("list");
 
-                RedirectMessage redirectMessage = new RedirectMessage();
-                redirectMessage.setDestination("shop");
-                result.setRedirectMessage(redirectMessage);
                 result.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, sharedData.getPlayer().getId()));
                 result.setShopResultMessage(shopResultMessage);
             }
 
             if(inventoryRequestMessage != null){
+                if(sharedData.getPlayer().getStatus()==Player.Status.INBAG){ // make sure only send redirect once
+                    RedirectMessage redirectMessage = new RedirectMessage();
+                    redirectMessage.setDestination("inventory");
+                    result.setRedirectMessage(redirectMessage);
+                }
                 sharedData.getPlayer().setStatus(Player.Status.INBAG);
                 InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, sharedData.getPlayer().getId()));
                 AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
                 result.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, sharedData.getPlayer().getId()));
-                RedirectMessage redirectMessage = new RedirectMessage();
-                redirectMessage.setDestination("inventory");
-                result.setRedirectMessage(redirectMessage);
             }
 
             if (buildingRequestMessage != null) {
