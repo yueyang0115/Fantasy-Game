@@ -55,6 +55,11 @@ public class MessageHandler {
                 if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWid());
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
+                if(battleMsg.getAction().equals("start")){
+                    RedirectMessage redirectMsg = new RedirectMessage();
+                    redirectMsg.setDestination("battle");
+                    result.setRedirectMessage(redirectMsg);
+                }
             }
 
             if (attributeMsg != null) {
