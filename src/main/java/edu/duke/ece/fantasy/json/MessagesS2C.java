@@ -9,6 +9,7 @@ public class MessagesS2C {
     private AttributeResultMessage attributeResultMessage;
     private InventoryResultMessage inventoryResultMessage;
     private BuildingResultMessage buildingResultMessage;
+    private RedirectMessage redirectMessage;
 
     public MessagesS2C(){ }
 
@@ -88,5 +89,13 @@ public class MessagesS2C {
 
     public void setInventoryResultMessage(InventoryResultMessage inventoryResultMessage) {
         this.inventoryResultMessage = inventoryResultMessage;
+    }
+
+    public RedirectMessage getRedirectMessage() {
+        return redirectMessage;
+    }
+
+    public void setRedirectMessage(RedirectMessage redirectMessage) {
+        this.redirectMessage = redirectMessage;
     }
 }

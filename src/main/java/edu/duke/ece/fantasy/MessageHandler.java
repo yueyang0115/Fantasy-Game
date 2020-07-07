@@ -73,8 +73,11 @@ public class MessageHandler {
                 // add inventory result to shop
                 InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
                 shopInventoryRequestMessage.setAction("list");
-                shopResultMessage.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, sharedData.getPlayer().getId()));
 
+                RedirectMessage redirectMessage = new RedirectMessage();
+                redirectMessage.setDestination("shop");
+                result.setRedirectMessage(redirectMessage);
+                result.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, sharedData.getPlayer().getId()));
                 result.setShopResultMessage(shopResultMessage);
             }
 
