@@ -68,7 +68,7 @@ public class MessageHandler {
             }
 
             if (shopRequestMessage != null) {
-                if(sharedData.getPlayer().getStatus()==Player.Status.INBUILDING){ // make sure only send redirect once
+                if(sharedData.getPlayer().getStatus()!=Player.Status.INBUILDING){ // make sure only send redirect once
                     RedirectMessage redirectMessage = new RedirectMessage();
                     redirectMessage.setDestination("shop");
                     result.setRedirectMessage(redirectMessage);
@@ -89,7 +89,7 @@ public class MessageHandler {
             }
 
             if(inventoryRequestMessage != null){
-                if(sharedData.getPlayer().getStatus()==Player.Status.INBAG){ // make sure only send redirect once
+                if(sharedData.getPlayer().getStatus()!=Player.Status.INBAG){ // make sure only send redirect once
                     RedirectMessage redirectMessage = new RedirectMessage();
                     redirectMessage.setDestination("inventory");
                     result.setRedirectMessage(redirectMessage);
