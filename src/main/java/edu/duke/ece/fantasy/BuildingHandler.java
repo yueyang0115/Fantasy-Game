@@ -19,6 +19,7 @@ public class BuildingHandler {
     edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
     TerritoryDAO territoryDAO;
     Session session;
+    MetaDAO metaDAO;
     Map<String, Building> BaseBuildingMap = new HashMap<>();
     //("shop",shop);
 
@@ -27,6 +28,7 @@ public class BuildingHandler {
         DBBuildingDAO = metaDAO.getDbBuildingDAO();
         territoryDAO = metaDAO.getTerritoryDAO();
         session = metaDAO.getSession();
+        this.metaDAO = metaDAO;
         Shop shop = new BaseShop();
         Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
@@ -94,13 +96,12 @@ public class BuildingHandler {
         Player player = playerDAO.getPlayer(playerId);
 
         // deduce money
-        int left_money = player.getMoney() - building.getCost();
-        if (left_money < 0) {
+        if (!player.checkMoney(building.getCost())) {
             throw new InvalidBuildingRequest("Don't have enough resource");
         }
-        player.setMoney(left_money);
+        player.subtractMoney(building.getCost());
 
-        building.onCreate(session, coord);
+        building.onCreate(metaDAO, coord);
         return building;
     }
 
@@ -124,13 +125,12 @@ public class BuildingHandler {
         Player player = playerDAO.getPlayer(playerId);
 
         // deduce money
-        int left_money = player.getMoney() - UpgradeTo.getCost();
-        if (left_money < 0) {
+        if (!player.checkMoney(UpgradeTo.getCost())) {
             throw new InvalidBuildingRequest("Don't have enough resource");
         }
-        player.setMoney(left_money);
+        player.subtractMoney(UpgradeTo.getCost());
 
-        UpgradeTo.onCreate(session, coord);
+        UpgradeTo.onCreate(metaDAO, coord);
         return UpgradeTo;
     }
 

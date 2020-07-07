@@ -66,9 +66,18 @@ public class MessageHandler {
 
             if (shopRequestMessage != null) {
                 sharedData.getPlayer().setStatus(Player.Status.INBUILDING);
+
                 ShopHandler shopHandler = new ShopHandler(metaDAO);
+                InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
+
                 if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(sharedData.getPlayer().getWid());
-                result.setShopResultMessage(shopHandler.handle(shopRequestMessage, sharedData.getPlayer().getId()));
+                ShopResultMessage shopResultMessage = shopHandler.handle(shopRequestMessage, sharedData.getPlayer().getId());
+                // add inventory result to shop
+                InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
+                shopInventoryRequestMessage.setAction("list");
+                shopResultMessage.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, sharedData.getPlayer().getId()));
+
+                result.setShopResultMessage(shopResultMessage);
             }
 
             if(inventoryRequestMessage != null){

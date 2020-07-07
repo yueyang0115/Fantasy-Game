@@ -32,19 +32,13 @@ public class InventoryHandler {
         InventoryResultMessage resultMessage = new InventoryResultMessage();
         Player player = playerDAO.getPlayer(player_id);
         int item_id = request.getInventoryID();
-        Inventory itemPack = inventoryDAO.getInventory(item_id);
+        playerInventory selectedInventory = playerInventoryDAO.getInventory(item_id);
         Unit unit = unitDAO.getUnit(request.getUnitID());
         try {
             if (action.equals("list")) {
                 resultMessage.setResult("valid");
             } else if (action.equals("use")) {
-                if (validate(player, itemPack)) {
-                    player.useItem(itemPack, 1, unit);
-                }
-                // remove itempack from database if it is 0
-                if (itemPack.getAmount() == 0) {
-                    session.delete(itemPack);
-                }
+                useItem(selectedInventory, player, unit);
                 resultMessage.setResult("valid");
             } else if (action.equals("drop")) {
 //                if (validate(player, itemPack)) {
@@ -54,19 +48,18 @@ public class InventoryHandler {
 //                if (itemPack.getPlayer() == null) {
 //                    session.delete(itemPack);
 //                }
-//                session.update(player);
 //                resultMessage.setResult("valid");
             }
         } catch (Exception e) {
             resultMessage.setResult("invalid:" + e.getMessage());
         }
 
-        List<playerInventory> playerInventoryList = playerInventoryDAO.getInventories(player);
-        for (playerInventory db_item : playerInventoryList) {
+        List<Inventory> playerInventoryList = playerInventoryDAO.getInventories(player);
+        for (Inventory eachInventory : playerInventoryList) {
             // add more information of item
-            Inventory toClientInventory = new Inventory(db_item.getId(), db_item.getDBItem().toGameItem().toClient(), db_item.getAmount());
-            resultMessage.addItem(toClientInventory);
+            eachInventory.setDBItem(eachInventory.getDBItem().toGameItem().toClient());
         }
+        resultMessage.setItems(playerInventoryList);
 
         AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
         resultMessage.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, player_id));
@@ -75,12 +68,16 @@ public class InventoryHandler {
         return resultMessage;
     }
 
-    public boolean validate(Player player, Inventory itemPack) throws Exception {
-        // check if player have item
-        if (!player.checkItem(itemPack, 1)) {
-            throw new Exception("Don't have enough item");
+    private void useItem(playerInventory selectedInventory, Player player, Unit unit) throws Exception {
+        if (selectedInventory.getPlayer() == player) {
+            selectedInventory.getDBItem().toGameItem().OnUse(unit);
+            selectedInventory.reduceAmount(1);
+            // remove inventory from database if it is 0
+            if (selectedInventory.getAmount() == 0) {
+                session.delete(selectedInventory);
+            }
+        } else {
+            throw new Exception("Player doesn't have item");
         }
-
-        return true;
     }
 }

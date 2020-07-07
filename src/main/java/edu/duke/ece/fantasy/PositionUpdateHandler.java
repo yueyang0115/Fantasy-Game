@@ -15,13 +15,13 @@ import edu.duke.ece.fantasy.worldgen.TileGenerator;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
-    edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
+    DBBuildingDAO DBBuildingDAO;
     WorldDAO worldDAO;
     MonsterDAO monsterDAO;
     PlayerDAO playerDAO;
     Session session;
-    ArrayList<Territory> territoryList = new ArrayList<Territory>();
-    ArrayList<Monster> monsterList = new ArrayList<Monster>();
+    ArrayList<Territory> territoryList = new ArrayList<>();
+    ArrayList<Monster> monsterList = new ArrayList<>();
     ArrayList<Building> buildingList = new ArrayList<>();
 
     //    ItemDAO itemDAO;
@@ -48,7 +48,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, monsterDAO, DBBuildingDAO, where, info);
+                gen.generate(territoryDAO, where, info);
             }
         }
     }
@@ -90,9 +90,8 @@ public class PositionUpdateHandler {
 
         if (isNewWorld) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
-              the territory's tame
-            */
-            (new Castle()).onCreate(session, info.getStartCoords());
+              the territory's tame*/
+            (new Castle()).onCreate(new MetaDAO(session), info.getStartCoords());
         }
 
         GetCoordInfo(worldCoords);

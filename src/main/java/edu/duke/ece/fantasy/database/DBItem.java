@@ -59,8 +59,7 @@ public class DBItem {
         if (this == o) return true;
         if (!(o instanceof DBItem)) return false;
         DBItem dbItem = (DBItem) o;
-        return Objects.equals(item_class, dbItem.item_class) &&
-                Objects.equals(item_properties, dbItem.item_properties);
+        return Objects.equals(item_class, dbItem.item_class);
     }
 
     @Override

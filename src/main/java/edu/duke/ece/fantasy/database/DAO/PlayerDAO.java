@@ -37,20 +37,20 @@ public class PlayerDAO {
     public Player getPlayerByWid(int wid) {
         Query<Player> q = session.createQuery("From Player U where U.wid =:wid", Player.class);
         q.setParameter("wid", wid);
-        return (Player) q.uniqueResult();
+        return q.uniqueResult();
     }
 
     public Player getPlayer(int id) {
         Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
         q.setParameter("id", id);
         q.uniqueResult();
-        return (Player) q.uniqueResult();
+        return q.uniqueResult();
     }
 
     public Player getPlayer(String username) {
         Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
         q.setParameter("username", username);
-        return (Player) q.uniqueResult();
+        return q.uniqueResult();
     }
 
     public Player getPlayer(String username, String password) {

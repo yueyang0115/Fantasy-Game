@@ -30,7 +30,7 @@ public class DBBuildingDAO {
         return DB_building;
     }
 
-    public DBBuilding getBuilding(String name){
+    public DBBuilding getBuilding(String name) {
         Query q = session.createQuery("From DBBuilding b where b.name =:name");
         q.setParameter("name", name);
         DBBuilding res = (DBBuilding) q.uniqueResult();
@@ -38,9 +38,9 @@ public class DBBuildingDAO {
     }
 
     public DBBuilding getBuilding(WorldCoord coord) {
-        Query q = session.createQuery("From DBBuilding b where b.coord =:coord");
+        Query<DBBuilding> q = session.createQuery("From DBBuilding b where b.coord =:coord", DBBuilding.class);
         q.setParameter("coord", coord);
-        DBBuilding res = (DBBuilding) q.uniqueResult();
+        DBBuilding res = q.uniqueResult();
         return res;
     }
 }

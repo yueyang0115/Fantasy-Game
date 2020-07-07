@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.building;
 
 
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
@@ -15,9 +16,9 @@ public class Mine extends Building {
     }
 
     @Override
-    public void onCreate(Session session, WorldCoord coord) {
-        super.onCreate(session, coord);
-        PlayerDAO playerDAO = new PlayerDAO(session);
+    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
+        super.onCreate(metaDAO, coord);
+        PlayerDAO playerDAO = metaDAO.getPlayerDAO();
         Player player = playerDAO.getPlayerByWid(coord.getWid());
         player.setMoneyGenerationSpeed(player.getMoneyGenerationSpeed() + MoneyGenerationSpeed);
     }
