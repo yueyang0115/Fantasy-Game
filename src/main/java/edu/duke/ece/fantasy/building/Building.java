@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.building;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
 import edu.duke.ece.fantasy.database.WorldCoord;
@@ -72,10 +73,14 @@ public class Building {
         this.cost = cost;
     }
 
+    public DBBuilding toDBBuilding(){
+        DBBuilding res = new DBBuilding(this.getClass().getName());
+        return res;
+    }
 
-    public void onCreate(Session session, WorldCoord coord) {
+    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
         this.coord = coord;
-        DBBuildingDAO dbBuildingDAO = new DBBuildingDAO(session);
+        DBBuildingDAO dbBuildingDAO = metaDAO.getDbBuildingDAO();
         DBBuilding tmp = dbBuildingDAO.getBuilding(coord);
         if (tmp != null) { // delete existing building in this coord
             tmp.setName(this.getClass().getName());

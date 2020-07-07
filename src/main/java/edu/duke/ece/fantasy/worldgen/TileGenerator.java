@@ -189,13 +189,14 @@ public class TileGenerator {
     }
 
     //I hate how tightly coupled this it to the database :(
-    public void generate(TerritoryDAO terdao, MonsterDAO monsterDAO, DBBuildingDAO DBBuildingDAO, WorldCoord where, WorldInfo info) {
+    public void generate(TerritoryDAO terdao, WorldCoord where, WorldInfo info) {
+
         TileDAO tdao = new TileDAO(terdao);
         //if the world doesn't have a start tile, lets put one in it.
         if (!tdao.doesWorldHaveStartTile(info)) {
             //System.out.println("Putting start tile at " + info.getFirstTile());
             tdao.addTile(info.getFirstTile(), startTileName);
-            putTerrain(terdao, monsterDAO, DBBuildingDAO, info.getFirstTile(), tilesByName.get(startTileName), 100);
+            putTerrain(terdao, info.getFirstTile(), tilesByName.get(startTileName), 100);
         }
         //align "where" to a tile start.
         //System.out
@@ -235,12 +236,13 @@ public class TileGenerator {
                 Tile t = tdao.addTile(thisWc, selected.getId());
                 //System.out.println("tdao.addTile " + selected.getId());
                 existingTiles.put(thisWc, t);
-                putTerrain(terdao, monsterDAO, DBBuildingDAO, thisWc, selected, 100);
+                putTerrain(terdao, thisWc, selected, 100);
             }
         }
     }
 
-    private void putTerrain(TerritoryDAO terDAO, MonsterDAO monsterDAO, DBBuildingDAO DBBuildingDAO, WorldCoord where, TileInfo info, int territory_status) {
+    private void putTerrain(TerritoryDAO terDAO, WorldCoord where, TileInfo info, int territory_status) {
+
         //    System.out.println("Putting terrain on ["+where.getX()+","+(where.getX()+tileWidth)+") y:["+where.getY()+","+(where.getY()+tileHeight)+")"+ System.currentTimeMillis());
 
         Random rand = new Random();
@@ -250,16 +252,6 @@ public class TileGenerator {
                 WorldCoord place = new WorldCoord(where.getWid(), where.getX() + x, where.getY() + y);
                 //System.out.println("Territory at place: " + place);
                 terDAO.addTerritory(place, territory_status, s.getImageName(), new ArrayList<Monster>());
-
-//                //TODO: yy: add monstef, use s.getImage Name to add a random monster
-//                if (s.getImageName().equals("forest_dense")) {
-//                    //System.out.println("addMonster in " + place.getX() + "," + place.getY());
-//                    Monster m = new Monster("wolf", 60, 6, 10);
-//                    int randomNum = rand.nextInt(9) + 0;
-//                    if (randomNum >= 7) {
-//                        monsterDAO.addMonster(m, place);
-//                    }
-//                }
 
             }
         }

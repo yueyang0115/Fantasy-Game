@@ -14,7 +14,7 @@ public class WorldDAO {
     this.session = session;
   }
   public WorldInfo getInfo(int wid) {
-    return (WorldInfo) session.get(WorldInfo.class, wid);
+    return session.get(WorldInfo.class, wid);
   }
 
   public WorldInfo initWorld(WorldCoord where, String owner, int tilesize){

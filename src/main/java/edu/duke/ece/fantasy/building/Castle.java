@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.building;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import org.hibernate.Session;
 
@@ -14,11 +15,11 @@ public class Castle extends Building {
     }
 
     @Override
-    public void onCreate(Session session, WorldCoord coord) {
-        super.onCreate(session, coord);
-        TerritoryDAO territoryDAO = new TerritoryDAO(session);
+    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
+        super.onCreate(metaDAO, coord);
+        TerritoryDAO territoryDAO = metaDAO.getTerritoryDAO();
         List<Territory> territories = territoryDAO.getTerritories(coord, 5, 5);
-        for(Territory territory:territories){
+        for (Territory territory : territories) {
             territory.setTame(0);
         }
     }

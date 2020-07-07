@@ -1,12 +1,15 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;
 
+import java.util.List;
 import java.util.Map;
 
 public class ShopRequestMessage {
     private WorldCoord coord;
-    private Map<Integer, Integer> itemMap;
+//    private Map<Integer, Integer> itemMap;
+    private List<Inventory> selectedItems;
     private String action;//"list""buy""sell"
 
     public ShopRequestMessage() {
@@ -28,11 +31,11 @@ public class ShopRequestMessage {
         this.action = action;
     }
 
-    public Map<Integer, Integer> getItemMap() {
-        return itemMap;
+    public List<Inventory> getSelectedItems() {
+        return selectedItems;
     }
 
-    public void setItemMap(Map<Integer, Integer> itemMap) {
-        this.itemMap = itemMap;
+    public void setSelectedItems(List<Inventory> selectedItems) {
+        this.selectedItems = selectedItems;
     }
 }
