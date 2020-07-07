@@ -1,7 +1,6 @@
-package edu.duke.ece.fantasy.DAO;
+package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.DAO.*;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,6 +56,11 @@ public class DAOTest {
         int id = p.getId();
         int wid = p.getWid();
         assertEquals(playerDAO.getPlayer(id).getUsername(),playerDAO.getPlayerByWid(wid).getUsername());
+        assertEquals(playerDAO.getPlayer("testname","testpassword"), p);
+        playerDAO.setStatus(p, Player.Status.INBATTLE);
+        playerDAO.setCurrentCoord(p, new WorldCoord(1,1,1));
+        assertEquals(playerDAO.getPlayer(id).getCurrentCoord(),new WorldCoord(1,1,1));
+        assertEquals(playerDAO.getPlayer(id).getStatus(), Player.Status.INBATTLE);
     }
 
     public void testMonsterDAO(){
@@ -130,11 +134,14 @@ public class DAOTest {
         assertEquals(wildestCoord,new WorldCoord(1,1,1));
 
         territoryDAO.updateTameByRange(center,3,3,10,5);
-        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,-1,-1)).getTame(),90);
-        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,-1,1)).getTame(),90);
-        assertNotEquals(territoryDAO.getTerritory(center).getTame(),100);
-        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,1,1)).getTame(),95);
-        assertNotEquals(territoryDAO.getTerritory(new WorldCoord(1,1,-1)).getTame(),90);
+        assertNotEquals(territoryDAO.getTameByCoord(new WorldCoord(1,-1,-1)),90);
+        assertNotEquals(territoryDAO.getTameByCoord(new WorldCoord(1,-1,1)),90);
+        assertNotEquals(territoryDAO.getTameByCoord(center),100);
+        assertNotEquals(territoryDAO.getTameByCoord(new WorldCoord(1,1,1)),95);
+        assertNotEquals(territoryDAO.getTameByCoord(new WorldCoord(1,1,-1)),90);
+
+        territoryDAO.updateTerritory(center, 99);
+        assertEquals(territoryDAO.getTameByCoord(center), 99);
     }
 
 }

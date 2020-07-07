@@ -65,13 +65,6 @@ public class TerritoryDAO {
     }
 
 
-    public void addMonsterToTerritory(Territory territory, Monster monster) {
-        //territory.addMonster(monster);
-        //session.update(territory);
-    }
-
-
-
     public Territory addTerritory(WorldCoord where, int status, String terrain, List<Monster> monsters) {
         // insert territory to world
         Territory t = new Territory(where, status);
