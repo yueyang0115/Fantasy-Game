@@ -90,6 +90,9 @@ public class MessageHandler {
                 sharedData.getPlayer().setStatus(Player.Status.INBAG);
                 InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, sharedData.getPlayer().getId()));
+                RedirectMessage redirectMessage = new RedirectMessage();
+                redirectMessage.setDestination("inventory");
+                result.setRedirectMessage(redirectMessage);
             }
 
             if (buildingRequestMessage != null) {
