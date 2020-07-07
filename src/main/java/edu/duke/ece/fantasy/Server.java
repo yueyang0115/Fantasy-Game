@@ -13,8 +13,6 @@ public class Server {
     private ServerSocket TCPserverSock;
     private DatagramSocket UDPserverSock;
     private ArrayList<PlayerHandler> playerHandlerList;
-    //private MockDBprocessor myMockDBprocessor;
-//    private DBprocessor myDBprocessor;
 
     public Server(int tcpPort, int udpPort) {
         this.TCPport = tcpPort;
@@ -34,8 +32,6 @@ public class Server {
             e.printStackTrace();
         }
         this.playerHandlerList = new ArrayList<>();
-        //this.myMockDBprocessor = new MockDBprocessor();
-//        this.myDBprocessor = new DBprocessor();
     }
 
     public void startGame() {
@@ -43,18 +39,16 @@ public class Server {
             session.beginTransaction();
             session.getTransaction().commit();
         }
-//        myMockDBprocessor.create();
-//        myDBprocessor.connectDB();
+
         while (true) {
+            // one thread per player
             PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
             playerHandlerList.add(ph);
             ph.start();
-            //ph.startPlay();
         }
     }
 
     public void startOnePlayer() {
-        int id = 0;
         PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
         playerHandlerList.add(ph);
         ph.start();

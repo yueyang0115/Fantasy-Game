@@ -20,12 +20,10 @@ public class TCPCommunicator {
     private boolean isShutdown;
     private int sendfailNum;
     private int recvfailNum;
+    private int FAIL_LIMIT = 2;
 
     public TCPCommunicator(ServerSocket serverSocket) {
-        this.isShutdown = false;
-        this.objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);
-        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
+        init();
         try {
             this.socket = serverSocket.accept();
             while(this.socket ==null){
@@ -41,16 +39,20 @@ public class TCPCommunicator {
     }
 
     public TCPCommunicator(String ip, int port) {
-        this.isShutdown = false;
-        this.objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);
-        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
+        init();
         try {
             this.socket = new Socket(ip, port);
         } catch (IOException e) {
             System.out.println("[DEBUG] TCP communicator failed to crete socket in client-side");
             e.printStackTrace();
         }
+    }
+
+     private void init(){
+        this.isShutdown = false;
+        this.objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET,false);
+        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,false);
     }
 
     public void send(MessagesS2C msg) {
@@ -62,13 +64,15 @@ public class TCPCommunicator {
             objectMapper.writeValue(out, msg);
             sendfailNum = 0;
         } catch (IOException e) {
+            System.out.println("[DEBUG] TCP communicator failed to send data");
             sendfailNum++;
-            if(sendfailNum>2){
+            // if send msg fails more than FAIL_LIMIT, socket might closed
+            // make flag isShutdown to be true, we can check TCPcm.isClosed() to stop the program
+            if(sendfailNum > FAIL_LIMIT){
                 sendfailNum = 0;
                 isShutdown = true;
-                System.out.println("[DEBUG] TCP communicator failed to send data, client might closed");
+                System.out.println("[DEBUG] Client might closed");
             }
-            if(isShutdown == false) System.out.println("[DEBUG] TCP communicator failed to send data");
             e.printStackTrace();
         }
     }
@@ -79,13 +83,15 @@ public class TCPCommunicator {
             res = objectMapper.readValue(in, MessagesC2S.class);
             recvfailNum = 0;
         } catch (IOException e) {
+            System.out.println("[DEBUG] TCP communicator failed to receive data");
             recvfailNum++;
-            if(recvfailNum > 2){
+            // if receive msg fails more than FAIL_LIMIT, socket might closed
+            // make flag isShutdown to be true, we can check TCPcm.isClosed() to stop the program
+            if(recvfailNum > FAIL_LIMIT){
                 recvfailNum = 0;
                 isShutdown = true;
-                System.out.println("[DEBUG] TCP communicator failed to receive data, client might closed");
+                System.out.println("[DEBUG] Client might closed");
             }
-            if(isShutdown == false) System.out.println("[DEBUG] TCP communicator failed to receive data");
             e.printStackTrace();
         }
         return res;
@@ -100,6 +106,7 @@ public class TCPCommunicator {
         }
     }
 
+    // we can check TCPcm.isClosed() to stop the program
     public boolean isClosed(){
         return this.isShutdown;
     }

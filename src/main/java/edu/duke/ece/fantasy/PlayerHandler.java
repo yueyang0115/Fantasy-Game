@@ -35,6 +35,7 @@ public class PlayerHandler extends Thread{
         sendMessage();
     }
 
+    //one thread for receiving msg from client and adding it to requestMsgQueue
     private void receiveMessage() {
         while (!TCPcommunicator.isClosed()) {
             try {
@@ -43,6 +44,7 @@ public class PlayerHandler extends Thread{
                 String request_str = "";
                 request_str = myObjectMapper.writeValueAsString(request);
                 System.out.println("[DEBUG] TCPcommunicator successfully receive:" + request_str);
+                // add received request to requestMsgQueue
                 requestMsgQueue.offer(request);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -55,9 +57,11 @@ public class PlayerHandler extends Thread{
         System.out.println("[DEBUG] Client socket might closed, stop receiving, close corresponding thread in server");
     }
 
+    // one thread for taking resultMsg out of resultMsgQueue and sending it to client
     private void sendMessage() {
         while (!TCPcommunicator.isClosed()) {
             try {
+                // take one resultMsg out of resultMsgQueue and send it
                 MessagesS2C msg = resultMsgQueue.take();
                 TCPcommunicator.send(msg);
                 if (TCPcommunicator.isClosed()) break;
@@ -75,18 +79,22 @@ public class PlayerHandler extends Thread{
         System.out.println("[DEBUG] Client socket might closed, stop sending, close corresponding thread in server");
     }
 
+    //one thread for handling all received msg and doing automatically tasks
     private void handleAll(){
         Session session = HibernateUtil.getSessionFactory().openSession();
         MetaDAO metaDAO = new MetaDAO(session);
-        SharedData sharedData = new SharedData(); // sharing player info between taskScheduler and messageHandler
+        // sharedData for sharing player info between taskScheduler and messageHandler
+        SharedData sharedData = new SharedData();
+        // messageHandler for handling received msg
         MessageHandler messageHandler = new MessageHandler(metaDAO, sharedData);
+        // taskScheduler for doing automatically tasks
         TaskScheduler taskScheduler = new TaskScheduler();
 
         boolean taskIsAdded = false;
         while(!TCPcommunicator.isClosed()) {
             session.beginTransaction();
 
-            //after login, sharedData will hold a player and at that time we add tasks in taskScheduler
+            //add tasks in taskScheduler when sharedData hold a player( this happens after login)
             if(!taskIsAdded && sharedData.getPlayer() != null) {
                 MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, metaDAO, sharedData, resultMsgQueue);
                 MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, metaDAO, sharedData,  resultMsgQueue);
@@ -98,16 +106,18 @@ public class PlayerHandler extends Thread{
             //handle server automatically generated tasks
             long TimeUntilNextTask = taskScheduler.getTimeToNextTask();
             if (TimeUntilNextTask <= 0) {
-                // at least the first task should be executed
+                // at least the first task in taskQueue should be executed
                 taskScheduler.runReadyTasks();
             }
             TimeUntilNextTask = taskScheduler.getTimeToNextTask();
 
-            //handle server in-response-to-client tasks
+            //handle received client msg
             MessagesC2S request;
             try {
+                // take one request out of requestMsgQueue
                 request = requestMsgQueue.poll(TimeUntilNextTask, TimeUnit.MILLISECONDS);
                 if (request != null) {
+                    // handle request, add resultMsg to resultMsgQueue
                     MessagesS2C result = messageHandler.handle(request);
                     resultMsgQueue.offer(result);
                 }

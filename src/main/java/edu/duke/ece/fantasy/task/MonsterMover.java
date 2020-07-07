@@ -40,6 +40,7 @@ public class MonsterMover extends MonsterScheduledTask {
         }
     }
 
+    // moving monster to approach player's currentCoord
     private void moveMonster(Monster m){
         if(m == null || m.getCoord().equals(player.getCurrentCoord())) return;
         WorldCoord startCoord = new WorldCoord(m.getCoord());
@@ -69,10 +70,13 @@ public class MonsterMover extends MonsterScheduledTask {
         }
         //update moved monster data in database,
         if(moved) {
+            //update monster's new coord
+            m.setCoord(new WorldCoord(m.getCoord().getWid(),startX,startY));
             metaDAO.getMonsterDAO().updateMonsterCoord(m.getId(), startX, startY);
+            // set monster's needUpdate field to be true
             metaDAO.getMonsterDAO().setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() +" from "+startCoord + " to "+startX+", "+startY);
-            //save the changed monster message in resultMsgQueue
+            //add the changed monster message in resultMsgQueue
             putMonsterInResultMsgQueue(m);
         }
     }

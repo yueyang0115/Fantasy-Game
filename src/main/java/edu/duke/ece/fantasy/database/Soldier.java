@@ -46,13 +46,5 @@ public class Soldier extends Unit{
         this.player = player;
     }
 
-    public JSONObject toJSON(){
-        JSONObject soldier_obj = new JSONObject();
-        //soldier_obj.put("id",id);
-        //soldier_obj.put("type",s_type);
-        //soldier_obj.put("hp",hp);
-        //soldier_obj.put("atk",atk);
-        return soldier_obj;
-    }
 }
 

@@ -23,7 +23,7 @@ public class PlayerDAO {
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
 
-        //add one default soldier for each player
+        //add two default soldier for each player
         Soldier soldier = new Soldier("soldier", 50, 5, 20);
         Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
         player.addSoldier(soldier);
@@ -32,7 +32,6 @@ public class PlayerDAO {
         // add default money
         player.setMoney(2000);
         session.save(player);
-
     }
 
     public Player getPlayerByWid(int wid) {
@@ -69,11 +68,13 @@ public class PlayerDAO {
         }
     }
 
+    // update player's status first in cache then in database
     public void setStatus(Player p, Status status){
         p.setStatus(status);
         session.update(p);
     }
 
+    // update player's coord first in cache then in database
     public void setCurrentCoord(Player p, WorldCoord currentCoord){
         p.setCurrentCoord(currentCoord);
         session.update(p);

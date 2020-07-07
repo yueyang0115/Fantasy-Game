@@ -74,20 +74,4 @@ public class Monster extends Unit{
         return (this.getId() + ":" + this.coord.getX() + "," + this.coord.getY());
     }
 
-  /*public Territory getTerritory() {
-    return territory;
-    }
-
-    public void setTerritory(Territory territory) {
-        this.territory = territory;
-    }
-  */
-    public JSONObject toJSON(){
-        JSONObject monster_obj = new JSONObject();
-//        monster_obj.put("id",id);
-//        monster_obj.put("type",m_type);
-//        monster_obj.put("hp",hp);
-//        monster_obj.put("atk",atk);
-        return monster_obj;
-    }
 }

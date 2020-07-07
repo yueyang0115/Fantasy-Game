@@ -33,14 +33,4 @@ public class SoldierDAO {
         return soldierList;
     }
 
-    //update soldier's hp
-    public boolean setSoldierHp(int id, int hp){
-        Soldier s = getSoldier(id);
-        if (s == null) { // don't have that monster
-            return false;
-        }
-        s.setHp(hp);
-        session.update(s);
-        return true;
-    }
 }

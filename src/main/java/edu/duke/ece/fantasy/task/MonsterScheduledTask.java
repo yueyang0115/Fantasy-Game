@@ -29,19 +29,22 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
         this.player = sharedData.getPlayer();
     }
 
+    // add changed monster in a new msg, add this msg to resultMsgQueue, waiting to be sent
     public void putMonsterInResultMsgQueue(Monster m){
-        // generate a new resultMsg for the changed monster, add the new Msg into resultMsgQueue
+        // generate a new resultMsg for the changed monster
         MessagesS2C result = new MessagesS2C();
         PositionResultMessage positionMsg= new PositionResultMessage();
         List<Monster> monsterList = new ArrayList<>();
         monsterList.add(m);
         positionMsg.setMonsterArray(monsterList);
         result.setPositionResultMessage(positionMsg);
+        // add the positionUpdateMsg to resultMsgQueue
         resultMsgQueue.offer(result);
-        //change the monster's needUpdate field
+        //change the monster's needUpdate field to false
         metaDAO.getMonsterDAO().setMonsterStatus(m.getId(), false);
     }
 
+    // cannot moveMonster/generateMonster when player doesn't hold valid coord or not in mainScene
     public boolean cannotGenerateMonster(){
         return player.getStatus() != Player.Status.INMAIN
                 || player.getCurrentCoord() == null

@@ -5,7 +5,7 @@ import edu.duke.ece.fantasy.database.WorldCoord;
 public class BattleRequestMessage {
     private WorldCoord territoryCoord; //territoryCoord includes: x,y,wid
     private String action;//"attack" "escape" "start"
-    private BattleAction battleAction; //inclide attackerID, attackeeID, action("normal, magical")
+    private BattleAction battleAction; //including attackerID, attackeeID, action("normal, magical")
 
     public BattleRequestMessage() {
     }
