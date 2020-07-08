@@ -110,6 +110,7 @@ public class DAOTest {
         assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
         unitDAO.deleteUnit(soldierID);
         assertEquals(session.get(Unit.class, soldierID),null);
+
     }
 
     public void testTerritoryDAO(){

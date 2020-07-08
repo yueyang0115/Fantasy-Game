@@ -1,6 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import edu.duke.ece.fantasy.database.skill.Skill;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -93,6 +93,18 @@ public class Unit {
     public void setAtk(int atk) {
         this.atk = atk;
     }
+
+//    public List<Skill> getSkills() {
+//        return skills;
+//    }
+//
+//    public void setSkills(List<Skill> skills) {
+//        this.skills = skills;
+//    }
+//
+//    public void addSkill(Skill skill){
+//        skills.add(skill);
+//    }
 
 //    public boolean addEquipment(ItemPack equipment) {
 //        int ind = equipments.indexOf(equipment);

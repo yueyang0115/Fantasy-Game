@@ -1,11 +1,9 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Unit;
+import edu.duke.ece.fantasy.database.skill.Skill;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UnitDAO {
     private Session session;
@@ -40,5 +38,10 @@ public class UnitDAO {
             session.delete(unit);
             System.out.println("[DEBUG] Delete unit "+unit.getType() +" with ID " +unitID);
         }
+    }
+
+    public void addSkill(int unitID, Skill skill){
+        Unit unit = getUnit(unitID);
+
     }
 }
