@@ -8,5 +8,4 @@ public class Potion extends Consumable {
         super("potion", 10, 10);
     }
 
-
 }

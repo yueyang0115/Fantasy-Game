@@ -61,8 +61,6 @@ public class InventoryHandler {
         }
         resultMessage.setItems(playerInventoryList);
 
-        AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
-        resultMessage.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, player_id));
         resultMessage.setMoney(player.getMoney());
 
         return resultMessage;

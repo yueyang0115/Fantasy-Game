@@ -2,9 +2,7 @@ package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
@@ -23,18 +21,19 @@ public class DAOTest {
     public static void setUpSession(){
         //System.out.println("executing beforeAll in DAOTest");
         session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
+
     }
 
     @AfterAll
     public static void closeSession(){
         //System.out.println("executing afterAll in DAOTest");
-        session.getTransaction().rollback();
+
         session.close();
     }
 
-    @Test
-    public void TestAll(){
+    @BeforeEach
+    public void setUp(){
+        session.beginTransaction();
         playerDAO = new PlayerDAO(session);
         monsterDAO = new MonsterDAO(session);
         soldierDAO = new SoldierDAO(session);
@@ -42,13 +41,23 @@ public class DAOTest {
         territoryDAO = new TerritoryDAO(session);
 
         playerDAO.addPlayer("testname","testpassword");
-
-        testPlayerDAO();
-        testMonsterDAO();
-        testTerritoryDAO();
-        testSoldierUnitDAO();
     }
 
+    @AfterEach
+    public void shutDown(){
+        session.getTransaction().rollback();
+    }
+
+//    @Test
+//    public void TestAll(){
+//
+//        testPlayerDAO();
+//        testMonsterDAO();
+//        testTerritoryDAO();
+//        testSoldierUnitDAO();
+//    }
+
+    @Test
     public void testPlayerDAO(){
         //System.out.println("test playerDAO");
 
@@ -58,11 +67,12 @@ public class DAOTest {
         assertEquals(playerDAO.getPlayer(id).getUsername(),playerDAO.getPlayerByWid(wid).getUsername());
         assertEquals(playerDAO.getPlayer("testname","testpassword"), p);
         playerDAO.setStatus(p, Player.Status.INBATTLE);
-        playerDAO.setCurrentCoord(p, new WorldCoord(1,1,1));
-        assertEquals(playerDAO.getPlayer(id).getCurrentCoord(),new WorldCoord(1,1,1));
+        playerDAO.setCurrentCoord(p, new WorldCoord(wid,1,1));
+        assertEquals(playerDAO.getPlayer(id).getCurrentCoord(),new WorldCoord(wid,1,1));
         assertEquals(playerDAO.getPlayer(id).getStatus(), Player.Status.INBATTLE);
     }
 
+    @Test
     public void testMonsterDAO(){
         //System.out.println("test monsterDAO");
 
@@ -91,6 +101,7 @@ public class DAOTest {
         assertEquals(monsterDAO.getMonster(id2).isNeedUpdate(),false);
     }
 
+    @Test
     public void testSoldierUnitDAO(){
         //System.out.println("test soldierDAO");
 
@@ -113,6 +124,7 @@ public class DAOTest {
 
     }
 
+    @Test
     public void testTerritoryDAO(){
         WorldCoord center = new WorldCoord(1,0,0);
         territoryDAO.addTerritory(new WorldCoord(1,-1,-1),90,"grass",null);
