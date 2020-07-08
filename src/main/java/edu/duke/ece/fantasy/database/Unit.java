@@ -32,12 +32,13 @@ public class Unit {
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
-//    @Embedded
-//    private List<DBItem> equipments = new ArrayList<>();
+    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+    private List<UnitEquipment> equipments = new ArrayList<>();
 
-    public Unit(){}
+    public Unit() {
+    }
 
-    public Unit(Unit unit){
+    public Unit(Unit unit) {
         this.id = unit.getId();
         this.name = unit.getName();
         this.type = unit.getType();
@@ -62,9 +63,13 @@ public class Unit {
         this.type = type;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getSpeed() {
         return speed;
