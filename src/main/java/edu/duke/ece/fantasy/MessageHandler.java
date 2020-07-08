@@ -57,6 +57,11 @@ public class MessageHandler {
                 if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWid());
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
+                if(battleMsg.getAction().equals("start")){
+                    RedirectMessage redirectMsg = new RedirectMessage();
+                    redirectMsg.setDestination("battle");
+                    result.setRedirectMessage(redirectMsg);
+                }
             }
 
             if (attributeMsg != null) {
@@ -65,6 +70,11 @@ public class MessageHandler {
             }
 
             if (shopRequestMessage != null) {
+                if(sharedData.getPlayer().getStatus()!=Player.Status.INBUILDING){ // make sure only send redirect once
+                    RedirectMessage redirectMessage = new RedirectMessage();
+                    redirectMessage.setDestination("shop");
+                    result.setRedirectMessage(redirectMessage);
+                }
                 sharedData.getPlayer().setStatus(Player.Status.INBUILDING);
 
                 ShopHandler shopHandler = new ShopHandler(metaDAO);
@@ -75,15 +85,22 @@ public class MessageHandler {
                 // add inventory result to shop
                 InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
                 shopInventoryRequestMessage.setAction("list");
-                shopResultMessage.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, sharedData.getPlayer().getId()));
 
+                result.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, sharedData.getPlayer().getId()));
                 result.setShopResultMessage(shopResultMessage);
             }
 
             if(inventoryRequestMessage != null){
+                if(sharedData.getPlayer().getStatus()!=Player.Status.INBAG){ // make sure only send redirect once
+                    RedirectMessage redirectMessage = new RedirectMessage();
+                    redirectMessage.setDestination("inventory");
+                    result.setRedirectMessage(redirectMessage);
+                }
                 sharedData.getPlayer().setStatus(Player.Status.INBAG);
                 InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, sharedData.getPlayer().getId()));
+                AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
+                result.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, sharedData.getPlayer().getId()));
             }
 
             if (buildingRequestMessage != null) {

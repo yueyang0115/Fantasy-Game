@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryResultMessage {
-    private AttributeResultMessage attributeResultMessage;
     private List<Inventory> items = new ArrayList<>(); //all items of player
     private String result; //status: "valid","invalid"
     private int money;
@@ -17,13 +16,6 @@ public class InventoryResultMessage {
         super();
     }
 
-    public AttributeResultMessage getAttributeResultMessage() {
-        return attributeResultMessage;
-    }
-
-    public void setAttributeResultMessage(AttributeResultMessage attributeResultMessage) {
-        this.attributeResultMessage = attributeResultMessage;
-    }
 
     public List<Inventory> getItems() {
         return items;
