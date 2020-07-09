@@ -53,6 +53,7 @@ public class Unit {
         this.hp = unit.getHp();
         this.atk = unit.getAtk();
         this.speed = unit.getSpeed();
+        this.skills = unit.getSkills();
     }
 
     public int getId() {
