@@ -99,15 +99,10 @@ public class Unit {
         this.atk = atk;
     }
 
-//    public boolean addEquipment(ItemPack equipment) {
-//        int ind = equipments.indexOf(equipment);
-//        if (ind == -1) {
-//            equipments.add(equipment);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    public boolean addEquipment(UnitEquipment equipment) {
+        equipments.add(equipment);
+        return true;
+    }
 //
 //    public List<ItemPack> getEquipment() {
 //        return equipments;

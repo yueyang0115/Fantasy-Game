@@ -56,10 +56,11 @@ public class InventoryHandler {
 
         List<Inventory> playerInventoryList = playerInventoryDAO.getInventories(player);
         for (Inventory eachInventory : playerInventoryList) {
-            // add more information of item
-            eachInventory.setDBItem(eachInventory.getDBItem().toGameItem().toClient());
+            // convert dbInventory to clientInventory which contains more properties info
+            resultMessage.addItem(eachInventory.toClient());
         }
-        resultMessage.setItems(playerInventoryList);
+
+//        resultMessage.setItems(playerInventoryList);
 
         resultMessage.setMoney(player.getMoney());
 

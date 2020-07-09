@@ -200,7 +200,7 @@ public class Player implements Trader {
 
     @Override
     public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
-        playerInventory playerInventory = new playerInventory(inventory.getDBItem(),inventory.getAmount(),this);
+        playerInventory playerInventory = new playerInventory(inventory.getDBItem().toGameItem().toDBItem(),inventory.getAmount(),this);
         metaDAO.getSession().save(playerInventory);
         return playerInventory;
     }

@@ -140,7 +140,7 @@ class ShopHandlerTest {
 
         List<Inventory> selectedInventoryList = new ArrayList<>();
         for (Inventory inventory : shopInventories) {
-            selectedInventoryList.add(new Inventory(inventory.getDBItem(), inventory.getAmount()+1));
+            selectedInventoryList.add(new Inventory(inventory.getDBItem(), inventory.getAmount() + 1));
         }
 
         ShopResultMessage res = shopHandler.handle(generateShopBuyRequest(selectedInventoryList), testPlayerId);

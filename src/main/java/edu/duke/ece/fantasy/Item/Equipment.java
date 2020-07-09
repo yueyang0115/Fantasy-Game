@@ -1,11 +1,14 @@
 package edu.duke.ece.fantasy.Item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece.fantasy.ObjectMapperFactory;
 import edu.duke.ece.fantasy.database.DBItem;
 import edu.duke.ece.fantasy.database.Unit;
+import edu.duke.ece.fantasy.database.UnitEquipment;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -34,7 +37,7 @@ public class Equipment extends Item {
 
     public void OnEquip(Unit unit) {
         if (meetRequirement(unit)) {
-
+            unit.addEquipment(new UnitEquipment(this.toDBItem(),1,unit));
         }
     }
 
@@ -50,7 +53,7 @@ public class Equipment extends Item {
 
     }
 
-
+    @JsonIgnore
     public String getChangeableProperties() {
         // get current class and its parent class's changeable field
         // get parent class's changeable field

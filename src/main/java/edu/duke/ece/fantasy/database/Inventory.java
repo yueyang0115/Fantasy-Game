@@ -59,8 +59,12 @@ public class Inventory {
         this.amount = amount;
     }
 
-    public void reduceAmount(int reduceAmount){
+    public void reduceAmount(int reduceAmount) {
         amount -= reduceAmount;
+    }
+
+    public Inventory toClient() {
+        return new Inventory(id, item.toGameItem().toClient(), amount);
     }
 
     @Override
@@ -68,7 +72,7 @@ public class Inventory {
         if (this == o) return true;
         if (!(o instanceof Inventory)) return false;
         Inventory inventory = (Inventory) o;
-        return Objects.equals(item, inventory.item)||Objects.equals(id,inventory.id);
+        return Objects.equals(item, inventory.item) || Objects.equals(id, inventory.id);
     }
 
     @Override
