@@ -40,8 +40,12 @@ public class UnitDAO {
         }
     }
 
-    public void addSkill(int unitID, Skill skill){
+    public void addSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
-
+        Query q = session.createQuery("From Skill S where S.skill_name =:name");
+        q.setParameter("name", skillName);
+        Skill s = (Skill) q.uniqueResult();
+        unit.addSkill(s);
+        session.update(unit);
     }
 }

@@ -4,6 +4,7 @@ import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.skill.Skill;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -26,6 +27,9 @@ public class PlayerDAO {
         //add two default soldier for each player
         Soldier soldier = new Soldier("soldier", 50, 5, 20);
         Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
+        Skill basicSkill = new Skill("ironball",2);
+        soldier.addSkill(basicSkill);
+        soldier2.addSkill(basicSkill);
         player.addSoldier(soldier);
         player.addSoldier(soldier2);
 

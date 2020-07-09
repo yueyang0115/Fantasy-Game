@@ -5,7 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Unit")
@@ -14,7 +16,7 @@ public class Unit {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     private int id;
 
     @Column(name = "type", unique = false, nullable = false, length = 100)
@@ -34,6 +36,12 @@ public class Unit {
 
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
     private List<UnitEquipment> equipments = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Unit_Skill",
+            joinColumns = { @JoinColumn(name = "id") }, //unit_id
+            inverseJoinColumns = { @JoinColumn(name = "name") }) //skill_name
+    private Set<Skill> skills = new HashSet<>();
 
     public Unit() {
     }
@@ -99,17 +107,17 @@ public class Unit {
         this.atk = atk;
     }
 
-//    public List<Skill> getSkills() {
-//        return skills;
-//    }
-//
-//    public void setSkills(List<Skill> skills) {
-//        this.skills = skills;
-//    }
-//
-//    public void addSkill(Skill skill){
-//        skills.add(skill);
-//    }
+    public Set<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<Skill> skills) {
+        this.skills = skills;
+    }
+
+    public void addSkill(Skill skill){
+        skills.add(skill);
+    }
 
 //    public boolean addEquipment(ItemPack equipment) {
 //        int ind = equipments.indexOf(equipment);

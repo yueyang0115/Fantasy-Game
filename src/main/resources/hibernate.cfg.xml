@@ -38,5 +38,6 @@
         <mapping class="edu.duke.ece.fantasy.database.shopInventory"/>
         <mapping class="edu.duke.ece.fantasy.database.Player"/>
         <mapping class="edu.duke.ece.fantasy.database.UnitEquipment"/>
+        <mapping class="edu.duke.ece.fantasy.database.skill.Skill"/>
     </session-factory>
 </hibernate-configuration>

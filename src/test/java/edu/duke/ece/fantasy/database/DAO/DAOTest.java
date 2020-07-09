@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.skill.Skill;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
@@ -72,7 +73,7 @@ public class DAOTest {
         assertEquals(playerDAO.getPlayer(id).getStatus(), Player.Status.INBATTLE);
     }
 
-    @Test
+   @Test
     public void testMonsterDAO(){
         //System.out.println("test monsterDAO");
 
@@ -107,18 +108,19 @@ public class DAOTest {
 
         Player p = playerDAO.getPlayer("testname");
         int playerID = p.getId();
-        List<Soldier> soldierDAOList = soldierDAO.getSoldiers(playerID);
-        int soldierID = soldierDAOList.get(0).getId();
+        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
+        int soldierID = soldierList.get(0).getId();
         Soldier soldier = soldierDAO.getSoldier(soldierID);
-        assertEquals(soldier,soldierDAOList.get(0));
-        assertEquals(soldier.getHp(),soldierDAOList.get(0).getHp());
-
         Unit unit = unitDAO.getUnit(soldierID);
+        assertEquals(soldier,soldierList.get(0));
+        assertEquals(soldier.getHp(),soldierList.get(0).getHp());
         assertEquals(unit.getHp(), soldier.getHp());
         assertEquals(unit.getSpeed(), soldier.getSpeed());
+
         int hp = unit.getHp();
         unitDAO.setUnitHp(soldierID,hp-5);
         assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
+
         unitDAO.deleteUnit(soldierID);
         assertEquals(session.get(Unit.class, soldierID),null);
 
