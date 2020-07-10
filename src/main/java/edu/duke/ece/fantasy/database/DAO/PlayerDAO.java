@@ -25,11 +25,11 @@ public class PlayerDAO {
         Player player = new Player(username, encryptPassword);
 
         //add two default soldier for each player
-        Soldier soldier = new Soldier("soldier", 50, 5, 20);
+        Soldier soldier = new Soldier("wizard", 50, 5, 20);
         Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
-        Skill basicSkill = new Skill("ironball",2);
-        soldier.addSkill(basicSkill);
-        soldier2.addSkill(basicSkill);
+//        Skill basicSkill = new Skill("ironball",2);
+//        soldier.addSkill(basicSkill);
+//        soldier2.addSkill(basicSkill);
         player.addSoldier(soldier);
         player.addSoldier(soldier2);
 

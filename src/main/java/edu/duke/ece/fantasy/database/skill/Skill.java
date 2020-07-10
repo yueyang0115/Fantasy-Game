@@ -11,10 +11,12 @@ import javax.persistence.*;
 @Table(name = "Skill")
 public class Skill {
 
+    // skill name, including "iceBall" "fireBall".....
     @Id
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "skill_name", unique = true, nullable = false)
     private String name;
 
+    // how much attack this skill can cause
     @Column(name = "attack", unique = false, nullable = true)
     private int attack;
 

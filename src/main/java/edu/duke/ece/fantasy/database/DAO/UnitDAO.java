@@ -42,7 +42,7 @@ public class UnitDAO {
 
     public void addSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
-        Query q = session.createQuery("From Skill S where S.skill_name =:name");
+        Query q = session.createQuery("From Skill S where S.name =:name");
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
         unit.addSkill(s);

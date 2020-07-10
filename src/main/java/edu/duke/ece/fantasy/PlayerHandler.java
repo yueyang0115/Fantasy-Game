@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.skill.TableInitializer;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.task.MonsterGenerator;
@@ -91,8 +92,18 @@ public class PlayerHandler extends Thread{
         TaskScheduler taskScheduler = new TaskScheduler();
 
         boolean taskIsAdded = false;
+        boolean tableIsInitialized = false;
+
         while(!TCPcommunicator.isClosed()) {
             session.beginTransaction();
+
+            //initialize SkillTable and LevelUpTable
+            if(!tableIsInitialized){
+                TableInitializer tableInitializer = new TableInitializer(session);
+                tableInitializer.initializeSkillTable();
+                tableInitializer.initializeLevelUpTable();
+                tableIsInitialized = true;
+            }
 
             //add tasks in taskScheduler when sharedData hold a player( this happens after login)
             if(!taskIsAdded && sharedData.getPlayer() != null) {
