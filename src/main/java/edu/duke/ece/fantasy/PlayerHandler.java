@@ -3,7 +3,7 @@ package edu.duke.ece.fantasy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.database.skill.TableInitializer;
+import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.task.MonsterGenerator;
@@ -101,7 +101,7 @@ public class PlayerHandler extends Thread{
             if(!tableIsInitialized){
                 TableInitializer tableInitializer = new TableInitializer(session);
                 tableInitializer.initializeSkillTable();
-                tableInitializer.initializeLevelUpTable();
+                //tableInitializer.initializeLevelUpTable();
                 tableIsInitialized = true;
             }
 

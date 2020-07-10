@@ -4,12 +4,9 @@ import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.skill.Skill;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
-
-import static edu.duke.ece.fantasy.database.Player.Status.*;
 
 public class PlayerDAO {
     private Session session;

@@ -1,6 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
-import edu.duke.ece.fantasy.database.skill.Skill;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

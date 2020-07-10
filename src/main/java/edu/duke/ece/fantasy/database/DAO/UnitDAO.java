@@ -1,9 +1,12 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Unit;
-import edu.duke.ece.fantasy.database.skill.Skill;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class UnitDAO {
     private Session session;
@@ -40,12 +43,27 @@ public class UnitDAO {
         }
     }
 
+    public void UpdateLevel(int unitID, int level){
+        Unit unit = getUnit(unitID);
+        unit.setLevel(level);
+        session.update(unit);
+    }
+
     public void addSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
         Query q = session.createQuery("From Skill S where S.name =:name");
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
         unit.addSkill(s);
+        session.update(unit);
+    }
+
+    public void removeSkill(int unitID, String skillName){
+        Unit unit = getUnit(unitID);
+        Query q = session.createQuery("From Skill S where S.name =:name");
+        q.setParameter("name", skillName);
+        Skill s = (Skill) q.uniqueResult();
+        unit.getSkills().remove(s);
         session.update(unit);
     }
 }

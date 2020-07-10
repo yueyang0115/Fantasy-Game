@@ -1,11 +1,9 @@
-package edu.duke.ece.fantasy.database.skill;
+package edu.duke.ece.fantasy.database.levelUp;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,6 +30,8 @@ public class CharacterLevelUp {
             joinColumns = { @JoinColumn(name = "character_id") },
             inverseJoinColumns = { @JoinColumn(name = "skill_name") })
     private Set<Skill> skills = new HashSet<>();
+
+    public CharacterLevelUp(){}
 
     public CharacterLevelUp(String name, int level, Set<Skill> skills) {
         this.name = name;

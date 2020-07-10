@@ -1,11 +1,15 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.skill.Skill;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
+import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -17,18 +21,15 @@ public class DAOTest {
     private MonsterDAO monsterDAO;
     private UnitDAO unitDAO;
     private TerritoryDAO territoryDAO;
+    private SkillDAO skillDAO;
 
     @BeforeAll
     public static void setUpSession(){
-        //System.out.println("executing beforeAll in DAOTest");
         session = HibernateUtil.getSessionFactory().openSession();
-
     }
 
     @AfterAll
     public static void closeSession(){
-        //System.out.println("executing afterAll in DAOTest");
-
         session.close();
     }
 
@@ -40,6 +41,7 @@ public class DAOTest {
         soldierDAO = new SoldierDAO(session);
         unitDAO = new UnitDAO(session);
         territoryDAO = new TerritoryDAO(session);
+        skillDAO = new SkillDAO(session);
 
         playerDAO.addPlayer("testname","testpassword");
     }
@@ -48,15 +50,6 @@ public class DAOTest {
     public void shutDown(){
         session.getTransaction().rollback();
     }
-
-//    @Test
-//    public void TestAll(){
-//
-//        testPlayerDAO();
-//        testMonsterDAO();
-//        testTerritoryDAO();
-//        testSoldierUnitDAO();
-//    }
 
     @Test
     public void testPlayerDAO(){
@@ -123,6 +116,30 @@ public class DAOTest {
 
         unitDAO.deleteUnit(soldierID);
         assertEquals(session.get(Unit.class, soldierID),null);
+
+    }
+
+    @Test
+    public void testSkillDAO(){
+        Player p = playerDAO.getPlayer("testname");
+        int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
+
+        TableInitializer tableInitializer = new TableInitializer(session);
+        tableInitializer.initializeSkillTable();
+        unitDAO.UpdateLevel(soldierID, 20);
+        unitDAO.addSkill(soldierID, "miniFireBall");
+
+        Set<Skill> availableSkills = new HashSet<>();
+        availableSkills.add(skillDAO.getSkill("miniFireBall"));
+        availableSkills.add(skillDAO.getSkill("middleFireBall"));
+        assertEquals(skillDAO.getAvailableSkills(unitDAO.getUnit(soldierID)),availableSkills);
+
+        unitDAO.removeSkill(soldierID,"miniFireBall");
+
+        assertEquals(unitDAO.getUnit(soldierID).getSkills(),new HashSet<>());
+        Set<Skill> availableSkills2 = new HashSet<>();
+        availableSkills2.add(skillDAO.getSkill("miniFireBall"));
+        assertEquals(skillDAO.getAvailableSkills(unitDAO.getUnit(soldierID)),availableSkills2);
 
     }
 

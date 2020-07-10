@@ -55,7 +55,7 @@
         <mapping class="edu.duke.ece.fantasy.database.shopInventory"/>
         <mapping class="edu.duke.ece.fantasy.database.Player"/>
         <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
-        <mapping class="edu.duke.ece.fantasy.database.skill.Skill"/>
-        <mapping class="edu.duke.ece.fantasy.database.skill.CharacterLevelUp"/>
+        <mapping class="edu.duke.ece.fantasy.database.levelUp.Skill"/>
+        <mapping class="edu.duke.ece.fantasy.database.levelUp.CharacterLevelUp"/>
     </session-factory>
 </hibernate-configuration>

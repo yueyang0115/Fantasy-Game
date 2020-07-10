@@ -1,11 +1,9 @@
-package edu.duke.ece.fantasy.database.skill;
+package edu.duke.ece.fantasy.database.levelUp;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TableInitializer {
@@ -16,12 +14,13 @@ public class TableInitializer {
     }
 
     public void initializeSkillTable(){
-        Skill ironBall = new Skill("ironBall",5);
-        Skill iceBall = new Skill("iceBall",10);
-        Skill fireBall = new Skill("fireBall",15);
-        session.save(ironBall);
-        session.save(iceBall);
-        session.save(fireBall);
+        Skill miniFireBall = new Skill("miniFireBall",5,10,null);
+        Skill middleFireBall = new Skill("middleFireBall",10,20,miniFireBall);
+        Skill largeFireBall = new Skill("largeFireBall",15,30,middleFireBall);
+
+        session.save(miniFireBall);
+        session.save(middleFireBall);
+        session.save(largeFireBall);
     }
 
     public void initializeLevelUpTable(){
