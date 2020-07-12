@@ -127,14 +127,16 @@ public class DAOTest {
         TableInitializer tableInitializer = new TableInitializer(session);
         tableInitializer.initializeSkillTable();
         unitDAO.UpdateLevel(soldierID, 20);
-        unitDAO.addSkill(soldierID, "miniFireBall");
+        assertEquals(unitDAO.addSkill(soldierID, "miniFireBall"),true);
+        assertEquals(unitDAO.addSkill(soldierID, "fakeTest"),false);
 
         Set<Skill> availableSkills = new HashSet<>();
         availableSkills.add(skillDAO.getSkill("miniFireBall"));
         availableSkills.add(skillDAO.getSkill("middleFireBall"));
         assertEquals(skillDAO.getAvailableSkills(unitDAO.getUnit(soldierID)),availableSkills);
 
-        unitDAO.removeSkill(soldierID,"miniFireBall");
+        assertEquals(unitDAO.removeSkill(soldierID,"miniFireBall"), true);
+        assertEquals(unitDAO.removeSkill(soldierID,"fakeTest"), false);
 
         assertEquals(unitDAO.getUnit(soldierID).getSkills(),new HashSet<>());
         Set<Skill> availableSkills2 = new HashSet<>();

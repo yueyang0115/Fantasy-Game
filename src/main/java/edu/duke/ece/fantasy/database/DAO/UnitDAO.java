@@ -49,21 +49,29 @@ public class UnitDAO {
         session.update(unit);
     }
 
-    public void addSkill(int unitID, String skillName){
+    public boolean addSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
         Query q = session.createQuery("From Skill S where S.name =:name");
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
-        unit.addSkill(s);
-        session.update(unit);
+        if(s == null) return false;
+        else{
+            unit.addSkill(s);
+            session.update(unit);
+            return true;
+        }
     }
 
-    public void removeSkill(int unitID, String skillName){
+    public boolean removeSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
         Query q = session.createQuery("From Skill S where S.name =:name");
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
-        unit.getSkills().remove(s);
-        session.update(unit);
+        if(s!= null && unit.getSkills().contains(s)) {
+            unit.getSkills().remove(s);
+            session.update(unit);
+            return true;
+        }
+        return false;
     }
 }
