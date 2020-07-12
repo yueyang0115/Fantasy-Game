@@ -15,8 +15,12 @@ public class TableInitializer {
 
     public void initializeSkillTable(){
         Skill miniFireBall = new Skill("miniFireBall",5,10,null);
-        Skill middleFireBall = new Skill("middleFireBall",10,20,miniFireBall);
-        Skill largeFireBall = new Skill("largeFireBall",15,30,middleFireBall);
+        Set<Skill> requiredSkill2 = new HashSet<>();
+        requiredSkill2.add(miniFireBall);
+        Skill middleFireBall = new Skill("middleFireBall",10,20,requiredSkill2);
+        Set<Skill> requiredSkill3 = new HashSet<>();
+        requiredSkill3.add(middleFireBall);
+        Skill largeFireBall = new Skill("largeFireBall",15,30,requiredSkill3);
 
         session.save(miniFireBall);
         session.save(middleFireBall);

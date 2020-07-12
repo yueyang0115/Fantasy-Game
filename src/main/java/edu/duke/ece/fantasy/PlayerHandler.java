@@ -97,14 +97,6 @@ public class PlayerHandler extends Thread{
         while(!TCPcommunicator.isClosed()) {
             session.beginTransaction();
 
-            //initialize SkillTable and LevelUpTable
-            if(!tableIsInitialized){
-                TableInitializer tableInitializer = new TableInitializer(session);
-                tableInitializer.initializeSkillTable();
-                //tableInitializer.initializeLevelUpTable();
-                tableIsInitialized = true;
-            }
-
             //add tasks in taskScheduler when sharedData hold a player( this happens after login)
             if(!taskIsAdded && sharedData.getPlayer() != null) {
                 MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, metaDAO, sharedData, resultMsgQueue);

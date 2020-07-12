@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;
 
 import java.io.*;
@@ -37,6 +38,9 @@ public class Server {
     public void startGame() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
+            // initialize SkillTable
+            TableInitializer tableInitializer = new TableInitializer(session);
+            tableInitializer.initializeSkillTable();
             session.getTransaction().commit();
         }
 

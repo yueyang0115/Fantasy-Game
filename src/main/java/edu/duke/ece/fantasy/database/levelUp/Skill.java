@@ -2,15 +2,24 @@ package edu.duke.ece.fantasy.database.levelUp;
 
 
 import edu.duke.ece.fantasy.database.Monster;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Skill")
 public class Skill {
 
     // skill name, including "iceBall" "fireBall".....
+
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "skill_id", unique = true, nullable = false)
+    private int skill_id;
+
     @Column(name = "skill_name", unique = true, nullable = false)
     private String name;
 
@@ -19,20 +28,22 @@ public class Skill {
     private int attack;
 
     // the prerequisite level required to has this skill
-    @Column(name = "level", unique = false, nullable = true)
+    @Column(name = "requiredLevel", unique = false, nullable = true)
     private int requiredLevel;
 
     // the prerequisite skill required to has this skill
-    @ManyToOne
-    @JoinColumn(name = "prerequisite", unique = false, nullable = true)
-    private Skill requiredSkill;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Skill_RequiredSkill",
+            joinColumns = { @JoinColumn(name = "skill_id") }, //skill_id
+            inverseJoinColumns = { @JoinColumn(name = "skill_name") }) //skill_name
+    private Set<Skill> requiredSkill = new HashSet<>();
 
     public Skill(){}
     public Skill(String name, int attack) {
         this.name = name;
         this.attack = attack;
     }
-    public Skill(String name, int attack, int requiredLevel, Skill requiredSkill) {
+    public Skill(String name, int attack, int requiredLevel, Set<Skill> requiredSkill) {
         this.name = name;
         this.attack = attack;
         this.requiredLevel = requiredLevel;
@@ -59,9 +70,9 @@ public class Skill {
 
     public void setRequiredLevel(int requiredLevel) { this.requiredLevel = requiredLevel; }
 
-    public Skill getRequiredSkill() { return requiredSkill; }
+    public Set<Skill> getRequiredSkill() { return requiredSkill; }
 
-    public void setRequiredSkill(Skill requiredSkill) { this.requiredSkill = requiredSkill; }
+    public void setRequiredSkill(Set<Skill> requiredSkill) { this.requiredSkill = requiredSkill; }
 
     @Override
     public boolean equals(Object o) {
@@ -70,6 +81,7 @@ public class Skill {
             return this.name.equals(s.name)
                     && this.requiredLevel == s.requiredLevel
                     && this.requiredSkill.equals(s.requiredSkill)
+                    && this.requiredSkill.containsAll(s.requiredSkill)
                     && this.attack == s.attack;
         }
         return false;

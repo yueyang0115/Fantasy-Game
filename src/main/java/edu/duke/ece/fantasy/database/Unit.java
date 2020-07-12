@@ -40,6 +40,17 @@ public class Unit {
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
+    public List<UnitEquipment> getEquipments() {
+        return equipments;
+    }
+
+    public void setEquipments(List<UnitEquipment> equipments) {
+        this.equipments = equipments;
+    }
+
+    @Column(name = "skillPoint", unique = false, nullable = false)
+    private int skillPoint;
+
     // the equipment the unit has
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
     private List<UnitEquipment> equipments = new ArrayList<>();
@@ -62,6 +73,7 @@ public class Unit {
         this.hp = unit.getHp();
         this.atk = unit.getAtk();
         this.speed = unit.getSpeed();
+        this.skillPoint = unit.getSkillPoint();
         this.level = unit.getLevel();
         this.skills = unit.getSkills();
     }
@@ -89,6 +101,10 @@ public class Unit {
     public void setName(String name) {
         this.name = name;
     }
+
+    public int getSkillPoint() { return skillPoint; }
+
+    public void setSkillPoint(int skillPoint) { this.skillPoint = skillPoint; }
 
     public int getSpeed() {
         return speed;
@@ -129,7 +145,6 @@ public class Unit {
     public void addSkill(Skill skill){
         skills.add(skill);
     }
-
 
     public int getLevel() {
         return level;

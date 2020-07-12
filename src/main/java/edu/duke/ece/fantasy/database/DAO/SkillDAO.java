@@ -29,7 +29,7 @@ public class SkillDAO {
         for(Object o : q.list()) {
             Skill skill = (Skill) o;
             if(skill.getRequiredSkill() == null ||
-                    unit.getSkills().contains(skill.getRequiredSkill())) {
+                    unit.getSkills().containsAll(skill.getRequiredSkill())) {
                 skillSet.add(skill);
             }
         }
