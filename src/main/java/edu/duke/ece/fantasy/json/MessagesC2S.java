@@ -9,6 +9,7 @@ public class MessagesC2S {
     private AttributeRequestMessage attributeRequestMessage;
     private InventoryRequestMessage inventoryRequestMessage;
     private BuildingRequestMessage buildingRequestMessage;
+    private LevelUpRequestMessage levelUpRequestMessage;
 
     public MessagesC2S(){ }
 
@@ -31,6 +32,8 @@ public class MessagesC2S {
     public MessagesC2S(PositionRequestMessage positionRequestMessage) { this.positionRequestMessage = positionRequestMessage; }
 
     public MessagesC2S(BattleRequestMessage battleRequestMessage) { this.battleRequestMessage = battleRequestMessage; }
+
+    public MessagesC2S(LevelUpRequestMessage levelUpRequestMessage){this.levelUpRequestMessage = levelUpRequestMessage; }
 
     public LoginRequestMessage getLoginRequestMessage() {
         return loginRequestMessage;
@@ -85,4 +88,11 @@ public class MessagesC2S {
     public void setInventoryRequestMessage(InventoryRequestMessage inventoryRequestMessage) {
         this.inventoryRequestMessage = inventoryRequestMessage;
     }
+
+    public LevelUpRequestMessage getLevelUpRequestMessage() { return levelUpRequestMessage; }
+
+    public void setLevelUpRequestMessage(LevelUpRequestMessage levelUpRequestMessage) {
+        this.levelUpRequestMessage = levelUpRequestMessage;
+    }
+
 }

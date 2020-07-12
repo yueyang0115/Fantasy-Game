@@ -7,7 +7,7 @@ import java.util.Set;
 public class LevelUpResultMessage {
     private String result; // "success" "fail"
     private Set<Skill> availableSkills; // available skills that can be added/updated
-    private Unit unit; // updated unit after level up, field set when action is "choose
+    private Unit unit; // updated unit after level up, field set when action is "choose"
 
     public LevelUpResultMessage(){}
 

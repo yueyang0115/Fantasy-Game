@@ -49,7 +49,7 @@ public class Unit {
     }
 
     @Column(name = "skillPoint", unique = false, nullable = false)
-    private int skillPoint;
+    private int skillPoint = 1;
 
     // the equipment the unit has
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)

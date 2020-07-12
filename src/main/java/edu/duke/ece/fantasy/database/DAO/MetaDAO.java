@@ -18,6 +18,7 @@ public class MetaDAO {
     MonsterDAO monsterDAO;
     SoldierDAO soldierDAO;
     UnitDAO unitDAO;
+    SkillDAO skillDAO;
     Session session;
 
     public MetaDAO(Session session) {
@@ -32,6 +33,7 @@ public class MetaDAO {
         monsterDAO = new MonsterDAO(session);
         soldierDAO = new SoldierDAO(session);
         unitDAO = new UnitDAO(session);
+        skillDAO = new SkillDAO(session);
         this.session = session;
     }
 
@@ -78,6 +80,8 @@ public class MetaDAO {
     public UnitDAO getUnitDAO() {
         return unitDAO;
     }
+
+    public SkillDAO getSkillDAO() { return skillDAO; }
 
     public Session getSession() {
         return session;

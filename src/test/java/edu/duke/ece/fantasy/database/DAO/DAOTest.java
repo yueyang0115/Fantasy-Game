@@ -6,7 +6,6 @@ import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,9 +125,13 @@ public class DAOTest {
 
         TableInitializer tableInitializer = new TableInitializer(session);
         tableInitializer.initializeSkillTable();
-        unitDAO.UpdateLevel(soldierID, 20);
+        unitDAO.setLevel(soldierID, 20);
+        unitDAO.setSkillPoint(soldierID,2);
+        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
         assertEquals(unitDAO.addSkill(soldierID, "miniFireBall"),true);
         assertEquals(unitDAO.addSkill(soldierID, "fakeTest"),false);
+        assertEquals(unitDAO.addSkill(soldierID, "largeFireBall"),false);
+        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),1);
 
         Set<Skill> availableSkills = new HashSet<>();
         availableSkills.add(skillDAO.getSkill("miniFireBall"));
@@ -137,11 +140,13 @@ public class DAOTest {
 
         assertEquals(unitDAO.removeSkill(soldierID,"miniFireBall"), true);
         assertEquals(unitDAO.removeSkill(soldierID,"fakeTest"), false);
+        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
 
         assertEquals(unitDAO.getUnit(soldierID).getSkills(),new HashSet<>());
         Set<Skill> availableSkills2 = new HashSet<>();
         availableSkills2.add(skillDAO.getSkill("miniFireBall"));
         assertEquals(skillDAO.getAvailableSkills(unitDAO.getUnit(soldierID)),availableSkills2);
+
 
     }
 

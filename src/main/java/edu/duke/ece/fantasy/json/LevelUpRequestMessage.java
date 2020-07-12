@@ -25,9 +25,7 @@ public class LevelUpRequestMessage {
         this.action = action;
     }
 
-    public int getUnitID() {
-        return unitID;
-    }
+    public int getUnitID() { return unitID; }
 
     public void setUnitID(int unitID) {
         this.unitID = unitID;

@@ -43,9 +43,15 @@ public class UnitDAO {
         }
     }
 
-    public void UpdateLevel(int unitID, int level){
+    public void setLevel(int unitID, int level){
         Unit unit = getUnit(unitID);
         unit.setLevel(level);
+        session.update(unit);
+    }
+
+    public void setSkillPoint(int unitID, int point){
+        Unit unit = getUnit(unitID);
+        unit.setSkillPoint(point);
         session.update(unit);
     }
 
@@ -54,12 +60,17 @@ public class UnitDAO {
         Query q = session.createQuery("From Skill S where S.name =:name");
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
-        if(s == null) return false;
-        else{
+
+        if(s == null || unit.getSkillPoint() < 1 ||
+                s.getRequiredSkill() != null &&
+                        (unit.getSkills() == null || !unit.getSkills().containsAll(s.getRequiredSkill()))) return false;
+        if(unit.getSkills() == null || !unit.getSkills().contains(s)){
             unit.addSkill(s);
+            unit.setSkillPoint(unit.getSkillPoint()-1);
             session.update(unit);
-            return true;
         }
+        return true;
+
     }
 
     public boolean removeSkill(int unitID, String skillName){
@@ -67,11 +78,12 @@ public class UnitDAO {
         Query q = session.createQuery("From Skill S where S.name =:name");
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
-        if(s!= null && unit.getSkills().contains(s)) {
+        if(s == null || unit.getSkills() == null) return false;
+        if(unit.getSkills().contains(s)) {
             unit.getSkills().remove(s);
+            unit.setSkillPoint(unit.getSkillPoint()+1);
             session.update(unit);
-            return true;
         }
-        return false;
+        return true;
     }
 }
