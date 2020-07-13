@@ -1,13 +1,8 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.Item.Potion;
+import edu.duke.ece.fantasy.Item.NormalPotion;
 import edu.duke.ece.fantasy.Item.SuperPotion;
 import edu.duke.ece.fantasy.building.BaseShop;
-import edu.duke.ece.fantasy.building.Building;
-import edu.duke.ece.fantasy.building.Shop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.ShopRequestMessage;
@@ -16,8 +11,6 @@ import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -38,7 +31,7 @@ class ShopHandlerTest {
     private UnitDAO mockUnitDAO;
     private MetaDAO mockMetaDAO;
     private PlayerInventoryDAO mockPlayerInventoryDAO;
-    private Inventory inventory1 = new Inventory(new Potion().toDBItem(), 20);
+    private Inventory inventory1 = new Inventory(new NormalPotion().toDBItem(), 20);
     private Inventory inventory2 = new Inventory(new SuperPotion().toDBItem(), 20);
     private List<Inventory> shopInventories = new ArrayList<>(Arrays.asList(inventory1));
     WorldCoord shopCoord = new WorldCoord();

@@ -32,13 +32,13 @@
                 <mapping class="edu.duke.ece.fantasy.Item.Item"/>
                 <mapping class="edu.duke.ece.fantasy.database.Tile"/>
                 <mapping class="edu.duke.ece.fantasy.database.WorldInfo"/>
-                <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
+                <mapping class="edu.duke.ece.fantasy.Item.HealingPotion"/>
                 <mapping class="edu.duke.ece.fantasy.Item.Equipment"/>
                 <mapping class="edu.duke.ece.fantasy.database.Inventory"/>
                 <mapping class="edu.duke.ece.fantasy.database.playerInventory"/>
                 <mapping class="edu.duke.ece.fantasy.database.shopInventory"/>
                 <mapping class="edu.duke.ece.fantasy.database.Player"/>
-                <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
+                <mapping class="edu.duke.ece.fantasy.Item.HealingPotion"/>
         <mapping class="edu.duke.ece.fantasy.database.UnitEquipment"/>
         <mapping class="edu.duke.ece.fantasy.database.Unit"/>
         <mapping class="edu.duke.ece.fantasy.database.Monster"/>
@@ -48,12 +48,12 @@
         <mapping class="edu.duke.ece.fantasy.Item.Item"/>
         <mapping class="edu.duke.ece.fantasy.database.Tile"/>
         <mapping class="edu.duke.ece.fantasy.database.WorldInfo"/>
-        <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
+        <mapping class="edu.duke.ece.fantasy.Item.HealingPotion"/>
         <mapping class="edu.duke.ece.fantasy.Item.Equipment"/>
         <mapping class="edu.duke.ece.fantasy.database.Inventory"/>
         <mapping class="edu.duke.ece.fantasy.database.playerInventory"/>
         <mapping class="edu.duke.ece.fantasy.database.shopInventory"/>
         <mapping class="edu.duke.ece.fantasy.database.Player"/>
-        <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
+        <mapping class="edu.duke.ece.fantasy.Item.HealingPotion"/>
     </session-factory>
 </hibernate-configuration>

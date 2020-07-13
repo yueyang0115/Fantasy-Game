@@ -1,22 +1,15 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.Item.Potion;
+import edu.duke.ece.fantasy.Item.NormalPotion;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
-import edu.duke.ece.fantasy.json.BuildingResultMessage;
 import edu.duke.ece.fantasy.json.InventoryRequestMessage;
 import edu.duke.ece.fantasy.json.InventoryResultMessage;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +32,7 @@ class InventoryHandlerTest {
     Player testPlayer = new Player();
     int testPlayerId = 1;
     int testItemId = 99;
-    playerInventory selectedInventory = new playerInventory(new Potion().toDBItem(), 20, testPlayer);
+    playerInventory selectedInventory = new playerInventory(new NormalPotion().toDBItem(), 20, testPlayer);
     List<Inventory> playerInventories = new ArrayList<>(Arrays.asList(selectedInventory));
 
     @BeforeEach
