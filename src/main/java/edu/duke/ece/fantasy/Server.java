@@ -40,7 +40,7 @@ public class Server {
             session.beginTransaction();
             // initialize SkillTable
             TableInitializer tableInitializer = new TableInitializer(session);
-            tableInitializer.initializeSkillTable();
+            tableInitializer.initializeAll();
             session.getTransaction().commit();
         }
 
