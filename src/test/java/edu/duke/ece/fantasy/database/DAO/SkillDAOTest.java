@@ -83,6 +83,7 @@ public class SkillDAOTest {
         TableInitializer tableInitializer = new TableInitializer(session);
         tableInitializer.initializeAll();
 
+        // unit has no skill
         assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),1);
         assertEquals(unitDAO.getUnit(soldierID).getLevel(), 1);
         unitDAO.updateLevel(soldierID,14);
@@ -92,5 +93,12 @@ public class SkillDAOTest {
         assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),3);
         assertEquals(unitDAO.getUnit(soldierID).getLevel(), 16);
 
+        //unit has skill
+        assertEquals(unitDAO.addSkill(soldierID, "miniFireBall"),true);
+        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
+        unitDAO.updateLevel(soldierID,17);
+        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
+        assertEquals(unitDAO.removeSkill(soldierID,"miniFireBall"), true);
+        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),3);
     }
 }
