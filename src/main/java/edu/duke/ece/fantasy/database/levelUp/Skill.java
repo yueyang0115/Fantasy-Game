@@ -18,7 +18,7 @@ public class Skill {
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     @Column(name = "skill_id", unique = true, nullable = false)
-    private int skill_id;
+    private int id;
 
     @Column(name = "skill_name", unique = true, nullable = false)
     private String name;

@@ -19,6 +19,8 @@ public class SkillPoint {
     @Column(name = "skillPoint", unique = true, nullable = false)
     private int skillPoint;
 
+    public SkillPoint(){}
+
     public SkillPoint(int level, int skillPoint) {
         this.level = level;
         this.skillPoint = skillPoint;
