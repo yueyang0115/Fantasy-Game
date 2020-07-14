@@ -66,6 +66,6 @@ public abstract class Item implements IItem {
         return Objects.hash(name, cost);
     }
 
-    public abstract void OnUse(Unit unit);
+    public abstract void OnUse(Unit unit) throws InvalidItemUsageException;
 
 }

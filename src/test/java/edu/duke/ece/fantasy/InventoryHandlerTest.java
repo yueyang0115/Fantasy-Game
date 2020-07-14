@@ -90,4 +90,14 @@ class InventoryHandlerTest {
 
         assertNotEquals("valid",res.getResult());
     }
+
+    @Test
+    void shouldNotUseEquipmentWhenUnitHaveIt(){
+        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        inventoryRequestMessage.setAction("use");
+        inventoryRequestMessage.setInventoryID(testItemId);
+        InventoryResultMessage res = inventoryHandler.handle(inventoryRequestMessage, testPlayerId);
+
+
+    }
 }

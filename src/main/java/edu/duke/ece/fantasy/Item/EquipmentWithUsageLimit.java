@@ -31,7 +31,7 @@ public class EquipmentWithUsageLimit extends Item {
 
     public void OnEquip(Unit unit) {
         if (meetRequirement(unit)) {
-            unit.addEquipment(new UnitEquipment(this.toDBItem(),1,unit));
+//            unit.addEquipment(new UnitEquipment(this.toDBItem(),1,unit));
         }
     }
 

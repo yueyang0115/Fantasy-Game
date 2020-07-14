@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import org.hibernate.annotations.*;
@@ -163,10 +164,10 @@ public class Player implements Trader {
         }
     }
 
-    public void useItem(Inventory inventory, int amount, Unit unit) {
-        inventory.getDBItem().toGameItem().OnUse(unit);
-        reduceItem(inventory, amount);
-    }
+//    public void useItem(Inventory inventory, int amount, Unit unit) throws InvalidItemUsageException {
+//        inventory.getDBItem().toGameItem().OnUse(unit);
+//        reduceItem(inventory, amount);
+//    }
 //
 //    public void dropItem(Inventory inventory, int amount) {
 //        reduceItem(inventory, amount);

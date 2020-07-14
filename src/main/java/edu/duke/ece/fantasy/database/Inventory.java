@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -65,6 +66,11 @@ public class Inventory {
 
     public Inventory toClient() {
         return new Inventory(id, item.toGameItem().toClient(), amount);
+    }
+
+    public void useItem(Unit unit) throws InvalidItemUsageException {
+        this.getDBItem().toGameItem().OnUse(unit);
+        this.reduceAmount(1);
     }
 
     @Override

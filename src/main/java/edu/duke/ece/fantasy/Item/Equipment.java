@@ -29,16 +29,18 @@ public class Equipment extends Item {
         this.speed = speed;
     }
 
-    private boolean meetRequirement(Unit unit) {
+    protected boolean meetRequirement(Unit unit) throws InvalidItemUsageException {
         return true;
     }
 
-    public void OnEquip(Unit unit) {
+    public void OnEquip(Unit unit) throws InvalidItemUsageException {
         if (meetRequirement(unit)) {
-            unit.addEquipment(new UnitEquipment(this.toDBItem(),1,unit));
+            unit.addAtk(atk);
+            unit.addSpeed(speed);
+            unit.setWeapon(this.toDBItem());
+//            unit.addEquipment(new UnitEquipment(this.toDBItem(), 1, unit));
         }
     }
-
 
     public void OnDeEquip() {
 
@@ -66,7 +68,7 @@ public class Equipment extends Item {
     }
 
     @Override
-    public void OnUse(Unit unit) {
+    public void OnUse(Unit unit) throws InvalidItemUsageException {
         OnEquip(unit);
     }
 

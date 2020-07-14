@@ -32,8 +32,9 @@ public class Unit {
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
-    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
-    private List<UnitEquipment> equipments = new ArrayList<>();
+//    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+//    private List<UnitEquipment> equipments = new ArrayList<>();
+    private DBItem weapon;
 
     public Unit() {
     }
@@ -79,6 +80,10 @@ public class Unit {
         this.speed = speed;
     }
 
+    public void addSpeed(int speed) {
+        this.speed += speed;
+    }
+
     public void addHp(int heal_hp) {
         hp += heal_hp;
     }
@@ -99,16 +104,21 @@ public class Unit {
         this.atk = atk;
     }
 
-    public boolean addEquipment(UnitEquipment equipment) {
-        equipments.add(equipment);
-        return true;
+    public void addAtk(int atk) {
+        this.atk += atk;
     }
-//
-//    public List<ItemPack> getEquipment() {
-//        return equipments;
+
+    public DBItem getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(DBItem weapon) {
+        this.weapon = weapon;
+    }
+
+    //    public boolean addEquipment(UnitEquipment equipment) {
+//        equipments.add(equipment);
+//        return true;
 //    }
 //
-//    public void setEquipment(List<ItemPack> equipment) {
-//        this.equipments = equipment;
-//    }
 }
