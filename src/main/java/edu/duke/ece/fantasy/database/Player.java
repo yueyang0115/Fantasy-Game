@@ -20,7 +20,7 @@ import java.util.List;
 public class Player implements Trader {
     public enum Status
     {
-        INBUILDING, INBATTLE, INMAIN, INBAG;
+        INBUILDING, INBATTLE, INMAIN, INBAG, INLEVELUP;
     }
 
     @Id

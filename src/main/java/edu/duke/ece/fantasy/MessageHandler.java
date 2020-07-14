@@ -27,6 +27,7 @@ public class MessageHandler {
         ShopRequestMessage shopRequestMessage = input.getShopRequestMessage();
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
         BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
+        LevelUpRequestMessage levelUpMsg = input.getLevelUpRequestMessage();
 
             if (loginMsg != null) {
                 // if login succeed, sharedData will hold login-player's info
@@ -62,6 +63,12 @@ public class MessageHandler {
                     redirectMsg.setDestination("battle");
                     result.setRedirectMessage(redirectMsg);
                 }
+            }
+
+            if(levelUpMsg != null){
+                sharedData.getPlayer().setStatus(Player.Status.INLEVELUP);
+                LevelUpHandler luh = new LevelUpHandler(metaDAO);
+                result.setLevelUpResultMessage(luh.handle(levelUpMsg));
             }
 
             if (attributeMsg != null) {

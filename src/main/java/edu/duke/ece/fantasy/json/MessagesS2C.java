@@ -10,6 +10,7 @@ public class MessagesS2C {
     private InventoryResultMessage inventoryResultMessage;
     private BuildingResultMessage buildingResultMessage;
     private RedirectMessage redirectMessage;
+    private LevelUpResultMessage levelUpResultMessage;
 
     public MessagesS2C(){ }
 
@@ -36,6 +37,8 @@ public class MessagesS2C {
     public MessagesS2C(BattleResultMessage msg){
         this.battleResultMessage = msg;
     }
+
+    public MessagesS2C(LevelUpResultMessage msg) {this.levelUpResultMessage = msg;}
 
     public PositionResultMessage getPositionResultMessage() {
         return positionResultMessage;
@@ -98,4 +101,11 @@ public class MessagesS2C {
     public void setRedirectMessage(RedirectMessage redirectMessage) {
         this.redirectMessage = redirectMessage;
     }
+
+    public LevelUpResultMessage getLevelUpResultMessage() { return levelUpResultMessage; }
+
+    public void setLevelUpResultMessage(LevelUpResultMessage levelUpResultMessage) {
+        this.levelUpResultMessage = levelUpResultMessage;
+    }
+
 }

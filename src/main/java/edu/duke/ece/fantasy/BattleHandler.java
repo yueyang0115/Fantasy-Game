@@ -146,12 +146,14 @@ public class BattleHandler {
         if(newAttackeeHp == 0){
             deletedID = attackeeID;
             unitDAO.deleteUnit(attackeeID);
+            // change attacker's level and skillPoint
+            unitDAO.updateLevel(attackerID, attacker.getLevel()+1);
         }
 
         //update unitQueue
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
         action.setAttackee(new Unit(attackee));
-        action.setAttacker(new Unit(attacker));
+        action.setAttacker(new Unit(unitDAO.getUnit(attackerID))); // get up-to-date attacker from db
         action.setActionType("normal");
         action.setUnits(generateIDList(unitQueue));
         return action;
