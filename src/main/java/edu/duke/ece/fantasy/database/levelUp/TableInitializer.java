@@ -3,6 +3,8 @@ package edu.duke.ece.fantasy.database.levelUp;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,9 +50,16 @@ public class TableInitializer {
     }
 
     public String getPath(String fileName){
-        String currentDir = System.getProperty("user.dir");
-        String relativePath = "/src/main/resources/levelupData/";
-        String absolutePath = "'" + currentDir + relativePath + fileName + "'";
+        String absolutePath = "";
+        try{
+            String currentDir = new File(".").getCanonicalPath();
+            String relativePath = "/src/main/resources/levelupData/";
+            absolutePath = "'" + currentDir + relativePath + fileName + "'";
+        }
+        catch(IOException e){
+            System.out.println("failed to get currentDir in table initialization");
+            e.printStackTrace();
+        }
         return absolutePath;
     }
 
