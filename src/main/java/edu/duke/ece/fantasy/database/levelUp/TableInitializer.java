@@ -34,17 +34,24 @@ public class TableInitializer {
     }
 
     public void buildExperienceLevelTable(){
-        String filename = "'/Users/yueyang/IdeaProjects/fantasy/src/main/resources/levelupData/ExperienceLevelTable.csv'";
-        String sql = "COPY ExperienceLevelEntry from "+ filename + " WITH (FORMAT csv)";
+        String filePath = getPath("ExperienceLevelTable.csv");
+        String sql = "COPY ExperienceLevelEntry from "+ filePath + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
         q.executeUpdate();
     }
 
     public void buildLevelSkillPointTable(){
-        String filename = "'/Users/yueyang/IdeaProjects/fantasy/src/main/resources/levelupData/LevelSkillPointTable.csv'";
-        String sql = "COPY LevelSkillPointEntry from "+ filename + " WITH (FORMAT csv)";
+        String filePath = getPath("LevelSkillPointTable.csv");
+        String sql = "COPY LevelSkillPointEntry from "+ filePath + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
         q.executeUpdate();
+    }
+
+    public String getPath(String fileName){
+        String currentDir = System.getProperty("user.dir");
+        String relativePath = "/src/main/resources/levelupData/";
+        String absolutePath = "'" + currentDir + relativePath + fileName + "'";
+        return absolutePath;
     }
 
 }
