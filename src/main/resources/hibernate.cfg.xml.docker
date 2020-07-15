@@ -42,5 +42,6 @@
         <mapping class="edu.duke.ece.fantasy.Item.Consumable"/>
         <mapping class="edu.duke.ece.fantasy.database.levelUp.Skill"/>
         <mapping class="edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry"/>
+        <mapping class="edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry"/>
     </session-factory>
 </hibernate-configuration>
