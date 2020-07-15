@@ -30,7 +30,7 @@ public class LevelUpHandlerTest {
 
     public LevelUpHandlerTest(){
         this.soldier = new Soldier("wizard", 50, 5, 20);
-        soldier.setLevel(20);
+        soldier.getExperience().setLevel(20); // set level to 20
 
         miniFireBall = new Skill("miniFireBall",5,10,null);
         Set<Skill> requiredSkill2 = new HashSet<>();
@@ -78,7 +78,7 @@ public class LevelUpHandlerTest {
         LevelUpHandler lh = new LevelUpHandler(mockedMetaDAO);
 
         availableSkills.remove(miniFireBall);
-        soldier.setLevel(10);
+        soldier.getExperience().setLevel(10); // set level to 10
         LevelUpRequestMessage request = new LevelUpRequestMessage("choose",1,middleFireBall);
         LevelUpResultMessage result = lh.handle(request);
         assertEquals(result.getResult(),"fail");
@@ -90,11 +90,11 @@ public class LevelUpHandlerTest {
         when(mockedUnitDAO.addSkill(anyInt(),anyString())).thenReturn(false);
         LevelUpHandler lh = new LevelUpHandler(mockedMetaDAO);
 
-        soldier.setSkillPoint(0);
+        soldier.getExperience().setSkillPoint(0);
         LevelUpRequestMessage request = new LevelUpRequestMessage("choose",1,middleFireBall);
         LevelUpResultMessage result = lh.handle(request);
         assertEquals(result.getResult(),"fail");
-        soldier.setSkillPoint(1);
+        soldier.getExperience().setSkillPoint(1);
     }
 
     // no corresponding skill

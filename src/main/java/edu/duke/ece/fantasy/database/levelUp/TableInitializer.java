@@ -1,7 +1,6 @@
 package edu.duke.ece.fantasy.database.levelUp;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,11 +13,12 @@ public class TableInitializer {
     }
 
     public void initializeAll(){
-        initializeSkillTable();
-        initializeSkillPointTable();
+        buildSkillTable();
+        buildLevelSkillPointTable();
+        buildExperienceLevelTable();
     }
 
-    public void initializeSkillTable(){
+    public void buildSkillTable(){
         Skill miniFireBall = new Skill("miniFireBall",5,1,null);
         Set<Skill> requiredSkill2 = new HashSet<>();
         requiredSkill2.add(miniFireBall);
@@ -32,15 +32,30 @@ public class TableInitializer {
         session.save(largeFireBall);
     }
 
-    public void initializeSkillPointTable(){
-        SkillPoint sk1 = new SkillPoint(1,1);
-        SkillPoint sk2 = new SkillPoint(5,2);
-        SkillPoint sk3 = new SkillPoint(15,3);
-        SkillPoint sk4 = new SkillPoint(30,4);
-        session.save(sk1);
-        session.save(sk2);
-        session.save(sk3);
-        session.save(sk4);
+    public void buildExperienceLevelTable(){
+        for(int i=1; i<=5; i++){
+            ExperienceLevelEntry el1 = new ExperienceLevelEntry(3*i,i); // exp: 15 level: 5
+            session.save(el1);
+        }
+        for(int i=1; i<=10; i++) {
+            ExperienceLevelEntry el2 = new ExperienceLevelEntry(15 + 5 * i, 5 + i); // exp: 20 level: 6
+            session.save(el2);
+        }
+        for(int i=1; i<=15; i++){
+            ExperienceLevelEntry el3 = new ExperienceLevelEntry(65 + 7 * i, 15 + i);
+            session.save(el3);
+        }
+    }
+
+    public void buildLevelSkillPointTable(){
+        LevelSkillPointEntry lsp1 = new LevelSkillPointEntry(1,1);
+        LevelSkillPointEntry lsp2 = new LevelSkillPointEntry(5,2);
+        LevelSkillPointEntry lsp3 = new LevelSkillPointEntry(15,3);
+        LevelSkillPointEntry lsp4 = new LevelSkillPointEntry(30,4);
+        session.save(lsp1);
+        session.save(lsp2);
+        session.save(lsp3);
+        session.save(lsp4);
     }
 
 }

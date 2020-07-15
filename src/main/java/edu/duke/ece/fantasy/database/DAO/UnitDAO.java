@@ -1,16 +1,11 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Unit;
+import edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry;
+import edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
-import edu.duke.ece.fantasy.database.levelUp.SkillPoint;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class UnitDAO {
     private Session session;
@@ -47,24 +42,44 @@ public class UnitDAO {
         }
     }
 
-    // update unit's level and change its skillPoint according to the skillPoint table
-    public void updateLevel(int unitID, int level){
+    // update unit's experience
+    public void updateExperience(int unitID, int experience){
         Unit unit = getUnit(unitID);
-        unit.setLevel(level);
+        unit.getExperience().setExperience(experience);
         session.update(unit);
-        updateSkillPoint(unit);
+        // changes in experience may bring changes to level
+        updateLevel(unit);
+    }
+
+    // update unit's level according to its experience
+    private void updateLevel(Unit unit){
+        // get the supposed unit level that corresponds to the certain experience
+        Query q = session.createQuery("from ExperienceLevelEntry E where E.experience <= :unitExperience"
+                +" order by E.experience DESC"
+        ).setMaxResults(1);
+        q.setParameter("unitExperience", unit.getExperience().getExperience());
+        ExperienceLevelEntry entry = (ExperienceLevelEntry) q.uniqueResult();
+
+        // if unit's level is not updated, update it
+        if(unit.getExperience().getLevel() != entry.getLevel()){
+            unit.getExperience().setLevel(entry.getLevel());
+            session.update(unit);
+            // changes in level may bring changes to skillPoint
+            updateSkillPoint(unit);
+        }
+
     }
 
     // update unit's skillPoint according to its level and existing skills it has
     private void updateSkillPoint(Unit unit){
-        Query q1 = session.createQuery("from SkillPoint SP where SP.level <= :unitLevel"
-                +" order by SP.level DESC"
+        Query q = session.createQuery("from LevelSkillPointEntry E where E.level <= :unitLevel"
+                +" order by E.level DESC"
         ).setMaxResults(1);
-        q1.setParameter("unitLevel", unit.getLevel());
-        SkillPoint sp = (SkillPoint) q1.uniqueResult();
+        q.setParameter("unitLevel", unit.getExperience().getLevel());
+        LevelSkillPointEntry entry = (LevelSkillPointEntry) q.uniqueResult();
 
         int existingSkillNum = unit.getSkills()==null? 0 : unit.getSkills().size();
-        unit.setSkillPoint(Math.max(sp.getSkillPoint() - existingSkillNum, 0));
+        unit.getExperience().setSkillPoint(Math.max(entry.getSkillPoint() - existingSkillNum, 0));
         session.update(unit);
     }
 
@@ -75,12 +90,13 @@ public class UnitDAO {
         q.setParameter("name", skillName);
         Skill s = (Skill) q.uniqueResult();
 
-        if(s == null || unit.getSkillPoint() < 1 ||
+        int unitSkillPoint = unit.getExperience().getSkillPoint();
+        if(s == null || unitSkillPoint < 1 ||
                 s.getRequiredSkill() != null &&
                         (unit.getSkills() == null || !unit.getSkills().containsAll(s.getRequiredSkill()))) return false;
         if(unit.getSkills() == null || !unit.getSkills().contains(s)){
             unit.addSkill(s);
-            unit.setSkillPoint(unit.getSkillPoint()-1);
+            unit.getExperience().setSkillPoint(unitSkillPoint - 1);
             session.update(unit);
         }
         return true;
@@ -96,7 +112,7 @@ public class UnitDAO {
         if(s == null || unit.getSkills() == null) return false;
         if(unit.getSkills().contains(s)) {
             unit.getSkills().remove(s);
-            unit.setSkillPoint(unit.getSkillPoint()+1);
+            unit.getExperience().setSkillPoint(unit.getExperience().getSkillPoint()+1);
             session.update(unit);
         }
         return true;

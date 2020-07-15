@@ -147,7 +147,7 @@ public class BattleHandler {
             deletedID = attackeeID;
             unitDAO.deleteUnit(attackeeID);
             // change attacker's level and skillPoint
-            unitDAO.updateLevel(attackerID, attacker.getLevel()+1);
+            unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
         }
 
         //update unitQueue

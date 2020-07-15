@@ -52,12 +52,12 @@ public class SkillDAOTest {
 
         TableInitializer tableInitializer = new TableInitializer(session);
         tableInitializer.initializeAll();
-        unitDAO.updateLevel(soldierID, 10);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
+        unitDAO.updateExperience(soldierID, 40);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
         assertEquals(unitDAO.addSkill(soldierID, "miniFireBall"),true);
         assertEquals(unitDAO.addSkill(soldierID, "fakeTest"),false);
         assertEquals(unitDAO.addSkill(soldierID, "largeFireBall"),false);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),1);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),1);
 
         Set<Skill> availableSkills = new HashSet<>();
         availableSkills.add(skillDAO.getSkill("miniFireBall"));
@@ -66,7 +66,7 @@ public class SkillDAOTest {
 
         assertEquals(unitDAO.removeSkill(soldierID,"miniFireBall"), true);
         assertEquals(unitDAO.removeSkill(soldierID,"fakeTest"), false);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
 
         assertEquals(unitDAO.getUnit(soldierID).getSkills(),new HashSet<>());
         Set<Skill> availableSkills2 = new HashSet<>();
@@ -84,21 +84,21 @@ public class SkillDAOTest {
         tableInitializer.initializeAll();
 
         // unit has no skill
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),1);
-        assertEquals(unitDAO.getUnit(soldierID).getLevel(), 1);
-        unitDAO.updateLevel(soldierID,14);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
-        assertEquals(unitDAO.getUnit(soldierID).getLevel(), 14);
-        unitDAO.updateLevel(soldierID,16);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),3);
-        assertEquals(unitDAO.getUnit(soldierID).getLevel(), 16);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),0);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getLevel(), 0);
+        unitDAO.updateExperience(soldierID,60);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getLevel(), 14);
+        unitDAO.updateExperience(soldierID,72);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),3);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getLevel(), 16);
 
         //unit has skill
         assertEquals(unitDAO.addSkill(soldierID, "miniFireBall"),true);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
-        unitDAO.updateLevel(soldierID,17);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),2);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
+        unitDAO.updateExperience(soldierID,72);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
         assertEquals(unitDAO.removeSkill(soldierID,"miniFireBall"), true);
-        assertEquals(unitDAO.getUnit(soldierID).getSkillPoint(),3);
+        assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),3);
     }
 }

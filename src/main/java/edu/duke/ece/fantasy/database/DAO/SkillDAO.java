@@ -24,7 +24,7 @@ public class SkillDAO {
     // get available skills that the unit can learn
     public Set<Skill> getAvailableSkills(Unit unit){
         Query q = session.createQuery("From Skill S where S.requiredLevel <=:unitLevel");
-        q.setParameter("unitLevel", unit.getLevel());
+        q.setParameter("unitLevel", unit.getExperience().getLevel());
         Set<Skill> skillSet = new HashSet<>();
         for(Object o : q.list()) {
             Skill skill = (Skill) o;

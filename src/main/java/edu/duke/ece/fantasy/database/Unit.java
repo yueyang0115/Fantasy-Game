@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
+import edu.duke.ece.fantasy.database.levelUp.Experience;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,9 +28,9 @@ public class Unit {
     @Column(name = "name", unique = false, nullable = false)
     private String name;
 
-    // the level of unit, different level can have different skills
-    @Column(name = "level", unique = false, nullable = false)
-    private int level = 1;
+    // experience includes level, experience and skillPoint of the unit
+    @Embedded
+    private Experience experience = new Experience();
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
@@ -47,9 +48,6 @@ public class Unit {
     public void setEquipments(List<UnitEquipment> equipments) {
         this.equipments = equipments;
     }
-
-    @Column(name = "skillPoint", unique = false, nullable = false)
-    private int skillPoint = 1;
 
     // the equipment the unit has
     @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
@@ -69,13 +67,11 @@ public class Unit {
         this.id = unit.getId();
         this.name = unit.getName();
         this.type = unit.getType();
-        this.level = unit.getLevel();
         this.hp = unit.getHp();
         this.atk = unit.getAtk();
         this.speed = unit.getSpeed();
-        this.skillPoint = unit.getSkillPoint();
-        this.level = unit.getLevel();
         this.skills = unit.getSkills();
+        this.experience = unit.getExperience();
     }
 
     public int getId() {
@@ -101,10 +97,6 @@ public class Unit {
     public void setName(String name) {
         this.name = name;
     }
-
-    public int getSkillPoint() { return skillPoint; }
-
-    public void setSkillPoint(int skillPoint) { this.skillPoint = skillPoint; }
 
     public int getSpeed() {
         return speed;
@@ -146,13 +138,9 @@ public class Unit {
         skills.add(skill);
     }
 
-    public int getLevel() {
-        return level;
-    }
+    public Experience getExperience() { return experience; }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
+    public void setExperience(Experience experience) { this.experience = experience; }
 
 
 //    public boolean addEquipment(ItemPack equipment) {
