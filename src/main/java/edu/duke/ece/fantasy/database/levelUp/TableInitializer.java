@@ -38,30 +38,13 @@ public class TableInitializer {
         String sql = "COPY ExperienceLevelEntry from "+ filename + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
         q.executeUpdate();
-
-//        for(int i=1; i<=5; i++){
-//            ExperienceLevelEntry el1 = new ExperienceLevelEntry(3*i,i); // exp: 15 level: 5
-//            session.save(el1);
-//        }
-//        for(int i=1; i<=10; i++) {
-//            ExperienceLevelEntry el2 = new ExperienceLevelEntry(15 + 5 * i, 5 + i); // exp: 20 level: 6
-//            session.save(el2);
-//        }
-//        for(int i=1; i<=15; i++){
-//            ExperienceLevelEntry el3 = new ExperienceLevelEntry(65 + 7 * i, 15 + i);
-//            session.save(el3);
-//        }
     }
 
     public void buildLevelSkillPointTable(){
-        LevelSkillPointEntry lsp1 = new LevelSkillPointEntry(1,1);
-        LevelSkillPointEntry lsp2 = new LevelSkillPointEntry(5,2);
-        LevelSkillPointEntry lsp3 = new LevelSkillPointEntry(15,3);
-        LevelSkillPointEntry lsp4 = new LevelSkillPointEntry(30,4);
-        session.save(lsp1);
-        session.save(lsp2);
-        session.save(lsp3);
-        session.save(lsp4);
+        String filename = "'/Users/yueyang/IdeaProjects/fantasy/src/main/resources/levelupData/LevelSkillPointTable.csv'";
+        String sql = "COPY LevelSkillPointEntry from "+ filename + " WITH (FORMAT csv)";
+        Query q = session.createSQLQuery(sql);
+        q.executeUpdate();
     }
 
 }
