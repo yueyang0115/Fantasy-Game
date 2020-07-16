@@ -36,7 +36,10 @@ public class TableInitializer {
     }
 
     public void buildExperienceLevelTable(){
-        String filePath = getPath("ExperienceLevelTable.csv");
+        //String filePath = getPath("ExperienceLevelTable.csv");
+        File resourcesDirectory = new File("src/main/resources/levelupData/ExperienceLevelTable.csv");
+        String filePath = "'"+resourcesDirectory.getAbsolutePath()+"'";
+        System.out.println(filePath);
         String sql = "COPY ExperienceLevelEntry from "+ filePath + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
         q.executeUpdate();
