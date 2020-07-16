@@ -51,15 +51,21 @@ public class TableInitializer {
 
     public String getPath(String fileName){
         String absolutePath = "";
-        try{
-            String currentDir = new File(".").getCanonicalPath();
-            String relativePath = "/src/main/resources/levelupData/";
-            absolutePath = "'" + currentDir + relativePath + fileName + "'";
-        }
-        catch(IOException e){
-            System.out.println("failed to get currentDir in table initialization");
-            e.printStackTrace();
-        }
+
+//        try{
+//            String currentDir = new File(".").getCanonicalPath();
+//            String relativePath = "/src/main/resources/levelupData/";
+//            absolutePath = "'" + currentDir + relativePath + fileName + "'";
+//        }
+//        catch(IOException e){
+//            System.out.println("failed to get currentDir in table initialization");
+//            e.printStackTrace();
+//        }
+
+        String currentDir = System.getProperty("user.dir");
+        String relativePath = "/src/main/resources/levelupData/";
+        absolutePath = "'" + currentDir + relativePath + fileName + "'";
+
         return absolutePath;
     }
 
