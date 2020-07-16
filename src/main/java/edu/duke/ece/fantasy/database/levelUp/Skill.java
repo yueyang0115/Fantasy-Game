@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database.levelUp;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import edu.duke.ece.fantasy.database.Monster;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -32,7 +33,8 @@ public class Skill {
     private int requiredLevel;
 
     // the prerequisite skill required to has this skill
-    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Skill_RequiredSkill",
             joinColumns = { @JoinColumn(name = "skill_id") }, //skill_id
             inverseJoinColumns = { @JoinColumn(name = "skill_name") }) //skill_name

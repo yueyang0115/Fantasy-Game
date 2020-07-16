@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Unit;
 import edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry;
 import edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry;
@@ -45,6 +46,7 @@ public class UnitDAO {
     // update unit's experience
     public void updateExperience(int unitID, int experience){
         Unit unit = getUnit(unitID);
+        if(unit == null || unit instanceof Monster) return;
         unit.getExperience().setExperience(experience);
         session.update(unit);
         // changes in experience may bring changes to level
@@ -53,6 +55,7 @@ public class UnitDAO {
 
     // update unit's level according to its experience
     private void updateLevel(Unit unit){
+        if(unit == null || unit instanceof Monster) return;
         // get the supposed unit level that corresponds to the certain experience
         Query q = session.createQuery("from ExperienceLevelEntry E where E.experience <= :unitExperience"
                 +" order by E.experience DESC"
@@ -60,6 +63,7 @@ public class UnitDAO {
         q.setParameter("unitExperience", unit.getExperience().getExperience());
         ExperienceLevelEntry entry = (ExperienceLevelEntry) q.uniqueResult();
 
+        if(entry == null) return;
         // if unit's level is not updated, update it
         if(unit.getExperience().getLevel() != entry.getLevel()){
             unit.getExperience().setLevel(entry.getLevel());
@@ -72,12 +76,14 @@ public class UnitDAO {
 
     // update unit's skillPoint according to its level and existing skills it has
     private void updateSkillPoint(Unit unit){
+        if(unit == null || unit instanceof Monster) return;
         Query q = session.createQuery("from LevelSkillPointEntry E where E.level <= :unitLevel"
                 +" order by E.level DESC"
         ).setMaxResults(1);
         q.setParameter("unitLevel", unit.getExperience().getLevel());
         LevelSkillPointEntry entry = (LevelSkillPointEntry) q.uniqueResult();
 
+        if(entry == null) return;
         int existingSkillNum = unit.getSkills()==null? 0 : unit.getSkills().size();
         unit.getExperience().setSkillPoint(Math.max(entry.getSkillPoint() - existingSkillNum, 0));
         session.update(unit);

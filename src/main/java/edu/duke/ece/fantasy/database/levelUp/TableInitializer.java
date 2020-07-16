@@ -1,10 +1,14 @@
 package edu.duke.ece.fantasy.database.levelUp;
 
 import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.query.Query;
+import org.postgresql.copy.CopyManager;
+import org.postgresql.core.BaseConnection;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,8 +41,8 @@ public class TableInitializer {
 
     public void buildExperienceLevelTable(){
         //String filePath = getPath("ExperienceLevelTable.csv");
-        File resourcesDirectory = new File("src/main/resources/levelupData/ExperienceLevelTable.csv");
-        String filePath = "'"+resourcesDirectory.getAbsolutePath()+"'";
+        File file = new File("src/main/resources/levelupData/ExperienceLevelTable.csv");
+        String filePath = "'" + file.getAbsolutePath() + "'";
         System.out.println(filePath);
         String sql = "COPY ExperienceLevelEntry from "+ filePath + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
@@ -46,7 +50,9 @@ public class TableInitializer {
     }
 
     public void buildLevelSkillPointTable(){
-        String filePath = getPath("LevelSkillPointTable.csv");
+        //String filePath = getPath("LevelSkillPointTable.csv");
+        File file = new File("src/main/resources/levelupData/LevelSkillPointTable.csv");
+        String filePath = "'" + file.getAbsolutePath() + "'";
         String sql = "COPY LevelSkillPointEntry from "+ filePath + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
         q.executeUpdate();
