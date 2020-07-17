@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.levelUp;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.query.Query;
@@ -43,14 +44,12 @@ public class TableInitializer {
         //String filePath = getPath("ExperienceLevelTable.csv");
         File file = new File("src/main/resources/levelupData/ExperienceLevelTable.csv");
         String filePath = "'" + file.getAbsolutePath() + "'";
-        System.out.println(filePath);
         String sql = "COPY ExperienceLevelEntry from "+ filePath + " WITH (FORMAT csv)";
         Query q = session.createSQLQuery(sql);
         q.executeUpdate();
     }
 
     public void buildLevelSkillPointTable(){
-        //String filePath = getPath("LevelSkillPointTable.csv");
         File file = new File("src/main/resources/levelupData/LevelSkillPointTable.csv");
         String filePath = "'" + file.getAbsolutePath() + "'";
         String sql = "COPY LevelSkillPointEntry from "+ filePath + " WITH (FORMAT csv)";
@@ -58,24 +57,25 @@ public class TableInitializer {
         q.executeUpdate();
     }
 
-    public String getPath(String fileName){
-        String absolutePath = "";
-
-//        try{
-//            String currentDir = new File(".").getCanonicalPath();
-//            String relativePath = "/src/main/resources/levelupData/";
-//            absolutePath = "'" + currentDir + relativePath + fileName + "'";
-//        }
-//        catch(IOException e){
-//            System.out.println("failed to get currentDir in table initialization");
-//            e.printStackTrace();
-//        }
-
-        String currentDir = System.getProperty("user.dir");
-        String relativePath = "/src/main/resources/levelupData/";
-        absolutePath = "'" + currentDir + relativePath + fileName + "'";
-
-        return absolutePath;
+    public void csvReader(String tableName, String fileName){
+        try {
+            session.getTransaction().commit();
+            //Session session2 = HibernateUtil.getSessionFactory().getCurrentSession();
+            SessionImplementor sessImpl = (SessionImplementor) session;
+            Connection conn =  sessImpl.getJdbcConnectionAccess().obtainConnection();
+            CopyManager copyManager = new CopyManager((BaseConnection) conn);
+            InputStream inputStream = getClass().getResourceAsStream(fileName);
+            if(inputStream == null){
+                System.out.println("input Stream is null");
+            }
+            String sql = "COPY "+tableName +" FROM STDIN WITH (FORMAT csv)";
+            copyManager.copyIn(sql, inputStream);
+            conn.commit();
+        }
+        catch(IOException | SQLException e){
+            System.out.println("Failed to get File "+fileName);
+            e.printStackTrace();
+        }
     }
 
 }
