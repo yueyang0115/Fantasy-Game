@@ -3,9 +3,12 @@ package edu.duke.ece.fantasy;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 
 import java.io.*;
 import java.net.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 
 public class Server {
@@ -38,10 +41,19 @@ public class Server {
     public void startGame() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
+
+            // create a jdbc connection for table initialization
+            SessionImplementor sessImpl = (SessionImplementor) session;
+            Connection connection =  sessImpl.getJdbcConnectionAccess().obtainConnection();
+
             // initialize SkillTable
-            TableInitializer tableInitializer = new TableInitializer(session);
+            TableInitializer tableInitializer = new TableInitializer(session, connection);
             tableInitializer.initializeAll();
             session.getTransaction().commit();
+        }
+        catch (SQLException e){
+            System.out.println("Failed to create session and jdbc connection");
+            e.printStackTrace();
         }
 
         while (true) {

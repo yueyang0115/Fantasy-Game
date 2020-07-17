@@ -5,8 +5,11 @@ import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SkillDAOTest {
     public static Session session;
+    public static Connection connection;
     private PlayerDAO playerDAO;
     private UnitDAO unitDAO;
     private SkillDAO skillDAO;
@@ -21,7 +25,15 @@ public class SkillDAOTest {
 
     @BeforeAll
     public static void setUpSession(){
-        session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            SessionImplementor sessImpl = (SessionImplementor) session;
+            connection = sessImpl.getJdbcConnectionAccess().obtainConnection();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+            System.out.println("failed to create jdbc connection in test");
+        }
     }
 
     @AfterAll
@@ -41,8 +53,9 @@ public class SkillDAOTest {
     }
 
     @AfterEach
-    public void shutDown(){
+    public void shutDown() throws SQLException {
         session.getTransaction().rollback();
+        connection.rollback();
     }
 
     //@Test
@@ -50,7 +63,7 @@ public class SkillDAOTest {
         Player p = playerDAO.getPlayer("testname");
         int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
 
-        TableInitializer tableInitializer = new TableInitializer(session);
+        TableInitializer tableInitializer = new TableInitializer(session,connection);
         tableInitializer.initializeAll();
         unitDAO.updateExperience(soldierID, 40);
         assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
@@ -76,11 +89,11 @@ public class SkillDAOTest {
 
     }
 
-    //@Test
+    @Test
     public void testSkillPoint(){
         Player p = playerDAO.getPlayer("testname");
         int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
-        TableInitializer tableInitializer = new TableInitializer(session);
+        TableInitializer tableInitializer = new TableInitializer(session,connection);
         tableInitializer.initializeAll();
 
         // unit has no skill
