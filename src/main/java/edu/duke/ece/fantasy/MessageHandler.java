@@ -69,6 +69,9 @@ public class MessageHandler {
                 sharedData.getPlayer().setStatus(Player.Status.INLEVELUP);
                 LevelUpHandler luh = new LevelUpHandler(metaDAO);
                 result.setLevelUpResultMessage(luh.handle(levelUpMsg));
+                RedirectMessage redirectMsg = new RedirectMessage();
+                redirectMsg.setDestination("levelup");
+                result.setRedirectMessage(redirectMsg);
             }
 
             if (attributeMsg != null) {
