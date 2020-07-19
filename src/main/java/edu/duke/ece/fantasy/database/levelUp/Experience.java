@@ -4,9 +4,9 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Experience {
-    private int experience;
-    private int level;
-    private int skillPoint;
+    private int experience = 0;
+    private int level = 1;
+    private int skillPoint = 1;
 
     public Experience(){}
 
