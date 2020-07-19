@@ -29,6 +29,8 @@ public class SkillDAOTest {
             session = HibernateUtil.getSessionFactory().openSession();
             SessionImplementor sessImpl = (SessionImplementor) session;
             connection = sessImpl.getJdbcConnectionAccess().obtainConnection();
+            TableInitializer tableInitializer = new TableInitializer(session,connection);
+            tableInitializer.initializeAll();
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -63,8 +65,8 @@ public class SkillDAOTest {
         Player p = playerDAO.getPlayer("testname");
         int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
 
-        TableInitializer tableInitializer = new TableInitializer(session,connection);
-        tableInitializer.initializeAll();
+//        TableInitializer tableInitializer = new TableInitializer(session,connection);
+//        tableInitializer.initializeAll();
         unitDAO.updateExperience(soldierID, 40);
         assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),2);
         assertEquals(unitDAO.addSkill(soldierID, "miniFireBall"),true);
@@ -89,12 +91,12 @@ public class SkillDAOTest {
 
     }
 
-    @Test
+    //@Test
     public void testSkillPoint(){
         Player p = playerDAO.getPlayer("testname");
         int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
-        TableInitializer tableInitializer = new TableInitializer(session,connection);
-        tableInitializer.initializeAll();
+//        TableInitializer tableInitializer = new TableInitializer(session,connection);
+//        tableInitializer.initializeAll();
 
         // unit has no skill
         assertEquals(unitDAO.getUnit(soldierID).getExperience().getSkillPoint(),0);

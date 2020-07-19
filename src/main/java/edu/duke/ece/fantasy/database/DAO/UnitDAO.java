@@ -41,6 +41,7 @@ public class UnitDAO {
             session.delete(unit);
             System.out.println("[DEBUG] Delete unit "+unit.getType() +" with ID " +unitID);
         }
+        //session.flush();
     }
 
     // update unit's experience
