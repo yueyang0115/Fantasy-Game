@@ -28,8 +28,9 @@ public class SkillDAO {
         Set<Skill> skillSet = new HashSet<>();
         for(Object o : q.list()) {
             Skill skill = (Skill) o;
-            if(skill.getRequiredSkill() == null ||
-                    unit.getSkills().containsAll(skill.getRequiredSkill())) {
+            //if unit doesn't contain that skill && unit has the required prerequisite skills
+            if( !unit.getSkills().contains(skill) &&
+                    (skill.getRequiredSkill() == null ||  unit.getSkills().containsAll(skill.getRequiredSkill()))) {
                 skillSet.add(skill);
             }
         }
