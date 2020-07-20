@@ -54,7 +54,7 @@ public class Unit {
     private List<UnitEquipment> equipments = new ArrayList<>();
 
     // the skills the unit has
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "Unit_Skill",
             joinColumns = { @JoinColumn(name = "unit_id") }, //unit_id
             inverseJoinColumns = { @JoinColumn(name = "skill_name") }) //skill_name

@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;

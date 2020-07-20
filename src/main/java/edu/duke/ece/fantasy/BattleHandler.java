@@ -10,6 +10,7 @@ public class BattleHandler {
     private MonsterDAO monsterDAO;
     private SoldierDAO soldierDAO;
     private UnitDAO unitDAO;
+    private PlayerDAO playerDAO;
     private TerritoryDAO territoryDAO;
     public static int TAME_RANGE_X = 3;
     public static int TAME_RANGE_Y = 3;
@@ -28,6 +29,7 @@ public class BattleHandler {
         soldierDAO = metaDAO.getSoldierDAO();
         unitDAO = metaDAO.getUnitDAO();
         territoryDAO = metaDAO.getTerritoryDAO();
+        playerDAO = metaDAO.getPlayerDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){
@@ -143,10 +145,13 @@ public class BattleHandler {
         attackee.setHp(newAttackeeHp);
         unitDAO.setUnitHp(attackeeID, newAttackeeHp);
 
+        // attackee's hp = 0, delete it
         if(newAttackeeHp == 0){
             deletedID = attackeeID;
-            // change attacker's level and skillPoint
-            unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
+            // if soldier successfully attacks, change its level and skillPoint
+            if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
+            // if soldier died, remove it from player's soldierList then delete it in db
+            if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
             unitDAO.deleteUnit(attackeeID);
         }
 

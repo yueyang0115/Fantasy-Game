@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Monster;
+import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.Unit;
 import edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry;
 import edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry;
@@ -35,13 +36,13 @@ public class UnitDAO {
     }
 
     //delete a unit from database
+    //if unit is soldier, should call playerDAO.removeSoldier() first to remove that soldier in player
     public void deleteUnit(int unitID){
         Unit unit;
         if ((unit = (Unit) session.get(Unit.class, unitID)) != null) {
             session.delete(unit);
             System.out.println("[DEBUG] Delete unit "+unit.getType() +" with ID " +unitID);
         }
-        //session.flush();
     }
 
     // update unit's experience

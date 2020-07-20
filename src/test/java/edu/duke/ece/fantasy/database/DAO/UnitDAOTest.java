@@ -65,12 +65,13 @@ public class UnitDAOTest {
 
     @Test
     public void testDelete(){
-//        Player p = playerDAO.getPlayer("testname");
-//        int playerID = p.getId();
-//        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
-//        int soldierID = soldierList.get(0).getId();
-//
-//        unitDAO.deleteUnit(soldierID);
-//        assertEquals(session.get(Unit.class, soldierID),null);
+        Player p = playerDAO.getPlayer("testname");
+        int playerID = p.getId();
+        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
+        int soldierID = soldierList.get(0).getId();
+
+        playerDAO.removeSoldier(playerID,soldierID);
+        unitDAO.deleteUnit(soldierID);
+        assertEquals(session.get(Unit.class, soldierID),null);
     }
 }
