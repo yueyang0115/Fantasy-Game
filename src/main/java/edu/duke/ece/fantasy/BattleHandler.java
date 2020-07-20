@@ -105,7 +105,9 @@ public class BattleHandler {
         while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
             attackerID = this.unitQueue.peek().getId();
             attackeeID = request.getBattleAction().getAttacker().getId();
-            if(unitDAO.getUnit(attackeeID) == null || unitDAO.getUnit(attackerID) == null) continue;
+            //since right now we make monster attack the same soldier, if that soldier die, break loop
+            if(unitDAO.getUnit(attackeeID) == null) break;
+            if(unitDAO.getUnit(attackerID) == null) continue;
             action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);

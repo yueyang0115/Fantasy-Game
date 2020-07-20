@@ -61,7 +61,7 @@ public class SkillDAOTest {
         connection.rollback();
     }
 
-    //@Test
+    @Test
     public void testSkillDAO(){
         Player p = playerDAO.getPlayer("testname");
         int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
@@ -92,7 +92,7 @@ public class SkillDAOTest {
 
     }
 
-    //@Test
+    @Test
     public void testSkillPoint(){
         Player p = playerDAO.getPlayer("testname");
         int soldierID = soldierDAO.getSoldiers(p.getId()).get(0).getId();
