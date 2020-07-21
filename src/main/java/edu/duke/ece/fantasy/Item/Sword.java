@@ -7,17 +7,13 @@ public class Sword extends Equipment {
         super("sword", 20, 20, 20, 10);
     }
 
-    @Override
-    public void OnDeEquip() {
-        super.OnDeEquip();
-    }
 
 
-    protected boolean meetRequirement(Unit unit) throws InvalidItemUsageException {
-        if(unit.getWeapon() == null){
-            return true;
-        } else {
-            throw new InvalidItemUsageException("Unit already has weapon, please unload weapon first");
-        }
-    }
+//    protected String meetRequirement(Unit unit) {
+//        if(unit.getWeapon() == null){
+//            return true;
+//        } else {
+//            throw new InvalidItemUsageException("Unit already has weapon, please unload weapon first");
+//        }
+//    }
 }

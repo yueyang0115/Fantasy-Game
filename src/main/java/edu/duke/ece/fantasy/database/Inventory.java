@@ -68,8 +68,8 @@ public class Inventory {
         return new Inventory(id, item.toGameItem().toClient(), amount);
     }
 
-    public void useItem(Unit unit) throws InvalidItemUsageException {
-        this.getDBItem().toGameItem().OnUse(unit);
+    public void useItem(Unit unit,Player player) {
+        this.getDBItem().toGameItem().OnUse(unit,player);
         this.reduceAmount(1);
     }
 

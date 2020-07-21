@@ -6,9 +6,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece.fantasy.ObjectMapperFactory;
-import edu.duke.ece.fantasy.database.DBItem;
-import edu.duke.ece.fantasy.database.Unit;
-import edu.duke.ece.fantasy.database.UnitEquipment;
+import edu.duke.ece.fantasy.database.*;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -29,21 +27,23 @@ public class Equipment extends Item {
         this.speed = speed;
     }
 
-    protected boolean meetRequirement(Unit unit) throws InvalidItemUsageException {
-        return true;
+    protected String getRequirementWarning(Unit unit) {
+        return null;
     }
 
-    public void OnEquip(Unit unit) throws InvalidItemUsageException {
-        if (meetRequirement(unit)) {
-            unit.addAtk(atk);
-            unit.addSpeed(speed);
-            unit.setWeapon(this.toDBItem());
-//            unit.addEquipment(new UnitEquipment(this.toDBItem(), 1, unit));
+    public void OnEquip(Unit unit, Player player) {
+        if (unit.getWeapon() != null) {
+            unit.getWeapon().toGameItem().OnDeEquip(unit);
+            player.addItem(new playerInventory(unit.getWeapon(), 1, player));
         }
+        unit.addAtk(atk);
+        unit.addSpeed(speed);
+        unit.setWeapon(this.toDBItem());
     }
 
-    public void OnDeEquip() {
-
+    public void OnDeEquip(Unit unit) {
+        unit.reduceAtk(atk);
+        unit.reduceSpeed(speed);
     }
 
     @JsonIgnore
@@ -68,8 +68,8 @@ public class Equipment extends Item {
     }
 
     @Override
-    public void OnUse(Unit unit) throws InvalidItemUsageException {
-        OnEquip(unit);
+    public void OnUse(Unit unit, Player player) {
+        OnEquip(unit,player);
     }
 
 }

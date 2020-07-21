@@ -70,7 +70,7 @@ public class InventoryHandler {
 
     private void useItem(playerInventory selectedInventory, Player player, Unit unit) throws InvalidItemUsageException {
         if (selectedInventory.getPlayer() == player) {
-            selectedInventory.useItem(unit);
+            selectedInventory.useItem(unit,player);
             // remove inventory from database if it is 0
             if (selectedInventory.getAmount() == 0) {
                 session.delete(selectedInventory);

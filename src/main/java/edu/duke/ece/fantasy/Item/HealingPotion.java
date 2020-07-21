@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.Item;
 
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Unit;
 
 
@@ -24,7 +25,7 @@ public class HealingPotion extends Item {
     }
 
     @Override
-    public void OnUse(Unit unit) {
+    public void OnUse(Unit unit, Player player) {
         unit.addHp(healingHp);
     }
 }

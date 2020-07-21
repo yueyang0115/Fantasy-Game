@@ -97,7 +97,5 @@ class InventoryHandlerTest {
         inventoryRequestMessage.setAction("use");
         inventoryRequestMessage.setInventoryID(testItemId);
         InventoryResultMessage res = inventoryHandler.handle(inventoryRequestMessage, testPlayerId);
-
-
     }
 }

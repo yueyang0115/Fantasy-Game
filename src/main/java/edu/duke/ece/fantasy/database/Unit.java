@@ -135,6 +135,19 @@ public class Unit {
         this.atk += atk;
     }
 
+    public void reduceAtk(int atk){
+        this.atk -= atk;
+    }
+
+    public void reduceSpeed(int speed){
+        this.speed -= speed;
+    }
+
+    public void reduceHp(int hp){
+        this.hp -= hp;
+    }
+
+
     public DBItem getWeapon() {
         return weapon;
     }

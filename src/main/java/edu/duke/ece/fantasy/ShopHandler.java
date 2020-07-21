@@ -104,6 +104,7 @@ public class ShopHandler {
     private void execute(List<Inventory> sellerInventoryList, List<Inventory> buyerInventoryList, List<Inventory> selectedInventoryList, Trader buyer, Trader seller) {
         for (Inventory selectedInventory : selectedInventoryList) {
             int selectedAmount = selectedInventory.getAmount();
+            if(selectedAmount==0) {continue;}
             Item selectedItem = selectedInventory.getDBItem().toGameItem();
             int totalCost = selectedItem.getCost() * selectedAmount;
             // operation for seller
@@ -118,7 +119,7 @@ public class ShopHandler {
             // operation for buyer; selectedInventory contains more properties info
             Inventory pairedInventoryForBuyer = findInventoryFromList(buyerInventoryList, selectedInventory);
             if (pairedInventoryForBuyer != null) {
-                pairedInventoryForBuyer.setAmount(selectedAmount + selectedInventory.getAmount());
+                pairedInventoryForBuyer.setAmount(selectedAmount + pairedInventoryForBuyer.getAmount());
             } else {
                 Inventory createdInventory = buyer.addInventory(metaDAO, selectedInventory);
                 buyerInventoryList.add(createdInventory);

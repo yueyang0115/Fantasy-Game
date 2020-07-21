@@ -18,8 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "Player")
 public class Player implements Trader {
-    public enum Status
-    {
+    public enum Status {
         INBUILDING, INBATTLE, INMAIN, INBAG, INLEVELUP;
     }
 
@@ -69,11 +68,17 @@ public class Player implements Trader {
     public Player() {
     }
 
-    public Status getStatus() { return status; }
+    public Status getStatus() {
+        return status;
+    }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-    public WorldCoord getCurrentCoord() { return new WorldCoord(wid,coordX,coordY); }
+    public WorldCoord getCurrentCoord() {
+        return new WorldCoord(wid, coordX, coordY);
+    }
 
     public void setCurrentCoord(WorldCoord currentCoord) {
         this.coordX = currentCoord.getX();
@@ -150,8 +155,14 @@ public class Player implements Trader {
     }
 
     public void addItem(playerInventory item) {
-        items.add(item);
-        item.setPlayer(this);
+        playerInventory pairedInventory = findInventoryFromList(item);
+        if (pairedInventory != null) {
+            pairedInventory.setAmount(pairedInventory.getAmount() + item.getAmount());
+        } else {
+            System.out.println("Didn't find the same Inventory");
+            items.add(item);
+            item.setPlayer(this);
+        }
     }
 
     private void reduceItem(Inventory inventory, int amount) {
@@ -173,6 +184,19 @@ public class Player implements Trader {
 //        reduceItem(inventory, amount);
 //    }
 
+
+    private playerInventory findInventoryFromList(Inventory selectedInventory) {
+        playerInventory pairedInventory = null;
+        System.out.println("I'm in find");
+        for (playerInventory inventory : items) {
+            System.out.println("check item-"+inventory.getDBItem().toString());
+            if (inventory.equals(selectedInventory)) { // check if inventoryList have the same item as selectedInventory
+                pairedInventory = inventory;
+                break;
+            }
+        }
+        return pairedInventory;
+    }
 
     @Override
     public boolean checkMoney(int required_money) {
@@ -201,8 +225,9 @@ public class Player implements Trader {
 
     @Override
     public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
-        playerInventory playerInventory = new playerInventory(inventory.getDBItem().toGameItem().toDBItem(),inventory.getAmount(),this);
+        playerInventory playerInventory = new playerInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), this);
         metaDAO.getSession().save(playerInventory);
+        this.addItem(playerInventory);
         return playerInventory;
     }
 

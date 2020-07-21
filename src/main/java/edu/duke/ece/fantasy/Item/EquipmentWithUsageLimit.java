@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece.fantasy.ObjectMapperFactory;
 import edu.duke.ece.fantasy.database.DBItem;
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Unit;
 import edu.duke.ece.fantasy.database.UnitEquipment;
 
@@ -69,7 +70,7 @@ public class EquipmentWithUsageLimit extends Item {
     }
 
     @Override
-    public void OnUse(Unit unit) {
+    public void OnUse(Unit unit, Player player) {
         OnEquip(unit);
     }
 
