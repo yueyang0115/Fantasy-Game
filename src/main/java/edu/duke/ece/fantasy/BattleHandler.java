@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.json.*;
 
 import java.util.*;
@@ -12,6 +13,7 @@ public class BattleHandler {
     private UnitDAO unitDAO;
     private PlayerDAO playerDAO;
     private TerritoryDAO territoryDAO;
+    private SkillDAO skillDAO;
     public static int TAME_RANGE_X = 3;
     public static int TAME_RANGE_Y = 3;
 
@@ -30,6 +32,7 @@ public class BattleHandler {
         unitDAO = metaDAO.getUnitDAO();
         territoryDAO = metaDAO.getTerritoryDAO();
         playerDAO = metaDAO.getPlayerDAO();
+        skillDAO = metaDAO.getSkillDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){
@@ -96,8 +99,9 @@ public class BattleHandler {
         WorldCoord where = request.getTerritoryCoord();
         int attackeeID = request.getBattleAction().getAttackee().getId();
         int attackerID = request.getBattleAction().getAttacker().getId();
+        Skill attackerSkill = skillDAO.getSkill(request.getBattleAction().getActionType());
 
-        BattleAction action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
+        BattleAction action = doBattleOnce(attackerSkill, attackerID,attackeeID,where,playerID,result);
         actions.add(action);
         setStatus(where,playerID,result);
 
@@ -108,7 +112,7 @@ public class BattleHandler {
             //since right now we make monster attack the same soldier, if that soldier die, break loop
             if(unitDAO.getUnit(attackeeID) == null) break;
             if(unitDAO.getUnit(attackerID) == null) continue;
-            action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
+            action = doBattleOnce(null, attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);
         }
@@ -130,7 +134,7 @@ public class BattleHandler {
         else result.setResult("continue");
     }
 
-    public BattleAction doBattleOnce(int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
+    public BattleAction doBattleOnce(Skill attackerSkill, int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
         BattleAction action = new BattleAction();
         int deletedID = -1;
 
@@ -141,9 +145,11 @@ public class BattleHandler {
             result.setResult("invalid");
             return null;
         }
+
+        int attackerSkillAtk = (attackerSkill == null) ? 0 : attackerSkill.getAttack();
         int attckeeHp = attackee.getHp();
         int attackerAtk = attacker.getAtk();
-        int newAttackeeHp = Math.max(attckeeHp - attackerAtk, 0);
+        int newAttackeeHp = Math.max(attckeeHp - attackerAtk - attackerSkillAtk, 0);
         attackee.setHp(newAttackeeHp);
         unitDAO.setUnitHp(attackeeID, newAttackeeHp);
 
