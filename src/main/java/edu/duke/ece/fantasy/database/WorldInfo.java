@@ -18,6 +18,7 @@ public class WorldInfo implements Serializable {
 //        Main, Death;
 //    }
     public static String MainWorld = "mainWorld";
+    public static String DeathWorld = "deathWorld";
 
     @Id
     @GeneratedValue(generator = "increment")

@@ -7,6 +7,7 @@ import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -38,6 +39,8 @@ public class MonsterGeneratorTest {
     public void testAll(){
         SharedData sharedData = new SharedData();
         Player p = new Player();
+        WorldInfo info = new WorldInfo();
+        p.addWorldInfo(info);
         p.setStatus("MAIN");
         p.setCurrentCoord(new WorldCoord(1,1,1));
         sharedData.setPlayer(p);

@@ -135,10 +135,9 @@ public class BattleHandler {
         }
         else if(soldierList == null || soldierList.size() ==0){
             result.setResult("lose");
-            // TODO: create death world for this player
-            WorldInfo deathWorld = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
-            deathWorld.setWorldType("deathWorld");
-            playerDAO.addWorld(playerID, deathWorld);
+            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
+            info.setWorldType("deathWorld");
+            playerDAO.addWorld(playerID, info);
         }
         else result.setResult("continue");
     }

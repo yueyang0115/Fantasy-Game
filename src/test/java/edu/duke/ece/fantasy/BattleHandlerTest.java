@@ -138,7 +138,10 @@ public class BattleHandlerTest {
 
     public void testMessageHandler(){
         SharedData sharedData = new SharedData();
-        sharedData.setPlayer(new Player());
+        Player p = new Player("testname", "password");
+        WorldInfo info = new WorldInfo(new WorldCoord(), "testname",20);
+        p.addWorldInfo(info);
+        sharedData.setPlayer(p);
         MessageHandler mh = new MessageHandler(mockedMetaDAO, sharedData);
         BattleRequestMessage battleRequest = new BattleRequestMessage(new WorldCoord(),"escape",new BattleAction());
         MessagesC2S request = new MessagesC2S(battleRequest);

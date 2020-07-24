@@ -94,8 +94,7 @@ public class PlayerDAO {
 
     public void addWorld(int playerID, WorldInfo info){
         Player player = getPlayer(playerID);
-        // TODO: add new world to player
-        //player.getWorlds().add(info);
-        //session.update(player);
+        player.addWorldInfo(info);
+        session.update(player);
     }
 }
