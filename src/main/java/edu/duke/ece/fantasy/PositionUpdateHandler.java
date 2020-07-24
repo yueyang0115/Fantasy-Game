@@ -71,18 +71,19 @@ public class PositionUpdateHandler {
         }
     }
 
-    public PositionResultMessage handle(int wid, PositionRequestMessage positionMsg) {
+    public PositionResultMessage handle(Player player, PositionRequestMessage positionMsg) {
         //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
 
-        WorldInfo info = worldDAO.getInfo(wid);
+//        WorldInfo info = worldDAO.getInfo(wid);
+        WorldInfo info = player.getWorlds().get(WorldInfo.MainWorld);
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
         WorldCoord currentCoord = positionMsg.getCurrentCoord();
-        currentCoord.setWid(wid);
         boolean isNewWorld = false;
         if (info == null) { // generate info
-            info = worldDAO.initWorld(currentCoord, playerDAO.getPlayerByWid(wid).getUsername(), 20);//TODO: Fix hardcoding of tile size
+            info = worldDAO.initWorld(currentCoord, player.getUsername(), 20);//TODO: Fix hardcoding of tile size
+            player.addWorldInfo(info);
             isNewWorld = true;
         }
 
