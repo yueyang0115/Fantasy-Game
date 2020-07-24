@@ -18,9 +18,9 @@ import java.util.List;
 @Entity
 @Table(name = "Player")
 public class Player implements Trader {
-    public enum Status {
-        INBUILDING, INBATTLE, INMAIN, INBAG, INLEVELUP;
-    }
+//    public enum Status {
+//        INBUILDING, INBATTLE, INMAIN, INBAG, INLEVELUP;
+//    }
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -45,7 +45,7 @@ public class Player implements Trader {
     private int wid;
 
     @Column(name = "status", nullable = false)
-    private Status status = Status.INMAIN;
+    private String status = "MAIN";
 
     @Column(name = "coordX")
     private int coordX;
@@ -68,11 +68,11 @@ public class Player implements Trader {
     public Player() {
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
