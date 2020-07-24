@@ -9,11 +9,20 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "WorldInfo")
-public class WorldInfo {
+public class WorldInfo implements Serializable {
+//    public enum WorldType {
+//        Main, Death;
+//    }
+    public static String MainWorld = "mainWorld";
 
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "WID", unique = true, nullable = false)
     private int wid;
 
     @Column(name = "name", nullable = false)
@@ -29,17 +38,17 @@ public class WorldInfo {
     private String worldType;
 
     public WorldInfo() {
-        this.worldType = "mainworld";
+        this.worldType = MainWorld;
     }
 
     public WorldInfo(WorldCoord wc, String player, int tileSize) {
-        wid = wc.getWid();
+//        wid = wc.getWid();
         startX = wc.getX();
         startY = wc.getY();
         ownerName = player;
         firstTileX = startX - tileSize / 2;
         firstTileY = startY - tileSize / 2;
-        this.worldType = "mainworld";
+        this.worldType = MainWorld;
     }
 
     public int getWid() {
