@@ -1,11 +1,14 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import edu.duke.ece.fantasy.database.levelUp.Experience;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Unit")
@@ -14,14 +17,20 @@ public class Unit {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(name = "unit_id", unique = true, nullable = false)
     private int id;
 
+    // the type of unit, either "monster" or "soldier"
     @Column(name = "type", unique = false, nullable = false, length = 100)
     private String type;
 
+    // the name of unit, including "wolf" "wizard"...
     @Column(name = "name", unique = false, nullable = false)
     private String name;
+
+    // experience includes level, experience and skillPoint of the unit
+    @Embedded
+    private Experience experience = new Experience();
 
     @Column(name = "HP", unique = false, nullable = false)
     private int hp;
@@ -32,8 +41,17 @@ public class Unit {
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
-    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
-    private List<UnitEquipment> equipments = new ArrayList<>();
+//    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+//    private List<UnitEquipment> equipments = new ArrayList<>();
+    private DBItem weapon;
+
+
+    // the skills the unit has
+    @ManyToMany
+    @JoinTable(name = "Unit_Skill",
+            joinColumns = { @JoinColumn(name = "unit_id") }, //unit_id
+            inverseJoinColumns = { @JoinColumn(name = "skill_name") }) //skill_name
+    private Set<Skill> skills = new HashSet<>();
 
     public Unit() {
     }
@@ -45,6 +63,8 @@ public class Unit {
         this.hp = unit.getHp();
         this.atk = unit.getAtk();
         this.speed = unit.getSpeed();
+        this.skills = unit.getSkills();
+        this.experience = unit.getExperience();
     }
 
     public int getId() {
@@ -79,6 +99,10 @@ public class Unit {
         this.speed = speed;
     }
 
+    public void addSpeed(int speed) {
+        this.speed += speed;
+    }
+
     public void addHp(int heal_hp) {
         hp += heal_hp;
     }
@@ -99,6 +123,52 @@ public class Unit {
         this.atk = atk;
     }
 
+    public void addAtk(int atk) {
+        this.atk += atk;
+    }
+
+    public void reduceAtk(int atk){
+        this.atk -= atk;
+    }
+
+    public void reduceSpeed(int speed){
+        this.speed -= speed;
+    }
+
+    public void reduceHp(int hp){
+        this.hp -= hp;
+    }
+
+
+    public DBItem getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(DBItem weapon) {
+        this.weapon = weapon;
+    }
+
+    //    public boolean addEquipment(UnitEquipment equipment) {
+//        equipments.add(equipment);
+//        return true;
+
+    public Set<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<Skill> skills) {
+        this.skills = skills;
+    }
+
+    public void addSkill(Skill skill){
+        skills.add(skill);
+    }
+
+    public Experience getExperience() { return experience; }
+
+    public void setExperience(Experience experience) { this.experience = experience; }
+
+
 //    public boolean addEquipment(ItemPack equipment) {
 //        int ind = equipments.indexOf(equipment);
 //        if (ind == -1) {
@@ -113,7 +183,4 @@ public class Unit {
 //        return equipments;
 //    }
 //
-//    public void setEquipment(List<ItemPack> equipment) {
-//        this.equipments = equipment;
-//    }
 }

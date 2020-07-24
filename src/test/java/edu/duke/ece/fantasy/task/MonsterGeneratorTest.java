@@ -38,7 +38,7 @@ public class MonsterGeneratorTest {
     public void testAll(){
         SharedData sharedData = new SharedData();
         Player p = new Player();
-        p.setStatus(Player.Status.INMAIN);
+        p.setStatus("MAIN");
         p.setCurrentCoord(new WorldCoord(1,1,1));
         sharedData.setPlayer(p);
         LinkedBlockingQueue<MessagesS2C> resultMsgQueue = new LinkedBlockingQueue<>();;

@@ -27,6 +27,14 @@ public class MessageHandler {
         ShopRequestMessage shopRequestMessage = input.getShopRequestMessage();
         InventoryRequestMessage inventoryRequestMessage = input.getInventoryRequestMessage();
         BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
+        LevelUpRequestMessage levelUpMsg = input.getLevelUpRequestMessage();
+        RedirectMessage redirectMsg = input.getRedirectMessage();
+
+            // set redirectMsg and player's status
+            if(redirectMsg != null){
+                if(sharedData.getPlayer() != null) sharedData.getPlayer().setStatus(redirectMsg.getDestination());
+                result.setRedirectMessage(redirectMsg);
+            }
 
             if (loginMsg != null) {
                 // if login succeed, sharedData will hold login-player's info
@@ -47,21 +55,32 @@ public class MessageHandler {
                 WorldCoord currentCoord  = positionMsg.getCurrentCoord();
                 currentCoord.setWid(sharedData.getPlayer().getWid());
                 // update player info in sharedData between taskScheduler and messageHandler
-                sharedData.getPlayer().setStatus(Player.Status.INMAIN);
+                sharedData.getPlayer().setStatus("MAIN");
                 sharedData.getPlayer().setCurrentCoord(currentCoord);
             }
 
             if (battleMsg != null) {
-                sharedData.getPlayer().setStatus(Player.Status.INBATTLE);
+//                sharedData.getPlayer().setStatus(Player.Status.INBATTLE);
                 // add wid to the received currentCoord in the request
                 if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWid());
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
-                if(battleMsg.getAction().equals("start")){
-                    RedirectMessage redirectMsg = new RedirectMessage();
-                    redirectMsg.setDestination("battle");
-                    result.setRedirectMessage(redirectMsg);
-                }
+//                if(battleMsg.getAction().equals("start")){
+//                    RedirectMessage redirectMsg = new RedirectMessage();
+//                    redirectMsg.setDestination("battle");
+//                    result.setRedirectMessage(redirectMsg);
+//                }
+            }
+
+            if(levelUpMsg != null){
+//                sharedData.getPlayer().setStatus(Player.Status.INLEVELUP);
+                LevelUpHandler luh = new LevelUpHandler(metaDAO);
+                result.setLevelUpResultMessage(luh.handle(levelUpMsg));
+//                if(levelUpMsg.getAction().equals("start")) {
+//                    RedirectMessage redirectMsg = new RedirectMessage();
+//                    redirectMsg.setDestination("levelup");
+//                    result.setRedirectMessage(redirectMsg);
+//                }
             }
 
             if (attributeMsg != null) {
@@ -70,12 +89,12 @@ public class MessageHandler {
             }
 
             if (shopRequestMessage != null) {
-                if(sharedData.getPlayer().getStatus()!=Player.Status.INBUILDING){ // make sure only send redirect once
-                    RedirectMessage redirectMessage = new RedirectMessage();
-                    redirectMessage.setDestination("shop");
-                    result.setRedirectMessage(redirectMessage);
-                }
-                sharedData.getPlayer().setStatus(Player.Status.INBUILDING);
+//                if(sharedData.getPlayer().getStatus()!=Player.Status.INBUILDING){ // make sure only send redirect once
+//                    RedirectMessage redirectMessage = new RedirectMessage();
+//                    redirectMessage.setDestination("shop");
+//                    result.setRedirectMessage(redirectMessage);
+//                }
+//                sharedData.getPlayer().setStatus(Player.Status.INBUILDING);
 
                 ShopHandler shopHandler = new ShopHandler(metaDAO);
                 InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
@@ -91,12 +110,12 @@ public class MessageHandler {
             }
 
             if(inventoryRequestMessage != null){
-                if(sharedData.getPlayer().getStatus()!=Player.Status.INBAG){ // make sure only send redirect once
-                    RedirectMessage redirectMessage = new RedirectMessage();
-                    redirectMessage.setDestination("inventory");
-                    result.setRedirectMessage(redirectMessage);
-                }
-                sharedData.getPlayer().setStatus(Player.Status.INBAG);
+//                if(sharedData.getPlayer().getStatus()!=Player.Status.INBAG){ // make sure only send redirect once
+//                    RedirectMessage redirectMessage = new RedirectMessage();
+//                    redirectMessage.setDestination("inventory");
+//                    result.setRedirectMessage(redirectMessage);
+//                }
+//                sharedData.getPlayer().setStatus(Player.Status.INBAG);
                 InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
                 result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, sharedData.getPlayer().getId()));
                 AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
@@ -104,7 +123,7 @@ public class MessageHandler {
             }
 
             if (buildingRequestMessage != null) {
-                sharedData.getPlayer().setStatus(Player.Status.INMAIN);
+//                sharedData.getPlayer().setStatus(Player.Status.INMAIN);
                 BuildingHandler buildingHandler = new BuildingHandler(metaDAO);
                 if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(sharedData.getPlayer().getWid());
                 result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, sharedData.getPlayer().getId()));

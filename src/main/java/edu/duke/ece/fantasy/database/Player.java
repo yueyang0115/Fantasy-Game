@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import org.hibernate.annotations.*;
@@ -17,10 +18,9 @@ import java.util.List;
 @Entity
 @Table(name = "Player")
 public class Player implements Trader {
-    public enum Status
-    {
-        INBUILDING, INBATTLE, INMAIN, INBAG;
-    }
+//    public enum Status {
+//        INBUILDING, INBATTLE, INMAIN, INBAG, INLEVELUP;
+//    }
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -45,7 +45,7 @@ public class Player implements Trader {
     private int wid;
 
     @Column(name = "status", nullable = false)
-    private Status status = Status.INMAIN;
+    private String status = "MAIN";
 
     @Column(name = "coordX")
     private int coordX;
@@ -54,7 +54,7 @@ public class Player implements Trader {
     private int coordY;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "player", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
@@ -68,11 +68,17 @@ public class Player implements Trader {
     public Player() {
     }
 
-    public Status getStatus() { return status; }
+    public String getStatus() {
+        return status;
+    }
 
-    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public WorldCoord getCurrentCoord() { return new WorldCoord(wid,coordX,coordY); }
+    public WorldCoord getCurrentCoord() {
+        return new WorldCoord(wid, coordX, coordY);
+    }
 
     public void setCurrentCoord(WorldCoord currentCoord) {
         this.coordX = currentCoord.getX();
@@ -149,8 +155,14 @@ public class Player implements Trader {
     }
 
     public void addItem(playerInventory item) {
-        items.add(item);
-        item.setPlayer(this);
+        playerInventory pairedInventory = findInventoryFromList(item);
+        if (pairedInventory != null) {
+            pairedInventory.setAmount(pairedInventory.getAmount() + item.getAmount());
+        } else {
+            System.out.println("Didn't find the same Inventory");
+            items.add(item);
+            item.setPlayer(this);
+        }
     }
 
     private void reduceItem(Inventory inventory, int amount) {
@@ -163,15 +175,28 @@ public class Player implements Trader {
         }
     }
 
-    public void useItem(Inventory inventory, int amount, Unit unit) {
-        inventory.getDBItem().toGameItem().OnUse(unit);
-        reduceItem(inventory, amount);
-    }
+//    public void useItem(Inventory inventory, int amount, Unit unit) throws InvalidItemUsageException {
+//        inventory.getDBItem().toGameItem().OnUse(unit);
+//        reduceItem(inventory, amount);
+//    }
 //
 //    public void dropItem(Inventory inventory, int amount) {
 //        reduceItem(inventory, amount);
 //    }
 
+
+    private playerInventory findInventoryFromList(Inventory selectedInventory) {
+        playerInventory pairedInventory = null;
+        System.out.println("I'm in find");
+        for (playerInventory inventory : items) {
+            System.out.println("check item-"+inventory.getDBItem().toString());
+            if (inventory.equals(selectedInventory)) { // check if inventoryList have the same item as selectedInventory
+                pairedInventory = inventory;
+                break;
+            }
+        }
+        return pairedInventory;
+    }
 
     @Override
     public boolean checkMoney(int required_money) {
@@ -200,8 +225,9 @@ public class Player implements Trader {
 
     @Override
     public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
-        playerInventory playerInventory = new playerInventory(inventory.getDBItem(),inventory.getAmount(),this);
+        playerInventory playerInventory = new playerInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), this);
         metaDAO.getSession().save(playerInventory);
+        this.addItem(playerInventory);
         return playerInventory;
     }
 

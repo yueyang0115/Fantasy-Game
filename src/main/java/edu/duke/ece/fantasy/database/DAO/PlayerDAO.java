@@ -1,14 +1,13 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 
-import static edu.duke.ece.fantasy.database.Player.Status.*;
+import java.util.List;
 
 public class PlayerDAO {
     private Session session;
@@ -24,8 +23,11 @@ public class PlayerDAO {
         Player player = new Player(username, encryptPassword);
 
         //add two default soldier for each player
-        Soldier soldier = new Soldier("soldier", 50, 5, 20);
+        Soldier soldier = new Soldier("wizard", 50, 5, 20);
         Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
+//        Skill basicSkill = new Skill("ironball",2);
+//        soldier.addSkill(basicSkill);
+//        soldier2.addSkill(basicSkill);
         player.addSoldier(soldier);
         player.addSoldier(soldier2);
 
@@ -69,7 +71,7 @@ public class PlayerDAO {
     }
 
     // update player's status first in cache then in database
-    public void setStatus(Player p, Status status){
+    public void setStatus(Player p, String status){
         p.setStatus(status);
         session.update(p);
     }
@@ -77,6 +79,15 @@ public class PlayerDAO {
     // update player's coord first in cache then in database
     public void setCurrentCoord(Player p, WorldCoord currentCoord){
         p.setCurrentCoord(currentCoord);
+        session.update(p);
+    }
+
+    public void removeSoldier(int playerID, int soldierID){
+        Player p = getPlayer(playerID);
+        Query q = session.createQuery("From Soldier S where S.id =:id");
+        q.setParameter("id", soldierID);
+        Soldier soldier = (Soldier) q.uniqueResult();
+        p.getSoldiers().remove(soldier);
         session.update(p);
     }
 }

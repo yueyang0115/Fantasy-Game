@@ -1,10 +1,14 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
+import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -16,18 +20,15 @@ public class DAOTest {
     private MonsterDAO monsterDAO;
     private UnitDAO unitDAO;
     private TerritoryDAO territoryDAO;
+    private SkillDAO skillDAO;
 
     @BeforeAll
     public static void setUpSession(){
-        //System.out.println("executing beforeAll in DAOTest");
         session = HibernateUtil.getSessionFactory().openSession();
-
     }
 
     @AfterAll
     public static void closeSession(){
-        //System.out.println("executing afterAll in DAOTest");
-
         session.close();
     }
 
@@ -39,6 +40,7 @@ public class DAOTest {
         soldierDAO = new SoldierDAO(session);
         unitDAO = new UnitDAO(session);
         territoryDAO = new TerritoryDAO(session);
+        skillDAO = new SkillDAO(session);
 
         playerDAO.addPlayer("testname","testpassword");
     }
@@ -47,15 +49,6 @@ public class DAOTest {
     public void shutDown(){
         session.getTransaction().rollback();
     }
-
-//    @Test
-//    public void TestAll(){
-//
-//        testPlayerDAO();
-//        testMonsterDAO();
-//        testTerritoryDAO();
-//        testSoldierUnitDAO();
-//    }
 
     @Test
     public void testPlayerDAO(){
@@ -66,13 +59,13 @@ public class DAOTest {
         int wid = p.getWid();
         assertEquals(playerDAO.getPlayer(id).getUsername(),playerDAO.getPlayerByWid(wid).getUsername());
         assertEquals(playerDAO.getPlayer("testname","testpassword"), p);
-        playerDAO.setStatus(p, Player.Status.INBATTLE);
+        playerDAO.setStatus(p, "BATTLE");
         playerDAO.setCurrentCoord(p, new WorldCoord(wid,1,1));
         assertEquals(playerDAO.getPlayer(id).getCurrentCoord(),new WorldCoord(wid,1,1));
-        assertEquals(playerDAO.getPlayer(id).getStatus(), Player.Status.INBATTLE);
+        assertEquals(playerDAO.getPlayer(id).getStatus(), "BATTLE");
     }
 
-    @Test
+   @Test
     public void testMonsterDAO(){
         //System.out.println("test monsterDAO");
 
@@ -99,28 +92,6 @@ public class DAOTest {
         assertEquals(monsterDAO.getMonster(id).getCoord(),new WorldCoord(1,-1,1));
         assertEquals(monsterDAO.getMonster(id).isNeedUpdate(),false);
         assertEquals(monsterDAO.getMonster(id2).isNeedUpdate(),false);
-    }
-
-    @Test
-    public void testSoldierUnitDAO(){
-        //System.out.println("test soldierDAO");
-
-        Player p = playerDAO.getPlayer("testname");
-        int playerID = p.getId();
-        List<Soldier> soldierDAOList = soldierDAO.getSoldiers(playerID);
-        int soldierID = soldierDAOList.get(0).getId();
-        Soldier soldier = soldierDAO.getSoldier(soldierID);
-        assertEquals(soldier,soldierDAOList.get(0));
-        assertEquals(soldier.getHp(),soldierDAOList.get(0).getHp());
-
-        Unit unit = unitDAO.getUnit(soldierID);
-        assertEquals(unit.getHp(), soldier.getHp());
-        assertEquals(unit.getSpeed(), soldier.getSpeed());
-        int hp = unit.getHp();
-        unitDAO.setUnitHp(soldierID,hp-5);
-        assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
-        unitDAO.deleteUnit(soldierID);
-        assertEquals(session.get(Unit.class, soldierID),null);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.duke.ece.fantasy.ObjectMapperFactory;
 import edu.duke.ece.fantasy.database.DBItem;
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Unit;
 import org.json.JSONObject;
 
@@ -66,6 +67,9 @@ public abstract class Item implements IItem {
         return Objects.hash(name, cost);
     }
 
-    public abstract void OnUse(Unit unit);
+    public abstract void OnUse(Unit unit, Player player);
+
+    public void OnDeEquip(Unit unit) {
+    }
 
 }

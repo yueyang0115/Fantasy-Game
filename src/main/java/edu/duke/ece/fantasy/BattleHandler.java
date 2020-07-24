@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.json.*;
 
 import java.util.*;
@@ -10,7 +11,9 @@ public class BattleHandler {
     private MonsterDAO monsterDAO;
     private SoldierDAO soldierDAO;
     private UnitDAO unitDAO;
+    private PlayerDAO playerDAO;
     private TerritoryDAO territoryDAO;
+    private SkillDAO skillDAO;
     public static int TAME_RANGE_X = 3;
     public static int TAME_RANGE_Y = 3;
 
@@ -28,6 +31,8 @@ public class BattleHandler {
         soldierDAO = metaDAO.getSoldierDAO();
         unitDAO = metaDAO.getUnitDAO();
         territoryDAO = metaDAO.getTerritoryDAO();
+        playerDAO = metaDAO.getPlayerDAO();
+        skillDAO = metaDAO.getSkillDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){
@@ -94,8 +99,9 @@ public class BattleHandler {
         WorldCoord where = request.getTerritoryCoord();
         int attackeeID = request.getBattleAction().getAttackee().getId();
         int attackerID = request.getBattleAction().getAttacker().getId();
+        Skill attackerSkill = skillDAO.getSkill(request.getBattleAction().getActionType());
 
-        BattleAction action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
+        BattleAction action = doBattleOnce(attackerSkill, attackerID,attackeeID,where,playerID,result);
         actions.add(action);
         setStatus(where,playerID,result);
 
@@ -103,8 +109,10 @@ public class BattleHandler {
         while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
             attackerID = this.unitQueue.peek().getId();
             attackeeID = request.getBattleAction().getAttacker().getId();
-            if(unitDAO.getUnit(attackeeID) == null || unitDAO.getUnit(attackerID) == null) continue;
-            action = doBattleOnce(attackerID,attackeeID,where,playerID,result);
+            //since right now we make monster attack the same soldier, if that soldier die, break loop
+            if(unitDAO.getUnit(attackeeID) == null) break;
+            if(unitDAO.getUnit(attackerID) == null) continue;
+            action = doBattleOnce(null, attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);
         }
@@ -126,7 +134,7 @@ public class BattleHandler {
         else result.setResult("continue");
     }
 
-    public BattleAction doBattleOnce(int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
+    public BattleAction doBattleOnce(Skill attackerSkill, int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
         BattleAction action = new BattleAction();
         int deletedID = -1;
 
@@ -137,22 +145,30 @@ public class BattleHandler {
             result.setResult("invalid");
             return null;
         }
+
+        int attackerSkillAtk = (attackerSkill == null) ? 0 : attackerSkill.getAttack();
         int attckeeHp = attackee.getHp();
         int attackerAtk = attacker.getAtk();
-        int newAttackeeHp = Math.max(attckeeHp - attackerAtk, 0);
+        int newAttackeeHp = Math.max(attckeeHp - attackerAtk - attackerSkillAtk, 0);
         attackee.setHp(newAttackeeHp);
         unitDAO.setUnitHp(attackeeID, newAttackeeHp);
 
+        // attackee's hp = 0, delete it
         if(newAttackeeHp == 0){
             deletedID = attackeeID;
+            // if soldier successfully attacks, change its level and skillPoint
+            if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
+            // if soldier died, remove it from player's soldierList then delete it in db
+            if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
             unitDAO.deleteUnit(attackeeID);
         }
 
         //update unitQueue
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
         action.setAttackee(new Unit(attackee));
-        action.setAttacker(new Unit(attacker));
-        action.setActionType("normal");
+        action.setAttacker(new Unit(unitDAO.getUnit(attackerID))); // get up-to-date attacker from db
+        String actionType = (attackerSkill == null) ? "normal" : attackerSkill.getName();
+        action.setActionType(actionType);
         action.setUnits(generateIDList(unitQueue));
         return action;
     }
