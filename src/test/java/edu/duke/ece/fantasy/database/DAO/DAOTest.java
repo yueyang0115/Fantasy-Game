@@ -59,10 +59,10 @@ public class DAOTest {
         int wid = p.getWid();
         assertEquals(playerDAO.getPlayer(id).getUsername(),playerDAO.getPlayerByWid(wid).getUsername());
         assertEquals(playerDAO.getPlayer("testname","testpassword"), p);
-        playerDAO.setStatus(p, Player.Status.INBATTLE);
+        playerDAO.setStatus(p, "BATTLE");
         playerDAO.setCurrentCoord(p, new WorldCoord(wid,1,1));
         assertEquals(playerDAO.getPlayer(id).getCurrentCoord(),new WorldCoord(wid,1,1));
-        assertEquals(playerDAO.getPlayer(id).getStatus(), Player.Status.INBATTLE);
+        assertEquals(playerDAO.getPlayer(id).getStatus(), "BATTLE");
     }
 
    @Test

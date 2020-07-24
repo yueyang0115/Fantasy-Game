@@ -46,7 +46,7 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
 
     // cannot moveMonster/generateMonster when player doesn't hold valid coord or not in mainScene
     public boolean cannotGenerateMonster(){
-        return player.getStatus() != Player.Status.INMAIN
+        return player.getStatus() != "MAIN"
                 || player.getCurrentCoord() == null
                 || metaDAO.getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
     }

@@ -1,7 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.Player.Status;
 import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
@@ -72,7 +71,7 @@ public class PlayerDAO {
     }
 
     // update player's status first in cache then in database
-    public void setStatus(Player p, Status status){
+    public void setStatus(Player p, String status){
         p.setStatus(status);
         session.update(p);
     }
