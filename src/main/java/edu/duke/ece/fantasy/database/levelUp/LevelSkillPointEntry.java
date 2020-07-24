@@ -5,8 +5,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "SkillPoint")
-public class SkillPoint {
+@Table(name = "LevelSkillPointEntry")
+public class LevelSkillPointEntry {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -19,9 +19,9 @@ public class SkillPoint {
     @Column(name = "skillPoint", unique = true, nullable = false)
     private int skillPoint;
 
-    public SkillPoint(){}
+    public LevelSkillPointEntry(){}
 
-    public SkillPoint(int level, int skillPoint) {
+    public LevelSkillPointEntry(int level, int skillPoint) {
         this.level = level;
         this.skillPoint = skillPoint;
     }

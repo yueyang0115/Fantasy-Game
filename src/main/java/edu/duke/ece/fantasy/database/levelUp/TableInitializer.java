@@ -1,24 +1,34 @@
 package edu.duke.ece.fantasy.database.levelUp;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.query.Query;
+import org.postgresql.copy.CopyManager;
+import org.postgresql.core.BaseConnection;
 
+import java.io.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TableInitializer {
     private Session session;
+    private Connection connection;
 
-    public TableInitializer(Session session){
+    public TableInitializer(Session session, Connection connection){
         this.session = session;
+        this.connection = connection;
     }
 
     public void initializeAll(){
-        initializeSkillTable();
-        initializeSkillPointTable();
+        buildSkillTable();
+        buildLevelSkillPointTable();
+        buildExperienceLevelTable();
     }
 
-    public void initializeSkillTable(){
+    public void buildSkillTable(){
         Skill miniFireBall = new Skill("miniFireBall",5,1,null);
         Set<Skill> requiredSkill2 = new HashSet<>();
         requiredSkill2.add(miniFireBall);
@@ -32,15 +42,29 @@ public class TableInitializer {
         session.save(largeFireBall);
     }
 
-    public void initializeSkillPointTable(){
-        SkillPoint sk1 = new SkillPoint(1,1);
-        SkillPoint sk2 = new SkillPoint(5,2);
-        SkillPoint sk3 = new SkillPoint(15,3);
-        SkillPoint sk4 = new SkillPoint(30,4);
-        session.save(sk1);
-        session.save(sk2);
-        session.save(sk3);
-        session.save(sk4);
+    public void buildExperienceLevelTable(){
+        csvReader("ExperienceLevelEntry","/levelupData/ExperienceLevelTable.csv");
+    }
+
+    public void buildLevelSkillPointTable(){
+        csvReader("LevelSkillPointEntry","/levelupData/LevelSkillPointTable.csv");
+    }
+
+    public void csvReader(String tableName, String fileName){
+        try {
+            CopyManager copyManager = new CopyManager((BaseConnection) connection);
+            InputStream inputStream = getClass().getResourceAsStream(fileName);
+            if(inputStream == null){
+                System.out.println("input Stream is null");
+            }
+            String sql = "COPY "+tableName +" FROM STDIN WITH (FORMAT csv)";
+            copyManager.copyIn(sql, inputStream);
+            connection.commit();
+        }
+        catch(IOException | SQLException e){
+            System.out.println("csvReader failed to get File "+fileName);
+            e.printStackTrace();
+        }
     }
 
 }

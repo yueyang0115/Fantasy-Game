@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 
+import java.util.List;
+
 public class PlayerDAO {
     private Session session;
     BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
@@ -78,6 +80,15 @@ public class PlayerDAO {
     // update player's coord first in cache then in database
     public void setCurrentCoord(Player p, WorldCoord currentCoord){
         p.setCurrentCoord(currentCoord);
+        session.update(p);
+    }
+
+    public void removeSoldier(int playerID, int soldierID){
+        Player p = getPlayer(playerID);
+        Query q = session.createQuery("From Soldier S where S.id =:id");
+        q.setParameter("id", soldierID);
+        Soldier soldier = (Soldier) q.uniqueResult();
+        p.getSoldiers().remove(soldier);
         session.update(p);
     }
 }

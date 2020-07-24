@@ -95,31 +95,6 @@ public class DAOTest {
     }
 
     @Test
-    public void testSoldierUnitDAO(){
-        //System.out.println("test soldierDAO");
-
-        Player p = playerDAO.getPlayer("testname");
-        int playerID = p.getId();
-        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
-        int soldierID = soldierList.get(0).getId();
-        Soldier soldier = soldierDAO.getSoldier(soldierID);
-        Unit unit = unitDAO.getUnit(soldierID);
-        assertEquals(soldier,soldierList.get(0));
-        assertEquals(soldier.getHp(),soldierList.get(0).getHp());
-        assertEquals(unit.getHp(), soldier.getHp());
-        assertEquals(unit.getSpeed(), soldier.getSpeed());
-
-        int hp = unit.getHp();
-        unitDAO.setUnitHp(soldierID,hp-5);
-        assertEquals(unitDAO.getUnit(soldierID).getHp(),hp-5);
-
-        unitDAO.deleteUnit(soldierID);
-        assertEquals(session.get(Unit.class, soldierID),null);
-
-    }
-
-
-    @Test
     public void testTerritoryDAO(){
         WorldCoord center = new WorldCoord(1,0,0);
         territoryDAO.addTerritory(new WorldCoord(1,-1,-1),90,"grass",null);

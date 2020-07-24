@@ -54,7 +54,7 @@ public class Player implements Trader {
     private int coordY;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "player", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)

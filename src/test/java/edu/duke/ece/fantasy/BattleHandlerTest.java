@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
+import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.json.*;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +34,13 @@ public class BattleHandlerTest {
         SoldierDAO mockedSoldierDAO = mock(SoldierDAO.class);
         UnitDAO mockedUnitDAO = mock(UnitDAO.class);
         PlayerDAO mockedPlayerDAO = mock(PlayerDAO.class);
+        SkillDAO mockedSkillDAO = mock(SkillDAO.class);
 
         when(mockedMetaDAO.getMonsterDAO()).thenReturn(mockedMonsterDAO);
         when(mockedMetaDAO.getSoldierDAO()).thenReturn(mockedSoldierDAO);
         when(mockedMetaDAO.getUnitDAO()).thenReturn(mockedUnitDAO);
         when(mockedMetaDAO.getPlayerDAO()).thenReturn(mockedPlayerDAO);
+        when(mockedMetaDAO.getSkillDAO()).thenReturn(mockedSkillDAO);
 
         when(mockedMonsterDAO.getMonsters(any())).thenReturn(monsterList);
         when(mockedSoldierDAO.getSoldiers(anyInt())).thenReturn(soldierList);
@@ -47,6 +50,9 @@ public class BattleHandlerTest {
 
         when(mockedUnitDAO.setUnitHp(anyInt(),anyInt())).thenReturn(true);
         doNothing().when(mockedUnitDAO).deleteUnit(anyInt());
+
+        when(mockedSkillDAO.getSkill("normal")).thenReturn(null);
+        when(mockedSkillDAO.getSkill("miniFireBall")).thenReturn(new Skill("miniFireBall",5,1,null));
     }
 
 
@@ -111,6 +117,17 @@ public class BattleHandlerTest {
         assertEquals(result.getActions().get(0).getAttackee().getId(),2);
         assertEquals(result.getActions().get(0).getAttackee().getHp(),25);
         assertEquals(result.getActions().get(1).getAttacker().getId(),2);
+
+        testSkillAttack();
+    }
+
+    public void testSkillAttack(){
+        Unit u1 = mockedMetaDAO.getUnitDAO().getUnit(1);
+        Unit u2 = mockedMetaDAO.getUnitDAO().getUnit(2);
+        BattleAction action = new BattleAction(u1, u2, "miniFireBall", new ArrayList<Integer>() {});
+        BattleRequestMessage request = new BattleRequestMessage(new WorldCoord(1,1,1),"attack", action);
+        BattleResultMessage result = bh.handle(request,1,mockedMetaDAO);
+        assertEquals(result.getActions().get(0).getAttackee().getHp(),15);
     }
 
     public void testEscape(){

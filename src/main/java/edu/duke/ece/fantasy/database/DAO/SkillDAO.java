@@ -24,12 +24,13 @@ public class SkillDAO {
     // get available skills that the unit can learn
     public Set<Skill> getAvailableSkills(Unit unit){
         Query q = session.createQuery("From Skill S where S.requiredLevel <=:unitLevel");
-        q.setParameter("unitLevel", unit.getLevel());
+        q.setParameter("unitLevel", unit.getExperience().getLevel());
         Set<Skill> skillSet = new HashSet<>();
         for(Object o : q.list()) {
             Skill skill = (Skill) o;
-            if(skill.getRequiredSkill() == null ||
-                    unit.getSkills().containsAll(skill.getRequiredSkill())) {
+            //if unit doesn't contain that skill && unit has the required prerequisite skills
+            if( !unit.getSkills().contains(skill) &&
+                    (skill.getRequiredSkill() == null ||  unit.getSkills().containsAll(skill.getRequiredSkill()))) {
                 skillSet.add(skill);
             }
         }

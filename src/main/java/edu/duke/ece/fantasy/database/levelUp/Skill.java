@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database.levelUp;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import edu.duke.ece.fantasy.database.Monster;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -12,14 +13,13 @@ import java.util.Set;
 @Table(name = "Skill")
 public class Skill {
 
-    // skill name, including "iceBall" "fireBall".....
-
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     @Column(name = "skill_id", unique = true, nullable = false)
     private int id;
 
+    // skill name, including "iceBall" "fireBall".....
     @Column(name = "skill_name", unique = true, nullable = false)
     private String name;
 
@@ -32,7 +32,8 @@ public class Skill {
     private int requiredLevel;
 
     // the prerequisite skill required to has this skill
-    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Skill_RequiredSkill",
             joinColumns = { @JoinColumn(name = "skill_id") }, //skill_id
             inverseJoinColumns = { @JoinColumn(name = "skill_name") }) //skill_name
@@ -49,6 +50,10 @@ public class Skill {
         this.requiredLevel = requiredLevel;
         this.requiredSkill = requiredSkill;
     }
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getName() {
         return name;
