@@ -167,7 +167,8 @@ public class BattleHandler {
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
         action.setAttackee(new Unit(attackee));
         action.setAttacker(new Unit(unitDAO.getUnit(attackerID))); // get up-to-date attacker from db
-        action.setActionType("normal");
+        String actionType = (attackerSkill == null) ? "normal" : attackerSkill.getName();
+        action.setActionType(actionType);
         action.setUnits(generateIDList(unitQueue));
         return action;
     }
