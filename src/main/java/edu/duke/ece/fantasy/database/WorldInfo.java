@@ -62,4 +62,6 @@ public class WorldInfo {
         return this.worldType;
     }
 
+    public void setWorldType(String worldType) { this.worldType = worldType; }
+
 }

@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy.database.DAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.WorldInfo;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -89,5 +90,12 @@ public class PlayerDAO {
         Soldier soldier = (Soldier) q.uniqueResult();
         p.getSoldiers().remove(soldier);
         session.update(p);
+    }
+
+    public void addWorld(int playerID, WorldInfo info){
+        Player player = getPlayer(playerID);
+        // TODO: add new world to player
+        //player.getWorlds().add(info);
+        //session.update(player);
     }
 }
