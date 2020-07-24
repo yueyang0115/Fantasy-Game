@@ -83,7 +83,7 @@ public abstract class Shop extends Building implements Trader {
 
     @Override
     public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
-        shopInventory shopInventory = new shopInventory(inventory.getDBItem(), inventory.getAmount(), coord);
+        shopInventory shopInventory = new shopInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), coord);
         metaDAO.getSession().save(shopInventory);
         return shopInventory;
 //        ShopInventoryDAO shopInventoryDAO = metaDAO.getShopInventoryDAO();

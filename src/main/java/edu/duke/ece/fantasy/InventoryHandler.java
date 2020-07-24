@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.json.AttributeRequestMessage;
@@ -56,26 +57,26 @@ public class InventoryHandler {
 
         List<Inventory> playerInventoryList = playerInventoryDAO.getInventories(player);
         for (Inventory eachInventory : playerInventoryList) {
-            // add more information of item
-            eachInventory.setDBItem(eachInventory.getDBItem().toGameItem().toClient());
+            // convert dbInventory to clientInventory which contains more properties info
+            resultMessage.addItem(eachInventory.toClient());
         }
-        resultMessage.setItems(playerInventoryList);
+
+//        resultMessage.setItems(playerInventoryList);
 
         resultMessage.setMoney(player.getMoney());
 
         return resultMessage;
     }
 
-    private void useItem(playerInventory selectedInventory, Player player, Unit unit) throws Exception {
+    private void useItem(playerInventory selectedInventory, Player player, Unit unit) throws InvalidItemUsageException {
         if (selectedInventory.getPlayer() == player) {
-            selectedInventory.getDBItem().toGameItem().OnUse(unit);
-            selectedInventory.reduceAmount(1);
+            selectedInventory.useItem(unit,player);
             // remove inventory from database if it is 0
             if (selectedInventory.getAmount() == 0) {
                 session.delete(selectedInventory);
             }
         } else {
-            throw new Exception("Player doesn't have item");
+            throw new InvalidItemUsageException("Player doesn't have item");
         }
     }
 }

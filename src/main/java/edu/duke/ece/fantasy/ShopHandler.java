@@ -61,10 +61,10 @@ public class ShopHandler {
         }
         // get latest data from db(previous transaction may roll back)
         for (Inventory inventory : shopInventory) {
-            // add more information of item
-            inventory.setDBItem(inventory.getDBItem().toGameItem().toClient());
+            // convert dbInventory to clientInventory which contains more properties info
+            result.addItem(inventory.toClient());
         }
-        result.setItems(shopInventory);
+//        result.setItems(shopInventory);
         return result;
 //        return null;
     }
@@ -104,6 +104,7 @@ public class ShopHandler {
     private void execute(List<Inventory> sellerInventoryList, List<Inventory> buyerInventoryList, List<Inventory> selectedInventoryList, Trader buyer, Trader seller) {
         for (Inventory selectedInventory : selectedInventoryList) {
             int selectedAmount = selectedInventory.getAmount();
+            if(selectedAmount==0) {continue;}
             Item selectedItem = selectedInventory.getDBItem().toGameItem();
             int totalCost = selectedItem.getCost() * selectedAmount;
             // operation for seller
@@ -115,7 +116,7 @@ public class ShopHandler {
                 session.delete(pairedInventoryForSeller);
             }
             seller.addMoney(totalCost);
-            // operation for buyer
+            // operation for buyer; selectedInventory contains more properties info
             Inventory pairedInventoryForBuyer = findInventoryFromList(buyerInventoryList, selectedInventory);
             if (pairedInventoryForBuyer != null) {
                 pairedInventoryForBuyer.setAmount(selectedAmount + pairedInventoryForBuyer.getAmount());

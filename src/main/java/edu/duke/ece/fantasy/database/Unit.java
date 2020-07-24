@@ -41,17 +41,10 @@ public class Unit {
     @Column(name = "speed", unique = false, nullable = false)
     private int speed;
 
-    public List<UnitEquipment> getEquipments() {
-        return equipments;
-    }
+//    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
+//    private List<UnitEquipment> equipments = new ArrayList<>();
+    private DBItem weapon;
 
-    public void setEquipments(List<UnitEquipment> equipments) {
-        this.equipments = equipments;
-    }
-
-    // the equipment the unit has
-    @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL)
-    private List<UnitEquipment> equipments = new ArrayList<>();
 
     // the skills the unit has
     @ManyToMany
@@ -106,6 +99,10 @@ public class Unit {
         this.speed = speed;
     }
 
+    public void addSpeed(int speed) {
+        this.speed += speed;
+    }
+
     public void addHp(int heal_hp) {
         hp += heal_hp;
     }
@@ -125,6 +122,35 @@ public class Unit {
     public void setAtk(int atk) {
         this.atk = atk;
     }
+
+    public void addAtk(int atk) {
+        this.atk += atk;
+    }
+
+    public void reduceAtk(int atk){
+        this.atk -= atk;
+    }
+
+    public void reduceSpeed(int speed){
+        this.speed -= speed;
+    }
+
+    public void reduceHp(int hp){
+        this.hp -= hp;
+    }
+
+
+    public DBItem getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(DBItem weapon) {
+        this.weapon = weapon;
+    }
+
+    //    public boolean addEquipment(UnitEquipment equipment) {
+//        equipments.add(equipment);
+//        return true;
 
     public Set<Skill> getSkills() {
         return skills;
@@ -157,7 +183,4 @@ public class Unit {
 //        return equipments;
 //    }
 //
-//    public void setEquipment(List<ItemPack> equipment) {
-//        this.equipments = equipment;
-//    }
 }

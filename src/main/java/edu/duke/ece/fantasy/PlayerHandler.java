@@ -8,6 +8,7 @@ import edu.duke.ece.fantasy.json.MessagesC2S;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.task.MonsterGenerator;
 import edu.duke.ece.fantasy.task.MonsterMover;
+import edu.duke.ece.fantasy.task.ResourceGenerator;
 import edu.duke.ece.fantasy.task.TaskScheduler;
 import org.hibernate.Session;
 
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class PlayerHandler extends Thread{
+public class PlayerHandler extends Thread {
     private TCPCommunicator TCPcommunicator;
     private UDPCommunicator UDPcommunicator;
     private ObjectMapper myObjectMapper;
@@ -31,8 +32,8 @@ public class PlayerHandler extends Thread{
     }
 
     public void run() {
-        new Thread(()-> receiveMessage()).start();
-        new Thread(()-> handleAll() ).start();
+        new Thread(() -> receiveMessage()).start();
+        new Thread(() -> handleAll()).start();
         sendMessage();
     }
 
@@ -81,7 +82,7 @@ public class PlayerHandler extends Thread{
     }
 
     //one thread for handling all received msg and doing automatically tasks
-    private void handleAll(){
+    private void handleAll() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         MetaDAO metaDAO = new MetaDAO(session);
         // sharedData for sharing player info between taskScheduler and messageHandler
@@ -98,11 +99,13 @@ public class PlayerHandler extends Thread{
             session.beginTransaction();
 
             //add tasks in taskScheduler when sharedData hold a player( this happens after login)
-            if(!taskIsAdded && sharedData.getPlayer() != null) {
+            if (!taskIsAdded && sharedData.getPlayer() != null) {
                 MonsterGenerator monsterGenerator = new MonsterGenerator(System.currentTimeMillis(), 1000, true, metaDAO, sharedData, resultMsgQueue);
-                MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, metaDAO, sharedData,  resultMsgQueue);
+                MonsterMover monsterMover = new MonsterMover(System.currentTimeMillis(), 7000, true, metaDAO, sharedData, resultMsgQueue);
+                ResourceGenerator resourceGenerator = new ResourceGenerator(System.currentTimeMillis(), 1000, true, sharedData);
                 taskScheduler.addTask(monsterGenerator);
                 taskScheduler.addTask(monsterMover);
+                taskScheduler.addTask(resourceGenerator);
                 taskIsAdded = true;
             }
 
