@@ -56,8 +56,10 @@ public class DAOTest {
 
         Player p = playerDAO.getPlayer("testname");
         int id = p.getId();
-        int wid = p.getWid();
-        assertEquals(playerDAO.getPlayer(id).getUsername(),playerDAO.getPlayerByWid(wid).getUsername());
+        WorldInfo info = new WorldInfo(new WorldCoord(), "testname",20);
+        p.addWorldInfo(info);
+        int wid = p.getWorlds().get(WorldInfo.MainWorld).getWid();
+        //assertEquals(playerDAO.getPlayer(id).getUsername(),playerDAO.getPlayerByWid(wid).getUsername());
         assertEquals(playerDAO.getPlayer("testname","testpassword"), p);
         playerDAO.setStatus(p, "BATTLE");
         playerDAO.setCurrentCoord(p, new WorldCoord(wid,1,1));

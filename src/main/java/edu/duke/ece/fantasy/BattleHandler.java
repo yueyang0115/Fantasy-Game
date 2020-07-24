@@ -14,6 +14,8 @@ public class BattleHandler {
     private PlayerDAO playerDAO;
     private TerritoryDAO territoryDAO;
     private SkillDAO skillDAO;
+    private WorldDAO worldDAO;
+    private WorldCoord currentCoord;
     public static int TAME_RANGE_X = 3;
     public static int TAME_RANGE_Y = 3;
 
@@ -33,6 +35,7 @@ public class BattleHandler {
         territoryDAO = metaDAO.getTerritoryDAO();
         playerDAO = metaDAO.getPlayerDAO();
         skillDAO = metaDAO.getSkillDAO();
+        worldDAO = metaDAO.getWorldDAO();
 
         String action = request.getAction();
         if(action.equals("escape")){
@@ -55,8 +58,8 @@ public class BattleHandler {
         BattleResultMessage result = new BattleResultMessage();
 
         // get monsters and soldiers engaged in the battle
-        WorldCoord where = request.getTerritoryCoord();
-        List<Monster> monsterList = monsterDAO.getMonsters(where);
+        currentCoord = request.getTerritoryCoord();
+        List<Monster> monsterList = monsterDAO.getMonsters(currentCoord);
         List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         // sort unit by speed and set the UnitQueue
         this.unitQueue = generateUnitQueue(monsterList, soldierList);
@@ -130,7 +133,12 @@ public class BattleHandler {
             //change around area's tame
             territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y,10,5);
         }
-        else if(soldierList == null || soldierList.size() ==0) result.setResult("lose");
+        else if(soldierList == null || soldierList.size() ==0){
+            result.setResult("lose");
+            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
+            info.setWorldType("deathWorld");
+            playerDAO.addWorld(playerID, info);
+        }
         else result.setResult("continue");
     }
 

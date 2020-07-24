@@ -55,7 +55,7 @@ public class MessageHandler {
                 WorldCoord currentCoord  = positionMsg.getCurrentCoord();
                 currentCoord.setWid(sharedData.getPlayer().getWorlds().get(WorldInfo.MainWorld).getWid());
                 // update player info in sharedData between taskScheduler and messageHandler
-                sharedData.getPlayer().setStatus("MAIN");
+//                sharedData.getPlayer().setStatus("MAIN");
                 sharedData.getPlayer().setCurrentCoord(currentCoord);
             }
 

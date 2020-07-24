@@ -4,6 +4,7 @@ import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.json.*;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +52,6 @@ public class LoginHandlerTest {
 
     public void testMessageHandler(){
         Player player = new Player("mockName","mockPassword");
-        player.setWid(1);
         player.setId(2);
         when(mockedPlayerDAO.getPlayer("mockName","mockPassword"))
                 .thenReturn(player);
@@ -64,7 +64,6 @@ public class LoginHandlerTest {
         MessagesS2C result = mh.handle(request);
         assertEquals(result.getLoginResultMessage().getStatus(),"success");
         assertEquals(sharedData.getPlayer().getId(),2);
-        assertEquals(sharedData.getPlayer().getWid(),1);
     }
 }
 
