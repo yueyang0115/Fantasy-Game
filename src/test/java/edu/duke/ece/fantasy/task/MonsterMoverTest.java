@@ -44,7 +44,7 @@ public class MonsterMoverTest {
         Player p = new Player();
         WorldInfo info = new WorldInfo();
         p.addWorldInfo(info);
-        p.setStatus("MAIN");
+        p.setStatus("mainWorld");
         p.setCurrentCoord(new WorldCoord(1,2,2));
         sharedData.setPlayer(p);
         LinkedBlockingQueue<MessagesS2C> resultMsgQueue = new LinkedBlockingQueue<>();;
