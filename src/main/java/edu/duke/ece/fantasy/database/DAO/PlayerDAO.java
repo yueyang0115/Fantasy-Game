@@ -30,7 +30,7 @@ public class PlayerDAO {
 //        soldier.addSkill(basicSkill);
 //        soldier2.addSkill(basicSkill);
         player.addSoldier(soldier);
-        player.addSoldier(soldier2);
+//        player.addSoldier(soldier2);
 
         // add default money
         player.setMoney(2000);
