@@ -53,7 +53,7 @@ public class PositionUpdateHandler {
         }
     }
 
-    private void GetCoordInfo(List<WorldCoord> worldCoords){
+    private void GetCoordInfo(List<WorldCoord> worldCoords) {
         for (WorldCoord where : worldCoords) {
             Territory t = territoryDAO.getTerritory(where);
             territoryList.add(t);
@@ -75,8 +75,9 @@ public class PositionUpdateHandler {
         //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
 
-//        WorldInfo info = worldDAO.getInfo(wid);
-        WorldInfo info = player.getWorlds().get(WorldInfo.MainWorld);
+        //WorldInfo info = worldDAO.getInfo(wid);
+//        WorldInfo info = player.getWorlds().get(WorldInfo.MainWorld);
+        WorldInfo info = player.getCurrentWorldInfo();
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
         WorldCoord currentCoord = positionMsg.getCurrentCoord();
@@ -89,7 +90,7 @@ public class PositionUpdateHandler {
 
         GenerateTerritory(worldCoords, info);
 
-        if (isNewWorld) {
+        if (isNewWorld&&player.getStatus().equals(WorldInfo.MainWorld)) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
               the territory's tame*/
             (new Castle()).onCreate(new MetaDAO(session), info.getStartCoords());

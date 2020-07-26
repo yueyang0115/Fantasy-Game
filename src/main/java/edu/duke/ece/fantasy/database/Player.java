@@ -52,7 +52,7 @@ public class Player implements Trader {
     private Map<String, WorldInfo> worlds = new HashMap<>();
 
     @Column(name = "status", nullable = false)
-    private String status = "MAIN";
+    private String status = WorldInfo.MainWorld;
 
     @Column(name = "coordX")
     private int coordX;
@@ -84,10 +84,10 @@ public class Player implements Trader {
     }
 
     public WorldCoord getCurrentCoord() {
-        if (worlds.get(WorldInfo.MainWorld) == null) {
+        if (worlds.get(status) == null) {
             return null;
         } else {
-            return new WorldCoord(worlds.get(WorldInfo.MainWorld).getWid(), coordX, coordY);
+            return new WorldCoord(worlds.get(status).getWid(), coordX, coordY);
         }
 
 //        return new WorldCoord();
@@ -95,6 +95,10 @@ public class Player implements Trader {
 
     public Map<String, WorldInfo> getWorlds() {
         return worlds;
+    }
+
+    public WorldInfo getCurrentWorldInfo(){
+        return worlds.get(status);
     }
 
     public void setCurrentCoord(WorldCoord currentCoord) {
