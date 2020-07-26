@@ -82,10 +82,12 @@ public class BattleHandlerTest {
 
     }
     public void rollUnitQueueTest(){
-        Queue<Unit> q = bh.generateUnitQueue(monsterList,soldierList);
-        q = bh.rollUnitQueue(q,2);
+        Queue<Unit> q = bh.generateUnitQueue(monsterList,soldierList); // speed: 20 5 1 // id : 1 2 3
+        q = bh.rollUnitQueue(q,2); // if not delete unit, this should be true, 1 20 5
+        assertEquals(q.size(),3);
         assertEquals(q.poll().getSpeed(),1);
         assertEquals(q.poll().getSpeed(),20);
+        assertEquals(q.poll().getSpeed(),5); // if not delete unit, this should be true, 1 20 5
     }
 
     public void testStart(){

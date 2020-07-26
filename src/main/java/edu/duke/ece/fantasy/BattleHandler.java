@@ -168,7 +168,7 @@ public class BattleHandler {
             if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
             // if soldier died, remove it from player's soldierList then delete it in db
             if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
-            unitDAO.deleteUnit(attackeeID);
+            //unitDAO.deleteUnit(attackeeID);
         }
 
         //update unitQueue
@@ -188,11 +188,14 @@ public class BattleHandler {
 
         //copy alive unit into new rolled queue
         while(!queue.isEmpty()){
-            if(queue.peek().getId() == deletedID) queue.poll();
-            else rolledQueue.offer(queue.poll());
+//            if(queue.peek().getId() == deletedID) queue.poll();
+//            else rolledQueue.offer(queue.poll());
+            rolledQueue.offer(queue.poll());
         }
         //roll rolledQueue by one element
         if(rolledQueue.peek().getId() == firstID) rolledQueue.offer(rolledQueue.poll());
+        //jump unit with hp 0
+        if(rolledQueue.peek().getId() == deletedID || rolledQueue.peek().getHp()==0) rolledQueue.offer(rolledQueue.poll());
 
         return rolledQueue;
     }
