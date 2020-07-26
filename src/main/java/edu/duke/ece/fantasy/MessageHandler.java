@@ -53,7 +53,7 @@ public class MessageHandler {
                 // received currentCoord in the request only hold x/y_coord, not hold wid
                 // we add wid to it
                 WorldCoord currentCoord  = positionMsg.getCurrentCoord();
-                currentCoord.setWid(sharedData.getPlayer().getWorlds().get(WorldInfo.MainWorld).getWid());
+                currentCoord.setWid(sharedData.getPlayer().getCurWorldId());
                 // update player info in sharedData between taskScheduler and messageHandler
 //                sharedData.getPlayer().setStatus("MAIN");
                 sharedData.getPlayer().setCurrentCoord(currentCoord);
@@ -62,10 +62,10 @@ public class MessageHandler {
             if (battleMsg != null) {
 //                sharedData.getPlayer().setStatus(Player.Status.INBATTLE);
                 // add wid to the received currentCoord in the request
-                if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getWorlds().get(WorldInfo.MainWorld).getWid());
+                if (battleMsg.getTerritoryCoord() != null) battleMsg.getTerritoryCoord().setWid(sharedData.getPlayer().getCurWorldId());
                 BattleResultMessage battleResult = myBattleHandler.handle(battleMsg, sharedData.getPlayer().getId(), metaDAO);
                 result.setBattleResultMessage(battleResult);
-                if(battleResult.getResult().equals("lose")) sharedData.getPlayer().setStatus("deathWorld");
+                if(battleResult.getResult().equals("lose")) sharedData.getPlayer().setStatus(WorldInfo.DeathWorld);
 //                if(battleMsg.getAction().equals("start")){
 //                    RedirectMessage redirectMsg = new RedirectMessage();
 //                    redirectMsg.setDestination("battle");
@@ -100,7 +100,7 @@ public class MessageHandler {
                 ShopHandler shopHandler = new ShopHandler(metaDAO);
                 InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
 
-                if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(sharedData.getPlayer().getWorlds().get(WorldInfo.MainWorld).getWid());
+                if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(sharedData.getPlayer().getCurWorldId());
                 ShopResultMessage shopResultMessage = shopHandler.handle(shopRequestMessage, sharedData.getPlayer().getId());
                 // add inventory result to shop
                 InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
@@ -126,7 +126,7 @@ public class MessageHandler {
             if (buildingRequestMessage != null) {
 //                sharedData.getPlayer().setStatus(Player.Status.INMAIN);
                 BuildingHandler buildingHandler = new BuildingHandler(metaDAO);
-                if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(sharedData.getPlayer().getWorlds().get(WorldInfo.MainWorld).getWid());
+                if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(sharedData.getPlayer().getCurWorldId());
                 result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, sharedData.getPlayer().getId()));
             }
 

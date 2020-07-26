@@ -70,9 +70,7 @@ public class Inventory {
 
     public void useItem(Unit unit,Player player) {
         this.getDBItem().toGameItem().OnUse(unit,player);
-        System.out.println("useItem-beforeReduce-amount:"+amount);
         this.reduceAmount(1);
-        System.out.println("useItem-afterReduce-amount:"+amount);
     }
 
     @Override

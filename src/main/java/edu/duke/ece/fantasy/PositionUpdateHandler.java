@@ -77,14 +77,15 @@ public class PositionUpdateHandler {
 
         //WorldInfo info = worldDAO.getInfo(wid);
 //        WorldInfo info = player.getWorlds().get(WorldInfo.MainWorld);
-        WorldInfo info = player.getCurrentWorldInfo();
+        System.out.println();
+        WorldInfo info = worldDAO.getInfo(player.getCurWorldId());
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
         WorldCoord currentCoord = positionMsg.getCurrentCoord();
         boolean isNewWorld = false;
         if (info == null) { // generate info
             info = worldDAO.initWorld(currentCoord, player.getUsername(), 20);//TODO: Fix hardcoding of tile size
-            player.addWorldInfo(info);
+            player.setCurWorldId(info.getWid());
             isNewWorld = true;
         }
 
@@ -95,6 +96,7 @@ public class PositionUpdateHandler {
               the territory's tame*/
             (new Castle()).onCreate(new MetaDAO(session), info.getStartCoords());
         }
+
 
         GetCoordInfo(worldCoords);
 

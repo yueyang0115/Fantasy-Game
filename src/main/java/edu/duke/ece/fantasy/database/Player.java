@@ -45,11 +45,17 @@ public class Player implements Trader {
 //    private int wid;
 //    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
 //
-    @org.hibernate.annotations.Type(
-            type = "org.hibernate.type.SerializableToBlobType",
-            parameters = {@Parameter(name = "WorldType", value = "java.util.HashMap")}
-    )
-    private Map<String, WorldInfo> worlds = new HashMap<>();
+//    @org.hibernate.annotations.Type(
+//            type = "org.hibernate.type.SerializableToBlobType",
+//            parameters = {@Parameter(name = "WorldType", value = "java.util.HashMap")}
+//    )
+
+//    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+//    @Column(name = "worldsId", nullable = false)
+//    private List<WorldInfo> worlds = new ArrayList<>();
+
+    @Column(name = "currentWorldId")
+    private int curWorldId;
 
     @Column(name = "status", nullable = false)
     private String status = WorldInfo.MainWorld;
@@ -83,23 +89,25 @@ public class Player implements Trader {
         this.status = status;
     }
 
+    public int getCurWorldId() {
+        return curWorldId;
+    }
+
+    public void setCurWorldId(int curWorldId) {
+        this.curWorldId = curWorldId;
+    }
+
     public WorldCoord getCurrentCoord() {
-        if (worlds.get(status) == null) {
-            return null;
-        } else {
-            return new WorldCoord(worlds.get(status).getWid(), coordX, coordY);
-        }
-
-//        return new WorldCoord();
+        return new WorldCoord(curWorldId, coordX, coordY);
     }
-
-    public Map<String, WorldInfo> getWorlds() {
-        return worlds;
-    }
-
-    public WorldInfo getCurrentWorldInfo(){
-        return worlds.get(status);
-    }
+//
+//    public Map<String, WorldInfo> getWorlds() {
+//        return worlds;
+//    }
+//
+//    public WorldInfo getCurrentWorldInfo(){
+//        return worlds.get(status);
+//    }
 
     public void setCurrentCoord(WorldCoord currentCoord) {
         this.coordX = currentCoord.getX();
@@ -175,9 +183,9 @@ public class Player implements Trader {
         this.items = items;
     }
 
-    public void addWorldInfo(WorldInfo worldInfo) {
-        worlds.put(worldInfo.getWorldType(), worldInfo);
-    }
+//    public void addWorldInfo(WorldInfo worldInfo) {
+//        worlds.put(worldInfo.getWorldType(), worldInfo);
+//    }
 
     public void addItem(playerInventory item) {
         playerInventory pairedInventory = findInventoryFromList(item);

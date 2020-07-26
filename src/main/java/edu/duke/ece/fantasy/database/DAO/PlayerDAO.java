@@ -30,7 +30,7 @@ public class PlayerDAO {
 //        soldier.addSkill(basicSkill);
 //        soldier2.addSkill(basicSkill);
         player.addSoldier(soldier);
-        player.addSoldier(soldier2);
+//        player.addSoldier(soldier2);
 
         // add default money
         player.setMoney(2000);
@@ -94,7 +94,7 @@ public class PlayerDAO {
 
     public void addWorld(int playerID, WorldInfo info){
         Player player = getPlayer(playerID);
-        player.addWorldInfo(info);
+//        player.addWorldInfo(info);
         session.update(player);
     }
 }

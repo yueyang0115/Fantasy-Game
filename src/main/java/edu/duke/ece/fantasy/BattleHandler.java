@@ -135,9 +135,9 @@ public class BattleHandler {
         }
         else if(soldierList == null || soldierList.size() ==0){
             result.setResult("lose");
-            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
-            info.setWorldType(WorldInfo.DeathWorld);
-            playerDAO.addWorld(playerID, info);
+//            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
+//            info.setWorldType(WorldInfo.DeathWorld);
+//            playerDAO.addWorld(playerID, info);
         }
         else result.setResult("continue");
     }
