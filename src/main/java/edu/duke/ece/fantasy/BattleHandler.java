@@ -118,6 +118,7 @@ public class BattleHandler {
             action = doBattleOnce(null, attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);
+            if(result.getResult().equals("lose")) break;
         }
 
         result.setActions(actions);
@@ -183,19 +184,21 @@ public class BattleHandler {
 
     //rolls the queue, this round's attacker will be rolled to the back of the queue, delete units that lose the battle
     public Queue<Unit> rollUnitQueue(Queue<Unit> queue, int deletedID){
-        Queue<Unit> rolledQueue = new LinkedList<>();
+        Queue<Unit> rolledQueue = new LinkedList<>(queue);
         int firstID = queue.peek().getId();
 
         //copy alive unit into new rolled queue
-        while(!queue.isEmpty()){
+//        while(!queue.isEmpty()){
 //            if(queue.peek().getId() == deletedID) queue.poll();
 //            else rolledQueue.offer(queue.poll());
-            rolledQueue.offer(queue.poll());
-        }
+//            rolledQueue.offer(queue.poll());
+//        }
         //roll rolledQueue by one element
-        if(rolledQueue.peek().getId() == firstID) rolledQueue.offer(rolledQueue.poll());
+//        if(rolledQueue.peek().getId() == firstID) rolledQueue.offer(rolledQueue.poll());
+        rolledQueue.offer(rolledQueue.poll());
+
         //jump unit with hp 0
-        if(rolledQueue.peek().getId() == deletedID || rolledQueue.peek().getHp()==0) rolledQueue.offer(rolledQueue.poll());
+        while(rolledQueue.peek().getId() == deletedID || rolledQueue.peek().getHp()==0) rolledQueue.offer(rolledQueue.poll());
 
         return rolledQueue;
     }
