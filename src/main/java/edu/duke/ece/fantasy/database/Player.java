@@ -52,7 +52,7 @@ public class Player implements Trader {
     private Map<String, WorldInfo> worlds = new HashMap<>();
 
     @Column(name = "status", nullable = false)
-    private String status = "MAIN";
+    private String status = "mainWorld";
 
     @Column(name = "coordX")
     private int coordX;
