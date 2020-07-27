@@ -29,11 +29,17 @@ public class MessageHandler {
         BuildingRequestMessage buildingRequestMessage = input.getBuildingRequestMessage();
         LevelUpRequestMessage levelUpMsg = input.getLevelUpRequestMessage();
         RedirectMessage redirectMsg = input.getRedirectMessage();
+        ReviveRequestMessage reviveMsg = input.getReviveRequestMessage();
 
             // set redirectMsg and player's status
             if(redirectMsg != null){
                 if(sharedData.getPlayer() != null) sharedData.getPlayer().setStatus(redirectMsg.getDestination());
                 result.setRedirectMessage(redirectMsg);
+            }
+
+            if(reviveMsg != null){
+                ReviveHandler rh = new ReviveHandler(metaDAO);
+                result.setReviveResultMessage(rh.handle(sharedData.getPlayer().getId()));
             }
 
             if (loginMsg != null) {

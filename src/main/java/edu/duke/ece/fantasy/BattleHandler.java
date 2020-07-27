@@ -118,6 +118,7 @@ public class BattleHandler {
             action = doBattleOnce(null, attackerID,attackeeID,where,playerID,result);
             actions.add(action);
             setStatus(where,playerID,result);
+            if(result.getResult().equals("lose")) break;
         }
 
         result.setActions(actions);
@@ -127,19 +128,26 @@ public class BattleHandler {
     //set "win" "lose" "continue" status for BattleResultMsg
     public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
         List<Monster> monsterList = monsterDAO.getMonsters(where);
-        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
+//        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         if(monsterList == null || monsterList.size() ==0){
             result.setResult("win");
             //change around area's tame
             territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y,10,5);
         }
-        else if(soldierList == null || soldierList.size() ==0){
+        else if(!playerIsAlive(playerID)){
             result.setResult("lose");
 //            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
 //            info.setWorldType(WorldInfo.DeathWorld);
 //            playerDAO.addWorld(playerID, info);
         }
         else result.setResult("continue");
+    }
+
+    public boolean playerIsAlive(int playerID){
+        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
+        boolean isAlive = false;
+        for(Soldier soldier : soldierList) if(soldier.getHp() != 0) isAlive=true;
+        return isAlive;
     }
 
     public BattleAction doBattleOnce(Skill attackerSkill, int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
@@ -167,8 +175,8 @@ public class BattleHandler {
             // if soldier successfully attacks, change its level and skillPoint
             if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
             // if soldier died, remove it from player's soldierList then delete it in db
-            if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
-            unitDAO.deleteUnit(attackeeID);
+            //if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
+            //unitDAO.deleteUnit(attackeeID);
         }
 
         //update unitQueue
@@ -183,16 +191,21 @@ public class BattleHandler {
 
     //rolls the queue, this round's attacker will be rolled to the back of the queue, delete units that lose the battle
     public Queue<Unit> rollUnitQueue(Queue<Unit> queue, int deletedID){
-        Queue<Unit> rolledQueue = new LinkedList<>();
+        Queue<Unit> rolledQueue = new LinkedList<>(queue);
         int firstID = queue.peek().getId();
 
         //copy alive unit into new rolled queue
-        while(!queue.isEmpty()){
-            if(queue.peek().getId() == deletedID) queue.poll();
-            else rolledQueue.offer(queue.poll());
-        }
+//        while(!queue.isEmpty()){
+//            if(queue.peek().getId() == deletedID) queue.poll();
+//            else rolledQueue.offer(queue.poll());
+//            rolledQueue.offer(queue.poll());
+//        }
         //roll rolledQueue by one element
-        if(rolledQueue.peek().getId() == firstID) rolledQueue.offer(rolledQueue.poll());
+//        if(rolledQueue.peek().getId() == firstID) rolledQueue.offer(rolledQueue.poll());
+        rolledQueue.offer(rolledQueue.poll());
+
+        //jump unit with hp 0
+        while(rolledQueue.peek().getId() == deletedID || rolledQueue.peek().getHp()==0) rolledQueue.offer(rolledQueue.poll());
 
         return rolledQueue;
     }

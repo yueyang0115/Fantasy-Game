@@ -11,6 +11,7 @@ public class MessagesC2S {
     private BuildingRequestMessage buildingRequestMessage;
     private LevelUpRequestMessage levelUpRequestMessage;
     private RedirectMessage redirectMessage;
+    private ReviveRequestMessage reviveRequestMessage;
 
     public MessagesC2S(){ }
 
@@ -102,5 +103,9 @@ public class MessagesC2S {
         this.redirectMessage = redirectMessage;
     }
 
+    public ReviveRequestMessage getReviveRequestMessage() { return reviveRequestMessage; }
 
+    public void setReviveRequestMessage(ReviveRequestMessage reviveRequestMessage) {
+        this.reviveRequestMessage = reviveRequestMessage;
+    }
 }

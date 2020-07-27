@@ -24,8 +24,8 @@ public class PlayerDAO {
         Player player = new Player(username, encryptPassword);
 
         //add two default soldier for each player
-        Soldier soldier = new Soldier("wizard", 1, 5, 20);
-//        Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
+        Soldier soldier = new Soldier("wizard", 6, 5, 20);
+//        Soldier soldier2 = new Soldier("soldier", 12, 3, 18);
 //        Skill basicSkill = new Skill("ironball",2);
 //        soldier.addSkill(basicSkill);
 //        soldier2.addSkill(basicSkill);
@@ -72,16 +72,16 @@ public class PlayerDAO {
     }
 
     // update player's status first in cache then in database
-    public void setStatus(Player p, String status){
-        p.setStatus(status);
-        session.update(p);
-    }
-
-    // update player's coord first in cache then in database
-    public void setCurrentCoord(Player p, WorldCoord currentCoord){
-        p.setCurrentCoord(currentCoord);
-        session.update(p);
-    }
+//    public void setStatus(Player p, String status){
+//        p.setStatus(status);
+//        session.update(p);
+//    }
+//
+//    // update player's coord first in cache then in database
+//    public void setCurrentCoord(Player p, WorldCoord currentCoord){
+//        p.setCurrentCoord(currentCoord);
+//        session.update(p);
+//    }
 
     public void removeSoldier(int playerID, int soldierID){
         Player p = getPlayer(playerID);

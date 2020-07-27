@@ -11,6 +11,7 @@ public class MessagesS2C {
     private BuildingResultMessage buildingResultMessage;
     private RedirectMessage redirectMessage;
     private LevelUpResultMessage levelUpResultMessage;
+    private ReviveResultMessage reviveResultMessage;
 
     public MessagesS2C(){ }
 
@@ -108,4 +109,9 @@ public class MessagesS2C {
         this.levelUpResultMessage = levelUpResultMessage;
     }
 
+    public ReviveResultMessage getReviveResultMessage() { return reviveResultMessage; }
+
+    public void setReviveResultMessage(ReviveResultMessage reviveResultMessage) {
+        this.reviveResultMessage = reviveResultMessage;
+    }
 }
