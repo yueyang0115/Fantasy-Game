@@ -1,16 +1,28 @@
 package edu.duke.ece.fantasy.json;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class MessagesS2C {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private PositionResultMessage positionResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LoginResultMessage loginResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private SignUpResultMessage signUpResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BattleResultMessage battleResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ShopResultMessage shopResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AttributeResultMessage attributeResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private InventoryResultMessage inventoryResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BuildingResultMessage buildingResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private RedirectMessage redirectMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LevelUpResultMessage levelUpResultMessage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ReviveResultMessage reviveResultMessage;
 
     public MessagesS2C(){ }
