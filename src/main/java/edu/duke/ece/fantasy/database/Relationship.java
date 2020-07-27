@@ -8,6 +8,10 @@ import java.util.Date;
 @Entity
 @Table(name = "Relationship")
 public class Relationship {
+    public enum RelationStatus{
+        pending,approved
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -21,8 +25,14 @@ public class Relationship {
     private int receiverId;
 
     @Column(name = "status",nullable = false)
-    private String status;
+    private RelationStatus status;
 
     @Temporal(TemporalType.DATE)
     private Date startDate;
+
+    public Relationship(int senderId,int receiverId, RelationStatus status) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.status = status;
+    }
 }

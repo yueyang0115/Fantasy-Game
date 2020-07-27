@@ -6,7 +6,7 @@ public class FriendRequestMessage {
     }
 
     String username;
-
+    int id;
     ActionType action;
 
     public String getUsername() {
@@ -15,6 +15,14 @@ public class FriendRequestMessage {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public ActionType getAction() {

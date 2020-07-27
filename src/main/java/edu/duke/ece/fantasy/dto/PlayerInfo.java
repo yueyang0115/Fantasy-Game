@@ -1,10 +1,17 @@
 package edu.duke.ece.fantasy.dto;
 
+import edu.duke.ece.fantasy.database.Player;
+
 public class PlayerInfo {
     private int id;
     private String username;
 
     public PlayerInfo() {
+    }
+
+    public PlayerInfo(Player player){
+        this.id  = player.getId();
+        this.username = player.getUsername();
     }
 
     public PlayerInfo(int id, String username) {
