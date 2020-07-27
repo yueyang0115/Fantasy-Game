@@ -42,8 +42,6 @@ public class MonsterMoverTest {
     public void testAll(){
         SharedData sharedData = new SharedData();
         Player p = new Player();
-        WorldInfo info = new WorldInfo();
-        p.addWorldInfo(info);
         p.setStatus("mainWorld");
         p.setCurrentCoord(new WorldCoord(1,2,2));
         sharedData.setPlayer(p);
