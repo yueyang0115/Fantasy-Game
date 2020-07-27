@@ -128,19 +128,26 @@ public class BattleHandler {
     //set "win" "lose" "continue" status for BattleResultMsg
     public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
         List<Monster> monsterList = monsterDAO.getMonsters(where);
-        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
+//        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         if(monsterList == null || monsterList.size() ==0){
             result.setResult("win");
             //change around area's tame
             territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y,10,5);
         }
-        else if(soldierList == null || soldierList.size() ==0){
+        else if(!playerIsAlive(playerID)){
             result.setResult("lose");
             WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
             info.setWorldType(WorldInfo.DeathWorld);
             playerDAO.addWorld(playerID, info);
         }
         else result.setResult("continue");
+    }
+
+    public boolean playerIsAlive(int playerID){
+        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
+        boolean isAlive = false;
+        for(Soldier soldier : soldierList) if(soldier.getHp() != 0) isAlive=true;
+        return isAlive;
     }
 
     public BattleAction doBattleOnce(Skill attackerSkill, int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
@@ -168,7 +175,7 @@ public class BattleHandler {
             // if soldier successfully attacks, change its level and skillPoint
             if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
             // if soldier died, remove it from player's soldierList then delete it in db
-            if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
+            //if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
             //unitDAO.deleteUnit(attackeeID);
         }
 
