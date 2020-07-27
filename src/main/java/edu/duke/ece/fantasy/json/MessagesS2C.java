@@ -14,6 +14,7 @@ public class MessagesS2C {
     private RedirectMessage redirectMessage;
     private LevelUpResultMessage levelUpResultMessage;
     private ReviveResultMessage reviveResultMessage;
+    private FriendResultMessage friendResultMessage;
     public MessagesS2C(){ }
 
     public BuildingResultMessage getBuildingResultMessage() {
@@ -22,6 +23,14 @@ public class MessagesS2C {
 
     public void setBuildingResultMessage(BuildingResultMessage buildingResultMessage) {
         this.buildingResultMessage = buildingResultMessage;
+    }
+
+    public FriendResultMessage getFriendResultMessage() {
+        return friendResultMessage;
+    }
+
+    public void setFriendResultMessage(FriendResultMessage friendResultMessage) {
+        this.friendResultMessage = friendResultMessage;
     }
 
     public MessagesS2C(LoginResultMessage msg){

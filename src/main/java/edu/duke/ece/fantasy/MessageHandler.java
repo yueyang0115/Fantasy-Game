@@ -30,11 +30,16 @@ public class MessageHandler {
         LevelUpRequestMessage levelUpMsg = input.getLevelUpRequestMessage();
         RedirectMessage redirectMsg = input.getRedirectMessage();
         ReviveRequestMessage reviveMsg = input.getReviveRequestMessage();
+        FriendRequestMessage friendRequestMessage = input.getFriendRequestMessage();
 
             // set redirectMsg and player's status
             if(redirectMsg != null){
                 if(sharedData.getPlayer() != null) sharedData.getPlayer().setStatus(redirectMsg.getDestination());
                 result.setRedirectMessage(redirectMsg);
+            }
+
+            if(friendRequestMessage != null){
+
             }
 
             if(reviveMsg != null){
