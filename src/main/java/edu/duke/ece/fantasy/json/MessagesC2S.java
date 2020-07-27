@@ -1,5 +1,8 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessagesC2S {
     private LoginRequestMessage loginRequestMessage;
     private SignUpRequestMessage signUpRequestMessage;

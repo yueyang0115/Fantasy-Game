@@ -1,5 +1,8 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InventoryRequestMessage {
     private String action;
     private int inventoryID;

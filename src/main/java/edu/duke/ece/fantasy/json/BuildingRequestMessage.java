@@ -1,7 +1,9 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.WorldCoord;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BuildingRequestMessage {
     WorldCoord coord;
 

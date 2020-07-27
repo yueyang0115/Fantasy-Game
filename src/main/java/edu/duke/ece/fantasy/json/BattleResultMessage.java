@@ -1,9 +1,11 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Soldier;
 import java.util.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BattleResultMessage {
     // battleInitInfo is set only when request is "start"
     private BattleInitInfo battleInitInfo;

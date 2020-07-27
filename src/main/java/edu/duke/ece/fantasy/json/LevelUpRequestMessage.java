@@ -1,9 +1,11 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LevelUpRequestMessage {
     private String action; // "start" "choose"
     private int unitID; // id of the unit which wants to be leveled up
