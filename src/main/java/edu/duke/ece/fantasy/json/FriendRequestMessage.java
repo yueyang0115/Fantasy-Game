@@ -2,7 +2,7 @@ package edu.duke.ece.fantasy.json;
 
 public class FriendRequestMessage {
     public enum ActionType {
-        search, apply;
+        search, apply, check;
     }
 
     String username;
