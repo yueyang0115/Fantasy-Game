@@ -39,7 +39,8 @@ public class MessageHandler {
             }
 
             if(friendRequestMessage != null){
-
+                FriendHandler fh = new FriendHandler(metaDAO);
+                result.setFriendResultMessage(fh.handle(sharedData.getPlayer().getId(),friendRequestMessage));
             }
 
             if(reviveMsg != null){

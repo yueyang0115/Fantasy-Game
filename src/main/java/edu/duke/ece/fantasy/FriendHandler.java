@@ -16,25 +16,25 @@ public class FriendHandler {
     private PlayerDAO playerDAO;
     private RelationshipDAO relationshipDAO;
 
-    public FriendHandler(MetaDAO metaDAO){
+    public FriendHandler(MetaDAO metaDAO) {
         this.playerDAO = metaDAO.getPlayerDAO();
         relationshipDAO = metaDAO.getRelationshipDAO();
     }
 
-    public FriendResultMessage handle(int playerId, FriendRequestMessage friendRequestMessage){
+    public FriendResultMessage handle(int playerId, FriendRequestMessage friendRequestMessage) {
         FriendResultMessage res = new FriendResultMessage();
         FriendRequestMessage.ActionType actionType = friendRequestMessage.getAction();
-        if(actionType == FriendRequestMessage.ActionType.search){
+        if (actionType == FriendRequestMessage.ActionType.search) {
             // search user by username and get user info
             List<PlayerInfo> playerInfoList = new ArrayList<>();
             Player selectedPlayer = playerDAO.getPlayer(friendRequestMessage.getUsername());
-            if(selectedPlayer!=null) {
+            if (selectedPlayer != null && playerId != selectedPlayer.getId()) {
                 PlayerInfo playerInfo = new PlayerInfo(selectedPlayer);
                 playerInfoList.add(playerInfo);
             }
             res.setPlayerInfoList(playerInfoList);
-        } else if(actionType == FriendRequestMessage.ActionType.apply){
-            relationshipDAO.applyFriend(playerId,friendRequestMessage.getId());
+        } else if (actionType == FriendRequestMessage.ActionType.apply) {
+            relationshipDAO.applyFriend(playerId, friendRequestMessage.getId());
         }
         return res;
     }
