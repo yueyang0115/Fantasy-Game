@@ -30,7 +30,10 @@ public class Relationship {
     @Temporal(TemporalType.DATE)
     private Date startDate;
 
-    public Relationship(int senderId,int receiverId, RelationStatus status) {
+    public Relationship() {
+    }
+
+    public Relationship(int senderId, int receiverId, RelationStatus status) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.status = status;
