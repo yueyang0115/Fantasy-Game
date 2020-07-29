@@ -1,9 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.Soldier;
-import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.WorldInfo;
+import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -20,6 +17,7 @@ public class PlayerDAO {
     }
 
     public void addPlayer(String username, String password) {
+        HibernateUtil.getSessionFactory().getCurrentSession();
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
 
