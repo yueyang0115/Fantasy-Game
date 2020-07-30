@@ -1,5 +1,7 @@
 package edu.duke.ece.fantasy.json;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessagesS2C {
     private PositionResultMessage positionResultMessage;
     private LoginResultMessage loginResultMessage;
@@ -11,7 +13,8 @@ public class MessagesS2C {
     private BuildingResultMessage buildingResultMessage;
     private RedirectMessage redirectMessage;
     private LevelUpResultMessage levelUpResultMessage;
-
+    private ReviveResultMessage reviveResultMessage;
+    private FriendResultMessage friendResultMessage;
     public MessagesS2C(){ }
 
     public BuildingResultMessage getBuildingResultMessage() {
@@ -20,6 +23,14 @@ public class MessagesS2C {
 
     public void setBuildingResultMessage(BuildingResultMessage buildingResultMessage) {
         this.buildingResultMessage = buildingResultMessage;
+    }
+
+    public FriendResultMessage getFriendResultMessage() {
+        return friendResultMessage;
+    }
+
+    public void setFriendResultMessage(FriendResultMessage friendResultMessage) {
+        this.friendResultMessage = friendResultMessage;
     }
 
     public MessagesS2C(LoginResultMessage msg){
@@ -108,4 +119,9 @@ public class MessagesS2C {
         this.levelUpResultMessage = levelUpResultMessage;
     }
 
+    public ReviveResultMessage getReviveResultMessage() { return reviveResultMessage; }
+
+    public void setReviveResultMessage(ReviveResultMessage reviveResultMessage) {
+        this.reviveResultMessage = reviveResultMessage;
+    }
 }

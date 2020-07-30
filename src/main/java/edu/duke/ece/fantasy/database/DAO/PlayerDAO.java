@@ -1,8 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.Soldier;
-import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -19,17 +17,18 @@ public class PlayerDAO {
     }
 
     public void addPlayer(String username, String password) {
+//        HibernateUtil.getSessionFactory().getCurrentSession();
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
 
         //add two default soldier for each player
-        Soldier soldier = new Soldier("wizard", 50, 5, 20);
-        Soldier soldier2 = new Soldier("soldier", 48, 3, 18);
+        Soldier soldier = new Soldier("wizard", 6, 5, 20);
+//        Soldier soldier2 = new Soldier("soldier", 12, 3, 18);
 //        Skill basicSkill = new Skill("ironball",2);
 //        soldier.addSkill(basicSkill);
 //        soldier2.addSkill(basicSkill);
         player.addSoldier(soldier);
-        player.addSoldier(soldier2);
+//        player.addSoldier(soldier2);
 
         // add default money
         player.setMoney(2000);
@@ -71,16 +70,16 @@ public class PlayerDAO {
     }
 
     // update player's status first in cache then in database
-    public void setStatus(Player p, String status){
-        p.setStatus(status);
-        session.update(p);
-    }
-
-    // update player's coord first in cache then in database
-    public void setCurrentCoord(Player p, WorldCoord currentCoord){
-        p.setCurrentCoord(currentCoord);
-        session.update(p);
-    }
+//    public void setStatus(Player p, String status){
+//        p.setStatus(status);
+//        session.update(p);
+//    }
+//
+//    // update player's coord first in cache then in database
+//    public void setCurrentCoord(Player p, WorldCoord currentCoord){
+//        p.setCurrentCoord(currentCoord);
+//        session.update(p);
+//    }
 
     public void removeSoldier(int playerID, int soldierID){
         Player p = getPlayer(playerID);
@@ -89,5 +88,11 @@ public class PlayerDAO {
         Soldier soldier = (Soldier) q.uniqueResult();
         p.getSoldiers().remove(soldier);
         session.update(p);
+    }
+
+    public void addWorld(int playerID, WorldInfo info){
+        Player player = getPlayer(playerID);
+//        player.addWorldInfo(info);
+        session.update(player);
     }
 }

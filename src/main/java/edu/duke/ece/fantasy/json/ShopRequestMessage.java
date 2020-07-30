@@ -1,11 +1,13 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;
 
 import java.util.List;
 import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShopRequestMessage {
     private WorldCoord coord;
 //    private Map<Integer, Integer> itemMap;

@@ -13,6 +13,17 @@ public class MessageHandlerTest {
 
     @Test
     void testAll(){
+        FriendRequestMessage msg = new FriendRequestMessage();
+        msg.setAction(FriendRequestMessage.ActionType.search);
+        try{
+            String tmp = objectMapper.writeValueAsString(msg);
+//            System.out.println(tmp);
+            FriendRequestMessage res = objectMapper.readValue(tmp,FriendRequestMessage.class);
+            tmp = objectMapper.writeValueAsString(res);
+            System.out.println(tmp);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         //testLogin();
         //testSignUp();
     }

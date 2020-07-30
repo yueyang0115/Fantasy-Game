@@ -5,6 +5,7 @@ import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.json.PositionResultMessage;
 
@@ -46,7 +47,7 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
 
     // cannot moveMonster/generateMonster when player doesn't hold valid coord or not in mainScene
     public boolean cannotGenerateMonster(){
-        return player.getStatus() != "MAIN"
+        return !player.getStatus().equals(WorldInfo.MainWorld)
                 || player.getCurrentCoord() == null
                 || metaDAO.getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
     }

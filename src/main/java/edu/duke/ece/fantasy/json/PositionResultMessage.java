@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.Monster;
@@ -7,6 +8,7 @@ import edu.duke.ece.fantasy.database.Territory;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PositionResultMessage {
     private List<Territory> territoryArray;
     private List<Monster> monsterArray;

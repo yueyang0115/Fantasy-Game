@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.shopInventory;
@@ -7,6 +8,7 @@ import edu.duke.ece.fantasy.database.shopInventory;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShopResultMessage {
     private List<Inventory> items = new ArrayList<>(); //all items in the shop
     private String result; //status: "valid","invalid"

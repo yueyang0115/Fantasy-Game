@@ -1,8 +1,11 @@
 package edu.duke.ece.fantasy.json;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BattleInitInfo {
     private List<Monster> monsters;  //all monsters in the territory
     private List<Soldier> soldiers;  //all soldiers the player has

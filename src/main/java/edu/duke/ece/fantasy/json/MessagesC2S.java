@@ -1,5 +1,8 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessagesC2S {
     private LoginRequestMessage loginRequestMessage;
     private SignUpRequestMessage signUpRequestMessage;
@@ -11,6 +14,8 @@ public class MessagesC2S {
     private BuildingRequestMessage buildingRequestMessage;
     private LevelUpRequestMessage levelUpRequestMessage;
     private RedirectMessage redirectMessage;
+    private ReviveRequestMessage reviveRequestMessage;
+    private FriendRequestMessage friendRequestMessage;
 
     public MessagesC2S(){ }
 
@@ -20,6 +25,14 @@ public class MessagesC2S {
 
     public void setBuildingRequestMessage(BuildingRequestMessage buildingRequestMessage) {
         this.buildingRequestMessage = buildingRequestMessage;
+    }
+
+    public FriendRequestMessage getFriendRequestMessage() {
+        return friendRequestMessage;
+    }
+
+    public void setFriendRequestMessage(FriendRequestMessage friendRequestMessage) {
+        this.friendRequestMessage = friendRequestMessage;
     }
 
     public MessagesC2S(LoginRequestMessage loginRequestMessage) {
@@ -102,5 +115,9 @@ public class MessagesC2S {
         this.redirectMessage = redirectMessage;
     }
 
+    public ReviveRequestMessage getReviveRequestMessage() { return reviveRequestMessage; }
 
+    public void setReviveRequestMessage(ReviveRequestMessage reviveRequestMessage) {
+        this.reviveRequestMessage = reviveRequestMessage;
+    }
 }

@@ -1,9 +1,11 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.Unit;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LevelUpResultMessage {
     private String result; // "success" "fail"
     private Set<Skill> availableSkills; // available skills that can be added/updated

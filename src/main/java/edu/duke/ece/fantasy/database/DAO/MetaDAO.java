@@ -19,6 +19,7 @@ public class MetaDAO {
     SoldierDAO soldierDAO;
     UnitDAO unitDAO;
     SkillDAO skillDAO;
+    RelationshipDAO relationshipDAO;
     Session session;
 
     public MetaDAO(Session session) {
@@ -34,8 +35,14 @@ public class MetaDAO {
         soldierDAO = new SoldierDAO(session);
         unitDAO = new UnitDAO(session);
         skillDAO = new SkillDAO(session);
+        relationshipDAO = new RelationshipDAO(session);
         this.session = session;
     }
+
+    public RelationshipDAO getRelationshipDAO() {
+        return relationshipDAO;
+    }
+
 
     public PlayerDAO getPlayerDAO() {
         return playerDAO;

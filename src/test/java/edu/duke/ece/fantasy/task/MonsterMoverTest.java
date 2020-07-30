@@ -1,13 +1,10 @@
 package edu.duke.ece.fantasy.task;
 
 import edu.duke.ece.fantasy.SharedData;
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.Territory;
-import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.MessagesS2C;
 import edu.duke.ece.fantasy.task.MonsterMover;
 import org.junit.jupiter.api.Test;
@@ -45,7 +42,7 @@ public class MonsterMoverTest {
     public void testAll(){
         SharedData sharedData = new SharedData();
         Player p = new Player();
-        p.setStatus("MAIN");
+        p.setStatus("mainWorld");
         p.setCurrentCoord(new WorldCoord(1,2,2));
         sharedData.setPlayer(p);
         LinkedBlockingQueue<MessagesS2C> resultMsgQueue = new LinkedBlockingQueue<>();;

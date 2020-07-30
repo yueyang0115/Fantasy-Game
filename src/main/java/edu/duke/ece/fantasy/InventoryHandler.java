@@ -73,6 +73,7 @@ public class InventoryHandler {
             selectedInventory.useItem(unit,player);
             // remove inventory from database if it is 0
             if (selectedInventory.getAmount() == 0) {
+                player.getItems().remove(selectedInventory);
                 session.delete(selectedInventory);
             }
         } else {

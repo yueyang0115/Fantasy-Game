@@ -1,11 +1,13 @@
 package edu.duke.ece.fantasy.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.building.Building;
 import edu.duke.ece.fantasy.database.DBBuilding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BuildingResultMessage {
     List<Building> BuildingList = new ArrayList<>();
     Building building;

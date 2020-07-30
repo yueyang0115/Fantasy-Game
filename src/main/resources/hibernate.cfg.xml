@@ -41,5 +41,6 @@
         <mapping class="edu.duke.ece.fantasy.database.levelUp.Skill"/>
         <mapping class="edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry"/>
         <mapping class="edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry"/>
+        <mapping class="edu.duke.ece.fantasy.database.Relationship"/>
     </session-factory>
 </hibernate-configuration>

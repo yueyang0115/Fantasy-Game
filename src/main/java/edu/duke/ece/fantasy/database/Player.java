@@ -5,14 +5,14 @@ import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -40,12 +40,25 @@ public class Player implements Trader {
     @Column(name = "moneyGenerationSpeed")
     private int moneyGenerationSpeed = 0;
 
-    @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
-    @Generated(GenerationTime.INSERT)
-    private int wid;
+    //    @Column(name = "WID", columnDefinition = "serial", unique = true, insertable = false, updatable = false, nullable = false)
+//    @Generated(GenerationTime.INSERT)
+//    private int wid;
+//    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+//
+//    @org.hibernate.annotations.Type(
+//            type = "org.hibernate.type.SerializableToBlobType",
+//            parameters = {@Parameter(name = "WorldType", value = "java.util.HashMap")}
+//    )
+
+//    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+//    @Column(name = "worldsId", nullable = false)
+//    private List<WorldInfo> worlds = new ArrayList<>();
+
+    @Column(name = "currentWorldId")
+    private int curWorldId;
 
     @Column(name = "status", nullable = false)
-    private String status = "MAIN";
+    private String status = WorldInfo.MainWorld;
 
     @Column(name = "coordX")
     private int coordX;
@@ -76,9 +89,25 @@ public class Player implements Trader {
         this.status = status;
     }
 
-    public WorldCoord getCurrentCoord() {
-        return new WorldCoord(wid, coordX, coordY);
+    public int getCurWorldId() {
+        return curWorldId;
     }
+
+    public void setCurWorldId(int curWorldId) {
+        this.curWorldId = curWorldId;
+    }
+
+    public WorldCoord getCurrentCoord() {
+        return new WorldCoord(curWorldId, coordX, coordY);
+    }
+//
+//    public Map<String, WorldInfo> getWorlds() {
+//        return worlds;
+//    }
+//
+//    public WorldInfo getCurrentWorldInfo(){
+//        return worlds.get(status);
+//    }
 
     public void setCurrentCoord(WorldCoord currentCoord) {
         this.coordX = currentCoord.getX();
@@ -117,13 +146,13 @@ public class Player implements Trader {
         this.password = password;
     }
 
-    public int getWid() {
-        return wid;
-    }
-
-    public void setWid(int wid) {
-        this.wid = wid;
-    }
+//    public int getWid() {
+//        return wid;
+//    }
+//
+//    public void setWid(int wid) {
+//        this.wid = wid;
+//    }
 
     public List<Soldier> getSoldiers() {
         return soldiers;
@@ -153,6 +182,10 @@ public class Player implements Trader {
     public void setItems(List<playerInventory> items) {
         this.items = items;
     }
+
+//    public void addWorldInfo(WorldInfo worldInfo) {
+//        worlds.put(worldInfo.getWorldType(), worldInfo);
+//    }
 
     public void addItem(playerInventory item) {
         playerInventory pairedInventory = findInventoryFromList(item);
@@ -189,7 +222,7 @@ public class Player implements Trader {
         playerInventory pairedInventory = null;
         System.out.println("I'm in find");
         for (playerInventory inventory : items) {
-            System.out.println("check item-"+inventory.getDBItem().toString());
+            System.out.println("check item-" + inventory.getDBItem().toString());
             if (inventory.equals(selectedInventory)) { // check if inventoryList have the same item as selectedInventory
                 pairedInventory = inventory;
                 break;
