@@ -1,19 +1,20 @@
 package edu.duke.ece.fantasy.net;
 
 import edu.duke.ece.fantasy.database.Player;
+import edu.duke.ece.fantasy.json.MessagesS2C;
 import io.netty.channel.Channel;
 
-public class Session {
+public class UserSession {
     private Channel channel;
 
     private Player player;
 
-    public Channel getChannel() {
-        return channel;
+    public UserSession(Channel channel) {
+        this.channel = channel;
     }
 
-    public void setChannel(Channel channel) {
-        this.channel = channel;
+    public void sendMsg(MessagesS2C msg) {
+        channel.writeAndFlush(msg);
     }
 
     public Player getPlayer() {
