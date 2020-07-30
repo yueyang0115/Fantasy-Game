@@ -34,7 +34,16 @@ public class FriendHandler {
             }
             res.setPlayerInfoList(playerInfoList);
         } else if (actionType == FriendRequestMessage.ActionType.apply) {
-            relationshipDAO.applyFriend(playerId, friendRequestMessage.getId());
+            if(!relationshipDAO.checkFriend(playerId,friendRequestMessage.getId())) {
+                relationshipDAO.applyFriend(playerId, friendRequestMessage.getId());
+            }
+        } else if (actionType == FriendRequestMessage.ActionType.check) {
+            List<Player> playerList = relationshipDAO.getApprovedFriendList(playerId);
+            List<PlayerInfo> playerInfos = new ArrayList<>();
+            for (Player p : playerList) {
+                playerInfos.add(new PlayerInfo(p));
+            }
+            res.setPlayerInfoList(playerInfos);
         }
         return res;
     }

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class FriendResultMessage {
     List<PlayerInfo> playerInfoList;
+//    String
 
     public List<PlayerInfo> getPlayerInfoList() {
         return playerInfoList;
