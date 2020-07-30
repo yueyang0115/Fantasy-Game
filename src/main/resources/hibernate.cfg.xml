@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-    <userSession-factory>
+    <session-factory>
 
         <!-- Connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
@@ -42,5 +42,5 @@
         <mapping class="edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry"/>
         <mapping class="edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry"/>
         <mapping class="edu.duke.ece.fantasy.database.Relationship"/>
-    </userSession-factory>
+    </session-factory>
 </hibernate-configuration>

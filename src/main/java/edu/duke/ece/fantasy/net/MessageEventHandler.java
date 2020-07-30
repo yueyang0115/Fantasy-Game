@@ -23,6 +23,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
+        logger.info("Establish connection,IP=[{}]",ChannelUtils.getIp(channel));
         if (!ChannelUtils.addChannelSession(ctx.channel(), new UserSession(channel))) {
             ctx.channel().close();
             logger.error("Duplicate session,IP=[{}]", ChannelUtils.getIp(channel));
@@ -44,6 +45,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         UserSession userSession = ChannelUtils.getSessionBy(channel);
+        logger.info("Close connection,IP=[{}]", ChannelUtils.getIp(channel));
 //        messageDispatcher.onSessionClosed(userSession);
     }
 
