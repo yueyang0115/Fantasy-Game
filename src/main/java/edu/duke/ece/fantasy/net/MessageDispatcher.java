@@ -10,15 +10,12 @@ import edu.duke.ece.fantasy.json.*;
 import org.hibernate.Session;
 
 public class MessageDispatcher {
-    private UserSession userSession;
-    private MessagesC2S request;
 
-    public MessageDispatcher(UserSession userSession, MessagesC2S request) {
-        this.userSession = userSession;
-        this.request = request;
+    public MessageDispatcher() {
+
     }
 
-    public void dispatch(MessagesC2S input) {
+    public void dispatch(UserSession userSession,MessagesC2S input) {
         MessagesS2C result = new MessagesS2C();
         LoginRequestMessage loginMsg = input.getLoginRequestMessage();
         SignUpRequestMessage signupMsg = input.getSignUpRequestMessage();
@@ -123,11 +120,7 @@ public class MessageDispatcher {
         }
 
         session.getTransaction().commit();
-        sendMsg(result);
-    }
-
-    public void sendMsg(MessagesS2C result){
-        userSession.getChannel().writeAndFlush(result);
+        userSession.sendMsg(result);
     }
 
 }

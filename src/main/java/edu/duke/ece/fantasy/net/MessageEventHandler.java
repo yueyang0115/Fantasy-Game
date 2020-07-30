@@ -1,6 +1,5 @@
 package edu.duke.ece.fantasy.net;
 
-import edu.duke.ece.fantasy.MessageHandler;
 import edu.duke.ece.fantasy.ObjectMapperFactory;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import io.netty.channel.Channel;
@@ -14,11 +13,11 @@ import java.io.IOException;
 public class MessageEventHandler extends ChannelInboundHandlerAdapter {
     private final static Logger logger = LoggerFactory.getLogger(MessageEventHandler.class);
 
-    MessageHandler messageHandler;
+    MessageDispatcher messageDispatcher;
 
-    public MessageEventHandler(MessageHandler messageHandler){
+    public MessageEventHandler(MessageDispatcher messageDispatcher){
         super();
-        this.messageHandler = messageHandler;
+        this.messageDispatcher = messageDispatcher;
     }
 
     @Override
@@ -38,7 +37,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
 
         final Channel channel = context.channel();
         UserSession session = ChannelUtils.getSessionBy(channel);
-//        messageDispatcher.dispatch(session, packet);
+        messageDispatcher.dispatch(session, packet);
     }
 
     @Override

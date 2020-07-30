@@ -2,8 +2,11 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
+import edu.duke.ece.fantasy.net.SocketServer;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.*;
@@ -12,33 +15,38 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Server {
-    private int TCPport;
-    private int UDPport;
-    private ServerSocket TCPserverSock;
-    private DatagramSocket UDPserverSock;
-    private ArrayList<PlayerHandler> playerHandlerList;
+//    private int TCPport;
+//    private int UDPport;
+//    private ServerSocket TCPserverSock;
+//    private DatagramSocket UDPserverSock;
+//    private ArrayList<PlayerHandler> playerHandlerList;
+    private SocketServer socketServer;
+    private static Logger logger = LoggerFactory.getLogger(Server.class);
 
     public Server(int tcpPort, int udpPort) {
-        this.TCPport = tcpPort;
-        try {
-            this.TCPserverSock = new ServerSocket(this.TCPport);
-            System.out.println("[DEBUG] Successfully built TCPserver");
-        } catch (IOException e) {
-            System.out.println("[DEBUG] Failed to build TCPserver");
-            e.printStackTrace();
-        }
-        this.UDPport = udpPort;
-        try {
-            this.UDPserverSock = new DatagramSocket(this.UDPport);
-            System.out.println("[DEBUG] Successfully built UDPserver");
-        } catch (IOException e) {
-            System.out.println("[DEBUG] Failed to build UDPserver");
-            e.printStackTrace();
-        }
-        this.playerHandlerList = new ArrayList<>();
+//        this.TCPport = tcpPort;
+//        try {
+//            this.TCPserverSock = new ServerSocket(this.TCPport);
+//            System.out.println("[DEBUG] Successfully built TCPserver");
+//        } catch (IOException e) {
+//            System.out.println("[DEBUG] Failed to build TCPserver");
+//            e.printStackTrace();
+//        }
+//        this.UDPport = udpPort;
+//        try {
+//            this.UDPserverSock = new DatagramSocket(this.UDPport);
+//            System.out.println("[DEBUG] Successfully built UDPserver");
+//        } catch (IOException e) {
+//            System.out.println("[DEBUG] Failed to build UDPserver");
+//            e.printStackTrace();
+//        }
+//        this.playerHandlerList = new ArrayList<>();
     }
 
-    public void startGame() {
+    public Server() {
+    }
+
+    public void startGame() throws Exception {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
@@ -56,27 +64,36 @@ public class Server {
             e.printStackTrace();
         }
 
-        while (true) {
-            // one thread per player
-            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
-            playerHandlerList.add(ph);
-            ph.start();
-        }
+        socketServer = new SocketServer();
+        socketServer.start();
+
+//        while (true) {
+//            // one thread per player
+//            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
+//            playerHandlerList.add(ph);
+//            ph.start();
+//        }
     }
 
     public void startOnePlayer() {
-        PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
-        playerHandlerList.add(ph);
-        ph.start();
+//        PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
+//        playerHandlerList.add(ph);
+//        ph.start();
     }
 
     public static void main(String[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("close session factory");
-            HibernateUtil.shutdown();
-        }));
-        Server server = new Server(1234, 5678);
-        server.startGame();
-
+//        Server server = new Server(1234, 5678);
+        Server server = new Server();
+        try{
+            server.startGame();
+        } catch (Exception e){
+            logger.error("server start failed", e);
+            System.exit(-1);
+        } finally {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                System.out.println("close session factory");
+                HibernateUtil.shutdown();
+            }));
+        }
     }
 }

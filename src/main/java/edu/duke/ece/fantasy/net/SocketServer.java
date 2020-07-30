@@ -1,6 +1,5 @@
 package edu.duke.ece.fantasy.net;
 
-import edu.duke.ece.fantasy.MessageHandler;
 import edu.duke.ece.fantasy.net.codec.JsonProtocolDecoder;
 import edu.duke.ece.fantasy.net.codec.JsonProtocolEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -29,6 +28,9 @@ public class SocketServer {
 
     public SocketServer(int maxReceiveBytes) {
         this.maxReceiveBytes = maxReceiveBytes;
+    }
+
+    public SocketServer() {
     }
 
     public void start() throws Exception {
@@ -63,7 +65,7 @@ public class SocketServer {
             pipeline.addLast(new JsonProtocolEncoder());
             // 客户端300秒没收发包，便会触发UserEventTriggered事件到IdleEventHandler
             pipeline.addLast(new IdleStateHandler(0, 0, 300));
-//            pipeline.addLast(new MessageEventHandler(new MessageHandler()));
+            pipeline.addLast(new MessageEventHandler(new MessageDispatcher()));
         }
     }
 
