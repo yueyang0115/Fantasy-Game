@@ -3,7 +3,7 @@ package edu.duke.ece.fantasy.net;
 import edu.duke.ece.fantasy.database.Player;
 import io.netty.channel.Channel;
 
-public class Session {
+public class UserSession {
     private Channel channel;
 
     private Player player;
