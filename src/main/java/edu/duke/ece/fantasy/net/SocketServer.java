@@ -18,15 +18,15 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
-public class NettySocketServer {
-    private Logger logger = LoggerFactory.getLogger(NettySocketServer.class);
+public class SocketServer {
+    private Logger logger = LoggerFactory.getLogger(SocketServer.class);
 
     private EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
 
     private int maxReceiveBytes;
 
-    public NettySocketServer(int maxReceiveBytes) {
+    public SocketServer(int maxReceiveBytes) {
         this.maxReceiveBytes = maxReceiveBytes;
     }
 

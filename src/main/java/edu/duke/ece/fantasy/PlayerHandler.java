@@ -84,7 +84,7 @@ public class PlayerHandler extends Thread {
     //one thread for handling all received msg and doing automatically tasks
     private void handleAll() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        HibernateUtil.getSessionFactory().getCurrentSession();
+//        HibernateUtil.getSessionFactory().getCurrentSession();
         MetaDAO metaDAO = new MetaDAO(session);
         // sharedData for sharing player info between taskScheduler and messageHandler
         SharedData sharedData = new SharedData();

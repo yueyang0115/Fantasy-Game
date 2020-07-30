@@ -17,7 +17,7 @@ public class PlayerDAO {
     }
 
     public void addPlayer(String username, String password) {
-        HibernateUtil.getSessionFactory().getCurrentSession();
+//        HibernateUtil.getSessionFactory().getCurrentSession();
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
 
