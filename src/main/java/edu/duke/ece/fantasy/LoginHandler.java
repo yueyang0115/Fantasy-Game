@@ -5,14 +5,16 @@ import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.json.LoginRequestMessage;
 import edu.duke.ece.fantasy.json.LoginResultMessage;
+import edu.duke.ece.fantasy.net.UserSession;
 
 public class LoginHandler {
     private PlayerDAO playerDAO;
-    private SharedData sharedData;
+//    private SharedData sharedData;
+    private UserSession userSession;
 
-    public LoginHandler(MetaDAO metaDAO, SharedData sharedData){
+    public LoginHandler(MetaDAO metaDAO, UserSession userSession){
         this.playerDAO = metaDAO.getPlayerDAO();
-        this.sharedData = sharedData;
+        this.userSession = userSession;
     }
 
     public LoginResultMessage handle(LoginRequestMessage input){
@@ -28,7 +30,7 @@ public class LoginHandler {
             result.setId(player.getId());
             System.out.println("[DEBUG] Login success");
             // login success, make sharedData hold the login-player's info
-            sharedData.setPlayer(player);
+            userSession.setPlayer(player);
         }
         else{
             result.setStatus("fail");
