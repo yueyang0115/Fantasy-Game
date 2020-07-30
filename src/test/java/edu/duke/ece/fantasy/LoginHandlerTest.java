@@ -33,7 +33,7 @@ public class LoginHandlerTest {
                 .thenReturn(new Player("mockName","mockPassword"));
 
         SharedData sharedData = new SharedData();
-        LoginHandler lh = new LoginHandler(mockedMetaDAO, sharedData);
+        OldLoginHandler lh = new OldLoginHandler(mockedMetaDAO, sharedData);
         LoginRequestMessage request = new LoginRequestMessage("mockName","mockPassword");
         LoginResultMessage result = lh.handle(request);
         assertEquals(result.getStatus(),"success");
@@ -44,7 +44,7 @@ public class LoginHandlerTest {
                 .thenReturn(null);
 
         SharedData sharedData = new SharedData();
-        LoginHandler lh = new LoginHandler(mockedMetaDAO, sharedData);
+        OldLoginHandler lh = new OldLoginHandler(mockedMetaDAO, sharedData);
         LoginRequestMessage request = new LoginRequestMessage("mockName","mockPassword");
         LoginResultMessage result = lh.handle(request);
         assertEquals(result.getStatus(),"fail");

@@ -50,7 +50,7 @@ public class MessageHandler {
 
             if (loginMsg != null) {
                 // if login succeed, sharedData will hold login-player's info
-                LoginHandler lh = new LoginHandler(metaDAO, sharedData);
+                OldLoginHandler lh = new OldLoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
             }
 
