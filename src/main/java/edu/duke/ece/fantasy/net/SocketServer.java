@@ -3,10 +3,7 @@ package edu.duke.ece.fantasy.net;
 import edu.duke.ece.fantasy.net.codec.JsonProtocolDecoder;
 import edu.duke.ece.fantasy.net.codec.JsonProtocolEncoder;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -37,12 +34,20 @@ public class SocketServer {
     public void start() throws Exception {
 //        int serverPort = ServerConfig.getInstance().getServerPort();
         int serverPort = 1234;
-        logger.info("netty socket start，listen to user's request @port:" + serverPort + "......");
+
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 1024)
                     .childHandler(new ChildChannelHandler());
-            b.bind(new InetSocketAddress(serverPort)).sync();
+            b.bind(new InetSocketAddress(serverPort))
+                    .sync()
+                    .addListener((ChannelFutureListener) future -> {
+                        if (future.isSuccess()) {
+                            logger.info("netty server start，listen to user's request @port:" + serverPort + "......");
+                        } else {
+                            logger.info("netty server start failed");
+                        }
+                    });
 //			f.channel().closeFuture().sync();
         } catch (Exception e) {
             logger.error("", e);
@@ -60,9 +65,11 @@ public class SocketServer {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535,0,2,0,2));
-            pipeline.addLast(new LengthFieldPrepender(2));
+            // decode
+            pipeline.addLast(new LengthFieldBasedFrameDecoder(65535, 0, 2, 0, 2));
             pipeline.addLast(new JsonProtocolDecoder());
+            // encode
+            pipeline.addLast(new LengthFieldPrepender(2));
             pipeline.addLast(new JsonProtocolEncoder());
             // 客户端300秒没收发包，便会触发UserEventTriggered事件到IdleEventHandler
             pipeline.addLast(new IdleStateHandler(0, 0, 300));
