@@ -37,32 +37,14 @@ public class PlayerDAO {
 
 
     public Player getPlayerByWid(int wid) {
-//        Query<Player> q = session.createQuery("From Player U where U.curWorldId =:wid", Player.class);
-//        q.setParameter("wid", wid);
-//        session.
-//        return q.uniqueResult();
         return HibernateUtil.queryOne("From Player U where U.curWorldId =:wid", Player.class, new String[]{"wid"}, new Object[]{wid});
     }
 
     public Player getPlayer(int id) {
-//        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
-//        dbSession.beginTransaction();
-//        Query<Player> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("From Player U where U.id =:id", Player.class);
-//        q.setParameter("id", id);
-//        Player res = q.uniqueResult();
-//        dbSession.getTransaction().commit();
-//        return res;
         return HibernateUtil.queryOne("From Player U where U.id =:id", Player.class, new String[]{"id"}, new Object[]{id});
     }
 
     public Player getPlayer(String username) {
-//        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
-//        dbSession.beginTransaction();
-//        Query<Player> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("From Player U where U.username =:username", Player.class);
-//        q.setParameter("username", username);
-//        Player res = q.uniqueResult();
-//        dbSession.getTransaction().commit();
-//        return res;
         return HibernateUtil.queryOne("From Player U where U.username =:username", Player.class, new String[]{"username"}, new Object[]{username});
     }
 

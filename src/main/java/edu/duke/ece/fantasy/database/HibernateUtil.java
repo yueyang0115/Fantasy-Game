@@ -6,6 +6,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.util.List;
+
 public class HibernateUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
@@ -52,6 +54,18 @@ public class HibernateUtil {
             q.setParameter(parameterName[i], parameter[i]);
         }
         T res = (T) q.uniqueResult();
+        dbSession.getTransaction().commit();
+        return res;
+    }
+
+    public static <T> List<T> queryList(String queryString, Class<?> entity, String[] parameterName, Object[] parameter){
+        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        Query<?> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(queryString, entity);
+        for (int i = 0; i < parameter.length; i++) {
+            q.setParameter(parameterName[i], parameter[i]);
+        }
+        List<T> res = (List<T>) q.getResultList();
         dbSession.getTransaction().commit();
         return res;
     }
