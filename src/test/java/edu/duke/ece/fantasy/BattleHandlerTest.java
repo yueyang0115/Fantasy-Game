@@ -47,6 +47,8 @@ public class BattleHandlerTest {
         when(mockedUnitDAO.getUnit(1)).thenReturn(s1);
         when(mockedUnitDAO.getUnit(2)).thenReturn(m1);
         when(mockedUnitDAO.getUnit(3)).thenReturn(s2);
+        List<Integer> unitList = new ArrayList<>(Arrays.asList(1,2,3));
+        when(mockedPlayerDAO.getBattleInfo(anyInt())).thenReturn(unitList);
 
         when(mockedUnitDAO.setUnitHp(anyInt(),anyInt())).thenReturn(true);
         doNothing().when(mockedUnitDAO).deleteUnit(anyInt());
