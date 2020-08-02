@@ -7,15 +7,11 @@ import edu.duke.ece.fantasy.json.AttributeResultMessage;
 import org.hibernate.Session;
 
 public class AttributeHandler {
-    private MetaDAO metaDAO;
 
-    public AttributeHandler(MetaDAO metaDAO) {
-        this.metaDAO = metaDAO;
-    }
 
     public AttributeResultMessage handle(AttributeRequestMessage request, int playerID){
         AttributeResultMessage result = new AttributeResultMessage();
-        SoldierDAO sm = metaDAO.getSoldierDAO();
+        SoldierDAO sm = MetaDAO.getSoldierDAO();
         result.setSoldiers(sm.getSoldiers(playerID));
         return result;
     }

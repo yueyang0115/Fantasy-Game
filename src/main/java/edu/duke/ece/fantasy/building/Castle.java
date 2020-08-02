@@ -15,9 +15,9 @@ public class Castle extends Building {
     }
 
     @Override
-    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
-        super.onCreate(metaDAO, coord);
-        TerritoryDAO territoryDAO = metaDAO.getTerritoryDAO();
+    public void onCreate(WorldCoord coord) {
+        super.onCreate(coord);
+        TerritoryDAO territoryDAO = MetaDAO.getTerritoryDAO();
         List<Territory> territories = territoryDAO.getTerritories(coord, 5, 5);
         for (Territory territory : territories) {
             territory.setTame(0);

@@ -19,7 +19,6 @@ public class PositionUpdateHandler {
     WorldDAO worldDAO;
     MonsterDAO monsterDAO;
     PlayerDAO playerDAO;
-    Session session;
     ArrayList<Territory> territoryList = new ArrayList<>();
     ArrayList<Monster> monsterList = new ArrayList<>();
     ArrayList<Building> buildingList = new ArrayList<>();
@@ -29,13 +28,12 @@ public class PositionUpdateHandler {
 //    int x_block_num;
 //    int y_block_num;
 
-    public PositionUpdateHandler(MetaDAO metaDAO) {
-        territoryDAO = metaDAO.getTerritoryDAO();
-        DBBuildingDAO = metaDAO.getDbBuildingDAO();
-        worldDAO = metaDAO.getWorldDAO();
-        monsterDAO = metaDAO.getMonsterDAO();
-        playerDAO = metaDAO.getPlayerDAO();
-        session = metaDAO.getSession();
+    public PositionUpdateHandler() {
+        territoryDAO = MetaDAO.getTerritoryDAO();
+        DBBuildingDAO = MetaDAO.getDbBuildingDAO();
+        worldDAO = MetaDAO.getWorldDAO();
+        monsterDAO = MetaDAO.getMonsterDAO();
+        playerDAO = MetaDAO.getPlayerDAO();
         //    itemDAO = new ItemDAO(session);
     }
 
@@ -94,7 +92,7 @@ public class PositionUpdateHandler {
         if (isNewWorld&&player.getStatus().equals(WorldInfo.MainWorld)) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
               the territory's tame*/
-            (new Castle()).onCreate(new MetaDAO(session), info.getStartCoords());
+            (new Castle()).onCreate(info.getStartCoords());
         }
 
 

@@ -23,7 +23,7 @@ class ShopInventoryDAOTest {
     @BeforeEach
     void SetUpEach() {
         session.beginTransaction();
-        metaDAO = new MetaDAO(session);
+        metaDAO = new MetaDAO();
     }
 
     @AfterEach
@@ -38,9 +38,9 @@ class ShopInventoryDAOTest {
 
     @Test
     void getInventories() {
-        ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO(session);
+        ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO();
         Shop baseShop = new BaseShop();
-        baseShop.onCreate(metaDAO, new WorldCoord());
+        baseShop.onCreate(new WorldCoord());
         List<Inventory> res = shopInventoryDAO.getInventories(new WorldCoord());
 
     }

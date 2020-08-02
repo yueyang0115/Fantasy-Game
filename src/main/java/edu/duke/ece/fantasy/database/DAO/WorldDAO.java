@@ -11,7 +11,7 @@ public class WorldDAO {
     Logger log = LoggerFactory.getLogger(WorldDAO.class);
 
     public WorldInfo getInfo(int wid) {
-        return HibernateUtil.getSessionFactory().getCurrentSession().get(WorldInfo.class, wid);
+        return HibernateUtil.get(WorldInfo.class,wid);
     }
 
     public WorldInfo initWorld(WorldCoord where, String owner, int tilesize) {

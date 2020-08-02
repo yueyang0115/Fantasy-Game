@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class HibernateUtil {
@@ -30,6 +31,14 @@ public class HibernateUtil {
     public static void shutdown() {
         // Close caches and connection pools
         getSessionFactory().close();
+    }
+
+    public static <T> T get(Class<?> entity, Serializable id) {
+        Session session = getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        T res = (T) session.get(entity, id);
+        session.getTransaction().commit();
+        return res;
     }
 
     public static void save(Object obj) {
@@ -58,6 +67,13 @@ public class HibernateUtil {
         dbSession.beginTransaction();
         dbSession.delete(obj);
         dbSession.getTransaction().commit();
+    }
+
+    public static void execute(String queryString, String paraName, Object para) {
+        Session session = getSessionFactory().getCurrentSession();
+        Query q = session.createQuery(queryString);
+        q.setParameter(paraName, para);
+        q.executeUpdate();
     }
 
     public static <T> T queryOne(String queryString, Class<?> entity, String[] parameterName, Object[] parameter) {

@@ -11,11 +11,6 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class PlayerInventoryDAO {
-    Session session;
-
-    public PlayerInventoryDAO(Session session) {
-        this.session = session;
-    }
 
 //    public Inventory getInventory(int owner_id, String name) {
 //        Query q = session.createQuery("From playerInventory I where I.player =:owner_id and I.item_name=:name");
@@ -31,7 +26,7 @@ public class PlayerInventoryDAO {
     }
 
     public List<Inventory> getInventories(Player player) {
-        return HibernateUtil.queryOne("From playerInventory I where I.player=:player order by I.id", Inventory.class,
+        return HibernateUtil.queryList("From playerInventory I where I.player=:player order by I.id", Inventory.class,
                 new String[]{"player"}, new Object[]{player});
     }
 }

@@ -12,7 +12,7 @@ public interface Trader {
     public boolean checkItem(Inventory inventory, int amount);
     public void addMoney(int money);
     public void subtractMoney(int money);
-    public Inventory addInventory(MetaDAO metaDAO,Inventory inventory);
+    public Inventory addInventory(Inventory inventory);
 //
 //    public void sellItem(Inventory inventory, int amount);
 //

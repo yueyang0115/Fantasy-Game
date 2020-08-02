@@ -78,9 +78,9 @@ public class Building {
         return res;
     }
 
-    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
+    public void onCreate( WorldCoord coord) {
         this.coord = coord;
-        DBBuildingDAO dbBuildingDAO = metaDAO.getDbBuildingDAO();
+        DBBuildingDAO dbBuildingDAO = MetaDAO.getDbBuildingDAO();
         DBBuilding tmp = dbBuildingDAO.getBuilding(coord);
         if (tmp != null) { // delete existing building in this coord
             tmp.setName(this.getClass().getName());

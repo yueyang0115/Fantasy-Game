@@ -12,15 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RelationshipDAO {
-    Session session;
-
-    public RelationshipDAO(Session session) {
-        this.session = session;
-    }
 
     public void applyFriend(int senderId, int receiverId) {
         Relationship r = new Relationship(senderId, receiverId, Relationship.RelationStatus.approved);
-        session.save(r);
+        HibernateUtil.save(r);
     }
 
     public boolean checkFriend(int playerId, int possibleFriendId) {
@@ -38,13 +33,8 @@ public class RelationshipDAO {
 
     public List<Player> getApprovedFriendList(int playerId) {
         List<Player> FriendList = new ArrayList<>();
-//        TypedQuery<Relationship> q1 = session.createQuery();
-//        q1.setParameter("playerId", playerId);
-//        q1.setParameter("status", Relationship.RelationStatus.approved);
-//        TypedQuery<Relationship> q2 = session.createQuery("From Relationship r where r.senderId=:playerId and r.status=:status", Relationship.class);
-//        q2.setParameter("status", Relationship.RelationStatus.approved);
-//        q2.setParameter("playerId", playerId);
         PlayerDAO playerDAO = MetaDAO.getPlayerDAO();
+        // use playerId as both receiver and sender since player could be both of them
         List<Relationship> r1 = HibernateUtil.queryList("From Relationship r where r.receiverId=:playerId and r.status=:status",
                 Relationship.class,
                 new String[]{"receiverId", "status"},

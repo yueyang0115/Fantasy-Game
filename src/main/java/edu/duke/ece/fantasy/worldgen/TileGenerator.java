@@ -188,7 +188,7 @@ public class TileGenerator {
     //I hate how tightly coupled this it to the database :(
     public void generate(TerritoryDAO terdao, WorldCoord where, WorldInfo info) {
 
-        TileDAO tdao = new TileDAO(terdao);
+        TileDAO tdao = new TileDAO();
         //if the world doesn't have a start tile, lets put one in it.
         if (!tdao.doesWorldHaveStartTile(info)) {
             //System.out.println("Putting start tile at " + info.getFirstTile());
@@ -248,7 +248,7 @@ public class TileGenerator {
                 Square s = info.getSquareAt(x, y);
                 WorldCoord place = new WorldCoord(where.getWid(), where.getX() + x, where.getY() + y);
                 //System.out.println("Territory at place: " + place);
-                terDAO.addTerritory(place, territory_status, s.getImageName(), new ArrayList<Monster>());
+                terDAO.addTerritory(place, territory_status, s.getImageName());
 
             }
         }

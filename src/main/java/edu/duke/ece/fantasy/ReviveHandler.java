@@ -14,9 +14,9 @@ public class ReviveHandler {
     private SoldierDAO soldierDAO;
     private UnitDAO unitDAO;
 
-    public ReviveHandler(MetaDAO metaDAO) {
-        this.soldierDAO = metaDAO.getSoldierDAO();
-        this.unitDAO = metaDAO.getUnitDAO();
+    public ReviveHandler() {
+        this.soldierDAO = MetaDAO.getSoldierDAO();
+        this.unitDAO = MetaDAO.getUnitDAO();
     }
 
     public ReviveResultMessage handle(int playerID){

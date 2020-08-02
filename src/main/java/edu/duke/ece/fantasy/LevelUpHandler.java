@@ -8,14 +8,12 @@ import edu.duke.ece.fantasy.json.LevelUpRequestMessage;
 import edu.duke.ece.fantasy.json.LevelUpResultMessage;
 
 public class LevelUpHandler {
-    private MetaDAO metaDAO;
     private UnitDAO unitDAO;
     private SkillDAO skillDAO;
 
-    public LevelUpHandler(MetaDAO metaDAO){
-        this.metaDAO = metaDAO;
-        this.unitDAO = metaDAO.getUnitDAO();
-        this.skillDAO = metaDAO.getSkillDAO();
+    public LevelUpHandler(){
+        this.unitDAO = MetaDAO.getUnitDAO();
+        this.skillDAO = MetaDAO.getSkillDAO();
     }
 
     public LevelUpResultMessage handle(LevelUpRequestMessage request){

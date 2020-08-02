@@ -14,17 +14,14 @@ public class InventoryHandler {
     PlayerDAO playerDAO;
     InventoryDAO inventoryDAO;
     UnitDAO unitDAO;
-    Session session;
     PlayerInventoryDAO playerInventoryDAO;
-    MetaDAO metaDAO;
 
-    public InventoryHandler(MetaDAO metaDAO) {
-        playerDAO = metaDAO.getPlayerDAO();
-        playerInventoryDAO = metaDAO.getPlayerInventoryDAO();
-        inventoryDAO = metaDAO.getInventoryDAO();
-        unitDAO = metaDAO.getUnitDAO();
-        this.metaDAO = metaDAO;
-        session = metaDAO.getSession();
+
+    public InventoryHandler() {
+        playerDAO = MetaDAO.getPlayerDAO();
+        playerInventoryDAO = MetaDAO.getPlayerInventoryDAO();
+        inventoryDAO = MetaDAO.getInventoryDAO();
+        unitDAO = MetaDAO.getUnitDAO();
     }
 
     public InventoryResultMessage handle(InventoryRequestMessage request, int player_id) {
@@ -74,7 +71,7 @@ public class InventoryHandler {
             // remove inventory from database if it is 0
             if (selectedInventory.getAmount() == 0) {
                 player.getItems().remove(selectedInventory);
-                session.delete(selectedInventory);
+                HibernateUtil.delete(selectedInventory);
             }
         } else {
             throw new InvalidItemUsageException("Player doesn't have item");

@@ -18,17 +18,13 @@ public class BuildingHandler {
     PlayerDAO playerDAO;
     edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
     TerritoryDAO territoryDAO;
-    Session session;
-    MetaDAO metaDAO;
     Map<String, Building> BaseBuildingMap = new HashMap<>();
     //("shop",shop);
 
-    public BuildingHandler(MetaDAO metaDAO) {
-        playerDAO = metaDAO.getPlayerDAO();
-        DBBuildingDAO = metaDAO.getDbBuildingDAO();
-        territoryDAO = metaDAO.getTerritoryDAO();
-        session = metaDAO.getSession();
-        this.metaDAO = metaDAO;
+    public BuildingHandler() {
+        playerDAO = MetaDAO.getPlayerDAO();
+        DBBuildingDAO = MetaDAO.getDbBuildingDAO();
+        territoryDAO = MetaDAO.getTerritoryDAO();
         Shop shop = new BaseShop();
         Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
@@ -101,7 +97,7 @@ public class BuildingHandler {
         }
         player.subtractMoney(building.getCost());
 
-        building.onCreate(metaDAO, coord);
+        building.onCreate(coord);
         return building;
     }
 
@@ -130,7 +126,7 @@ public class BuildingHandler {
         }
         player.subtractMoney(UpgradeTo.getCost());
 
-        UpgradeTo.onCreate(metaDAO, coord);
+        UpgradeTo.onCreate(coord);
         return UpgradeTo;
     }
 

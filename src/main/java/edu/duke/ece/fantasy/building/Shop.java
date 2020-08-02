@@ -34,11 +34,11 @@ public abstract class Shop extends Building implements Trader {
     }
 
     @Override
-    public void onCreate(MetaDAO metaDAO, WorldCoord coord) {
+    public void onCreate(WorldCoord coord) {
 //        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
-        super.onCreate(metaDAO, coord);
+        super.onCreate(coord);
         // delete all old inventory
-        ShopInventoryDAO shopinventoryDAO = metaDAO.getShopInventoryDAO();
+        ShopInventoryDAO shopinventoryDAO = MetaDAO.getShopInventoryDAO();
         shopinventoryDAO.deleteInventory(coord);
         for (shopInventory inventory : possible_inventory) {
             inventory.setCoord(coord);
@@ -82,9 +82,9 @@ public abstract class Shop extends Building implements Trader {
     }
 
     @Override
-    public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
+    public Inventory addInventory(Inventory inventory) {
         shopInventory shopInventory = new shopInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), coord);
-        metaDAO.getSession().save(shopInventory);
+        HibernateUtil.save(shopInventory);
         return shopInventory;
 //        ShopInventoryDAO shopInventoryDAO = metaDAO.getShopInventoryDAO();
 //        return shopInventoryDAO.addInventory(inventory,coord);

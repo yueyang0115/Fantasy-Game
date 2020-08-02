@@ -11,11 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MonsterDAO {
-    private Session session;
-
-    public MonsterDAO(Session session) {
-        this.session = session;
-    }
 
     // add monster to the given coord
     public void addMonster(Monster m, WorldCoord where){

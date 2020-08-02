@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.database.shopInventory;
@@ -10,20 +11,13 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class ShopInventoryDAO {
-    Session session;
-
-    public ShopInventoryDAO(Session session) {
-        this.session = session;
-    }
 
     public void addInventory(Inventory inventory) {
-        session.save(inventory);
+        HibernateUtil.save(inventory);
     }
 
     public void deleteInventory(WorldCoord coord) {
-        Query q = session.createQuery("delete From shopInventory I where I.coord = :coord");
-        q.setParameter("coord", coord);
-        q.executeUpdate();
+        HibernateUtil.execute("delete From shopInventory I where I.coord = :coord","coord",coord);
     }
 
 //    public Inventory getInventory(int owner_id, DBItem dbItem) {
@@ -35,9 +29,8 @@ public class ShopInventoryDAO {
 //    }
 
     public List<Inventory> getInventories(WorldCoord coord) {
-        TypedQuery<Inventory> q = session.createQuery("From shopInventory I where I.coord=:coord", Inventory.class);
-        q.setParameter("coord", coord);
-        return q.getResultList();
+        return HibernateUtil.queryList("From shopInventory I where I.coord=:coord", Inventory.class,
+                new String[]{"coord"}, new Object[]{coord});
     }
 
 

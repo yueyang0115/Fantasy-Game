@@ -16,19 +16,16 @@ public class ShopHandler {
     private PlayerDAO playerDAO;
     private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
-    private Session session;
     private MetaDAO metaDAO;
     private PlayerInventoryDAO playerInventoryDAO;
     private ShopInventoryDAO shopInventoryDAO;
 
-    public ShopHandler(MetaDAO metaDAO) {
-        this.metaDAO = metaDAO;
-        dbBuildingDAO = metaDAO.getDbBuildingDAO();
-        playerDAO = metaDAO.getPlayerDAO();
-        playerInventoryDAO = metaDAO.getPlayerInventoryDAO();
-        shopInventoryDAO = metaDAO.getShopInventoryDAO();
-        inventoryDAO = metaDAO.getInventoryDAO();
-        this.session = metaDAO.getSession();
+    public ShopHandler() {
+        dbBuildingDAO = MetaDAO.getDbBuildingDAO();
+        playerDAO = MetaDAO.getPlayerDAO();
+        playerInventoryDAO = MetaDAO.getPlayerInventoryDAO();
+        shopInventoryDAO = MetaDAO.getShopInventoryDAO();
+        inventoryDAO = MetaDAO.getInventoryDAO();
     }
 
     public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
@@ -113,7 +110,7 @@ public class ShopHandler {
             pairedInventoryForSeller.setAmount(leftAmount);
             if (leftAmount == 0) { // delete the Inventory if its amount is 0
                 sellerInventoryList.remove(pairedInventoryForSeller);
-                session.delete(pairedInventoryForSeller);
+                HibernateUtil.delete(pairedInventoryForSeller);
             }
             seller.addMoney(totalCost);
             // operation for buyer; selectedInventory contains more properties info
@@ -121,7 +118,7 @@ public class ShopHandler {
             if (pairedInventoryForBuyer != null) {
                 pairedInventoryForBuyer.setAmount(selectedAmount + pairedInventoryForBuyer.getAmount());
             } else {
-                Inventory createdInventory = buyer.addInventory(metaDAO, selectedInventory);
+                Inventory createdInventory = buyer.addInventory(selectedInventory);
                 buyerInventoryList.add(createdInventory);
             }
             buyer.subtractMoney(totalCost);

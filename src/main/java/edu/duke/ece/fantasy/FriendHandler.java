@@ -16,9 +16,9 @@ public class FriendHandler {
     private PlayerDAO playerDAO;
     private RelationshipDAO relationshipDAO;
 
-    public FriendHandler(MetaDAO metaDAO) {
-        this.playerDAO = metaDAO.getPlayerDAO();
-        relationshipDAO = metaDAO.getRelationshipDAO();
+    public FriendHandler() {
+        this.playerDAO = MetaDAO.getPlayerDAO();
+        relationshipDAO = MetaDAO.getRelationshipDAO();
     }
 
     public FriendResultMessage handle(int playerId, FriendRequestMessage friendRequestMessage) {

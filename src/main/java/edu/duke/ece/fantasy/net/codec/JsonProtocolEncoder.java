@@ -11,6 +11,7 @@ public class JsonProtocolEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
         byte[] raw = objectMapper.writeValueAsBytes(msg);
+        System.out.println(objectMapper.writeValueAsString(msg));
         out.writeBytes(raw);
     }
 }
