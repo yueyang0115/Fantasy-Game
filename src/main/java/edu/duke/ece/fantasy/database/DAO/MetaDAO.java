@@ -8,18 +8,18 @@ import org.hibernate.Session;
 
 public class MetaDAO {
     private static PlayerDAO playerDAO = new PlayerDAO();
-    InventoryDAO inventoryDAO;
-    TileDAO tileDAO;
-    WorldDAO worldDAO;
-    DBBuildingDAO dbBuildingDAO;
-    PlayerInventoryDAO playerInventoryDAO;
-    ShopInventoryDAO shopInventoryDAO;
-    TerritoryDAO territoryDAO;
-    MonsterDAO monsterDAO;
-    SoldierDAO soldierDAO;
-    UnitDAO unitDAO;
-    SkillDAO skillDAO;
-    RelationshipDAO relationshipDAO;
+    private static InventoryDAO inventoryDAO;
+    private static TileDAO tileDAO;
+    private static WorldDAO worldDAO;
+    private static DBBuildingDAO dbBuildingDAO;
+    private static PlayerInventoryDAO playerInventoryDAO;
+    private static ShopInventoryDAO shopInventoryDAO;
+    private static TerritoryDAO territoryDAO;
+    private static MonsterDAO monsterDAO;
+    private static SoldierDAO soldierDAO;
+    private static UnitDAO unitDAO;
+    private static SkillDAO skillDAO;
+    private static RelationshipDAO relationshipDAO;
     Session session;
 
     public MetaDAO(Session session) {

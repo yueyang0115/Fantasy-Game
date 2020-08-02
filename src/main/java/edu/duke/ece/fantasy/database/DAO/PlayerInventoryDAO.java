@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.playerInventory;
@@ -24,15 +25,13 @@ public class PlayerInventoryDAO {
 //        return res;
 //    }
 
-    public playerInventory getInventory(int id){
-        Query<playerInventory> q = session.createQuery("From playerInventory I where I.id=:id",playerInventory.class);
-        q.setParameter("id",id);
-        return q.uniqueResult();
+    public playerInventory getInventory(int id) {
+        return HibernateUtil.queryOne("From playerInventory I where I.id=:id", playerInventory.class,
+                new String[]{"id"}, new Object[]{id});
     }
 
     public List<Inventory> getInventories(Player player) {
-        TypedQuery<Inventory> q = session.createQuery("From playerInventory I where I.player=:player order by I.id", Inventory.class);
-        q.setParameter("player", player);
-        return q.getResultList();
+        return HibernateUtil.queryOne("From playerInventory I where I.player=:player order by I.id", Inventory.class,
+                new String[]{"player"}, new Object[]{player});
     }
 }

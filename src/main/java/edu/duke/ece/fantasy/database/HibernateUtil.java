@@ -39,6 +39,20 @@ public class HibernateUtil {
         dbSession.getTransaction().commit();
     }
 
+    public static void saveOrUpdate(Object obj) {
+        Session dbSession = getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        dbSession.saveOrUpdate(obj);
+        dbSession.getTransaction().commit();
+    }
+
+    public static void update(Object obj) {
+        Session dbSession = getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        dbSession.update(obj);
+        dbSession.getTransaction().commit();
+    }
+
     public static void delete(Object obj) {
         Session dbSession = getSessionFactory().getCurrentSession();
         dbSession.beginTransaction();
@@ -58,7 +72,7 @@ public class HibernateUtil {
         return res;
     }
 
-    public static <T> List<T> queryList(String queryString, Class<?> entity, String[] parameterName, Object[] parameter){
+    public static <T> List<T> queryList(String queryString, Class<?> entity, String[] parameterName, Object[] parameter) {
         Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
         dbSession.beginTransaction();
         Query<?> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(queryString, entity);

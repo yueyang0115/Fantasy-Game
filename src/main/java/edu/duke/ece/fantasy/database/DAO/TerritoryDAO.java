@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy.database.DAO;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.database.WorldCoord;
@@ -12,14 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TerritoryDAO {
-    Session session;
     private int width_unit = 10;
     private int height_unit = 10;
     Logger log = LoggerFactory.getLogger(TerritoryDAO.class);
-
-    public TerritoryDAO(Session session) {
-        this.session = session;
-    }
 
     public int[] MillierConvertion(double latitude, double longitude) {
         double L = 6381372 * Math.PI * 2;// perimeter of earth
@@ -37,10 +33,6 @@ public class TerritoryDAO {
         return result;
     }
 
-    public Session getSession() {
-        return session;
-    }
-
     // given coordination, return list of territory
     public List<Territory> getTerritories(WorldCoord where, int x_block_num, int y_block_num) {
         List<Territory> res = new ArrayList<>();
@@ -48,8 +40,8 @@ public class TerritoryDAO {
         int x = where.getX();
         int y = where.getY();
         // get neighbor territories
-        for (int i = -x_block_num/2; i <= x_block_num/2; i++) {
-            for (int j = -y_block_num/2; j <= y_block_num/2; j++) {
+        for (int i = -x_block_num / 2; i <= x_block_num / 2; i++) {
+            for (int j = -y_block_num / 2; j <= y_block_num / 2; j++) {
                 int target_x = x + i;
                 int target_y = y + j;
                 Territory t = getTerritory(new WorldCoord(wid, target_x, target_y));
@@ -65,17 +57,13 @@ public class TerritoryDAO {
     }
 
 
-    public Territory addTerritory(WorldCoord where, int status, String terrain, List<Monster> monsters) {
+    public Territory addTerritory(WorldCoord where, int status, String terrain) {
         // insert territory to world
         Territory t = new Territory(where, status);
         // add terrain
 //        Terrain terrain = terrainDAO.getTerrain(terrain_type);
         t.setTerrainType(terrain);
-        // add monster
-        /*for (Monster monster : monsters) {
-            t.addMonster(monster);
-            }*/
-        session.save(t);
+        HibernateUtil.save(t);
         return t;
     }
 
@@ -86,72 +74,68 @@ public class TerritoryDAO {
             return false;
         }
         t.setTame(status);
-        session.update(t);
+        HibernateUtil.update(t);
         return true;
     }
 
     public Territory getTerritory(WorldCoord where) {
         // select territory according to conditions
-        //       int center_x = (x > 0) ? (x / width_unit) * width_unit + width_unit / 2 : (x / width_unit) * width_unit - width_unit / 2;
-        //int center_y = (y > 0) ? (y / height_unit) * height_unit + height_unit / 2 : (y / height_unit) * height_unit - height_unit / 2;
-        Query q = session.createQuery("From Territory M where M.coord=:coord");
-        q.setParameter("coord",where);
-//        q.setParameter("x", x);
-//        q.setParameter("y", y);
-        Territory res = (Territory) q.uniqueResult();
-        return res;
-
+        return HibernateUtil.queryOne("From Territory M where M.coord=:coord", Territory.class,
+                new String[]{"coord"}, new Object[]{where});
     }
 
     // find a coord with the largest tame within an area, the coord cannot hold monsters
-    public WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range){
+    public WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
         Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
-                +" and T.coord.x >=:xlower and T.coord.x <=:xupper"
-                +" and T.coord.y >=:ylower and T.coord.y <=:yupper"
-                +" and not exists (from Monster M where M.coord = T.coord)"
-                +" order by T.tame DESC"
+                + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
+                + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
+                + " and not exists (from Monster M where M.coord = T.coord)"
+                + " order by T.tame DESC"
         ).setMaxResults(1);
         q.setParameter("wid", where.getWid());
-        q.setParameter("xlower", where.getX() - x_range/2);
-        q.setParameter("xupper", where.getX() + x_range/2);
-        q.setParameter("ylower", where.getY() - y_range/2);
-        q.setParameter("yupper", where.getY() + y_range/2);
+        q.setParameter("xlower", where.getX() - x_range / 2);
+        q.setParameter("xupper", where.getX() + x_range / 2);
+        q.setParameter("ylower", where.getY() - y_range / 2);
+        q.setParameter("yupper", where.getY() + y_range / 2);
 
         Territory t = (Territory) q.uniqueResult();
         WorldCoord res = t.getCoord();
-
+        session.getTransaction().commit();
         return res;
     }
 
     // get given coord's tame
-    public int getTameByCoord(WorldCoord where){
+    public int getTameByCoord(WorldCoord where) {
         Territory t = getTerritory(where);
         return t.getTame();
     }
 
     // change territory's tame within an area, center tame reduced by centerReduce, others reduced by otherReduce
-    public void updateTameByRange(WorldCoord where, int x_range, int y_range, int centerReduce, int otherReduce){
-        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
-                +" and T.coord.x >=:xlower and T.coord.x <=:xupper"
-                +" and T.coord.y >=:ylower and T.coord.y <=:yupper"
-                +" and T.coord != :center"
-        );
-        q.setParameter("wid", where.getWid());
-        q.setParameter("center", where);
-        q.setParameter("xlower", where.getX() - x_range/2);
-        q.setParameter("xupper", where.getX() + x_range/2);
-        q.setParameter("ylower", where.getY() - y_range/2);
-        q.setParameter("yupper", where.getY() + y_range/2);
+    public void updateTameByRange(WorldCoord where, int x_range, int y_range, int centerReduce, int otherReduce) {
+//        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
+//                + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
+//                + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
+//                + " and T.coord != :center"
+//        );
+//        q.setParameter("wid", where.getWid());
+//        q.setParameter("center", where);
+//        q.setParameter("xlower", where.getX() - x_range / 2);
+//        q.setParameter("xupper", where.getX() + x_range / 2);
+//        q.setParameter("ylower", where.getY() - y_range / 2);
+//        q.setParameter("yupper", where.getY() + y_range / 2);
+//        List<Territory> territories = HibernateUtil.queryList();
 
         //reduced surrounded ares's tame
-        for(Object o : q.list()) {
-            Territory t = (Territory) o;
-            t.setTame(Math.max(t.getTame()-otherReduce, 0));
-            session.update(t);
-        }
-        //reduce center area's tame
-        Territory tCenter = getTerritory(where);
-        tCenter.setTame(Math.max(tCenter.getTame()-centerReduce, 0));
-        session.update(tCenter);
+//        for (Object o : q.list()) {
+//            Territory t = (Territory) o;
+//            t.setTame(Math.max(t.getTame() - otherReduce, 0));
+//            session.update(t);
+//        }
+//        //reduce center area's tame
+//        Territory tCenter = getTerritory(where);
+//        tCenter.setTame(Math.max(tCenter.getTame() - centerReduce, 0));
+//        session.update(tCenter);
     }
 }
