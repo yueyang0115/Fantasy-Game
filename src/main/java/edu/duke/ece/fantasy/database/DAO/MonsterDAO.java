@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
@@ -19,26 +20,20 @@ public class MonsterDAO {
     // add monster to the given coord
     public void addMonster(Monster m, WorldCoord where){
         m.setCoord(where);
-        session.save(m);
+        HibernateUtil.save(m);
     }
 
     //get a monster from database based on the provided monsterID
     public Monster getMonster(int monsterID) {
-        Query q = session.createQuery("From Monster M where M.id =:id");
-        q.setParameter("id", monsterID);
-        Monster res = (Monster) q.uniqueResult();
+        Monster res = HibernateUtil.queryOne("From Monster M where M.id =:id",
+                Monster.class, new String[]{"name"}, new Object[]{monsterID});
         return res;
     }
 
     //get all monsters in the provided coord from database
     public List<Monster> getMonsters(WorldCoord where){
-        List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.coord =:coord");
-        q.setParameter("coord", where);
-        for(Iterator<Object> iterator = q.list().iterator(); iterator.hasNext();){
-            Object o = iterator.next();
-            monsterList.add((Monster) o);
-        }
+        List<Monster> monsterList = HibernateUtil.queryList("From Monster M where M.coord =:coord",
+                Monster.class, new String[]{"coord"}, new Object[]{where});
         return monsterList;
     }
 
@@ -49,7 +44,7 @@ public class MonsterDAO {
             return false;
         }
         m.setHp(hp);
-        session.update(m);
+        HibernateUtil.update(m);
         return true;
     }
 
@@ -61,7 +56,7 @@ public class MonsterDAO {
             return;
         }
         m.setNeedUpdate(status);
-        session.update(m);
+        HibernateUtil.update(m);
     }
 
     // change given monsters' needUpdate field to the given status
@@ -74,42 +69,29 @@ public class MonsterDAO {
     }
 
     // count num of monsters within an area
-    public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
-        List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid"
-                +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
-                +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
-        );
-        q.setParameter("wid", where.getWid());
-        q.setParameter("xlower", where.getX() - x_range/2);
-        q.setParameter("xupper", where.getX() + x_range/2);
-        q.setParameter("ylower", where.getY() - y_range/2);
-        q.setParameter("yupper", where.getY() + y_range/2);
-        Long cnt = (Long) q.uniqueResult();
+    public int countMonstersInRange(WorldCoord where, int x_range, int y_range){
+        List<Monster> monsterList = HibernateUtil.queryList(
+                "select * From Monster M where M.coord.wid =:wid"
+                        +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
+                        +" and M.coord.y >=:ylower and M.coord.y <=:yupper",
+                Monster.class, new String[]{"wid", "xlower", "xupper", "ylower", "yupper"},
+                new Object[]{where.getWid(), where.getX() - x_range/2, where.getX() + x_range/2,
+                        where.getY() - y_range/2, where.getY() + y_range/2});
+
+        int cnt = monsterList.size();
         return cnt;
     }
 
     //get all monsters within an area, not including monsters that located in the center
     public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
-        List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.coord.wid =:wid "
-                +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
-                +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
-                +" and M.coord != :coord "
-        );
-        q.setParameter("wid", where.getWid());
-        q.setParameter("coord", where);
-        q.setParameter("xlower", where.getX() - x_range/2);
-        q.setParameter("xupper", where.getX() + x_range/2);
-        q.setParameter("ylower", where.getY() - y_range/2);
-        q.setParameter("yupper", where.getY() + y_range/2);
-//        for(Object o : q.list()) {
-//            monsterList.add((Monster) o);
-//        }
-        for(Iterator iterator = q.list().iterator(); iterator.hasNext();){
-            Object o = iterator.next();
-            monsterList.add((Monster) o);
-        }
+        List<Monster> monsterList = HibernateUtil.queryList(
+                "From Monster M where M.coord.wid =:wid "
+                        +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
+                        +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
+                        +" and M.coord != :coord ",
+                Monster.class, new String[]{"wid", "coord", "xlower", "xupper", "ylower", "yupper"},
+                new Object[]{where.getWid(), where, where.getX() - x_range/2, where.getX() + x_range/2,
+                        where.getY() - y_range/2, where.getY() + y_range/2});
         return monsterList;
     }
 
@@ -119,7 +101,7 @@ public class MonsterDAO {
         if(m != null){
             m.getCoord().setX(x);
             m.getCoord().setY(y);
-            session.update(m);
+            HibernateUtil.update(m);
         }
     }
 }

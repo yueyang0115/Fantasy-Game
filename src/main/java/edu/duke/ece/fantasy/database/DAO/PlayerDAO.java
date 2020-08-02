@@ -76,23 +76,22 @@ public class PlayerDAO {
 
     public void removeSoldier(int playerID, int soldierID) {
         Player p = getPlayer(playerID);
-        Query q = session.createQuery("From Soldier S where S.id =:id");
-        q.setParameter("id", soldierID);
-        Soldier soldier = (Soldier) q.uniqueResult();
+        Soldier soldier = HibernateUtil.queryOne("From Soldier S where S.id =:id",
+                Soldier.class, new String[]{"id"}, new Object[]{soldierID});
         p.getSoldiers().remove(soldier);
-        session.update(p);
+        HibernateUtil.update(p);
     }
 
     public void addWorld(int playerID, WorldInfo info) {
         Player player = getPlayer(playerID);
 //        player.addWorldInfo(info);
-        session.update(player);
+        HibernateUtil.update(player);
     }
 
     public void setBattleInfo(int playerID, List<Integer> unitList){
         Player p = getPlayer(playerID);
         p.setBattleInfo(unitList);
-        session.update(p);
+        HibernateUtil.update(p);
     }
 
     public List<Integer> getBattleInfo(int playerID){

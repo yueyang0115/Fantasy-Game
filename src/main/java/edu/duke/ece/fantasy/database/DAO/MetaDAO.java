@@ -39,6 +39,22 @@ public class MetaDAO {
         this.session = session;
     }
 
+    public MetaDAO() {
+        playerDAO = new PlayerDAO();
+        inventoryDAO = new InventoryDAO();
+        tileDAO = new TileDAO();
+        worldDAO = new WorldDAO();
+        dbBuildingDAO = new DBBuildingDAO();
+        playerInventoryDAO = new PlayerInventoryDAO();
+        shopInventoryDAO = new ShopInventoryDAO();
+        territoryDAO = new TerritoryDAO();
+        monsterDAO = new MonsterDAO();
+        soldierDAO = new SoldierDAO();
+        unitDAO = new UnitDAO();
+        skillDAO = new SkillDAO();
+        relationshipDAO = new RelationshipDAO();
+    }
+
     public RelationshipDAO getRelationshipDAO() {
         return relationshipDAO;
     }

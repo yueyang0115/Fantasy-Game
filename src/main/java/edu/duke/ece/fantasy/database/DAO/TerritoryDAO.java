@@ -86,23 +86,19 @@ public class TerritoryDAO {
 
     // find a coord with the largest tame within an area, the coord cannot hold monsters
     public WorldCoord getWildestCoordInRange(WorldCoord where, int x_range, int y_range) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
-                + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
-                + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
-                + " and not exists (from Monster M where M.coord = T.coord)"
-                + " order by T.tame DESC"
-        ).setMaxResults(1);
-        q.setParameter("wid", where.getWid());
-        q.setParameter("xlower", where.getX() - x_range / 2);
-        q.setParameter("xupper", where.getX() + x_range / 2);
-        q.setParameter("ylower", where.getY() - y_range / 2);
-        q.setParameter("yupper", where.getY() + y_range / 2);
+        List<Territory> territoryList = HibernateUtil.queryList(
+                "Select T From Territory T where T.coord.wid =:wid"
+                        + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
+                        + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
+                        + " and not exists (from Monster M where M.coord = T.coord)"
+                        + " order by T.tame DESC", Territory.class,
+                new String[]{"wid", "xlower", "xupper", "ylower", "yupper"},
+                new Object[]{where.getWid(), where.getX() - x_range / 2, where.getX() + x_range / 2,
+                        where.getY() - y_range / 2, where.getY() + y_range / 2});
 
-        Territory t = (Territory) q.uniqueResult();
+        Territory t = territoryList.get(0);
         WorldCoord res = t.getCoord();
-        session.getTransaction().commit();
+
         return res;
     }
 
@@ -114,28 +110,23 @@ public class TerritoryDAO {
 
     // change territory's tame within an area, center tame reduced by centerReduce, others reduced by otherReduce
     public void updateTameByRange(WorldCoord where, int x_range, int y_range, int centerReduce, int otherReduce) {
-//        Query q = session.createQuery("Select T From Territory T where T.coord.wid =:wid"
-//                + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
-//                + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
-//                + " and T.coord != :center"
-//        );
-//        q.setParameter("wid", where.getWid());
-//        q.setParameter("center", where);
-//        q.setParameter("xlower", where.getX() - x_range / 2);
-//        q.setParameter("xupper", where.getX() + x_range / 2);
-//        q.setParameter("ylower", where.getY() - y_range / 2);
-//        q.setParameter("yupper", where.getY() + y_range / 2);
-//        List<Territory> territories = HibernateUtil.queryList();
+        List<Territory> territoryList = HibernateUtil.queryList(
+                "Select T From Territory T where T.coord.wid =:wid"
+                        + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
+                        + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
+                        + " and T.coord != :center", Territory.class,
+                new String[]{"wid", "center", "xlower", "xupper", "ylower", "yupper"},
+                new Object[]{where.getWid(), where, where.getX() - x_range / 2, where.getX() + x_range / 2,
+                        where.getY() - y_range / 2, where.getY() + y_range / 2});
 
         //reduced surrounded ares's tame
-//        for (Object o : q.list()) {
-//            Territory t = (Territory) o;
-//            t.setTame(Math.max(t.getTame() - otherReduce, 0));
-//            session.update(t);
-//        }
-//        //reduce center area's tame
-//        Territory tCenter = getTerritory(where);
-//        tCenter.setTame(Math.max(tCenter.getTame() - centerReduce, 0));
-//        session.update(tCenter);
+        for (Territory t : territoryList) {
+            t.setTame(Math.max(t.getTame() - otherReduce, 0));
+            HibernateUtil.update(t);
+        }
+        //reduce center area's tame
+        Territory tCenter = getTerritory(where);
+        tCenter.setTame(Math.max(tCenter.getTame() - centerReduce, 0));
+        HibernateUtil.update(tCenter);
     }
 }

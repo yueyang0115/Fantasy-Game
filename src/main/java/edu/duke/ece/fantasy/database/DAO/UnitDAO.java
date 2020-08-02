@@ -1,27 +1,27 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Soldier;
-import edu.duke.ece.fantasy.database.Unit;
+import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry;
 import edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
+import edu.duke.ece.fantasy.json.LevelUpRequestMessage;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-public class UnitDAO {
-    private Session session;
+import java.util.List;
 
-    public UnitDAO(Session session) {
-        this.session = session;
-    }
+public class UnitDAO {
+//    private Session session;
+
+//    public UnitDAO(Session session) {
+//        this.session = session;
+//    }
 
     //get a unit from database based on the provided soldierID
     public Unit getUnit(int unitID) {
-        Query q = session.createQuery("From Unit U where U.id =:id");
-        q.setParameter("id", unitID);
-        Unit res = (Unit) q.uniqueResult();
-        return res;
+        Unit unit =  HibernateUtil.queryOne("From Unit U where U.id =:id",
+                Unit.class, new String[]{"id"}, new Object[]{unitID});
+        return unit;
     }
 
     //update unit's hp
@@ -31,7 +31,7 @@ public class UnitDAO {
             return false;
         }
         unit.setHp(hp);
-        session.update(unit);
+        HibernateUtil.update(unit);
         return true;
     }
 
@@ -39,8 +39,8 @@ public class UnitDAO {
     //if unit is soldier, should call playerDAO.removeSoldier() first to remove that soldier in player
     public void deleteUnit(int unitID){
         Unit unit;
-        if ((unit = (Unit) session.get(Unit.class, unitID)) != null) {
-            session.delete(unit);
+        if ((unit = getUnit(unitID)) != null) {
+            HibernateUtil.delete(unit);
             System.out.println("[DEBUG] Delete unit "+unit.getType() +" with ID " +unitID);
         }
     }
@@ -50,7 +50,7 @@ public class UnitDAO {
         Unit unit = getUnit(unitID);
         if(unit == null || unit instanceof Monster) return;
         unit.getExperience().setExperience(experience);
-        session.update(unit);
+        HibernateUtil.update(unit);
         // changes in experience may bring changes to level
         updateLevel(unit);
     }
@@ -59,17 +59,18 @@ public class UnitDAO {
     private void updateLevel(Unit unit){
         if(unit == null || unit instanceof Monster) return;
         // get the supposed unit level that corresponds to the certain experience
-        Query q = session.createQuery("from ExperienceLevelEntry E where E.experience <= :unitExperience"
-                +" order by E.experience DESC"
-        ).setMaxResults(1);
-        q.setParameter("unitExperience", unit.getExperience().getExperience());
-        ExperienceLevelEntry entry = (ExperienceLevelEntry) q.uniqueResult();
+        List<ExperienceLevelEntry> entryList = HibernateUtil.queryList(
+                "from ExperienceLevelEntry E where E.experience <= :unitExperience"
+                        +" order by E.experience DESC",
+                ExperienceLevelEntry.class, new String[]{"unitExperience"}, new Object[]{unit.getExperience().getExperience()});
+        if(entryList == null || entryList.size() == 0) return;
+        ExperienceLevelEntry entry = entryList.get(0);
 
-        if(entry == null) return;
+//        if(entry == null) return;
         // if unit's level is not updated, update it
         if(unit.getExperience().getLevel() != entry.getLevel()){
             unit.getExperience().setLevel(entry.getLevel());
-            session.update(unit);
+            HibernateUtil.update(unit);
             // changes in level may bring changes to skillPoint
             updateSkillPoint(unit);
         }
@@ -79,24 +80,24 @@ public class UnitDAO {
     // update unit's skillPoint according to its level and existing skills it has
     private void updateSkillPoint(Unit unit){
         if(unit == null || unit instanceof Monster) return;
-        Query q = session.createQuery("from LevelSkillPointEntry E where E.level <= :unitLevel"
-                +" order by E.level DESC"
-        ).setMaxResults(1);
-        q.setParameter("unitLevel", unit.getExperience().getLevel());
-        LevelSkillPointEntry entry = (LevelSkillPointEntry) q.uniqueResult();
+        List<LevelSkillPointEntry> entryList = HibernateUtil.queryOne(
+                "from LevelSkillPointEntry E where E.level <= :unitLevel"
+                        +" order by E.level DESC",
+                LevelSkillPointEntry.class, new String[]{"unitLevel"}, new Object[]{unit.getExperience().getLevel()});
+        if(entryList == null || entryList.size() == 0) return;
+        LevelSkillPointEntry entry = entryList.get(0);
 
-        if(entry == null) return;
+//        if(entry == null) return;
         int existingSkillNum = unit.getSkills()==null? 0 : unit.getSkills().size();
         unit.getExperience().setSkillPoint(Math.max(entry.getSkillPoint() - existingSkillNum, 0));
-        session.update(unit);
+        HibernateUtil.update(unit);
     }
 
     // add one new skill to the unit, reduce the unit's skillPoint by one
     public boolean addSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
-        Query q = session.createQuery("From Skill S where S.name =:name");
-        q.setParameter("name", skillName);
-        Skill s = (Skill) q.uniqueResult();
+        Skill s = HibernateUtil.queryOne("From Skill S where S.name =:name",
+                Skill.class, new String[]{"name"}, new Object[]{skillName});
 
         int unitSkillPoint = unit.getExperience().getSkillPoint();
         if(s == null || unitSkillPoint < 1 ||
@@ -105,7 +106,7 @@ public class UnitDAO {
         if(unit.getSkills() == null || !unit.getSkills().contains(s)){
             unit.addSkill(s);
             unit.getExperience().setSkillPoint(unitSkillPoint - 1);
-            session.update(unit);
+            HibernateUtil.update(unit);
         }
         return true;
 
@@ -114,14 +115,13 @@ public class UnitDAO {
     // remove one skill from a unit, add its skillPoint by one
     public boolean removeSkill(int unitID, String skillName){
         Unit unit = getUnit(unitID);
-        Query q = session.createQuery("From Skill S where S.name =:name");
-        q.setParameter("name", skillName);
-        Skill s = (Skill) q.uniqueResult();
+        Skill s = HibernateUtil.queryOne("From Skill S where S.name =:name",
+                Skill.class, new String[]{"name"}, new Object[]{skillName});
         if(s == null || unit.getSkills() == null) return false;
         if(unit.getSkills().contains(s)) {
             unit.getSkills().remove(s);
             unit.getExperience().setSkillPoint(unit.getExperience().getSkillPoint()+1);
-            session.update(unit);
+            HibernateUtil.update(unit);
         }
         return true;
     }
