@@ -40,7 +40,8 @@ public class RelationshipDAO {
         TypedQuery<Relationship> q2 = session.createQuery("From Relationship r where r.senderId=:playerId and r.status=:status", Relationship.class);
         q2.setParameter("status", Relationship.RelationStatus.approved);
         q2.setParameter("playerId", playerId);
-        PlayerDAO playerDAO = new PlayerDAO(session);
+        PlayerDAO playerDAO = MetaDAO.getPlayerDAO();
+//        PlayerDAO playerDAO = new PlayerDAO(session);
         for(Relationship r:q1.getResultList()){
             FriendList.add(playerDAO.getPlayer(r.getSenderId()));
         }

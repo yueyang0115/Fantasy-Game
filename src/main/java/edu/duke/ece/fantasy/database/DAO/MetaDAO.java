@@ -7,7 +7,7 @@ import edu.duke.ece.fantasy.database.Tile;
 import org.hibernate.Session;
 
 public class MetaDAO {
-    PlayerDAO playerDAO;
+    private static PlayerDAO playerDAO = new PlayerDAO();
     InventoryDAO inventoryDAO;
     TileDAO tileDAO;
     WorldDAO worldDAO;
@@ -23,7 +23,7 @@ public class MetaDAO {
     Session session;
 
     public MetaDAO(Session session) {
-        playerDAO = new PlayerDAO(session);
+//        playerDAO = new PlayerDAO(session);
         inventoryDAO = new InventoryDAO(session);
         tileDAO = new TileDAO(session);
         worldDAO = new WorldDAO(session);
@@ -44,7 +44,7 @@ public class MetaDAO {
     }
 
 
-    public PlayerDAO getPlayerDAO() {
+    static public PlayerDAO getPlayerDAO() {
         return playerDAO;
     }
 

@@ -53,11 +53,11 @@ public class MessageHandler {
                 OldLoginHandler lh = new OldLoginHandler(metaDAO, sharedData);
                 result.setLoginResultMessage(lh.handle(loginMsg));
             }
-
-            if (signupMsg != null) {
-                SignUpHandler sh = new SignUpHandler(metaDAO);
-                result.setSignUpResultMessage(sh.handle(signupMsg));
-            }
+//
+//            if (signupMsg != null) {
+//                SignUpHandler sh = new SignUpHandler(metaDAO);
+//                result.setSignUpResultMessage(sh.handle(signupMsg));
+//            }
 
             if (positionMsg != null) {
                 PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);

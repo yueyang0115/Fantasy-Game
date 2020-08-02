@@ -8,21 +8,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SignUpHandler {
-    private MetaDAO metaDAO;
+//    private MetaDAO metaDAO;
     Logger logger = LoggerFactory.getLogger(SignUpHandler.class);
 
-    public SignUpHandler(MetaDAO metaDAO) {
-        this.metaDAO = metaDAO;
-    }
+//    public SignUpHandler(MetaDAO metaDAO) {
+//        this.metaDAO = metaDAO;
+//    }
 
     public SignUpResultMessage handle(SignUpRequestMessage input) {
         SignUpResultMessage result = new SignUpResultMessage();
         String username = input.getUsername();
         String password = input.getPassword();
 
-        Player player = metaDAO.getPlayerDAO().getPlayer(username);
+        Player player = MetaDAO.getPlayerDAO().getPlayer(username);
         if (player == null) {
-            metaDAO.getPlayerDAO().addPlayer(username, password);
+            MetaDAO.getPlayerDAO().addPlayer(username, password);
             result.setStatus("success");
             System.out.println("[DEBUG] SignUp succeed");
             logger.debug("[DEBUG] SignUp succeed");

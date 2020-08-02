@@ -30,47 +30,47 @@ public class MessageDispatcher {
         ReviveRequestMessage reviveMsg = input.getReviveRequestMessage();
         FriendRequestMessage friendRequestMessage = input.getFriendRequestMessage();
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        MetaDAO metaDAO = new MetaDAO(session);
-        session.beginTransaction();
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        MetaDAO metaDAO = new MetaDAO(session);
+//        session.beginTransaction();
 
         // set redirectMsg and player's status
-        if(redirectMsg != null){
-            if(userSession.getPlayer() != null) userSession.getPlayer().setStatus(redirectMsg.getDestination());
-            result.setRedirectMessage(redirectMsg);
-        }
-
-        if(friendRequestMessage != null){
-            FriendHandler fh = new FriendHandler(metaDAO);
-            result.setFriendResultMessage(fh.handle(userSession.getPlayer().getId(),friendRequestMessage));
-        }
-
-        if(reviveMsg != null){
-            ReviveHandler rh = new ReviveHandler(metaDAO);
-            result.setReviveResultMessage(rh.handle(userSession.getPlayer().getId()));
-        }
+//        if(redirectMsg != null){
+//            if(userSession.getPlayer() != null) userSession.getPlayer().setStatus(redirectMsg.getDestination());
+//            result.setRedirectMessage(redirectMsg);
+//        }
+//
+//        if(friendRequestMessage != null){
+//            FriendHandler fh = new FriendHandler(metaDAO);
+//            result.setFriendResultMessage(fh.handle(userSession.getPlayer().getId(),friendRequestMessage));
+//        }
+//
+//        if(reviveMsg != null){
+//            ReviveHandler rh = new ReviveHandler(metaDAO);
+//            result.setReviveResultMessage(rh.handle(userSession.getPlayer().getId()));
+//        }
 
         if (loginMsg != null) {
             // if login succeed, sharedData will hold login-player's info
-            LoginHandler lh = new LoginHandler(metaDAO, userSession);
+            LoginHandler lh = new LoginHandler(userSession);
             result.setLoginResultMessage(lh.handle(loginMsg));
         }
 
         if (signupMsg != null) {
-            SignUpHandler sh = new SignUpHandler(metaDAO);
+            SignUpHandler sh = new SignUpHandler();
             result.setSignUpResultMessage(sh.handle(signupMsg));
         }
-
-        if (positionMsg != null) {
-            PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);
-            result.setPositionResultMessage(positionUpdateHandler.handle(userSession.getPlayer(), positionMsg));
-            // received currentCoord in the request only hold x/y_coord, not hold wid
-            // we add wid to it
-            WorldCoord currentCoord  = positionMsg.getCurrentCoord();
-            currentCoord.setWid(userSession.getPlayer().getCurWorldId());
-            // update player info in sharedData between taskScheduler and messageHandler
-            userSession.getPlayer().setCurrentCoord(currentCoord);
-        }
+//
+//        if (positionMsg != null) {
+//            PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler(metaDAO);
+//            result.setPositionResultMessage(positionUpdateHandler.handle(userSession.getPlayer(), positionMsg));
+//            // received currentCoord in the request only hold x/y_coord, not hold wid
+//            // we add wid to it
+//            WorldCoord currentCoord  = positionMsg.getCurrentCoord();
+//            currentCoord.setWid(userSession.getPlayer().getCurWorldId());
+//            // update player info in sharedData between taskScheduler and messageHandler
+//            userSession.getPlayer().setCurrentCoord(currentCoord);
+//        }
 
         if (battleMsg != null) {
             //TODO : battleHandler should store unitQueue in database
@@ -82,44 +82,44 @@ public class MessageDispatcher {
 //            if(battleResult.getResult().equals("lose")) userSession.getPlayer().setStatus(WorldInfo.DeathWorld);
         }
 
-        if(levelUpMsg != null){
-            LevelUpHandler luh = new LevelUpHandler(metaDAO);
-            result.setLevelUpResultMessage(luh.handle(levelUpMsg));
-        }
+//        if(levelUpMsg != null){
+//            LevelUpHandler luh = new LevelUpHandler(metaDAO);
+//            result.setLevelUpResultMessage(luh.handle(levelUpMsg));
+//        }
+//
+//        if (attributeMsg != null) {
+//            AttributeHandler ah = new AttributeHandler(metaDAO);
+//            result.setAttributeResultMessage(ah.handle(attributeMsg, userSession.getPlayer().getId()));
+//        }
+//
+//        if (shopRequestMessage != null) {
+//            ShopHandler shopHandler = new ShopHandler(metaDAO);
+//            InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
+//
+//            if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(userSession.getPlayer().getCurWorldId());
+//            ShopResultMessage shopResultMessage = shopHandler.handle(shopRequestMessage, userSession.getPlayer().getId());
+//            // add inventory result to shop
+//            InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
+//            shopInventoryRequestMessage.setAction("list");
+//
+//            result.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, userSession.getPlayer().getId()));
+//            result.setShopResultMessage(shopResultMessage);
+//        }
+//
+//        if(inventoryRequestMessage != null){
+//            InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
+//            result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, userSession.getPlayer().getId()));
+//            AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
+//            result.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, userSession.getPlayer().getId()));
+//        }
+//
+//        if (buildingRequestMessage != null) {
+//            BuildingHandler buildingHandler = new BuildingHandler(metaDAO);
+//            if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(userSession.getPlayer().getCurWorldId());
+//            result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, userSession.getPlayer().getId()));
+//        }
 
-        if (attributeMsg != null) {
-            AttributeHandler ah = new AttributeHandler(metaDAO);
-            result.setAttributeResultMessage(ah.handle(attributeMsg, userSession.getPlayer().getId()));
-        }
-
-        if (shopRequestMessage != null) {
-            ShopHandler shopHandler = new ShopHandler(metaDAO);
-            InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
-
-            if (shopRequestMessage.getCoord() != null) shopRequestMessage.getCoord().setWid(userSession.getPlayer().getCurWorldId());
-            ShopResultMessage shopResultMessage = shopHandler.handle(shopRequestMessage, userSession.getPlayer().getId());
-            // add inventory result to shop
-            InventoryRequestMessage shopInventoryRequestMessage = new InventoryRequestMessage();
-            shopInventoryRequestMessage.setAction("list");
-
-            result.setInventoryResultMessage(inventoryHandler.handle(shopInventoryRequestMessage, userSession.getPlayer().getId()));
-            result.setShopResultMessage(shopResultMessage);
-        }
-
-        if(inventoryRequestMessage != null){
-            InventoryHandler inventoryHandler = new InventoryHandler(metaDAO);
-            result.setInventoryResultMessage(inventoryHandler.handle(inventoryRequestMessage, userSession.getPlayer().getId()));
-            AttributeRequestMessage attributeRequestMessage = new AttributeRequestMessage();
-            result.setAttributeResultMessage((new AttributeHandler(metaDAO)).handle(attributeRequestMessage, userSession.getPlayer().getId()));
-        }
-
-        if (buildingRequestMessage != null) {
-            BuildingHandler buildingHandler = new BuildingHandler(metaDAO);
-            if (buildingRequestMessage.getCoord() != null) buildingRequestMessage.getCoord().setWid(userSession.getPlayer().getCurWorldId());
-            result.setBuildingResultMessage(buildingHandler.handle(buildingRequestMessage, userSession.getPlayer().getId()));
-        }
-
-        session.getTransaction().commit();
+//        session.getTransaction().commit();
         userSession.sendMsg(result);
     }
 

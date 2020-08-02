@@ -24,11 +24,11 @@ public class Initializer {
 
     public void initialize_test_player() {
 //        session.beginTransaction();
-        PlayerDAO playerDAO = new PlayerDAO(session);
-        Player player = playerDAO.getPlayer("test");
-        if (player == null) { // if test player doesn't exist
-            playerDAO.addPlayer("test", "test");
-        }
+//        PlayerDAO playerDAO = new PlayerDAO(session);
+//        Player player = playerDAO.getPlayer("test");
+//        if (player == null) { // if test player doesn't exist
+//            playerDAO.addPlayer("test", "test");
+//        }
 //        session.getTransaction().commit();
     }
 

@@ -1,15 +1,15 @@
 package edu.duke.ece.fantasy.database;
 
+import edu.duke.ece.fantasy.ObjectMapperFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
-public class HibernateUtil
-{
+public class HibernateUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
-    private static SessionFactory buildSessionFactory()
-    {
+    private static SessionFactory buildSessionFactory() {
         try {
             // Create the SessionFactory from hibernate.cfg.xml
             return new Configuration().configure().buildSessionFactory();
@@ -28,5 +28,31 @@ public class HibernateUtil
     public static void shutdown() {
         // Close caches and connection pools
         getSessionFactory().close();
+    }
+
+    public static void save(Object obj) {
+        Session dbSession = getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        dbSession.save(obj);
+        dbSession.getTransaction().commit();
+    }
+
+    public static void delete(Object obj) {
+        Session dbSession = getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        dbSession.delete(obj);
+        dbSession.getTransaction().commit();
+    }
+
+    public static <T> T queryOne(String queryString, Class<?> entity, String[] parameterName, Object[] parameter) {
+        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        Query<?> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(queryString, entity);
+        for (int i = 0; i < parameter.length; i++) {
+            q.setParameter(parameterName[i], parameter[i]);
+        }
+        T res = (T) q.uniqueResult();
+        dbSession.getTransaction().commit();
+        return res;
     }
 }

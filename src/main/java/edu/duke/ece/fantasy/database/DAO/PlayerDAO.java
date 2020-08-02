@@ -7,17 +7,17 @@ import org.jasypt.util.password.BasicPasswordEncryptor;
 
 import java.util.List;
 
+
 public class PlayerDAO {
     private Session session;
     BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
 
 
-    public PlayerDAO(Session session) {
-        this.session = session;
-    }
+//    public PlayerDAO(Session session) {
+//        this.session = session;
+//    }
 
     public void addPlayer(String username, String password) {
-//        HibernateUtil.getSessionFactory().getCurrentSession();
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
 
@@ -32,33 +32,43 @@ public class PlayerDAO {
 
         // add default money
         player.setMoney(2000);
-        session.save(player);
+        HibernateUtil.save(player);
     }
 
+
     public Player getPlayerByWid(int wid) {
-        Query<Player> q = session.createQuery("From Player U where U.wid =:wid", Player.class);
-        q.setParameter("wid", wid);
-        return q.uniqueResult();
+//        Query<Player> q = session.createQuery("From Player U where U.curWorldId =:wid", Player.class);
+//        q.setParameter("wid", wid);
+//        session.
+//        return q.uniqueResult();
+        return HibernateUtil.queryOne("From Player U where U.curWorldId =:wid", Player.class, new String[]{"wid"}, new Object[]{wid});
     }
 
     public Player getPlayer(int id) {
-        Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
-        q.setParameter("id", id);
-        q.uniqueResult();
-        return q.uniqueResult();
+//        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
+//        dbSession.beginTransaction();
+//        Query<Player> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("From Player U where U.id =:id", Player.class);
+//        q.setParameter("id", id);
+//        Player res = q.uniqueResult();
+//        dbSession.getTransaction().commit();
+//        return res;
+        return HibernateUtil.queryOne("From Player U where U.id =:id", Player.class, new String[]{"id"}, new Object[]{id});
     }
 
     public Player getPlayer(String username) {
-        Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
-        q.setParameter("username", username);
-        return q.uniqueResult();
+//        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
+//        dbSession.beginTransaction();
+//        Query<Player> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery("From Player U where U.username =:username", Player.class);
+//        q.setParameter("username", username);
+//        Player res = q.uniqueResult();
+//        dbSession.getTransaction().commit();
+//        return res;
+        return HibernateUtil.queryOne("From Player U where U.username =:username", Player.class, new String[]{"username"}, new Object[]{username});
     }
 
     public Player getPlayer(String username, String password) {
         // select territory according to conditions
-        Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
-        q.setParameter("username", username);
-        Player res = q.uniqueResult();
+        Player res = getPlayer(username);
         if (res == null) {
             return null;
         }
@@ -67,6 +77,7 @@ public class PlayerDAO {
         } else {
             return null;
         }
+
     }
 
     // update player's status first in cache then in database
@@ -81,7 +92,7 @@ public class PlayerDAO {
 //        session.update(p);
 //    }
 
-    public void removeSoldier(int playerID, int soldierID){
+    public void removeSoldier(int playerID, int soldierID) {
         Player p = getPlayer(playerID);
         Query q = session.createQuery("From Soldier S where S.id =:id");
         q.setParameter("id", soldierID);
@@ -90,7 +101,7 @@ public class PlayerDAO {
         session.update(p);
     }
 
-    public void addWorld(int playerID, WorldInfo info){
+    public void addWorld(int playerID, WorldInfo info) {
         Player player = getPlayer(playerID);
 //        player.addWorldInfo(info);
         session.update(player);

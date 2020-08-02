@@ -12,8 +12,8 @@ public class LoginHandler {
 //    private SharedData sharedData;
     private UserSession userSession;
 
-    public LoginHandler(MetaDAO metaDAO, UserSession userSession){
-        this.playerDAO = metaDAO.getPlayerDAO();
+    public LoginHandler(UserSession userSession){
+        this.playerDAO = MetaDAO.getPlayerDAO();
         this.userSession = userSession;
     }
 
