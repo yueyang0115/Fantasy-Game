@@ -22,7 +22,7 @@ public class PlayerDAO {
         Player player = new Player(username, encryptPassword);
 
         //add two default soldier for each player
-        Soldier soldier = new Soldier("wizard", 6, 5, 20);
+        Soldier soldier = new Soldier("wizard", 100, 5, 20);
 //        Soldier soldier2 = new Soldier("soldier", 12, 3, 18);
 //        Skill basicSkill = new Skill("ironball",2);
 //        soldier.addSkill(basicSkill);
@@ -94,5 +94,16 @@ public class PlayerDAO {
         Player player = getPlayer(playerID);
 //        player.addWorldInfo(info);
         session.update(player);
+    }
+
+    public void setBattleInfo(int playerID, List<Integer> unitList){
+        Player p = getPlayer(playerID);
+        p.setBattleInfo(unitList);
+        session.update(p);
+    }
+
+    public List<Integer> getBattleInfo(int playerID){
+        Player p = getPlayer(playerID);
+        return p.getBattleInfo();
     }
 }

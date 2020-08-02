@@ -66,6 +66,9 @@ public class BattleHandler {
         // make a list of unitIDs, corresponding units of these IDs are in same order with unitQueue
         List<Integer> unitIDList = generateIDList(unitQueue);
 
+        // store battleQueue in player database
+        playerDAO.setBattleInfo(playerID, unitIDList);
+
         result.setBattleInitInfo(new BattleInitInfo(monsterList,soldierList,unitIDList));
         result.setResult("continue");
         return result;
@@ -97,6 +100,11 @@ public class BattleHandler {
 
     // handle "attack" message, use existing unitQueue and modify it
     public BattleResultMessage doBattle(BattleRequestMessage request, int playerID) {
+        // load battleQueue from player in database
+        List<Integer> loadedUnitList = playerDAO.getBattleInfo(playerID);
+        this.unitQueue = new LinkedList<>();
+        for(int id : loadedUnitList) this.unitQueue.offer(unitDAO.getUnit(id));
+
         BattleResultMessage result = new BattleResultMessage();
         List<BattleAction> actions = new ArrayList<>();
         WorldCoord where = request.getTerritoryCoord();
@@ -176,11 +184,16 @@ public class BattleHandler {
             if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
             // if soldier died, remove it from player's soldierList then delete it in db
             //if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
-            //unitDAO.deleteUnit(attackeeID);
+            // delete died monster
+            if(attackee instanceof Monster) unitDAO.deleteUnit(attackeeID);
         }
 
         //update unitQueue
         this.unitQueue = rollUnitQueue(this.unitQueue, deletedID);
+
+        // update battleQueue in player database
+        playerDAO.setBattleInfo(playerID, generateIDList(this.unitQueue));
+
         action.setAttackee(new Unit(attackee));
         action.setAttacker(new Unit(unitDAO.getUnit(attackerID))); // get up-to-date attacker from db
         String actionType = (attackerSkill == null) ? "normal" : attackerSkill.getName();
