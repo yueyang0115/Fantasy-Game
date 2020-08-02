@@ -73,6 +73,10 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<playerInventory> items = new ArrayList<>();
 
+    @ElementCollection
+    @Column(name = "battleInfo")
+    private List<Integer> battleInfo;
+
     public Player(String username, String password) {
         this.username = username;
         this.password = password;
@@ -262,6 +266,12 @@ public class Player implements Trader {
         metaDAO.getSession().save(playerInventory);
         this.addItem(playerInventory);
         return playerInventory;
+    }
+
+    public List<Integer> getBattleInfo() { return battleInfo; }
+
+    public void setBattleInfo(List<Integer> battleInfo) {
+        this.battleInfo = battleInfo;
     }
 
 }
