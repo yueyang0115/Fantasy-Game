@@ -1,7 +1,9 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Soldier.LevelUpHandler;
+import edu.duke.ece.fantasy.Soldier.Message.LevelUpRequestMessage;
+import edu.duke.ece.fantasy.Soldier.Message.LevelUpResultMessage;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
-import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.DAO.SkillDAO;
 import edu.duke.ece.fantasy.database.DAO.UnitDAO;
 import edu.duke.ece.fantasy.database.Player;
@@ -75,7 +77,7 @@ public class LevelUpHandlerTest {
     // no required Skill
     private void testChooseFail1(){
         when(mockedUnitDAO.addSkill(anyInt(),anyString())).thenReturn(false);
-        LevelUpHandler lh = new LevelUpHandler(mockedMetaDAO);
+        LevelUpHandler lh = new LevelUpHandler();
 
         availableSkills.remove(miniFireBall);
         soldier.getExperience().setLevel(10); // set level to 10

@@ -4,9 +4,6 @@ import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.levelUp.ExperienceLevelEntry;
 import edu.duke.ece.fantasy.database.levelUp.LevelSkillPointEntry;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
-import edu.duke.ece.fantasy.json.LevelUpRequestMessage;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 import java.util.List;
 

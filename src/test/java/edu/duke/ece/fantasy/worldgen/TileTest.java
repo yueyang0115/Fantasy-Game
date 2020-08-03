@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 
+import edu.duke.ece.fantasy.World.worldgen.Square;
+import edu.duke.ece.fantasy.World.worldgen.TileInfo;
 import org.junit.jupiter.api.Test;
 
 public class TileTest {

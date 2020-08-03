@@ -3,11 +3,10 @@ package edu.duke.ece.fantasy.task;
 import edu.duke.ece.fantasy.SharedData;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.json.MessagesS2C;
-import edu.duke.ece.fantasy.json.PositionResultMessage;
+import edu.duke.ece.fantasy.World.Message.PositionResultMessage;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,17 @@
 package edu.duke.ece.fantasy.json;
 
+import edu.duke.ece.fantasy.Battle.Message.BattleRequestMessage;
+import edu.duke.ece.fantasy.Building.Message.BuildingRequestMessage;
+import edu.duke.ece.fantasy.Building.Message.ShopRequestMessage;
+import edu.duke.ece.fantasy.Friend.Message.FriendRequestMessage;
+import edu.duke.ece.fantasy.Item.Message.InventoryRequestMessage;
+import edu.duke.ece.fantasy.Soldier.Message.AttributeRequestMessage;
+import edu.duke.ece.fantasy.Soldier.Message.LevelUpRequestMessage;
+import edu.duke.ece.fantasy.Soldier.Message.ReviveRequestMessage;
+import edu.duke.ece.fantasy.Account.Message.LoginRequestMessage;
+import edu.duke.ece.fantasy.Account.Message.SignUpRequestMessage;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.World.Message.PositionRequestMessage;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessagesC2S {

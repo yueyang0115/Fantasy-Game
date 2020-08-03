@@ -1,10 +1,11 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Item.InventoryHandler;
 import edu.duke.ece.fantasy.Item.NormalPotion;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
-import edu.duke.ece.fantasy.json.InventoryRequestMessage;
-import edu.duke.ece.fantasy.json.InventoryResultMessage;
+import edu.duke.ece.fantasy.Item.Message.InventoryRequestMessage;
+import edu.duke.ece.fantasy.Item.Message.InventoryResultMessage;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

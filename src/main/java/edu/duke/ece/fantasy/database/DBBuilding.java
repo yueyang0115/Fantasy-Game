@@ -1,16 +1,8 @@
 package edu.duke.ece.fantasy.database;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.Item.Item;
-import edu.duke.ece.fantasy.building.Building;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Polymorphism;
-import org.hibernate.annotations.PolymorphismType;
+import edu.duke.ece.fantasy.Building.Building;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

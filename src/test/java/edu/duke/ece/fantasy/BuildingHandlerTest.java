@@ -1,12 +1,12 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.building.BaseShop;
-import edu.duke.ece.fantasy.building.Shop;
-import edu.duke.ece.fantasy.building.SuperShop;
+import edu.duke.ece.fantasy.Building.BuildingHandler;
+import edu.duke.ece.fantasy.Building.BaseShop;
+import edu.duke.ece.fantasy.Building.SuperShop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
-import edu.duke.ece.fantasy.json.BuildingRequestMessage;
-import edu.duke.ece.fantasy.json.BuildingResultMessage;
+import edu.duke.ece.fantasy.Building.Message.BuildingRequestMessage;
+import edu.duke.ece.fantasy.Building.Message.BuildingResultMessage;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

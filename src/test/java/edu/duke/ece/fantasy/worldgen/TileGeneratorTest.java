@@ -3,6 +3,8 @@ package edu.duke.ece.fantasy.worldgen;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import edu.duke.ece.fantasy.World.worldgen.Square;
+import edu.duke.ece.fantasy.World.worldgen.TileGenerator;
 import org.junit.jupiter.api.Test;
 
 class TileGeneratorTest {

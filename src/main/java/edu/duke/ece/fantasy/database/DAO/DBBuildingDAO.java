@@ -1,11 +1,9 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.building.Building;
+import edu.duke.ece.fantasy.Building.Building;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.WorldCoord;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 public class DBBuildingDAO {
 

@@ -1,11 +1,8 @@
 package edu.duke.ece.fantasy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.database.HibernateUtil;
-import edu.duke.ece.fantasy.json.*;
-import org.hibernate.Session;
+import edu.duke.ece.fantasy.Friend.Message.FriendRequestMessage;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageHandlerTest {
 //    MessageHandler mh = new MessageHandler();

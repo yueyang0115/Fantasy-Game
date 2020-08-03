@@ -3,8 +3,8 @@ package edu.duke.ece.fantasy;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.json.LoginRequestMessage;
-import edu.duke.ece.fantasy.json.LoginResultMessage;
+import edu.duke.ece.fantasy.Account.Message.LoginRequestMessage;
+import edu.duke.ece.fantasy.Account.Message.LoginResultMessage;
 
 public class OldLoginHandler {
     private PlayerDAO playerDAO;

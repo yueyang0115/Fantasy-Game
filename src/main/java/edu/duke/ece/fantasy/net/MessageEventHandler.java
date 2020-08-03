@@ -33,7 +33,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
-        MessagesC2S packet = (MessagesC2S) msg;
+        Message packet = (Message) msg;
         logger.info("receive pact, content is {}", ObjectMapperFactory.getObjectMapper().writeValueAsString(packet));
 
         final Channel channel = context.channel();

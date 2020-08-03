@@ -37,11 +37,11 @@ public class RelationshipDAO {
         // use playerId as both receiver and sender since player could be both of them
         List<Relationship> r1 = HibernateUtil.queryList("From Relationship r where r.receiverId=:playerId and r.status=:status",
                 Relationship.class,
-                new String[]{"receiverId", "status"},
+                new String[]{"playerId", "status"},
                 new Object[]{playerId, Relationship.RelationStatus.approved});
-        List<Relationship> r2 = HibernateUtil.queryList("From Relationship r where r.receiverId=:playerId and r.status=:status",
+        List<Relationship> r2 = HibernateUtil.queryList("From Relationship r where r.senderId=:playerId and r.status=:status",
                 Relationship.class,
-                new String[]{"senderId", "status"},
+                new String[]{"playerId", "status"},
                 new Object[]{playerId, Relationship.RelationStatus.approved});
         for (Relationship r : r1) {
             FriendList.add(playerDAO.getPlayer(r.getSenderId()));

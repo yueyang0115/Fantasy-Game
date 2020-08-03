@@ -1,10 +1,6 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.building.Shop;
-import edu.duke.ece.fantasy.building.SuperShop;
 import edu.duke.ece.fantasy.database.*;
-import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
-import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import org.hibernate.Session;
 
 public class Initializer {

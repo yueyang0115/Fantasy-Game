@@ -70,7 +70,7 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<playerInventory> items = new ArrayList<>();
 
     @ElementCollection

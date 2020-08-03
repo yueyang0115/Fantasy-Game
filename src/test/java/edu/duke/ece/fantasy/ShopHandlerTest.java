@@ -1,12 +1,13 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Building.ShopHandler;
 import edu.duke.ece.fantasy.Item.NormalPotion;
 import edu.duke.ece.fantasy.Item.SuperPotion;
-import edu.duke.ece.fantasy.building.BaseShop;
+import edu.duke.ece.fantasy.Building.BaseShop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
-import edu.duke.ece.fantasy.json.ShopRequestMessage;
-import edu.duke.ece.fantasy.json.ShopResultMessage;
+import edu.duke.ece.fantasy.Building.Message.ShopRequestMessage;
+import edu.duke.ece.fantasy.Building.Message.ShopResultMessage;
 import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

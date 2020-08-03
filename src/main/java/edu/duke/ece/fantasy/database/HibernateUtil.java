@@ -71,9 +71,11 @@ public class HibernateUtil {
 
     public static void execute(String queryString, String paraName, Object para) {
         Session session = getSessionFactory().getCurrentSession();
+        session.beginTransaction();
         Query q = session.createQuery(queryString);
         q.setParameter(paraName, para);
         q.executeUpdate();
+        session.getTransaction().commit();
     }
 
     public static <T> T queryOne(String queryString, Class<?> entity, String[] parameterName, Object[] parameter) {

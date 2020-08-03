@@ -1,22 +1,13 @@
 package edu.duke.ece.fantasy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.World.PositionUpdateHandler;
 import edu.duke.ece.fantasy.database.DAO.*;
-import edu.duke.ece.fantasy.json.PositionRequestMessage;
-import edu.duke.ece.fantasy.json.PositionResultMessage;
-import org.hibernate.Session;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PositionUpdateHandlerTest {
