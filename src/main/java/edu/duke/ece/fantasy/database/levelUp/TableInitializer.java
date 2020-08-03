@@ -23,9 +23,9 @@ public class TableInitializer {
     }
 
     public void initializeAll(){
-        session.createQuery("delete from Skill ").executeUpdate();
-        session.createQuery("delete from LevelSkillPointEntry ").executeUpdate();
-        session.createQuery("delete from ExperienceLevelEntry").executeUpdate();
+//        session.createQuery("delete from Skill ").executeUpdate();
+//        session.createQuery("delete from LevelSkillPointEntry ").executeUpdate();
+//        session.createQuery("delete from ExperienceLevelEntry").executeUpdate();
         buildSkillTable();
         buildLevelSkillPointTable();
         buildExperienceLevelTable();

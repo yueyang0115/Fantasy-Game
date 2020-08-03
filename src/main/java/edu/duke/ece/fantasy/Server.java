@@ -2,6 +2,7 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
+import edu.duke.ece.fantasy.net.MessageUtil;
 import edu.duke.ece.fantasy.net.SocketServer;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -47,6 +48,7 @@ public class Server {
     }
 
     public void startGame() throws Exception {
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
@@ -63,10 +65,11 @@ public class Server {
             System.out.println("Failed to create session and jdbc connection");
             e.printStackTrace();
         }
+        System.out.println("initial end");
 
         socketServer = new SocketServer();
         socketServer.start();
-
+        System.out.println("socket start");
 //        while (true) {
 //            // one thread per player
 //            PlayerHandler ph = new PlayerHandler(new TCPCommunicator(TCPserverSock), new UDPCommunicator(UDPserverSock));
