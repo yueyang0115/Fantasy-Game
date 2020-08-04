@@ -11,6 +11,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TableInitializer {
@@ -23,12 +24,20 @@ public class TableInitializer {
     }
 
     public void initializeAll(){
-//        session.createQuery("delete from Skill ").executeUpdate();
-//        session.createQuery("delete from LevelSkillPointEntry ").executeUpdate();
-//        session.createQuery("delete from ExperienceLevelEntry").executeUpdate();
-        buildSkillTable();
-        buildLevelSkillPointTable();
-        buildExperienceLevelTable();
+        List<Skill> skillList = HibernateUtil.queryList("From Skill",Skill.class, new String[]{}, new Object[]{});
+        if(skillList == null || skillList.size() == 0) {
+            buildSkillTable();
+        }
+
+        List<LevelSkillPointEntry> entryList1 = HibernateUtil.queryList("From LevelSkillPointEntry", LevelSkillPointEntry.class, new String[]{}, new Object[]{});
+        if(entryList1 == null || entryList1.size()==0){
+            buildLevelSkillPointTable();
+        }
+
+        List<ExperienceLevelEntry> entryList2 = HibernateUtil.queryList("From ExperienceLevelEntry", ExperienceLevelEntry.class, new String[]{}, new Object[]{});
+        if(entryList2 == null || entryList2.size()==0){
+            buildExperienceLevelTable();
+        }
     }
 
     public void buildSkillTable(){
