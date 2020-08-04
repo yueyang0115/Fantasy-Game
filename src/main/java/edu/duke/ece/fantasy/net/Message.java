@@ -1,6 +1,8 @@
 package edu.duke.ece.fantasy.net;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * base class of IO message
  */
@@ -10,6 +12,7 @@ public abstract class Message {
      * messageMeta, module of message
      * @return
      */
+    @JsonIgnore
     public short getModule() {
         MessageMeta annotation = getClass().getAnnotation(MessageMeta.class);
         if (annotation != null) {
@@ -22,6 +25,7 @@ public abstract class Message {
      * messageMeta, subType of module
      * @return
      */
+    @JsonIgnore
     public byte getCmd() {
         MessageMeta annotation = getClass().getAnnotation(MessageMeta.class);
         if (annotation != null) {
