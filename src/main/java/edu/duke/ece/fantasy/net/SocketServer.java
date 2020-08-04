@@ -43,7 +43,7 @@ public class SocketServer {
                     .sync()
                     .addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
-                            logger.info("netty server start，listen to user's request @port:" + serverPort + "......");
+                            logger.info("netty server start, listen to user's request @port:" + serverPort + "......");
                         } else {
                             logger.info("netty server start failed");
                         }
