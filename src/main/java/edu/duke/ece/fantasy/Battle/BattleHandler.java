@@ -28,17 +28,17 @@ public class BattleHandler {
     private Queue<Unit> unitQueue;
 
     public BattleHandler() {
+        monsterDAO = MetaDAO.getMonsterDAO();
+        soldierDAO = MetaDAO.getSoldierDAO();
+        unitDAO = MetaDAO.getUnitDAO();
+        territoryDAO = MetaDAO.getTerritoryDAO();
+        playerDAO = MetaDAO.getPlayerDAO();
+        skillDAO = MetaDAO.getSkillDAO();
+        worldDAO = MetaDAO.getWorldDAO();
     }
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
-    public BattleResultMessage handle(BattleRequestMessage request, int playerID, MetaDAO metaDAO){
-        monsterDAO = metaDAO.getMonsterDAO();
-        soldierDAO = metaDAO.getSoldierDAO();
-        unitDAO = metaDAO.getUnitDAO();
-        territoryDAO = metaDAO.getTerritoryDAO();
-        playerDAO = metaDAO.getPlayerDAO();
-        skillDAO = metaDAO.getSkillDAO();
-        worldDAO = metaDAO.getWorldDAO();
+    public BattleResultMessage handle(BattleRequestMessage request, int playerID){
 
         String action = request.getAction();
         if(action.equals("escape")){
