@@ -12,7 +12,6 @@ public class ShopHandler {
     private PlayerDAO playerDAO;
     private DBBuildingDAO dbBuildingDAO;
     private InventoryDAO inventoryDAO;
-    private MetaDAO metaDAO;
     private PlayerInventoryDAO playerInventoryDAO;
     private ShopInventoryDAO shopInventoryDAO;
 
