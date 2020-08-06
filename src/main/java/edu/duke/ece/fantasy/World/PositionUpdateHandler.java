@@ -80,6 +80,7 @@ public class PositionUpdateHandler {
 
         List<WorldCoord> worldCoords = positionMsg.getCoords();
         WorldCoord currentCoord = positionMsg.getCurrentCoord();
+        player.setCurrentCoord(currentCoord);
         boolean isNewWorld = false;
         if (info == null) { // generate info
             info = worldDAO.initWorld(currentCoord, player.getUsername(), 20);//TODO: Fix hardcoding of tile size
