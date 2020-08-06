@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 
@@ -96,6 +97,7 @@ public class PlayerDAO {
 
     public List<Integer> getBattleInfo(int playerID){
         Player p = getPlayer(playerID);
-        return p.getBattleInfo();
+        List<Integer> res = p.getBattleInfo();
+        return res;
     }
 }

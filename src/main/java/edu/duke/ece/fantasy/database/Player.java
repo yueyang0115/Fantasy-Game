@@ -70,10 +70,12 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<playerInventory> items = new ArrayList<>();
 
-    @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ElementCollection()
     @Column(name = "battleInfo")
     private List<Integer> battleInfo;
 
