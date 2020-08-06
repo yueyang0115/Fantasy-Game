@@ -1,15 +1,18 @@
 package edu.duke.ece.fantasy.Item.Message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Item.CmdInventory;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.playerInventory;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.INVENTORY, cmd = CmdInventory.RES_INVENTORY)
 public class InventoryResultMessage extends Message {
     private List<Inventory> items = new ArrayList<>(); //all items of player
     private String result; //status: "valid","invalid"

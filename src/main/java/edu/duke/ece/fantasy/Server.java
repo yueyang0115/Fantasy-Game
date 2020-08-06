@@ -67,6 +67,8 @@ public class Server {
         }
         System.out.println("initial end");
 
+        TaskHandler.INSTANCE.initialize();
+
         socketServer = new SocketServer();
         socketServer.start();
         System.out.println("socket start");

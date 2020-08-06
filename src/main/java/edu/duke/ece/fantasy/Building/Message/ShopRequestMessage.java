@@ -1,17 +1,20 @@
 package edu.duke.ece.fantasy.Building.Message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Building.CmdBuilding;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.List;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.BUILDING, cmd = CmdBuilding.REQ_SHOP)
 public class ShopRequestMessage extends Message {
     private WorldCoord coord;
-//    private Map<Integer, Integer> itemMap;
+    //    private Map<Integer, Integer> itemMap;
     private List<Inventory> selectedItems;
     private String action;//"list""buy""sell"
 

@@ -1,13 +1,16 @@
 package edu.duke.ece.fantasy.Building.Message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Building.CmdBuilding;
 import edu.duke.ece.fantasy.Building.Prototype.Building;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.BUILDING, cmd = CmdBuilding.RES_BUILDING)
 public class BuildingResultMessage extends Message {
     List<Building> BuildingList = new ArrayList<>();
     Building building;

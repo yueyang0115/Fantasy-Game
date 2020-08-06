@@ -4,9 +4,9 @@ import org.checkerframework.common.reflection.qual.GetClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 public enum TaskHandler {
     INSTANCE;
@@ -14,36 +14,43 @@ public enum TaskHandler {
     private static Logger logger = LoggerFactory.getLogger(TaskHandler.class);
     private final int CORE_SIZE = Runtime.getRuntime().availableProcessors();
 
-    ExecutorService workerPool = Executors.newFixedThreadPool(CORE_SIZE);
+    List<TaskWorker> workerPool = new ArrayList<>();
     Boolean isRun; // make sure taskWorker accept task all the time
 
-    public void initialize(){
+    public void initialize() {
         isRun = true;
-        for (int i=0;i<CORE_SIZE;i++){
-            workerPool.submit(new TaskWorker(i));
+        for (int i = 0; i < CORE_SIZE; i++) {
+            TaskWorker worker = new TaskWorker(i);
+            workerPool.add(worker);
+            new Thread(worker).start();
         }
     }
 
-    public void shutDown(){
+    public void shutDown() {
         isRun = false;
-        workerPool.shutdown();
     }
 
-    private class TaskWorker implements Runnable{
+    private class TaskWorker implements Runnable {
         private int id;
+        BlockingDeque<DistributeTask> taskQueue = new LinkedBlockingDeque<>();
 
-        public TaskWorker(int index){
+        public TaskWorker(int index) {
             id = index;
         }
 
-        public void addTask(){
-
+        public void addTask(DistributeTask task) {
+            taskQueue.add(task);
         }
 
         @Override
         public void run() {
-            while(isRun){
-
+            while (isRun) {
+                try {
+                    DistributeTask task = taskQueue.take();
+                    task.action();
+                } catch (InterruptedException e) {
+                    logger.error("task worker " + id, e);
+                }
             }
         }
     }

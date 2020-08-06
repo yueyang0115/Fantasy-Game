@@ -3,6 +3,7 @@ package edu.duke.ece.fantasy.net;
 import edu.duke.ece.fantasy.ObjectMapperFactory;
 import edu.duke.ece.fantasy.json.MessagesC2S;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
 
     MessageDispatcher messageDispatcher;
 
-    public MessageEventHandler(MessageDispatcher messageDispatcher){
+    public MessageEventHandler(MessageDispatcher messageDispatcher) {
         super();
         this.messageDispatcher = messageDispatcher;
     }
@@ -23,12 +24,13 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        logger.info("Establish connection,IP=[{}]",ChannelUtils.getIp(channel));
+        logger.info("Establish connection,IP=[{}]", ChannelUtils.getIp(channel));
         if (!ChannelUtils.addChannelSession(ctx.channel(), new UserSession(channel))) {
             ctx.channel().close();
             logger.error("Duplicate session,IP=[{}]", ChannelUtils.getIp(channel));
         }
         UserSession userSession = ChannelUtils.getSessionBy(channel);
+        userSession.setDistributeKey(ChannelUtils.getNextDistributeKey()); // assign distribute key to specific session
     }
 
     @Override

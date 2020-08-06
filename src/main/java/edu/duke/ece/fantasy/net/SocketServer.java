@@ -71,7 +71,7 @@ public class SocketServer {
             // encode
             pipeline.addLast(new LengthFieldPrepender(2));
             pipeline.addLast(new JsonProtocolEncoder());
-            // 客户端300秒没收发包，便会触发UserEventTriggered事件到IdleEventHandler
+            // IdleEventHandler
             pipeline.addLast(new IdleStateHandler(0, 0, 300));
             pipeline.addLast(new MessageEventHandler(new MessageDispatcher()));
         }

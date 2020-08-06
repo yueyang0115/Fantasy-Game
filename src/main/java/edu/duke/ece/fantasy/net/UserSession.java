@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserSession {
     private Channel channel;
-
+    private int distributeKey;
     private Player player;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,6 +28,14 @@ public class UserSession {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void setDistributeKey(int distributeKey) {
+        this.distributeKey = distributeKey;
+    }
+
+    public int getDistributeKey() {
+        return distributeKey;
     }
 
     public void setPlayer(Player player) {
