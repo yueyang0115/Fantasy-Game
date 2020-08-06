@@ -46,12 +46,24 @@ public enum TaskHandler {
             taskQueue.add(task);
         }
 
+        private void runScheduledTask(ScheduledTask scheduledTask) {
+            long TimeUntilNextTask = scheduledTask.getWhen() - System.currentTimeMillis();
+            if (TimeUntilNextTask <= 0) {
+                // at least the first task in taskQueue should be executed
+                scheduledTask.action();
+            }
+        }
+
         @Override
         public void run() {
             while (isRun) {
                 try {
                     DistributeTask task = taskQueue.take();
-                    task.action();
+                    if (task instanceof ScheduledTask) {
+                        runScheduledTask((ScheduledTask) task);
+                    } else {
+                        task.action();
+                    }
                 } catch (InterruptedException e) {
                     logger.error("task worker " + id, e);
                 }

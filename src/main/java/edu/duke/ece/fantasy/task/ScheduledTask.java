@@ -1,11 +1,12 @@
 package edu.duke.ece.fantasy.task;
 
-public abstract class ScheduledTask implements Task{
+public abstract class ScheduledTask extends DistributeTask{
     private long when; // the time when the task should be executed
     private int repeatedInterval;
     private boolean repeating;
 
     public ScheduledTask(long when, int repeatedInterval, boolean repeating) {
+        super();
         this.when = when;
         this.repeatedInterval = repeatedInterval;
         this.repeating = repeating;
