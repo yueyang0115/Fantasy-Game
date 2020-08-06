@@ -1,7 +1,7 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.Building.BaseShop;
-import edu.duke.ece.fantasy.Building.Shop;
+import edu.duke.ece.fantasy.Building.Prototype.BaseShop;
+import edu.duke.ece.fantasy.Building.Prototype.Shop;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;

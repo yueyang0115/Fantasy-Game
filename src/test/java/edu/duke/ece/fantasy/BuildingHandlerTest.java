@@ -1,8 +1,8 @@
 package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.Building.BuildingHandler;
-import edu.duke.ece.fantasy.Building.BaseShop;
-import edu.duke.ece.fantasy.Building.SuperShop;
+import edu.duke.ece.fantasy.Building.Prototype.BaseShop;
+import edu.duke.ece.fantasy.Building.Prototype.SuperShop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.Building.Message.BuildingRequestMessage;
@@ -51,7 +51,7 @@ class BuildingHandlerTest {
         when(mockMetaDAO.getDbBuildingDAO()).thenReturn(mockDBBuildingDAO);
         when(mockMetaDAO.getShopInventoryDAO()).thenReturn(mockShopInventoryDAO);
 
-        buildingHandler = new BuildingHandler(mockMetaDAO);
+        buildingHandler = new BuildingHandler();
 //        when(mockPlayerDAO.getPlayer()).thenReturn();
 //        when().thenReturn();
     }

@@ -3,8 +3,8 @@ package edu.duke.ece.fantasy.World;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.duke.ece.fantasy.Building.Building;
-import edu.duke.ece.fantasy.Building.Castle;
+import edu.duke.ece.fantasy.Building.Prototype.Building;
+import edu.duke.ece.fantasy.Building.Prototype.Castle;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.World.Message.PositionRequestMessage;
@@ -12,7 +12,6 @@ import edu.duke.ece.fantasy.World.Message.PositionResultMessage;
 
 import edu.duke.ece.fantasy.World.worldgen.TileGenerator;
 import edu.duke.ece.fantasy.net.UserSession;
-import org.graalvm.compiler.lir.LIRInstruction;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
@@ -95,7 +94,6 @@ public class PositionUpdateHandler {
               the territory's tame*/
             (new Castle()).onCreate(info.getStartCoords());
         }
-
 
         GetCoordInfo(worldCoords);
 

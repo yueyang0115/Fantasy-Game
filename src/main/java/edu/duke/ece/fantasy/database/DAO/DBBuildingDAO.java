@@ -1,6 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.Building.Building;
+import edu.duke.ece.fantasy.Building.Prototype.Building;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.WorldCoord;
