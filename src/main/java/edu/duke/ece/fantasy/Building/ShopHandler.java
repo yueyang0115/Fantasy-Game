@@ -1,10 +1,12 @@
 package edu.duke.ece.fantasy.Building;
 
+import edu.duke.ece.fantasy.Building.Prototype.Shop;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.Building.Message.ShopRequestMessage;
 import edu.duke.ece.fantasy.Building.Message.ShopResultMessage;
+import edu.duke.ece.fantasy.net.UserSession;
 
 import java.util.List;
 
@@ -23,8 +25,8 @@ public class ShopHandler {
         inventoryDAO = MetaDAO.getInventoryDAO();
     }
 
-    public ShopResultMessage handle(ShopRequestMessage request, int playerID) {
-        Player player = playerDAO.getPlayer(playerID);
+    public void handle(UserSession session, ShopRequestMessage request) {
+        Player player = session.getPlayer();
         String action = request.getAction();
 //        DBShop DBShop = DBShopDAO.getShop(request.getShopID());
 
@@ -56,9 +58,8 @@ public class ShopHandler {
             // convert dbInventory to clientInventory which contains more properties info
             result.addItem(inventory.toClient());
         }
-//        result.setItems(shopInventory);
-        return result;
-//        return null;
+
+        session.sendMsg(result);
     }
 
 

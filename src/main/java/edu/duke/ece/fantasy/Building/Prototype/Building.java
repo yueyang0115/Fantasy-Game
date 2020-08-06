@@ -1,6 +1,7 @@
-package edu.duke.ece.fantasy.Building;
+package edu.duke.ece.fantasy.Building.Prototype;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.duke.ece.fantasy.Building.Prerequisite;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DBBuilding;
 import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;

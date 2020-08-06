@@ -1,11 +1,16 @@
 package edu.duke.ece.fantasy.Building;
 
+import edu.duke.ece.fantasy.Building.Prototype.BaseShop;
+import edu.duke.ece.fantasy.Building.Prototype.Building;
+import edu.duke.ece.fantasy.Building.Prototype.Mine;
+import edu.duke.ece.fantasy.Building.Prototype.Shop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.Building.Message.BuildingRequestMessage;
 import edu.duke.ece.fantasy.Building.Message.BuildingResultMessage;
+import edu.duke.ece.fantasy.net.UserSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,12 +33,13 @@ public class BuildingHandler {
         BaseBuildingMap.put(mine.getName(), mine);
     }
 
-    public BuildingResultMessage handle(BuildingRequestMessage buildingRequestMessage, int playerId) {
+    public void handle(UserSession session, BuildingRequestMessage buildingRequestMessage) {
         BuildingResultMessage buildingResultMessage = new BuildingResultMessage();
         buildingResultMessage.setAction(buildingRequestMessage.getAction());
         String action = buildingRequestMessage.getAction();
 
         WorldCoord coord = buildingRequestMessage.getCoord();
+        Player curPlayer = session.getPlayer();
 
         try {
             if (action.equals("createList")) {
@@ -49,7 +55,7 @@ public class BuildingHandler {
                 buildingResultMessage.setResult("success");
             } else if (action.equals("create")) {
                 // create different building
-                Building building = Create(buildingRequestMessage, playerId);
+                Building building = Create(buildingRequestMessage, curPlayer);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
             } else if (action.equals("upgradeList")) {
@@ -61,7 +67,7 @@ public class BuildingHandler {
                 buildingResultMessage.setBuildingList(dbBuilding.toGameBuilding().getUpgradeList());
                 buildingResultMessage.setResult("success");
             } else if (action.equals("upgrade")) {
-                Building building = Update(buildingRequestMessage, playerId);
+                Building building = Update(buildingRequestMessage, curPlayer);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
             }
@@ -69,10 +75,11 @@ public class BuildingHandler {
             buildingResultMessage.setResult("Fail-" + e.getMessage());
         }
 
-        return buildingResultMessage;
+        HibernateUtil.update(curPlayer);
+        session.sendMsg(buildingResultMessage);
     }
 
-    private Building Create(BuildingRequestMessage buildingRequestMessage, int playerId) throws InvalidBuildingRequest {
+    private Building Create(BuildingRequestMessage buildingRequestMessage, Player player) throws InvalidBuildingRequest {
         WorldCoord coord = buildingRequestMessage.getCoord();
         String name = buildingRequestMessage.getBuildingName();
         // check if territory have building
@@ -86,7 +93,6 @@ public class BuildingHandler {
             throw new InvalidBuildingRequest("Building type doesn't exist");
         }
 
-        Player player = playerDAO.getPlayer(playerId);
 
         // deduce money
         if (!player.checkMoney(building.getCost())) {
@@ -98,7 +104,7 @@ public class BuildingHandler {
         return building;
     }
 
-    private Building Update(BuildingRequestMessage buildingRequestMessage, int playerId) throws InvalidBuildingRequest {
+    private Building Update(BuildingRequestMessage buildingRequestMessage, Player player) throws InvalidBuildingRequest {
         WorldCoord coord = buildingRequestMessage.getCoord();
         String name = buildingRequestMessage.getBuildingName();
 
@@ -114,8 +120,6 @@ public class BuildingHandler {
         if (UpgradeTo == null) {
             throw new InvalidBuildingRequest("Building type doesn't exist");
         }
-
-        Player player = playerDAO.getPlayer(playerId);
 
         // deduce money
         if (!player.checkMoney(UpgradeTo.getCost())) {

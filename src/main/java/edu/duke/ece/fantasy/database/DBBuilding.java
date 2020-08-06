@@ -1,6 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
-import edu.duke.ece.fantasy.Building.Building;
+import edu.duke.ece.fantasy.Building.Prototype.Building;
 
 import javax.persistence.*;
 

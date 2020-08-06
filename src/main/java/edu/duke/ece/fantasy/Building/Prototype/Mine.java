@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy.Building;
+package edu.duke.ece.fantasy.Building.Prototype;
 
 
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;

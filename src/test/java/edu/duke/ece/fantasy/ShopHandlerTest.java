@@ -3,7 +3,7 @@ package edu.duke.ece.fantasy;
 import edu.duke.ece.fantasy.Building.ShopHandler;
 import edu.duke.ece.fantasy.Item.NormalPotion;
 import edu.duke.ece.fantasy.Item.SuperPotion;
-import edu.duke.ece.fantasy.Building.BaseShop;
+import edu.duke.ece.fantasy.Building.Prototype.BaseShop;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.Building.Message.ShopRequestMessage;

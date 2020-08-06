@@ -1,7 +1,6 @@
 package edu.duke.ece.fantasy.World.Message;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import edu.duke.ece.fantasy.Building.Building;
+import edu.duke.ece.fantasy.Building.Prototype.Building;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.net.Message;
