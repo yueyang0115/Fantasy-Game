@@ -18,10 +18,14 @@ public class AccountHandler {
     private final PlayerDAO playerDAO;
     Logger logger = LoggerFactory.getLogger(getClass());
     // track online player
-    private ConcurrentMap<Integer, UserSession> player2sessions = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Integer, UserSession> player2sessions = new ConcurrentHashMap<>();
 
     public AccountHandler() {
         this.playerDAO = MetaDAO.getPlayerDAO();
+    }
+
+    public UserSession getSessionById(int id) {
+        return player2sessions.get(id);
     }
 
     public void handleLogin(UserSession userSession, LoginRequestMessage input) {
@@ -43,6 +47,7 @@ public class AccountHandler {
             result.setError_msg("LogIn failed, wrong password/username");
             System.out.println("[DEBUG] Login failed, wrong password/username");
         }
+
         userSession.sendMsg(result);
     }
 

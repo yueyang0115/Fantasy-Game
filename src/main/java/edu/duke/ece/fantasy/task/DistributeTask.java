@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
 public abstract class DistributeTask {
     private int distributeKey;

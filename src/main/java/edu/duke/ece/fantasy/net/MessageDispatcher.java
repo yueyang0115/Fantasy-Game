@@ -1,9 +1,9 @@
 package edu.duke.ece.fantasy.net;
 
 import edu.duke.ece.fantasy.Annotation.RequestMapping;
-import edu.duke.ece.fantasy.MessageTask;
+import edu.duke.ece.fantasy.task.MessageTask;
 import edu.duke.ece.fantasy.SingleReflection;
-import edu.duke.ece.fantasy.TaskHandler;
+import edu.duke.ece.fantasy.task.TaskHandler;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,18 +2,15 @@ package edu.duke.ece.fantasy;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.levelUp.TableInitializer;
-import edu.duke.ece.fantasy.net.MessageUtil;
 import edu.duke.ece.fantasy.net.SocketServer;
+import edu.duke.ece.fantasy.task.TaskHandler;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.*;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
 
 public class Server {
     private SocketServer socketServer;
@@ -44,7 +41,6 @@ public class Server {
         socketServer = new SocketServer();
         socketServer.start();
         logger.info("socket start");
-
     }
 
     public static void main(String[] args) {

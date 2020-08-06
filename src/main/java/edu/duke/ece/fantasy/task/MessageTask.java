@@ -1,4 +1,4 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

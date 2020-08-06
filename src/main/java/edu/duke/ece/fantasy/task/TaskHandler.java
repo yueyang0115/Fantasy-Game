@@ -1,6 +1,5 @@
-package edu.duke.ece.fantasy;
+package edu.duke.ece.fantasy.task;
 
-import org.checkerframework.common.reflection.qual.GetClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
