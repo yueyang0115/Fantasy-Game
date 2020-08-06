@@ -11,6 +11,8 @@ import edu.duke.ece.fantasy.World.Message.PositionRequestMessage;
 import edu.duke.ece.fantasy.World.Message.PositionResultMessage;
 
 import edu.duke.ece.fantasy.World.worldgen.TileGenerator;
+import edu.duke.ece.fantasy.net.UserSession;
+import org.graalvm.compiler.lir.LIRInstruction;
 
 public class PositionUpdateHandler {
     TerritoryDAO territoryDAO;
@@ -68,10 +70,10 @@ public class PositionUpdateHandler {
         }
     }
 
-    public PositionResultMessage handle(Player player, PositionRequestMessage positionMsg) {
+    public void handle(UserSession session, PositionRequestMessage positionMsg) {
         //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
-
+        Player player = session.getPlayer();
         //WorldInfo info = worldDAO.getInfo(wid);
 //        WorldInfo info = player.getWorlds().get(WorldInfo.MainWorld);
         System.out.println();
@@ -88,7 +90,7 @@ public class PositionUpdateHandler {
 
         GenerateTerritory(worldCoords, info);
 
-        if (isNewWorld&&player.getStatus().equals(WorldInfo.MainWorld)) {
+        if (isNewWorld && player.getStatus().equals(WorldInfo.MainWorld)) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
               the territory's tame*/
             (new Castle()).onCreate(info.getStartCoords());
@@ -100,7 +102,7 @@ public class PositionUpdateHandler {
         positionResultMessage.setTerritoryArray(territoryList);
         positionResultMessage.setBuildingArray(buildingList);
         positionResultMessage.setMonsterArray(monsterList);
-        return positionResultMessage;
+        session.sendMsg(positionResultMessage);
     }
 
 }

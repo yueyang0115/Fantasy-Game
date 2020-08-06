@@ -42,12 +42,16 @@ public class MessageDispatcher {
     }
 
     public void dispatch(UserSession userSession, Message msg) {
-        Method method = MESSAGE_METHOD.get(msg.getClass());
-        Object[] arguments = assignMethodArguments(userSession, msg, method.getParameterTypes());
         try {
-            method.invoke(method.getDeclaringClass().getConstructor().newInstance(), arguments);
-        } catch (Exception e) {
-            logger.error("", e);
+            Method method = MESSAGE_METHOD.get(msg.getClass());
+            Object[] arguments = assignMethodArguments(userSession, msg, method.getParameterTypes());
+            try {
+                method.invoke(method.getDeclaringClass().getConstructor().newInstance(), arguments);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        } catch (NullPointerException e) {
+            logger.error("Null pointer, possible reason: doesn't have [msg,method] in map");
         }
     }
 

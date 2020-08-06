@@ -1,12 +1,15 @@
 package edu.duke.ece.fantasy.World.Message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Account.CmdAccount;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.POSITION, cmd = CmdWorld.REQ_POSITION)
 public class PositionRequestMessage extends Message {
     private List<WorldCoord> coords;
     private WorldCoord currentCoord;

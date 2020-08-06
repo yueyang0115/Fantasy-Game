@@ -5,10 +5,12 @@ import edu.duke.ece.fantasy.Building.Building;
 import edu.duke.ece.fantasy.database.Monster;
 import edu.duke.ece.fantasy.database.Territory;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.POSITION, cmd = CmdWorld.RES_POSITION)
 public class PositionResultMessage extends Message {
     private List<Territory> territoryArray;
     private List<Monster> monsterArray;
