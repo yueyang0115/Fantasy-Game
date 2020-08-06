@@ -14,5 +14,9 @@ public abstract class DistributeTask {
         return distributeKey;
     }
 
+    public void setDistributeKey(int distributeKey) {
+        this.distributeKey = distributeKey;
+    }
+
     public abstract void action();
 }

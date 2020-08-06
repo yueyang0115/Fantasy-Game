@@ -5,8 +5,8 @@ public abstract class ScheduledTask extends DistributeTask{
     private int repeatedInterval;
     private boolean repeating;
 
-    public ScheduledTask(long when, int repeatedInterval, boolean repeating) {
-        super();
+    public ScheduledTask(long when, int repeatedInterval, boolean repeating, int distributeKey) {
+        super(distributeKey);
         this.when = when;
         this.repeatedInterval = repeatedInterval;
         this.repeating = repeating;

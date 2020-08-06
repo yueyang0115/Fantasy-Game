@@ -19,16 +19,16 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
     protected int X_RANGE = 10;
     protected int Y_RANGE = 10;
 
-    public MonsterScheduledTask(long when, int repeatedInterval, boolean repeating,UserSession session) {
-        super(when, repeatedInterval, repeating);
+    public MonsterScheduledTask(long when, int repeatedInterval, boolean repeating, UserSession session) {
+        super(when, repeatedInterval, repeating, session.getDistributeKey());
         this.player = session.getPlayer();
         this.session = session;
     }
 
     // add changed monster in a new msg, add this msg to resultMsgQueue, waiting to be sent
-    public void putMonsterInResultMsgQueue(Monster m){
+    public void putMonsterInResultMsgQueue(Monster m) {
         // generate a new resultMsg for the changed monster
-        PositionResultMessage positionMsg= new PositionResultMessage();
+        PositionResultMessage positionMsg = new PositionResultMessage();
         List<Monster> monsterList = new ArrayList<>();
         monsterList.add(m);
         positionMsg.setMonsterArray(monsterList);
@@ -39,7 +39,7 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
     }
 
     // cannot moveMonster/generateMonster when player doesn't hold valid coord or not in mainScene
-    public boolean cannotGenerateMonster(){
+    public boolean cannotGenerateMonster() {
         return !player.getStatus().equals(WorldInfo.MainWorld)
                 || player.getCurrentCoord() == null
                 || MetaDAO.getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
