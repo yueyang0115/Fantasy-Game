@@ -10,32 +10,30 @@ import edu.duke.ece.fantasy.net.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class MonsterScheduledTask extends ScheduledTask {
-    protected LinkedBlockingQueue<MessagesS2C> resultMsgQueue;
+
     protected Player player;
+    protected UserSession session;
 
     protected int X_RANGE = 10;
     protected int Y_RANGE = 10;
 
-    public MonsterScheduledTask(long when, int repeatedInterval, boolean repeating,UserSession session, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
+    public MonsterScheduledTask(long when, int repeatedInterval, boolean repeating,UserSession session) {
         super(when, repeatedInterval, repeating);
-        this.resultMsgQueue = resultMsgQueue;
         this.player = session.getPlayer();
+        this.session = session;
     }
 
     // add changed monster in a new msg, add this msg to resultMsgQueue, waiting to be sent
     public void putMonsterInResultMsgQueue(Monster m){
         // generate a new resultMsg for the changed monster
-        MessagesS2C result = new MessagesS2C();
         PositionResultMessage positionMsg= new PositionResultMessage();
         List<Monster> monsterList = new ArrayList<>();
         monsterList.add(m);
         positionMsg.setMonsterArray(monsterList);
-        result.setPositionResultMessage(positionMsg);
-        // add the positionUpdateMsg to resultMsgQueue
-        resultMsgQueue.offer(result);
+        // send the positionUpdateMsg
+        session.sendMsg(positionMsg);
         //change the monster's needUpdate field to false
         MetaDAO.getMonsterDAO().setMonsterStatus(m.getId(), false);
     }

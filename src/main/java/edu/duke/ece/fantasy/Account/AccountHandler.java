@@ -8,6 +8,9 @@ import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.net.UserSession;
+import edu.duke.ece.fantasy.task.MonsterGenerator;
+import edu.duke.ece.fantasy.task.MonsterMover;
+import edu.duke.ece.fantasy.task.TaskHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,10 @@ public class AccountHandler {
             // login success, make sharedData hold the login-player's info
             userSession.setPlayer(player);
             player2sessions.put(player.getId(), userSession);
+
+            // add tasks
+            TaskHandler.INSTANCE.addTask(new MonsterGenerator(System.currentTimeMillis(), 1000, true, userSession));
+            TaskHandler.INSTANCE.addTask(new MonsterMover(System.currentTimeMillis(), 7000, true, userSession));
         } else {
             result.setStatus("fail");
             result.setError_msg("LogIn failed, wrong password/username");

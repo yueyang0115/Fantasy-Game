@@ -11,8 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MonsterMover extends MonsterScheduledTask {
 
-    public MonsterMover(long when, int repeatedInterval, boolean repeating,  UserSession session, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
-        super(when, repeatedInterval, repeating, session, resultMsgQueue);
+    public MonsterMover(long when, int repeatedInterval, boolean repeating,  UserSession session) {
+        super(when, repeatedInterval, repeating, session);
     }
 
 

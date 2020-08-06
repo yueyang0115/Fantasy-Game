@@ -11,8 +11,8 @@ public class MonsterGenerator extends MonsterScheduledTask {
     private int MONSTER_LIMIT = 3;
     private static int TAME_LIMIT = 0;
 
-    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, UserSession session, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
-        super(when, repeatedInterval, repeating, session, resultMsgQueue);
+    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, UserSession session) {
+        super(when, repeatedInterval, repeating, session);
     }
 
     @Override
