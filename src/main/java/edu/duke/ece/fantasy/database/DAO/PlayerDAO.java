@@ -96,8 +96,14 @@ public class PlayerDAO {
     }
 
     public List<Integer> getBattleInfo(int playerID){
-        Player p = getPlayer(playerID);
-        List<Integer> res = p.getBattleInfo();
+        // To deal with lazy init, need to get battleInfo when a hibernate exists
+        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
+        dbSession.beginTransaction();
+        Query<Player> q = dbSession.createQuery("From Player U where U.id =:id", Player.class);
+        q.setParameter("id",playerID);
+        Player player = q.uniqueResult();
+        List<Integer> res = player.getBattleInfo();
+        dbSession.getTransaction().commit();
         return res;
     }
 }
