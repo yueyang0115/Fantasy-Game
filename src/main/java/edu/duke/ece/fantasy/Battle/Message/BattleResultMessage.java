@@ -1,11 +1,14 @@
 package edu.duke.ece.fantasy.Battle.Message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Battle.CmdBattle;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.BATTLE, cmd = CmdBattle.RES_BATTLE)
 public class BattleResultMessage extends Message {
     // battleInitInfo is set only when request is "start"
     private BattleInitInfo battleInitInfo;

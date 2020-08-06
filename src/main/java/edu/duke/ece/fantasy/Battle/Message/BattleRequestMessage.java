@@ -1,10 +1,14 @@
 package edu.duke.ece.fantasy.Battle.Message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Account.CmdAccount;
+import edu.duke.ece.fantasy.Battle.CmdBattle;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.BATTLE, cmd = CmdBattle.REQ_BATTLE)
 public class BattleRequestMessage extends Message {
     private WorldCoord territoryCoord; //territoryCoord includes: x,y,wid
     private String action;//"attack" "escape" "start"

@@ -3,10 +3,13 @@ package edu.duke.ece.fantasy.Battle.Message;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.duke.ece.fantasy.Account.CmdAccount;
+import edu.duke.ece.fantasy.Battle.CmdBattle;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BattleInitInfo extends Message {
     private List<Monster> monsters;  //all monsters in the territory
     private List<Soldier> soldiers;  //all soldiers the player has

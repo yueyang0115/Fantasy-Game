@@ -6,7 +6,6 @@ import edu.duke.ece.fantasy.net.Message;
 import edu.duke.ece.fantasy.net.MessageMeta;
 import edu.duke.ece.fantasy.net.Modules;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @MessageMeta(module = Modules.ACCOUNT, cmd = CmdAccount.REQ_LOGIN)
 public class LoginRequestMessage extends Message {
     private String username;
