@@ -51,7 +51,12 @@ public enum TaskHandler {
             if (TimeUntilNextTask <= 0) {
                 // at least the first task in taskQueue should be executed
                 scheduledTask.action();
+                if(scheduledTask.isRepeating()){
+                    scheduledTask.updateWhen();
+                    addTask(scheduledTask);
+                }
             }
+            else addTask(scheduledTask);
         }
 
         @Override
