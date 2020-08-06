@@ -66,6 +66,7 @@ public class BattleHandler {
 
         // get monsters and soldiers engaged in the battle
         currentCoord = request.getTerritoryCoord();
+        currentCoord.setWid(session.getPlayer().getCurWorldId());
         List<Monster> monsterList = monsterDAO.getMonsters(currentCoord);
         List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         // sort unit by speed and set the UnitQueue
