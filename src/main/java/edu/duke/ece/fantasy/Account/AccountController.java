@@ -12,11 +12,11 @@ public class AccountController {
 
     @RequestMapping
     public void ReqLogin(UserSession session, LoginRequestMessage msg){
-        GameContext.getLoginHandler().handle(session,msg);
+        GameContext.getAccountHandler().handleLogin(session,msg);
     }
 
     @RequestMapping
     public void ReqSignUp(UserSession session, SignUpRequestMessage msg){
-        GameContext.getSignUpHandler().handle(session,msg);
+        GameContext.getAccountHandler().handleSignup(session,msg);
     }
 }

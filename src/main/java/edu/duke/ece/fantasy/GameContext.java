@@ -1,21 +1,15 @@
 package edu.duke.ece.fantasy;
 
-import edu.duke.ece.fantasy.Account.LoginHandler;
-import edu.duke.ece.fantasy.Account.SignUpHandler;
+import edu.duke.ece.fantasy.Account.AccountHandler;
 import edu.duke.ece.fantasy.Battle.BattleHandler;
 import edu.duke.ece.fantasy.Building.BuildingHandler;
-import edu.duke.ece.fantasy.Building.Prototype.Shop;
 import edu.duke.ece.fantasy.Building.ShopHandler;
-import edu.duke.ece.fantasy.Item.InventoryController;
 import edu.duke.ece.fantasy.Item.InventoryHandler;
 import edu.duke.ece.fantasy.Soldier.AttributeHandler;
 import edu.duke.ece.fantasy.World.PositionUpdateHandler;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 public class GameContext {
-    private static LoginHandler loginHandler = new LoginHandler();
-    private static SignUpHandler signUpHandler = new SignUpHandler();
+    private static AccountHandler accountHandler = new AccountHandler();
     private static PositionUpdateHandler positionUpdateHandler = new PositionUpdateHandler();
     private static AttributeHandler attributeHandler = new AttributeHandler();
     private static InventoryHandler inventoryHandler = new InventoryHandler();
@@ -23,14 +17,10 @@ public class GameContext {
     private static ShopHandler shopHandler = new ShopHandler();
     private static BattleHandler battleHandler = new BattleHandler();
 
-    public static LoginHandler getLoginHandler() {
-        return loginHandler;
-    }
 
-    public static SignUpHandler getSignUpHandler() {
-        return signUpHandler;
+    public static AccountHandler getAccountHandler() {
+        return accountHandler;
     }
-
     public static PositionUpdateHandler getPositionUpdateHandler() {
         return positionUpdateHandler;
     }

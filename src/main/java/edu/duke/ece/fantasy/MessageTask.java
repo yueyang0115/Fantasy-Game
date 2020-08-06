@@ -3,7 +3,6 @@ package edu.duke.ece.fantasy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MessageTask extends DistributeTask {
