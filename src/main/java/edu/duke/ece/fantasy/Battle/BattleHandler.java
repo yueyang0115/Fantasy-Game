@@ -7,6 +7,7 @@ import edu.duke.ece.fantasy.Battle.Message.BattleResultMessage;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
+import edu.duke.ece.fantasy.net.UserSession;
 
 import java.util.*;
 
@@ -38,24 +39,27 @@ public class BattleHandler {
     }
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
-    public BattleResultMessage handle(BattleRequestMessage request, int playerID){
+    public BattleResultMessage handle(UserSession session, BattleRequestMessage request){
 
         String action = request.getAction();
         if(action.equals("escape")){
             BattleResultMessage result = new BattleResultMessage();
             result.setResult("escaped");
+            session.sendMsg(result);
             return result;
         }
         else if(action.equals("start")){
-            return doStart(request,playerID);
+            return doStart(session, request);
         }
         else {
-            return doBattle(request, playerID);
+            return doBattle(session, request);
         }
     }
 
     // handle "start battle" message, generate a new unitQueue to keep track of the attacker order
-    public BattleResultMessage doStart(BattleRequestMessage request, int playerID){
+    public BattleResultMessage doStart(UserSession session,BattleRequestMessage request){
+        int playerID = session.getPlayer().getId();
+
         // create a new unitQueue each time a new battle starts
         this.unitQueue = new LinkedList<>();
         BattleResultMessage result = new BattleResultMessage();
@@ -74,6 +78,7 @@ public class BattleHandler {
 
         result.setBattleInitInfo(new BattleInitInfo(monsterList,soldierList,unitIDList));
         result.setResult("continue");
+        session.sendMsg(result);
         return result;
     }
 
@@ -102,7 +107,9 @@ public class BattleHandler {
     }
 
     // handle "attack" message, use existing unitQueue and modify it
-    public BattleResultMessage doBattle(BattleRequestMessage request, int playerID) {
+    public BattleResultMessage doBattle(UserSession session, BattleRequestMessage request) {
+        int playerID = session.getPlayer().getId();
+
         // load battleQueue from player in database
         List<Integer> loadedUnitList = playerDAO.getBattleInfo(playerID);
         this.unitQueue = new LinkedList<>();
@@ -133,6 +140,7 @@ public class BattleHandler {
         }
 
         result.setActions(actions);
+        session.sendMsg(result);
         return result;
     }
 
