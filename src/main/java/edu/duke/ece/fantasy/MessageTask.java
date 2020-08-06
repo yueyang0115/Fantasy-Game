@@ -7,13 +7,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MessageTask extends DistributeTask {
-    private Method method;
-    private Object[] para;
-    private Object controller;
+    private final Method method;
+    private final Object[] para;
+    private final Object controller;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public MessageTask(Method method, Object[] para, Object controller, int distributeKey) {
+    public MessageTask(Method method, Object controller, Object[] para, int distributeKey) {
         super(distributeKey);
         this.method = method;
         this.para = para;

@@ -26,6 +26,11 @@ public enum TaskHandler {
         }
     }
 
+    public void addTask(DistributeTask task) {
+        int distributeKey = task.getDistributeKey() % workerPool.size();
+        workerPool.get(distributeKey).addTask(task);
+    }
+
     public void shutDown() {
         isRun = false;
     }

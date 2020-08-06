@@ -1,11 +1,14 @@
 package edu.duke.ece.fantasy.net;
 
 import edu.duke.ece.fantasy.Annotation.RequestMapping;
+import edu.duke.ece.fantasy.MessageTask;
 import edu.duke.ece.fantasy.SingleReflection;
+import edu.duke.ece.fantasy.TaskHandler;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,13 +48,16 @@ public class MessageDispatcher {
         try {
             Method method = MESSAGE_METHOD.get(msg.getClass());
             Object[] arguments = assignMethodArguments(userSession, msg, method.getParameterTypes());
-            try {
-                method.invoke(method.getDeclaringClass().getConstructor().newInstance(), arguments);
-            } catch (Exception e) {
-                logger.error("", e);
-            }
+            Object controller = method.getDeclaringClass().getConstructor().newInstance();
+            TaskHandler.INSTANCE.addTask(new MessageTask(method,
+                    controller,
+                    arguments, userSession.getDistributeKey()));
         } catch (NullPointerException e) {
-            logger.error("Null pointer, possible reason: doesn't have [msg,method] in map");
+            logger.error("Null pointer, possible reason: doesn't have [msg,method] in map", e);
+        } catch (NoSuchMethodException e) {
+            logger.error("Cannot new instance", e);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            logger.error("Method arguments are wrong", e);
         }
     }
 

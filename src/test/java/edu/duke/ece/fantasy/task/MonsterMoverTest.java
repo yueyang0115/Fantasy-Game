@@ -1,12 +1,10 @@
 package edu.duke.ece.fantasy.task;
 
-import edu.duke.ece.fantasy.SharedData;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.MonsterDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.json.MessagesS2C;
-import edu.duke.ece.fantasy.task.MonsterMover;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
