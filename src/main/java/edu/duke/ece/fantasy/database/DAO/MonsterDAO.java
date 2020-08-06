@@ -21,7 +21,7 @@ public class MonsterDAO {
     //get a monster from database based on the provided monsterID
     public Monster getMonster(int monsterID) {
         Monster res = HibernateUtil.queryOne("From Monster M where M.id =:id",
-                Monster.class, new String[]{"name"}, new Object[]{monsterID});
+                Monster.class, new String[]{"id"}, new Object[]{monsterID});
         return res;
     }
 
@@ -66,7 +66,7 @@ public class MonsterDAO {
     // count num of monsters within an area
     public int countMonstersInRange(WorldCoord where, int x_range, int y_range){
         List<Monster> monsterList = HibernateUtil.queryList(
-                "select * From Monster M where M.coord.wid =:wid"
+                "From Monster M where M.coord.wid =:wid"
                         +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
                         +" and M.coord.y >=:ylower and M.coord.y <=:yupper",
                 Monster.class, new String[]{"wid", "xlower", "xupper", "ylower", "yupper"},
