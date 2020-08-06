@@ -74,7 +74,6 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<playerInventory> items = new ArrayList<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
     @ElementCollection()
     @Column(name = "battleInfo")
     private List<Integer> battleInfo;
