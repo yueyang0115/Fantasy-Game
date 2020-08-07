@@ -18,6 +18,7 @@ public class BattleHandler {
     private PlayerDAO playerDAO;
     private TerritoryDAO territoryDAO;
     private SkillDAO skillDAO;
+    private UserSession session;
 
     private WorldCoord currentCoord;
     public static int TAME_RANGE_X = 3;
@@ -40,6 +41,7 @@ public class BattleHandler {
         territoryDAO = session.getMetaDAO().getTerritoryDAO();
         playerDAO = session.getMetaDAO().getPlayerDAO();
         skillDAO = session.getMetaDAO().getSkillDAO();
+        this.session = session;
 
         String action = request.getAction();
         if (action.equals("escape")) {
@@ -161,6 +163,7 @@ public class BattleHandler {
             territoryDAO.updateTameByRange(where, TAME_RANGE_X, TAME_RANGE_Y, 10, 5);
         } else if (!playerIsAlive(playerID)) {
             result.setResult("lose");
+            session.getPlayer().setStatus(WorldInfo.DeathWorld);
 //            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
 //            info.setWorldType(WorldInfo.DeathWorld);
 //            playerDAO.addWorld(playerID, info);

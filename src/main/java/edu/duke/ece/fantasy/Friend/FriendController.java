@@ -10,6 +10,7 @@ import edu.duke.ece.fantasy.net.UserSession;
 public class FriendController {
     @RequestMapping
     public void handleFriendReq(UserSession session, FriendRequestMessage friendRequestMessage) {
+        session.getPlayer().setStatus("IN_FRIEND");
         GameContext.getFriendHandler().handle(session, friendRequestMessage);
     }
 }

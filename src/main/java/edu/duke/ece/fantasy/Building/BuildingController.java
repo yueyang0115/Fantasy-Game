@@ -11,11 +11,13 @@ import edu.duke.ece.fantasy.net.UserSession;
 public class BuildingController {
     @RequestMapping
     public void handleBuildingReq(UserSession session, BuildingRequestMessage msg){
+        session.getPlayer().setStatus("IN_BUILDING");
         GameContext.getBuildingHandler().handle(session,msg);
     }
 
     @RequestMapping
     public void handleShopReq(UserSession session, ShopRequestMessage msg){
+        session.getPlayer().setStatus("IN_BUILDING");
         GameContext.getShopHandler().handle(session,msg);
     }
 }

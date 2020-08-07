@@ -8,6 +8,7 @@ import edu.duke.ece.fantasy.net.UserSession;
 public class BattleController {
     @RequestMapping
     public void ReqBattle(UserSession session, BattleRequestMessage msg){
+        session.getPlayer().setStatus("IN_BATTLE");
         GameContext.getBattleHandler().handle(session, msg);
     }
 }

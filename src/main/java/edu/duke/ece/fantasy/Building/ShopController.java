@@ -10,6 +10,7 @@ import edu.duke.ece.fantasy.net.UserSession;
 public class ShopController {
     @RequestMapping
     public void handleShopReq(UserSession session, ShopRequestMessage msg) {
+        session.getPlayer().setStatus("IN_BUILDING");
         GameContext.getShopHandler().handle(session, msg);
     }
 }
