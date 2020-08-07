@@ -17,7 +17,6 @@ public class MetaDAO {
     private  SkillDAO skillDAO;
     private  RelationshipDAO relationshipDAO;
 
-
     public MetaDAO(Session session) {
         playerDAO = new PlayerDAO(session);
         inventoryDAO = new InventoryDAO(session);
@@ -41,7 +40,6 @@ public class MetaDAO {
     public RelationshipDAO getRelationshipDAO() {
         return relationshipDAO;
     }
-
 
      public PlayerDAO getPlayerDAO() {
         return playerDAO;

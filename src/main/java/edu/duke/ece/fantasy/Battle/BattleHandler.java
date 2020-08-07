@@ -32,7 +32,8 @@ public class BattleHandler {
     }
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
-    public BattleResultMessage handle(UserSession session, BattleRequestMessage request) {
+    public void handle(UserSession session, BattleRequestMessage request) {
+        session.beginTransaction();
         monsterDAO = session.getMetaDAO().getMonsterDAO();
         soldierDAO = session.getMetaDAO().getSoldierDAO();
         unitDAO = session.getMetaDAO().getUnitDAO();
@@ -45,12 +46,12 @@ public class BattleHandler {
             BattleResultMessage result = new BattleResultMessage();
             result.setResult("escaped");
             session.sendMsg(result);
-            return result;
         } else if (action.equals("start")) {
-            return doStart(session, request);
+            doStart(session, request);
         } else {
-            return doBattle(session, request);
+            doBattle(session, request);
         }
+        session.commitTransaction();
     }
 
     // handle "start battle" message, generate a new unitQueue to keep track of the attacker order

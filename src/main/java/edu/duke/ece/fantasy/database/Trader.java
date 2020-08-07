@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database;
 
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
+import org.hibernate.Session;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -12,7 +13,7 @@ public interface Trader {
     public boolean checkItem(Inventory inventory, int amount);
     public void addMoney(int money);
     public void subtractMoney(int money);
-    public Inventory addInventory(Inventory inventory);
+    public Inventory addInventory(Session session, Inventory inventory);
 //
 //    public void sellItem(Inventory inventory, int amount);
 //

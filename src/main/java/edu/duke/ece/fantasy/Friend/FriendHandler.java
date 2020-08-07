@@ -13,16 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FriendHandler {
-    private PlayerDAO playerDAO;
-    private RelationshipDAO relationshipDAO;
 
     public FriendHandler() {
     }
 
-    public FriendResultMessage handle(UserSession session, FriendRequestMessage friendRequestMessage) {
+    public void handle(UserSession session, FriendRequestMessage friendRequestMessage) {
+        session.beginTransaction();
         int playerId = session.getPlayer().getId();
-        this.playerDAO = session.getMetaDAO().getPlayerDAO();
-        relationshipDAO = session.getMetaDAO().getRelationshipDAO();
+        PlayerDAO playerDAO = session.getMetaDAO().getPlayerDAO();
+        RelationshipDAO relationshipDAO = session.getMetaDAO().getRelationshipDAO();
 
         FriendResultMessage res = new FriendResultMessage();
         FriendRequestMessage.ActionType actionType = friendRequestMessage.getAction();
@@ -36,7 +35,7 @@ public class FriendHandler {
             }
             res.setPlayerInfoList(playerInfoList);
         } else if (actionType == FriendRequestMessage.ActionType.apply) {
-            if(!relationshipDAO.checkFriend(playerId,friendRequestMessage.getId())) {
+            if (!relationshipDAO.checkFriend(playerId, friendRequestMessage.getId())) {
                 relationshipDAO.applyFriend(playerId, friendRequestMessage.getId());
             }
         } else if (actionType == FriendRequestMessage.ActionType.check) {
@@ -47,6 +46,7 @@ public class FriendHandler {
             }
             res.setPlayerInfoList(playerInfos);
         }
-        return res;
+        session.commitTransaction();
+        session.sendMsg(res);
     }
 }

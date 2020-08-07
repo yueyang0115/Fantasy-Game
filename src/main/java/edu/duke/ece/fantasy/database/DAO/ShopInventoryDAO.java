@@ -19,24 +19,19 @@ public class ShopInventoryDAO {
     }
 
     public void addInventory(Inventory inventory) {
-        HibernateUtil.save(inventory);
+        session.save(inventory);
     }
 
     public void deleteInventory(WorldCoord coord) {
-        HibernateUtil.execute("delete From shopInventory I where I.coord = :coord","coord",coord);
+        Query<Inventory> q = session.createQuery("delete From shopInventory I where I.coord = :coord", Inventory.class);
+        q.setParameter("coord", coord);
+        q.executeUpdate();
     }
 
-//    public Inventory getInventory(int owner_id, DBItem dbItem) {
-//        Query q = session.createQuery("From shopInventory I where I.Shop =:owner_id and I.item=:item");
-//        q.setParameter("owner_id", owner_id);
-//        q.setParameter("item", dbItem);
-//        Inventory res = (Inventory) q.uniqueResult();
-//        return res;
-//    }
-
     public List<Inventory> getInventories(WorldCoord coord) {
-        return HibernateUtil.queryList("From shopInventory I where I.coord=:coord", Inventory.class,
-                new String[]{"coord"}, new Object[]{coord});
+        Query<Inventory> q = session.createQuery("From shopInventory I where I.coord=:coord", Inventory.class);
+        q.setParameter("coord", coord);
+        return q.getResultList();
     }
 
 

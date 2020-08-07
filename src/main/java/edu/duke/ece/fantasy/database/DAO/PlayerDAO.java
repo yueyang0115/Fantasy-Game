@@ -69,17 +69,6 @@ public class PlayerDAO {
 
     }
 
-    // update player's status first in cache then in database
-//    public void setStatus(Player p, String status){
-//        p.setStatus(status);
-//        session.update(p);
-//    }
-//
-//    // update player's coord first in cache then in database
-//    public void setCurrentCoord(Player p, WorldCoord currentCoord){
-//        p.setCurrentCoord(currentCoord);
-//        session.update(p);
-//    }
 
     public void removeSoldier(int playerID, int soldierID) {
         Player p = getPlayer(playerID);

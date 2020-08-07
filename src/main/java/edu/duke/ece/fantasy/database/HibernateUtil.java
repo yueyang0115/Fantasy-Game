@@ -33,67 +33,9 @@ public class HibernateUtil {
         getSessionFactory().close();
     }
 
-    public static <T> T get(Class<?> entity, Serializable id) {
-        Session session = getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        T res = (T) session.get(entity, id);
-        session.getTransaction().commit();
-        return res;
-    }
-
-
-
-    public static void saveOrUpdate(Object obj) {
-        Session dbSession = getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        dbSession.saveOrUpdate(obj);
-        dbSession.getTransaction().commit();
-    }
-
-    public static void update(Object obj) {
-        Session dbSession = getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        dbSession.update(obj);
-        dbSession.getTransaction().commit();
-    }
-
-    public static void delete(Object obj) {
-        Session dbSession = getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        dbSession.delete(obj);
-        dbSession.getTransaction().commit();
-    }
-
-    public static void execute(String queryString, String paraName, Object para) {
-        Session session = getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        Query q = session.createQuery(queryString);
-        q.setParameter(paraName, para);
-        q.executeUpdate();
-        session.getTransaction().commit();
-    }
-
-    public static <T> T queryOne(String queryString, Class<?> entity, String[] parameterName, Object[] parameter) {
-        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        Query<?> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(queryString, entity);
-        for (int i = 0; i < parameter.length; i++) {
-            q.setParameter(parameterName[i], parameter[i]);
+    public static void assignMutilplePara(Query<?> q,String[] paraName,Object[] para){
+        for (int i = 0; i < para.length; i++) {
+            q.setParameter(paraName[i], para[i]);
         }
-        T res = (T) q.uniqueResult();
-        dbSession.getTransaction().commit();
-        return res;
-    }
-
-    public static <T> List<T> queryList(String queryString, Class<?> entity, String[] parameterName, Object[] parameter) {
-        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        Query<?> q = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(queryString, entity);
-        for (int i = 0; i < parameter.length; i++) {
-            q.setParameter(parameterName[i], parameter[i]);
-        }
-        List<T> res = (List<T>) q.getResultList();
-        dbSession.getTransaction().commit();
-        return res;
     }
 }

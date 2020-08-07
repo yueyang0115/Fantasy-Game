@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.ShopInventoryDAO;
+import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,11 @@ public abstract class Shop extends Building implements Trader {
     }
 
     @Override
-    public void onCreate(WorldCoord coord) {
+    public void onCreate(WorldCoord coord, MetaDAO metaDAO) {
 //        DBBuilding dbBuilding = SaveToBuildingTable(session, coord);
-        super.onCreate(coord);
+        super.onCreate(coord, metaDAO);
         // delete all old inventory
-        ShopInventoryDAO shopinventoryDAO = MetaDAO.getShopInventoryDAO();
+        ShopInventoryDAO shopinventoryDAO = metaDAO.getShopInventoryDAO();
         shopinventoryDAO.deleteInventory(coord);
         for (shopInventory inventory : possible_inventory) {
             inventory.setCoord(coord);
@@ -81,28 +82,10 @@ public abstract class Shop extends Building implements Trader {
     }
 
     @Override
-    public Inventory addInventory(Inventory inventory) {
+    public Inventory addInventory(Session session, Inventory inventory) {
         shopInventory shopInventory = new shopInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), coord);
-        HibernateUtil.save(shopInventory);
+        session.save(shopInventory);
         return shopInventory;
-//        ShopInventoryDAO shopInventoryDAO = metaDAO.getShopInventoryDAO();
-//        return shopInventoryDAO.addInventory(inventory,coord);
     }
-
-//    @Override
-    //    public Inventory buyItem(Inventory select_item, int amount) {
-//        Inventory inventory = null;
-//        for (Inventory item : current_inventory) { // get
-//            if (item.equals(select_item)) { // if have this type of item
-//                int init_amount = item.getAmount();
-//                inventory = item;
-//                item.setAmount(init_amount + amount);
-//            }
-//        }
-//        if (inventory == null) {
-//            inventory = new shopInventory(select_item.getDBItem(), amount, coord);
-//        }
-//        return inventory;
-//    }
 
 }

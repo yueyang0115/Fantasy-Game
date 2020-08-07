@@ -73,14 +73,14 @@ public class Building {
         this.cost = cost;
     }
 
-    public DBBuilding toDBBuilding(){
+    public DBBuilding toDBBuilding() {
         DBBuilding res = new DBBuilding(this.getClass().getName());
         return res;
     }
 
-    public void onCreate( WorldCoord coord) {
+    public void onCreate(WorldCoord coord, MetaDAO metaDAO) {
         this.coord = coord;
-        DBBuildingDAO dbBuildingDAO = MetaDAO.getDbBuildingDAO();
+        DBBuildingDAO dbBuildingDAO = metaDAO.getDbBuildingDAO();
         DBBuilding tmp = dbBuildingDAO.getBuilding(coord);
         if (tmp != null) { // delete existing building in this coord
             tmp.setName(this.getClass().getName());

@@ -14,13 +14,13 @@ public class Castle extends Building {
     }
 
     @Override
-    public void onCreate(WorldCoord coord) {
-        super.onCreate(coord);
-        TerritoryDAO territoryDAO = MetaDAO.getTerritoryDAO();
+    public void onCreate(WorldCoord coord,MetaDAO metaDAO) {
+        super.onCreate(coord, metaDAO);
+        TerritoryDAO territoryDAO = metaDAO.getTerritoryDAO();
         List<Territory> territories = territoryDAO.getTerritories(coord, 5, 5);
         for (Territory territory : territories) {
             territory.setTame(0);
-            HibernateUtil.update(territory);
+            metaDAO.getDbBuildingDAO().getSession().update(territory);
         }
     }
 }

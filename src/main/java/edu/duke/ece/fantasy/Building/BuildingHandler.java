@@ -29,10 +29,6 @@ public class BuildingHandler {
     }
 
     public void handle(UserSession session, BuildingRequestMessage buildingRequestMessage) {
-        playerDAO = session.getMetaDAO().getPlayerDAO();
-        DBBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
-        territoryDAO = session.getMetaDAO().getTerritoryDAO();
-
         BuildingResultMessage buildingResultMessage = new BuildingResultMessage();
         buildingResultMessage.setAction(buildingRequestMessage.getAction());
         String action = buildingRequestMessage.getAction();
@@ -55,7 +51,7 @@ public class BuildingHandler {
                 buildingResultMessage.setResult("success");
             } else if (action.equals("create")) {
                 // create different building
-                Building building = Create(buildingRequestMessage, curPlayer, dbBuildingDAO);
+                Building building = Create(session.getMetaDAO(), buildingRequestMessage, curPlayer, dbBuildingDAO);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
             } else if (action.equals("upgradeList")) {
@@ -67,7 +63,7 @@ public class BuildingHandler {
                 buildingResultMessage.setBuildingList(dbBuilding.toGameBuilding().getUpgradeList());
                 buildingResultMessage.setResult("success");
             } else if (action.equals("upgrade")) {
-                Building building = Update(buildingRequestMessage, curPlayer, dbBuildingDAO);
+                Building building = Update(session.getMetaDAO(), buildingRequestMessage, curPlayer, dbBuildingDAO);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
             }
@@ -75,11 +71,11 @@ public class BuildingHandler {
             buildingResultMessage.setResult("Fail-" + e.getMessage());
         }
 
-        HibernateUtil.update(curPlayer);
+        dbBuildingDAO.getSession().update(curPlayer);
         session.sendMsg(buildingResultMessage);
     }
 
-    private Building Create(BuildingRequestMessage buildingRequestMessage, Player player, DBBuildingDAO dbBuildingDAO) throws InvalidBuildingRequest {
+    private Building Create(MetaDAO metaDAO, BuildingRequestMessage buildingRequestMessage, Player player, DBBuildingDAO dbBuildingDAO) throws InvalidBuildingRequest {
         WorldCoord coord = buildingRequestMessage.getCoord();
         String name = buildingRequestMessage.getBuildingName();
         // check if territory have building
@@ -100,11 +96,11 @@ public class BuildingHandler {
         }
         player.subtractMoney(building.getCost());
 
-        building.onCreate(coord);
+        building.onCreate(coord, metaDAO);
         return building;
     }
 
-    private Building Update(BuildingRequestMessage buildingRequestMessage, Player player, DBBuildingDAO dbBuildingDAO) throws InvalidBuildingRequest {
+    private Building Update(MetaDAO metaDAO, BuildingRequestMessage buildingRequestMessage, Player player, DBBuildingDAO dbBuildingDAO) throws InvalidBuildingRequest {
         WorldCoord coord = buildingRequestMessage.getCoord();
         String name = buildingRequestMessage.getBuildingName();
 
@@ -127,7 +123,7 @@ public class BuildingHandler {
         }
         player.subtractMoney(UpgradeTo.getCost());
 
-        UpgradeTo.onCreate(coord);
+        UpgradeTo.onCreate(coord, metaDAO);
         return UpgradeTo;
     }
 

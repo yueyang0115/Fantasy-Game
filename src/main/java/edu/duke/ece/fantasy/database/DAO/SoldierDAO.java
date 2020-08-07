@@ -1,6 +1,7 @@
 package edu.duke.ece.fantasy.database.DAO;
 
 import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.Soldier;
 import edu.duke.ece.fantasy.database.Unit;
 import org.hibernate.Session;
@@ -15,20 +16,21 @@ public class SoldierDAO {
     public SoldierDAO(Session session) {
         this.session = session;
     }
-    public SoldierDAO() {}
 
     //get a soldier from database based on the provided soldierID
     public Soldier getSoldier(int soldierID) {
-        Soldier s = HibernateUtil.queryOne("From Soldier S where S.id =:id",
-                Soldier.class, new String[]{"id"}, new Object[]{soldierID});
-        return s;
+        Query<Soldier> q = session.createQuery("From Soldier S where S.id =:id",
+                Soldier.class);
+        q.setParameter("id", soldierID);
+        return q.uniqueResult();
     }
 
     //get all soldiers a player has
-    public List<Soldier> getSoldiers(int playerID){
-        List<Soldier> soldierList =  HibernateUtil.queryList("From Soldier S where S.player.id =:playerID",
-                Soldier.class, new String[]{"playerID"}, new Object[]{playerID});
-        return soldierList;
+    public List<Soldier> getSoldiers(int playerID) {
+        Query<Soldier> q = session.createQuery("From Soldier S where S.player.id =:playerID",
+                Soldier.class);
+        q.setParameter("playerID", playerID);
+        return q.getResultList();
     }
 
 }

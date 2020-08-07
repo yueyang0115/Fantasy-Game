@@ -32,7 +32,7 @@ public class PositionUpdateHandler {
         //    itemDAO = new ItemDAO(session);
     }
 
-    private void GenerateTerritory(List<WorldCoord> worldCoords, WorldInfo info) {
+    private void GenerateTerritory(List<WorldCoord> worldCoords, WorldInfo info, MetaDAO metaDAO) {
         for (WorldCoord where : worldCoords) {
             where.setWid(info.getWid());
             Territory t = territoryDAO.getTerritory(where);
@@ -41,7 +41,7 @@ public class PositionUpdateHandler {
                 //for now, wtype will always be "mainworld" but can change later.
                 String wtype = info.getWorldType();
                 TileGenerator gen = TileGenerator.forWorldType(wtype);
-                gen.generate(territoryDAO, where, info);
+                gen.generate(metaDAO, where, info);
             }
         }
     }
@@ -90,12 +90,12 @@ public class PositionUpdateHandler {
             isNewWorld = true;
         }
 
-        GenerateTerritory(worldCoords, info);
+        GenerateTerritory(worldCoords, info, session.getMetaDAO());
 
         if (isNewWorld && player.getStatus().equals(WorldInfo.MainWorld)) {
             /* add castle between GenerateTerritory and GetCoordInfo since it need territory exist and will change
               the territory's tame*/
-            (new Castle()).onCreate(info.getStartCoords());
+            (new Castle()).onCreate(info.getStartCoords(),session.getMetaDAO());
         }
 
         GetCoordInfo(worldCoords);
@@ -103,6 +103,7 @@ public class PositionUpdateHandler {
         positionResultMessage.setTerritoryArray(territoryList);
         positionResultMessage.setBuildingArray(buildingList);
         positionResultMessage.setMonsterArray(monsterList);
+        session.commitTransaction();
         session.sendMsg(positionResultMessage);
     }
 

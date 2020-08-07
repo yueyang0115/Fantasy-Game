@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
+import org.hibernate.Session;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 
@@ -262,9 +263,9 @@ public class Player implements Trader {
     }
 
     @Override
-    public Inventory addInventory(Inventory inventory) {
+    public Inventory addInventory(Session session, Inventory inventory) {
         playerInventory playerInventory = new playerInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), this);
-        HibernateUtil.save(playerInventory);
+        session.save(playerInventory);
         this.addItem(playerInventory);
         return playerInventory;
     }

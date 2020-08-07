@@ -15,9 +15,9 @@ public class Mine extends Building {
     }
 
     @Override
-    public void onCreate(WorldCoord coord) {
-        super.onCreate(coord);
-        PlayerDAO playerDAO = MetaDAO.getPlayerDAO();
+    public void onCreate(WorldCoord coord, MetaDAO metaDAO) {
+        super.onCreate(coord, metaDAO);
+        PlayerDAO playerDAO = metaDAO.getPlayerDAO();
         Player player = playerDAO.getPlayerByWid(coord.getWid());
         player.setMoneyGenerationSpeed(player.getMoneyGenerationSpeed() + MoneyGenerationSpeed);
     }

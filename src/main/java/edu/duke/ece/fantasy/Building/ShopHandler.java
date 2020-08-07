@@ -7,6 +7,7 @@ import edu.duke.ece.fantasy.database.DAO.*;
 import edu.duke.ece.fantasy.Building.Message.ShopRequestMessage;
 import edu.duke.ece.fantasy.Building.Message.ShopResultMessage;
 import edu.duke.ece.fantasy.net.UserSession;
+import org.hibernate.Session;
 
 import java.util.List;
 
@@ -44,11 +45,11 @@ public class ShopHandler {
                 result.setResult("valid");//TODO:return
             } else if (action.equals("buy")) {
                 validate(shopInventory, selectedInventory, player);
-                execute(shopInventory, playerInventory, selectedInventory, player, shop);
+                execute(dbBuildingDAO.getSession(), shopInventory, playerInventory, selectedInventory, player, shop);
                 result.setResult("valid");
             } else if (action.equals("sell")) {
                 validate(playerInventory, selectedInventory, player);
-                execute(playerInventory, shopInventory, selectedInventory, shop, player);
+                execute(dbBuildingDAO.getSession(), playerInventory, shopInventory, selectedInventory, shop, player);
                 result.setResult("valid");
             }
         } catch (InvalidShopRequest e) {
@@ -96,10 +97,12 @@ public class ShopHandler {
         }
     }
 
-    private void execute(List<Inventory> sellerInventoryList, List<Inventory> buyerInventoryList, List<Inventory> selectedInventoryList, Trader buyer, Trader seller) {
+    private void execute(Session session, List<Inventory> sellerInventoryList, List<Inventory> buyerInventoryList, List<Inventory> selectedInventoryList, Trader buyer, Trader seller) {
         for (Inventory selectedInventory : selectedInventoryList) {
             int selectedAmount = selectedInventory.getAmount();
-            if(selectedAmount==0) {continue;}
+            if (selectedAmount == 0) {
+                continue;
+            }
             Item selectedItem = selectedInventory.getDBItem().toGameItem();
             int totalCost = selectedItem.getCost() * selectedAmount;
             // operation for seller
@@ -108,7 +111,7 @@ public class ShopHandler {
             pairedInventoryForSeller.setAmount(leftAmount);
             if (leftAmount == 0) { // delete the Inventory if its amount is 0
                 sellerInventoryList.remove(pairedInventoryForSeller);
-                HibernateUtil.delete(pairedInventoryForSeller);
+                session.delete(pairedInventoryForSeller);
             }
             seller.addMoney(totalCost);
             // operation for buyer; selectedInventory contains more properties info
@@ -116,7 +119,7 @@ public class ShopHandler {
             if (pairedInventoryForBuyer != null) {
                 pairedInventoryForBuyer.setAmount(selectedAmount + pairedInventoryForBuyer.getAmount());
             } else {
-                Inventory createdInventory = buyer.addInventory(selectedInventory);
+                Inventory createdInventory = buyer.addInventory(session, selectedInventory);
                 buyerInventoryList.add(createdInventory);
             }
             buyer.subtractMoney(totalCost);

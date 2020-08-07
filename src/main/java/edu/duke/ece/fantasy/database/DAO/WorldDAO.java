@@ -16,7 +16,7 @@ public class WorldDAO {
     }
 
     public WorldInfo getInfo(int wid) {
-        return HibernateUtil.get(WorldInfo.class, wid);
+        return session.get(WorldInfo.class, wid);
     }
 
     public WorldInfo initWorld(WorldCoord where, String owner, int tilesize) {

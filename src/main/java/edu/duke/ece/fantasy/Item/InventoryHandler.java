@@ -36,7 +36,7 @@ public class InventoryHandler {
             if (action.equals("list")) {
                 resultMessage.setResult("valid");
             } else if (action.equals("use")) {
-                useItem(selectedInventory, player, unit);
+                useItem(session.getMetaDAO(), selectedInventory, player, unit);
                 resultMessage.setResult("valid");
             } else if (action.equals("drop")) {
             }
@@ -56,13 +56,13 @@ public class InventoryHandler {
         session.sendMsg(resultMessage);
     }
 
-    private void useItem(playerInventory selectedInventory, Player player, Unit unit) throws InvalidItemUsageException {
+    private void useItem(MetaDAO metaDAO, playerInventory selectedInventory, Player player, Unit unit) throws InvalidItemUsageException {
         if (selectedInventory.getPlayer() == player) {
             selectedInventory.useItem(unit, player);
             // remove inventory from database if it is 0
             if (selectedInventory.getAmount() == 0) {
                 player.getItems().remove(selectedInventory);
-                HibernateUtil.delete(selectedInventory);
+                metaDAO.getDbBuildingDAO().getSession().delete(selectedInventory);
             }
         } else {
             throw new InvalidItemUsageException("Player doesn't have item");

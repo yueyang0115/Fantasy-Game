@@ -16,6 +16,9 @@ public class DBBuildingDAO {
         this.session = session;
     }
 
+    public Session getSession() {
+        return session;
+    }
 
     public DBBuilding addBuilding(WorldCoord where, Building building) {
         DBBuilding DB_building = new DBBuilding(building.getClass().getName(), where);

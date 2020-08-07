@@ -17,7 +17,7 @@ public class TileDAO {
 
     public Tile addTile(WorldCoord wc, String name) {
         Tile t = new Tile(wc, name);
-        HibernateUtil.saveOrUpdate(t);
+        session.saveOrUpdate(t);
         return t;
     }
 
@@ -31,9 +31,7 @@ public class TileDAO {
         Query<Tile> q = session.createQuery("FROM Tile T WHERE T.where.wid =:wid AND abs(T.where.x-:x)<=:range AND abs(T.where.y-:y)<:range", Tile.class);
         String[] paraName = new String[]{"wid", "x", "y", "range"};
         Object[] para = new Object[]{wc.getWid(), wc.getX(), wc.getY(), range};
-        for (int i = 0; i < para.length; i++) {
-            q.setParameter(paraName[i], para[i]);
-        }
+        HibernateUtil.assignMutilplePara(q,paraName,para);
         List<Tile> tileList = q.getResultList();
         for (Tile t : tileList) {
             ans.put(t.getWhere(), t);
