@@ -18,14 +18,16 @@ public class ShopHandler {
     private ShopInventoryDAO shopInventoryDAO;
 
     public ShopHandler() {
-        dbBuildingDAO = MetaDAO.getDbBuildingDAO();
-        playerDAO = MetaDAO.getPlayerDAO();
-        playerInventoryDAO = MetaDAO.getPlayerInventoryDAO();
-        shopInventoryDAO = MetaDAO.getShopInventoryDAO();
-        inventoryDAO = MetaDAO.getInventoryDAO();
+
     }
 
     public void handle(UserSession session, ShopRequestMessage request) {
+        dbBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+        playerInventoryDAO = session.getMetaDAO().getPlayerInventoryDAO();
+        shopInventoryDAO = session.getMetaDAO().getShopInventoryDAO();
+        inventoryDAO = session.getMetaDAO().getInventoryDAO();
+
         Player player = session.getPlayer();
         String action = request.getAction();
 //        DBShop DBShop = DBShopDAO.getShop(request.getShopID());

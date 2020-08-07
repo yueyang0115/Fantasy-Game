@@ -7,6 +7,7 @@ import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.dto.PlayerInfo;
 import edu.duke.ece.fantasy.Friend.Message.FriendRequestMessage;
 import edu.duke.ece.fantasy.Friend.Message.FriendResultMessage;
+import edu.duke.ece.fantasy.net.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,13 @@ public class FriendHandler {
     private RelationshipDAO relationshipDAO;
 
     public FriendHandler() {
-        this.playerDAO = MetaDAO.getPlayerDAO();
-        relationshipDAO = MetaDAO.getRelationshipDAO();
     }
 
-    public FriendResultMessage handle(int playerId, FriendRequestMessage friendRequestMessage) {
+    public FriendResultMessage handle(UserSession session, FriendRequestMessage friendRequestMessage) {
+        int playerId = session.getPlayer().getId();
+        this.playerDAO = session.getMetaDAO().getPlayerDAO();
+        relationshipDAO = session.getMetaDAO().getRelationshipDAO();
+
         FriendResultMessage res = new FriendResultMessage();
         FriendRequestMessage.ActionType actionType = friendRequestMessage.getAction();
         if (actionType == FriendRequestMessage.ActionType.search) {

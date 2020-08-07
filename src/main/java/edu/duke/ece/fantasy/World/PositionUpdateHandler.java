@@ -65,6 +65,12 @@ public class PositionUpdateHandler {
     }
 
     public void handle(UserSession session, PositionRequestMessage positionMsg) {
+        territoryDAO = session.getMetaDAO().getTerritoryDAO();
+        DBBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
+        worldDAO = session.getMetaDAO().getWorldDAO();
+        monsterDAO = session.getMetaDAO().getMonsterDAO();
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+
         //cachedMap = new HashMap<>();
         session.beginTransaction();
         PositionResultMessage positionResultMessage = new PositionResultMessage();

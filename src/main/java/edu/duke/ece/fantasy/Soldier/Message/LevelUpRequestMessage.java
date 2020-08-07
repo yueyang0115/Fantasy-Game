@@ -3,10 +3,13 @@ package edu.duke.ece.fantasy.Soldier.Message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.SOLDIER, cmd = CmdSoldier.REQ_LEVELUP)
 public class LevelUpRequestMessage extends Message {
     private String action; // "start" "choose"
     private int unitID; // id of the unit which wants to be leveled up

@@ -35,13 +35,13 @@ public abstract class MonsterScheduledTask extends ScheduledTask {
         // send the positionUpdateMsg
         session.sendMsg(positionMsg);
         //change the monster's needUpdate field to false
-        MetaDAO.getMonsterDAO().setMonsterStatus(m.getId(), false);
+        session.getMetaDAO().getMonsterDAO().setMonsterStatus(m.getId(), false);
     }
 
     // cannot moveMonster/generateMonster when player doesn't hold valid coord or not in mainScene
     public boolean cannotGenerateMonster() {
         return !player.getStatus().equals(WorldInfo.MainWorld)
                 || player.getCurrentCoord() == null
-                || MetaDAO.getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
+                || session.getMetaDAO().getTerritoryDAO().getTerritory(player.getCurrentCoord()) == null;
     }
 }

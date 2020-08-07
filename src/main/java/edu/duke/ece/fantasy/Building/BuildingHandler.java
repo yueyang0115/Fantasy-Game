@@ -29,6 +29,10 @@ public class BuildingHandler {
     }
 
     public void handle(UserSession session, BuildingRequestMessage buildingRequestMessage) {
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+        DBBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
+        territoryDAO = session.getMetaDAO().getTerritoryDAO();
+
         BuildingResultMessage buildingResultMessage = new BuildingResultMessage();
         buildingResultMessage.setAction(buildingRequestMessage.getAction());
         String action = buildingRequestMessage.getAction();

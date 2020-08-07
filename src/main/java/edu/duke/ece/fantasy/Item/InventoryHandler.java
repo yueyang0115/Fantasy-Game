@@ -17,13 +17,14 @@ public class InventoryHandler {
 
 
     public InventoryHandler() {
-        playerDAO = MetaDAO.getPlayerDAO();
-        playerInventoryDAO = MetaDAO.getPlayerInventoryDAO();
-        inventoryDAO = MetaDAO.getInventoryDAO();
-        unitDAO = MetaDAO.getUnitDAO();
     }
 
     public void handle(UserSession session, InventoryRequestMessage request) {
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+        playerInventoryDAO = session.getMetaDAO().getPlayerInventoryDAO();
+        inventoryDAO = session.getMetaDAO().getInventoryDAO();
+        unitDAO = session.getMetaDAO().getUnitDAO();
+
         // get related object from database
         String action = request.getAction();
         InventoryResultMessage resultMessage = new InventoryResultMessage();
