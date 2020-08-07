@@ -14,9 +14,9 @@ public class PlayerDAO {
     BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
 
 
-//    public PlayerDAO(Session session) {
-//        this.session = session;
-//    }
+    public PlayerDAO(Session session) {
+        this.session = session;
+    }
 
     public void addPlayer(String username, String password) {
         String encryptPassword = passwordEncryptor.encryptPassword(password);
@@ -96,14 +96,10 @@ public class PlayerDAO {
     }
 
     public List<Integer> getBattleInfo(int playerID){
-        // To deal with lazy init, need to get battleInfo when a hibernate exists
-        Session dbSession = HibernateUtil.getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        Query<Player> q = dbSession.createQuery("From Player U where U.id =:id", Player.class);
+        Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
         q.setParameter("id",playerID);
         Player player = q.uniqueResult();
         List<Integer> res = player.getBattleInfo();
-        dbSession.getTransaction().commit();
         return res;
     }
 }

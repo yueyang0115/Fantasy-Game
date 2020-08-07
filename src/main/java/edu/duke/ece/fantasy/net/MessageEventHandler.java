@@ -30,6 +30,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
             logger.error("Duplicate session,IP=[{}]", ChannelUtils.getIp(channel));
         }
         UserSession userSession = ChannelUtils.getSessionBy(channel);
+        userSession.activeDbSession();
         userSession.setDistributeKey(ChannelUtils.getNextDistributeKey()); // assign distribute key to specific session
     }
 
@@ -47,6 +48,7 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         UserSession userSession = ChannelUtils.getSessionBy(channel);
+        userSession.inactiveDbSession();
         logger.info("Close connection,IP=[{}]", ChannelUtils.getIp(channel));
 //        messageDispatcher.onSessionClosed(userSession);
     }
@@ -54,6 +56,8 @@ public class MessageEventHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
+        UserSession userSession = ChannelUtils.getSessionBy(channel);
+        userSession.inactiveDbSession();
         if (channel.isActive() || channel.isOpen()) {
             ctx.close();
         }

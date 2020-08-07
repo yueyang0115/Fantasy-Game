@@ -1,86 +1,84 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import org.hibernate.Session;
+
 public class MetaDAO {
-    private static PlayerDAO playerDAO = new PlayerDAO();
-    private static InventoryDAO inventoryDAO = new InventoryDAO();
-    private static TileDAO tileDAO = new TileDAO();
-    private static WorldDAO worldDAO = new WorldDAO();
-    private static DBBuildingDAO dbBuildingDAO  = new DBBuildingDAO();
-    private static PlayerInventoryDAO playerInventoryDAO = new PlayerInventoryDAO();
-    private static ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO();
-    private static TerritoryDAO territoryDAO = new TerritoryDAO();
-    private static MonsterDAO monsterDAO = new MonsterDAO();
-    private static SoldierDAO soldierDAO = new SoldierDAO();
-    private static UnitDAO unitDAO = new UnitDAO();
-    private static SkillDAO skillDAO = new SkillDAO();
-    private static RelationshipDAO relationshipDAO = new RelationshipDAO();
+    private  PlayerDAO playerDAO;
+    private  InventoryDAO inventoryDAO;
+    private  TileDAO tileDAO;
+    private  WorldDAO worldDAO;
+    private  DBBuildingDAO dbBuildingDAO;
+    private  PlayerInventoryDAO playerInventoryDAO;
+    private  ShopInventoryDAO shopInventoryDAO;
+    private  TerritoryDAO territoryDAO;
+    private  MonsterDAO monsterDAO;
+    private  SoldierDAO soldierDAO;
+    private  UnitDAO unitDAO;
+    private  SkillDAO skillDAO;
+    private  RelationshipDAO relationshipDAO;
 
 
-    public MetaDAO() {
-//        playerDAO = new PlayerDAO();
-//        inventoryDAO = new InventoryDAO();
-//        tileDAO = new TileDAO();
-//        worldDAO = new WorldDAO();
-//        dbBuildingDAO = new DBBuildingDAO();
-//        playerInventoryDAO = new PlayerInventoryDAO();
-//        shopInventoryDAO = new ShopInventoryDAO();
-//        territoryDAO = new TerritoryDAO();
-//        monsterDAO = new MonsterDAO();
-//        soldierDAO = new SoldierDAO();
-//        unitDAO = new UnitDAO();
-//        skillDAO = new SkillDAO();
-//        relationshipDAO = new RelationshipDAO();
+    public MetaDAO(Session session) {
+        playerDAO = new PlayerDAO(session);
+        inventoryDAO = new InventoryDAO();
+        tileDAO = new TileDAO();
+        worldDAO = new WorldDAO();
+        dbBuildingDAO = new DBBuildingDAO();
+        playerInventoryDAO = new PlayerInventoryDAO();
+        shopInventoryDAO = new ShopInventoryDAO();
+        territoryDAO = new TerritoryDAO();
+        monsterDAO = new MonsterDAO();
+        soldierDAO = new SoldierDAO();
+        unitDAO = new UnitDAO();
+        skillDAO = new SkillDAO();
+        relationshipDAO = new RelationshipDAO();
     }
 
-    static public RelationshipDAO getRelationshipDAO() {
+     public RelationshipDAO getRelationshipDAO() {
         return relationshipDAO;
     }
 
 
-    static public PlayerDAO getPlayerDAO() {
+     public PlayerDAO getPlayerDAO() {
         return playerDAO;
     }
 
-    public static InventoryDAO getInventoryDAO() {
+    public  InventoryDAO getInventoryDAO() {
         return inventoryDAO;
     }
 
-    public TileDAO getTileDAO() {
-        return tileDAO;
-    }
-
-    public static WorldDAO getWorldDAO() {
+    public  WorldDAO getWorldDAO() {
         return worldDAO;
     }
 
-    public static DBBuildingDAO getDbBuildingDAO() {
+    public  DBBuildingDAO getDbBuildingDAO() {
         return dbBuildingDAO;
     }
 
-    public static PlayerInventoryDAO getPlayerInventoryDAO() {
+    public  PlayerInventoryDAO getPlayerInventoryDAO() {
         return playerInventoryDAO;
     }
 
-    public static ShopInventoryDAO getShopInventoryDAO() {
+    public  ShopInventoryDAO getShopInventoryDAO() {
         return shopInventoryDAO;
     }
 
-    static public TerritoryDAO getTerritoryDAO() {
+     public TerritoryDAO getTerritoryDAO() {
         return territoryDAO;
     }
 
-    public static MonsterDAO getMonsterDAO() {
+    public  MonsterDAO getMonsterDAO() {
         return monsterDAO;
     }
 
-    public static SoldierDAO getSoldierDAO() {
+    public  SoldierDAO getSoldierDAO() {
         return soldierDAO;
     }
 
-    public static UnitDAO getUnitDAO() {
+    public  UnitDAO getUnitDAO() {
         return unitDAO;
     }
 
-    public static SkillDAO getSkillDAO() { return skillDAO; }
+    public  SkillDAO getSkillDAO() { return skillDAO; }
 
 }

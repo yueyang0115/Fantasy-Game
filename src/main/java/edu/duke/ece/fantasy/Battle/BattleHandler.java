@@ -12,13 +12,6 @@ import edu.duke.ece.fantasy.net.UserSession;
 import java.util.*;
 
 public class BattleHandler {
-    private MonsterDAO monsterDAO;
-    private SoldierDAO soldierDAO;
-    private UnitDAO unitDAO;
-    private PlayerDAO playerDAO;
-    private TerritoryDAO territoryDAO;
-    private SkillDAO skillDAO;
-    private WorldDAO worldDAO;
     private WorldCoord currentCoord;
     public static int TAME_RANGE_X = 3;
     public static int TAME_RANGE_Y = 3;
@@ -29,41 +22,35 @@ public class BattleHandler {
     private Queue<Unit> unitQueue;
 
     public BattleHandler() {
-        monsterDAO = MetaDAO.getMonsterDAO();
-        soldierDAO = MetaDAO.getSoldierDAO();
-        unitDAO = MetaDAO.getUnitDAO();
-        territoryDAO = MetaDAO.getTerritoryDAO();
-        playerDAO = MetaDAO.getPlayerDAO();
-        skillDAO = MetaDAO.getSkillDAO();
-        worldDAO = MetaDAO.getWorldDAO();
     }
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
-    public BattleResultMessage handle(UserSession session, BattleRequestMessage request){
-
+    public BattleResultMessage handle(UserSession session, BattleRequestMessage request) {
         String action = request.getAction();
-        if(action.equals("escape")){
+        if (action.equals("escape")) {
             BattleResultMessage result = new BattleResultMessage();
             result.setResult("escaped");
             session.sendMsg(result);
             return result;
-        }
-        else if(action.equals("start")){
+        } else if (action.equals("start")) {
             return doStart(session, request);
-        }
-        else {
+        } else {
             return doBattle(session, request);
         }
     }
 
     // handle "start battle" message, generate a new unitQueue to keep track of the attacker order
-    public BattleResultMessage doStart(UserSession session,BattleRequestMessage request){
+    public BattleResultMessage doStart(UserSession session, BattleRequestMessage request) {
+
         int playerID = session.getPlayer().getId();
 
         // create a new unitQueue each time a new battle starts
         this.unitQueue = new LinkedList<>();
         BattleResultMessage result = new BattleResultMessage();
 
+        MonsterDAO monsterDAO = session.getMetaDAO().getMonsterDAO();
+        SoldierDAO soldierDAO = session.getMetaDAO().getSoldierDAO();
+        PlayerDAO playerDAO = session.getMetaDAO().getPlayerDAO();
         // get monsters and soldiers engaged in the battle
         currentCoord = request.getTerritoryCoord();
         currentCoord.setWid(session.getPlayer().getCurWorldId());
@@ -77,33 +64,33 @@ public class BattleHandler {
         // store battleQueue in player database
         playerDAO.setBattleInfo(playerID, unitIDList);
 
-        result.setBattleInitInfo(new BattleInitInfo(monsterList,soldierList,unitIDList));
+        result.setBattleInitInfo(new BattleInitInfo(monsterList, soldierList, unitIDList));
         result.setResult("continue");
         session.sendMsg(result);
         return result;
     }
 
     //sort units by speed and set the UnitQueue
-    public Queue<Unit> generateUnitQueue(List<Monster> monsterList, List<Soldier> soldierList){
-            PriorityQueue<Unit> pq = new PriorityQueue( new Comparator<Unit>() {
-                public int compare(Unit u1, Unit u2) {
-                    return u2.getSpeed() - u1.getSpeed();
-                }
-            });
-            for(Monster monster : monsterList) pq.add(monster);
-            for(Soldier soldier : soldierList) pq.add(soldier);
-            Queue<Unit> q = new LinkedList<>();
-            while(!pq.isEmpty()) {
-                q.add(pq.poll());
+    public Queue<Unit> generateUnitQueue(List<Monster> monsterList, List<Soldier> soldierList) {
+        PriorityQueue<Unit> pq = new PriorityQueue(new Comparator<Unit>() {
+            public int compare(Unit u1, Unit u2) {
+                return u2.getSpeed() - u1.getSpeed();
             }
-            return q;
+        });
+        for (Monster monster : monsterList) pq.add(monster);
+        for (Soldier soldier : soldierList) pq.add(soldier);
+        Queue<Unit> q = new LinkedList<>();
+        while (!pq.isEmpty()) {
+            q.add(pq.poll());
+        }
+        return q;
     }
 
     // make a list of unitIDs, corresponding units of these IDs are in same order with unitQueue
-    public List<Integer> generateIDList(Queue<Unit> q){
+    public List<Integer> generateIDList(Queue<Unit> q) {
         List<Unit> unitList = new ArrayList<>(q);
         List<Integer> unitIDList = new ArrayList<>();
-        for(Unit u : unitList) unitIDList.add(u.getId());
+        for (Unit u : unitList) unitIDList.add(u.getId());
         return unitIDList;
     }
 
@@ -111,10 +98,11 @@ public class BattleHandler {
     public BattleResultMessage doBattle(UserSession session, BattleRequestMessage request) {
         int playerID = session.getPlayer().getId();
 
+        PlayerDAO
         // load battleQueue from player in database
         List<Integer> loadedUnitList = playerDAO.getBattleInfo(playerID);
         this.unitQueue = new LinkedList<>();
-        for(int id : loadedUnitList) this.unitQueue.offer(unitDAO.getUnit(id));
+        for (int id : loadedUnitList) this.unitQueue.offer(unitDAO.getUnit(id));
 
         BattleResultMessage result = new BattleResultMessage();
         List<BattleAction> actions = new ArrayList<>();
@@ -123,21 +111,21 @@ public class BattleHandler {
         int attackerID = request.getBattleAction().getAttacker().getId();
         Skill attackerSkill = skillDAO.getSkill(request.getBattleAction().getActionType());
 
-        BattleAction action = doBattleOnce(attackerSkill, attackerID,attackeeID,where,playerID,result);
+        BattleAction action = doBattleOnce(attackerSkill, attackerID, attackeeID, where, playerID, result);
         actions.add(action);
-        setStatus(where,playerID,result);
+        setStatus(where, playerID, result);
 
         //if the next attacker in UnitQueue is monster, server do another monster attack
-        while(this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")){
+        while (this.unitQueue.peek() instanceof Monster && result.getResult().equals("continue")) {
             attackerID = this.unitQueue.peek().getId();
             attackeeID = request.getBattleAction().getAttacker().getId();
             //since right now we make monster attack the same soldier, if that soldier die, break loop
-            if(unitDAO.getUnit(attackeeID) == null) break;
-            if(unitDAO.getUnit(attackerID) == null) continue;
-            action = doBattleOnce(null, attackerID,attackeeID,where,playerID,result);
+            if (unitDAO.getUnit(attackeeID) == null) break;
+            if (unitDAO.getUnit(attackerID) == null) continue;
+            action = doBattleOnce(null, attackerID, attackeeID, where, playerID, result);
             actions.add(action);
-            setStatus(where,playerID,result);
-            if(result.getResult().equals("lose")) break;
+            setStatus(where, playerID, result);
+            if (result.getResult().equals("lose")) break;
         }
 
         result.setActions(actions);
@@ -149,35 +137,33 @@ public class BattleHandler {
     public void setStatus(WorldCoord where, int playerID, BattleResultMessage result) {
         List<Monster> monsterList = monsterDAO.getMonsters(where);
 //        List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
-        if(monsterList == null || monsterList.size() ==0){
+        if (monsterList == null || monsterList.size() == 0) {
             result.setResult("win");
             //change around area's tame
-            territoryDAO.updateTameByRange(where,TAME_RANGE_X,TAME_RANGE_Y,10,5);
-        }
-        else if(!playerIsAlive(playerID)){
+            territoryDAO.updateTameByRange(where, TAME_RANGE_X, TAME_RANGE_Y, 10, 5);
+        } else if (!playerIsAlive(playerID)) {
             result.setResult("lose");
 //            WorldInfo info = worldDAO.initWorld(where, playerDAO.getPlayer(playerID).getUsername(), 20);
 //            info.setWorldType(WorldInfo.DeathWorld);
 //            playerDAO.addWorld(playerID, info);
-        }
-        else result.setResult("continue");
+        } else result.setResult("continue");
     }
 
-    public boolean playerIsAlive(int playerID){
+    public boolean playerIsAlive(int playerID) {
         List<Soldier> soldierList = soldierDAO.getSoldiers(playerID);
         boolean isAlive = false;
-        for(Soldier soldier : soldierList) if(soldier.getHp() != 0) isAlive=true;
+        for (Soldier soldier : soldierList) if (soldier.getHp() != 0) isAlive = true;
         return isAlive;
     }
 
-    public BattleAction doBattleOnce(Skill attackerSkill, int attackerID, int attackeeID, WorldCoord where, int playerID,BattleResultMessage result){
+    public BattleAction doBattleOnce(Skill attackerSkill, int attackerID, int attackeeID, WorldCoord where, int playerID, BattleResultMessage result) {
         BattleAction action = new BattleAction();
         int deletedID = -1;
 
         //begin battle
         Unit attacker = unitDAO.getUnit(attackerID);
         Unit attackee = unitDAO.getUnit(attackeeID);
-        if(attackee == null || attacker==null){
+        if (attackee == null || attacker == null) {
             result.setResult("invalid");
             return null;
         }
@@ -190,14 +176,15 @@ public class BattleHandler {
         unitDAO.setUnitHp(attackeeID, newAttackeeHp);
 
         // attackee's hp = 0, delete it
-        if(newAttackeeHp == 0){
+        if (newAttackeeHp == 0) {
             deletedID = attackeeID;
             // if soldier successfully attacks, change its level and skillPoint
-            if(attacker instanceof Soldier) unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience()+2);
+            if (attacker instanceof Soldier)
+                unitDAO.updateExperience(attackerID, attacker.getExperience().getExperience() + 2);
             // if soldier died, remove it from player's soldierList then delete it in db
             //if(attackee instanceof Soldier) playerDAO.removeSoldier(playerID,attackeeID);
             // delete died monster
-            if(attackee instanceof Monster) unitDAO.deleteUnit(attackeeID);
+            if (attackee instanceof Monster) unitDAO.deleteUnit(attackeeID);
         }
 
         //update unitQueue
@@ -215,7 +202,7 @@ public class BattleHandler {
     }
 
     //rolls the queue, this round's attacker will be rolled to the back of the queue, delete units that lose the battle
-    public Queue<Unit> rollUnitQueue(Queue<Unit> queue, int deletedID){
+    public Queue<Unit> rollUnitQueue(Queue<Unit> queue, int deletedID) {
         Queue<Unit> rolledQueue = new LinkedList<>(queue);
         int firstID = queue.peek().getId();
 
@@ -230,7 +217,8 @@ public class BattleHandler {
         rolledQueue.offer(rolledQueue.poll());
 
         //jump unit with hp 0
-        while(rolledQueue.peek().getId() == deletedID || rolledQueue.peek().getHp()==0) rolledQueue.offer(rolledQueue.poll());
+        while (rolledQueue.peek().getId() == deletedID || rolledQueue.peek().getHp() == 0)
+            rolledQueue.offer(rolledQueue.poll());
 
         return rolledQueue;
     }

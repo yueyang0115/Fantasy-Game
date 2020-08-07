@@ -18,13 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class AccountHandler {
-    private final PlayerDAO playerDAO;
     Logger logger = LoggerFactory.getLogger(getClass());
     // track online player
     private final ConcurrentMap<Integer, UserSession> player2sessions = new ConcurrentHashMap<>();
 
     public AccountHandler() {
-        this.playerDAO = MetaDAO.getPlayerDAO();
     }
 
     public UserSession getSessionById(int id) {
@@ -35,7 +33,7 @@ public class AccountHandler {
         LoginResultMessage result = new LoginResultMessage();
         String username = input.getUsername();
         String password = input.getPassword();
-
+        PlayerDAO playerDAO = userSession.getMetaDAO().getPlayerDAO();
         Player player = playerDAO.getPlayer(username, password);
 
         if (player != null) {
@@ -58,14 +56,15 @@ public class AccountHandler {
         userSession.sendMsg(result);
     }
 
-    public void handleSignup(UserSession session, SignUpRequestMessage input) {
+    public void handleSignup(UserSession userSession, SignUpRequestMessage input) {
         SignUpResultMessage result = new SignUpResultMessage();
         String username = input.getUsername();
         String password = input.getPassword();
 
-        Player player = MetaDAO.getPlayerDAO().getPlayer(username);
+        PlayerDAO playerDAO = userSession.getMetaDAO().getPlayerDAO();
+        Player player = playerDAO.getPlayer(username);
         if (player == null) {
-            MetaDAO.getPlayerDAO().addPlayer(username, password);
+            playerDAO.addPlayer(username, password);
             result.setStatus("success");
             System.out.println("[DEBUG] SignUp succeed");
             logger.debug("[DEBUG] SignUp succeed");
@@ -76,6 +75,6 @@ public class AccountHandler {
             logger.debug("[DEBUG] SignUp failed, username already exist");
         }
 
-        session.sendMsg(result);
+        userSession.sendMsg(result);
     }
 }
