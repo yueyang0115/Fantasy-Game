@@ -106,7 +106,11 @@ public class BattleHandler {
 
         BattleResultMessage result = new BattleResultMessage();
         List<BattleAction> actions = new ArrayList<>();
+
+        //player request doesn't contain wid
         WorldCoord where = request.getTerritoryCoord();
+        where.setWid(session.getPlayer().getCurWorldId());
+
         int attackeeID = request.getBattleAction().getAttackee().getId();
         int attackerID = request.getBattleAction().getAttacker().getId();
         Skill attackerSkill = skillDAO.getSkill(request.getBattleAction().getActionType());
