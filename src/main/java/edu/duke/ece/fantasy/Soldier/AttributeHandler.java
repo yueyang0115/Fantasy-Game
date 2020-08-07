@@ -9,7 +9,7 @@ import edu.duke.ece.fantasy.net.UserSession;
 public class AttributeHandler {
     public void handle(UserSession session, AttributeRequestMessage request){
         AttributeResultMessage result = new AttributeResultMessage();
-        SoldierDAO sm = MetaDAO.getSoldierDAO();
+        SoldierDAO sm = session.getMetaDAO().getSoldierDAO();
         result.setSoldiers(sm.getSoldiers(session.getPlayer().getId()));
         session.sendMsg(result);
     }

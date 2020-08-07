@@ -12,6 +12,13 @@ import edu.duke.ece.fantasy.net.UserSession;
 import java.util.*;
 
 public class BattleHandler {
+    private MonsterDAO monsterDAO;
+    private SoldierDAO soldierDAO;
+    private UnitDAO unitDAO;
+    private PlayerDAO playerDAO;
+    private TerritoryDAO territoryDAO;
+    private SkillDAO skillDAO;
+
     private WorldCoord currentCoord;
     public static int TAME_RANGE_X = 3;
     public static int TAME_RANGE_Y = 3;
@@ -26,6 +33,13 @@ public class BattleHandler {
 
     //return a list of battleResult because doBattle may contain results of multiple rounds
     public BattleResultMessage handle(UserSession session, BattleRequestMessage request) {
+        monsterDAO = session.getMetaDAO().getMonsterDAO();
+        soldierDAO = session.getMetaDAO().getSoldierDAO();
+        unitDAO = session.getMetaDAO().getUnitDAO();
+        territoryDAO = session.getMetaDAO().getTerritoryDAO();
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+        skillDAO = session.getMetaDAO().getSkillDAO();
+
         String action = request.getAction();
         if (action.equals("escape")) {
             BattleResultMessage result = new BattleResultMessage();
@@ -98,7 +112,6 @@ public class BattleHandler {
     public BattleResultMessage doBattle(UserSession session, BattleRequestMessage request) {
         int playerID = session.getPlayer().getId();
 
-        PlayerDAO
         // load battleQueue from player in database
         List<Integer> loadedUnitList = playerDAO.getBattleInfo(playerID);
         this.unitQueue = new LinkedList<>();

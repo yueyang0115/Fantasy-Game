@@ -21,7 +21,7 @@ public class MonsterGenerator extends MonsterScheduledTask {
 
         else {
             // get num of monsters in an area
-            int monsterNum = MetaDAO.getMonsterDAO().countMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
+            int monsterNum = session.getMetaDAO().getMonsterDAO().countMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
             //if the num is less than limited number, generate a new monster
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
@@ -30,7 +30,7 @@ public class MonsterGenerator extends MonsterScheduledTask {
                 if (where != null) {
                     // add one monster
                     m.setCoord(where);
-                    MetaDAO.getMonsterDAO().addMonster(m, where);
+                    session.getMetaDAO().getMonsterDAO().addMonster(m, where);
                     //save the changed monster message in resultMsgQueue
                     putMonsterInResultMsgQueue(m);
                     System.out.println("generate a new monster in " + where.toString());
@@ -41,7 +41,7 @@ public class MonsterGenerator extends MonsterScheduledTask {
 
     //find a coord with the biggest tame within an area
     private WorldCoord generateCoord(WorldCoord currentCoord) {
-        WorldCoord newCorod = MetaDAO.getTerritoryDAO().getWildestCoordInRange(currentCoord, X_RANGE, Y_RANGE);
+        WorldCoord newCorod = session.getMetaDAO().getTerritoryDAO().getWildestCoordInRange(currentCoord, X_RANGE, Y_RANGE);
         return newCorod;
     }
 }

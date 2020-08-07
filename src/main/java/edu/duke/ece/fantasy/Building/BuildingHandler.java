@@ -24,9 +24,6 @@ public class BuildingHandler {
     //("shop",shop);
 
     public BuildingHandler() {
-        playerDAO = MetaDAO.getPlayerDAO();
-        DBBuildingDAO = MetaDAO.getDbBuildingDAO();
-        territoryDAO = MetaDAO.getTerritoryDAO();
         Shop shop = new BaseShop();
         Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
@@ -34,6 +31,10 @@ public class BuildingHandler {
     }
 
     public void handle(UserSession session, BuildingRequestMessage buildingRequestMessage) {
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+        DBBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
+        territoryDAO = session.getMetaDAO().getTerritoryDAO();
+
         BuildingResultMessage buildingResultMessage = new BuildingResultMessage();
         buildingResultMessage.setAction(buildingRequestMessage.getAction());
         String action = buildingRequestMessage.getAction();

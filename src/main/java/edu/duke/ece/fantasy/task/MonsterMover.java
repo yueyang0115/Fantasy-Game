@@ -21,7 +21,7 @@ public class MonsterMover extends MonsterScheduledTask {
         if (cannotGenerateMonster()) return;
 
         //get monsters within an area whenever getting into a new coord
-        List<Monster> monsterList = MetaDAO.getMonsterDAO().getMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
+        List<Monster> monsterList = session.getMetaDAO().getMonsterDAO().getMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
         //if has monsters in this area
         if (monsterList != null && monsterList.size() != 0) {
             //sort all monsters according to its distance from currentCoord
@@ -72,9 +72,9 @@ public class MonsterMover extends MonsterScheduledTask {
         if (moved) {
             //update monster's new coord
             m.setCoord(new WorldCoord(m.getCoord().getWid(), startX, startY));
-            MetaDAO.getMonsterDAO().updateMonsterCoord(m.getId(), startX, startY);
+            session.getMetaDAO().getMonsterDAO().updateMonsterCoord(m.getId(), startX, startY);
             // set monster's needUpdate field to be true
-            MetaDAO.getMonsterDAO().setMonsterStatus(m.getId(), true);
+            session.getMetaDAO().getMonsterDAO().setMonsterStatus(m.getId(), true);
             System.out.println("moving monsterID " + m.getId() + " from " + startCoord + " to " + startX + ", " + startY);
             //add the changed monster message in resultMsgQueue
             putMonsterInResultMsgQueue(m);

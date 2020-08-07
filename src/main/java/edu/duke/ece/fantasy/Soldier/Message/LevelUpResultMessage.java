@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.duke.ece.fantasy.database.Unit;
 import edu.duke.ece.fantasy.database.levelUp.Skill;
 import edu.duke.ece.fantasy.net.Message;
+import edu.duke.ece.fantasy.net.MessageMeta;
+import edu.duke.ece.fantasy.net.Modules;
 
 import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@MessageMeta(module = Modules.SOLDIER, cmd = CmdSoldier.RES_LEVELUP)
 public class LevelUpResultMessage extends Message {
     private String result; // "success" "fail"
     private Set<Skill> availableSkills; // available skills that can be added/updated

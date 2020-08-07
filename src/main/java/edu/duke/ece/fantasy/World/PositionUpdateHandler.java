@@ -29,11 +29,6 @@ public class PositionUpdateHandler {
 //    int y_block_num;
 
     public PositionUpdateHandler() {
-        territoryDAO = MetaDAO.getTerritoryDAO();
-        DBBuildingDAO = MetaDAO.getDbBuildingDAO();
-        worldDAO = MetaDAO.getWorldDAO();
-        monsterDAO = MetaDAO.getMonsterDAO();
-        playerDAO = MetaDAO.getPlayerDAO();
         //    itemDAO = new ItemDAO(session);
     }
 
@@ -70,6 +65,12 @@ public class PositionUpdateHandler {
     }
 
     public void handle(UserSession session, PositionRequestMessage positionMsg) {
+        territoryDAO = session.getMetaDAO().getTerritoryDAO();
+        DBBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
+        worldDAO = session.getMetaDAO().getWorldDAO();
+        monsterDAO = session.getMetaDAO().getMonsterDAO();
+        playerDAO = session.getMetaDAO().getPlayerDAO();
+
         //cachedMap = new HashMap<>();
         PositionResultMessage positionResultMessage = new PositionResultMessage();
         Player player = session.getPlayer();

@@ -6,6 +6,8 @@ import edu.duke.ece.fantasy.Building.BuildingHandler;
 import edu.duke.ece.fantasy.Building.ShopHandler;
 import edu.duke.ece.fantasy.Item.InventoryHandler;
 import edu.duke.ece.fantasy.Soldier.AttributeHandler;
+import edu.duke.ece.fantasy.Soldier.LevelUpHandler;
+import edu.duke.ece.fantasy.Soldier.ReviveHandler;
 import edu.duke.ece.fantasy.World.PositionUpdateHandler;
 
 public class GameContext {
@@ -16,7 +18,8 @@ public class GameContext {
     private static BuildingHandler buildingHandler = new BuildingHandler();
     private static ShopHandler shopHandler = new ShopHandler();
     private static BattleHandler battleHandler = new BattleHandler();
-
+    private static LevelUpHandler levelUpHandler = new LevelUpHandler();
+    private static ReviveHandler reviveHandler = new ReviveHandler();
 
     public static AccountHandler getAccountHandler() {
         return accountHandler;
@@ -44,4 +47,9 @@ public class GameContext {
     public static BuildingHandler getBuildingHandler() {
         return buildingHandler;
     }
+
+    public static LevelUpHandler getLevelUpHandler() { return levelUpHandler; }
+
+    public static ReviveHandler getReviveHandler() { return reviveHandler; }
+
 }
