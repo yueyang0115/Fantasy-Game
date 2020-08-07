@@ -30,6 +30,7 @@ public class AccountHandler {
     }
 
     public void handleLogin(UserSession userSession, LoginRequestMessage input) {
+        userSession.beginTransaction();
         LoginResultMessage result = new LoginResultMessage();
         String username = input.getUsername();
         String password = input.getPassword();
@@ -53,10 +54,12 @@ public class AccountHandler {
             System.out.println("[DEBUG] Login failed, wrong password/username");
         }
 
+        userSession.commitTransaction();
         userSession.sendMsg(result);
     }
 
     public void handleSignup(UserSession userSession, SignUpRequestMessage input) {
+        userSession.beginTransaction();
         SignUpResultMessage result = new SignUpResultMessage();
         String username = input.getUsername();
         String password = input.getPassword();
@@ -75,6 +78,7 @@ public class AccountHandler {
             logger.debug("[DEBUG] SignUp failed, username already exist");
         }
 
+        userSession.commitTransaction();
         userSession.sendMsg(result);
     }
 }

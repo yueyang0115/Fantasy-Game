@@ -24,11 +24,19 @@ public class UserSession {
         this.channel = channel;
     }
 
-    public void inactiveDbSession(){
+    public void beginTransaction() {
+        dbSession.beginTransaction();
+    }
+
+    public void commitTransaction() {
+        dbSession.getTransaction().commit();
+    }
+
+    public void inactiveDbSession() {
         dbSession.close();
     }
 
-    public void activeDbSession(){
+    public void activeDbSession() {
         dbSession = HibernateUtil.getSessionFactory().openSession();
         metaDAO = new MetaDAO(dbSession);
     }
@@ -36,8 +44,8 @@ public class UserSession {
     public void sendMsg(Message msg) {
         System.out.println("in user session");
         ChannelFuture future = channel.writeAndFlush(msg);
-        if (!future.isSuccess()) {
-            logger.error("fail:"+future.cause());
+        if (!future.isDone()) {
+            logger.error("fail:" + future.cause());
         }
     }
 

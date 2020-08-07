@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
 import edu.duke.ece.fantasy.database.DAO.TileDAO;
 import org.json.JSONArray;
@@ -184,9 +185,9 @@ public class TileGenerator {
     }
 
     //I hate how tightly coupled this it to the database :(
-    public void generate(TerritoryDAO terdao, WorldCoord where, WorldInfo info) {
-
-        TileDAO tdao = new TileDAO();
+    public void generate(MetaDAO metaDAO, WorldCoord where, WorldInfo info) {
+        TileDAO tdao = metaDAO.getTileDAO();
+        TerritoryDAO terdao = metaDAO.getTerritoryDAO();
         //if the world doesn't have a start tile, lets put one in it.
         if (!tdao.doesWorldHaveStartTile(info)) {
             //System.out.println("Putting start tile at " + info.getFirstTile());

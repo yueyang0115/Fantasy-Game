@@ -20,21 +20,25 @@ public class MetaDAO {
 
     public MetaDAO(Session session) {
         playerDAO = new PlayerDAO(session);
-        inventoryDAO = new InventoryDAO();
-        tileDAO = new TileDAO();
-        worldDAO = new WorldDAO();
-        dbBuildingDAO = new DBBuildingDAO();
-        playerInventoryDAO = new PlayerInventoryDAO();
-        shopInventoryDAO = new ShopInventoryDAO();
-        territoryDAO = new TerritoryDAO();
-        monsterDAO = new MonsterDAO();
-        soldierDAO = new SoldierDAO();
-        unitDAO = new UnitDAO();
-        skillDAO = new SkillDAO();
-        relationshipDAO = new RelationshipDAO();
+        inventoryDAO = new InventoryDAO(session);
+        tileDAO = new TileDAO(session);
+        worldDAO = new WorldDAO(session);
+        dbBuildingDAO = new DBBuildingDAO(session);
+        playerInventoryDAO = new PlayerInventoryDAO(session);
+        shopInventoryDAO = new ShopInventoryDAO(session);
+        territoryDAO = new TerritoryDAO(session);
+        monsterDAO = new MonsterDAO(session);
+        soldierDAO = new SoldierDAO(session);
+        unitDAO = new UnitDAO(session);
+        skillDAO = new SkillDAO(session);
+        relationshipDAO = new RelationshipDAO(session);
     }
 
-     public RelationshipDAO getRelationshipDAO() {
+    public TileDAO getTileDAO() {
+        return tileDAO;
+    }
+
+    public RelationshipDAO getRelationshipDAO() {
         return relationshipDAO;
     }
 

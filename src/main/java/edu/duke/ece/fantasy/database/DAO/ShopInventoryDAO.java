@@ -12,6 +12,12 @@ import java.util.List;
 
 public class ShopInventoryDAO {
 
+    Session session;
+
+    public ShopInventoryDAO(Session session) {
+        this.session = session;
+    }
+
     public void addInventory(Inventory inventory) {
         HibernateUtil.save(inventory);
     }

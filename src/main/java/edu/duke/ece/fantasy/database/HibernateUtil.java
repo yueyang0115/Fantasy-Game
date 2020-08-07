@@ -41,12 +41,7 @@ public class HibernateUtil {
         return res;
     }
 
-    public static void save(Object obj) {
-        Session dbSession = getSessionFactory().getCurrentSession();
-        dbSession.beginTransaction();
-        dbSession.save(obj);
-        dbSession.getTransaction().commit();
-    }
+
 
     public static void saveOrUpdate(Object obj) {
         Session dbSession = getSessionFactory().getCurrentSession();

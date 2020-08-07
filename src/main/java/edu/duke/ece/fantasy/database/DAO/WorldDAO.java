@@ -9,14 +9,19 @@ import org.slf4j.LoggerFactory;
 
 public class WorldDAO {
     Logger log = LoggerFactory.getLogger(WorldDAO.class);
+    Session session;
+
+    public WorldDAO(Session session) {
+        this.session = session;
+    }
 
     public WorldInfo getInfo(int wid) {
-        return HibernateUtil.get(WorldInfo.class,wid);
+        return HibernateUtil.get(WorldInfo.class, wid);
     }
 
     public WorldInfo initWorld(WorldCoord where, String owner, int tilesize) {
         WorldInfo wi = new WorldInfo(where, owner, tilesize);
-        HibernateUtil.save(wi);
+        session.save(wi);
         return wi;
     }
 }

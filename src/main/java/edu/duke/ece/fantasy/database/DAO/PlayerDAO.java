@@ -33,20 +33,26 @@ public class PlayerDAO {
 
         // add default money
         player.setMoney(2000);
-        HibernateUtil.save(player);
+        session.save(player);
     }
 
 
     public Player getPlayerByWid(int wid) {
-        return HibernateUtil.queryOne("From Player U where U.curWorldId =:wid", Player.class, new String[]{"wid"}, new Object[]{wid});
+        Query<Player> q = session.createQuery("From Player U where U.curWorldId =:wid", Player.class);
+        q.setParameter("wid", wid);
+        return q.uniqueResult();
     }
 
     public Player getPlayer(int id) {
-        return HibernateUtil.queryOne("From Player U where U.id =:id", Player.class, new String[]{"id"}, new Object[]{id});
+        Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
+        q.setParameter("id", id);
+        return q.uniqueResult();
     }
 
     public Player getPlayer(String username) {
-        return HibernateUtil.queryOne("From Player U where U.username =:username", Player.class, new String[]{"username"}, new Object[]{username});
+        Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
+        q.setParameter("username", username);
+        return q.uniqueResult();
     }
 
     public Player getPlayer(String username, String password) {
@@ -77,29 +83,25 @@ public class PlayerDAO {
 
     public void removeSoldier(int playerID, int soldierID) {
         Player p = getPlayer(playerID);
-        Soldier soldier = HibernateUtil.queryOne("From Soldier S where S.id =:id",
-                Soldier.class, new String[]{"id"}, new Object[]{soldierID});
+        Query<Soldier> q = session.createQuery("From Soldier S where S.id =:id",
+                Soldier.class);
+        q.setParameter("id", soldierID);
+        Soldier soldier = q.uniqueResult();
         p.getSoldiers().remove(soldier);
-        HibernateUtil.update(p);
+        session.update(p);
     }
 
-    public void addWorld(int playerID, WorldInfo info) {
-        Player player = getPlayer(playerID);
-//        player.addWorldInfo(info);
-        HibernateUtil.update(player);
-    }
 
-    public void setBattleInfo(int playerID, List<Integer> unitList){
+    public void setBattleInfo(int playerID, List<Integer> unitList) {
         Player p = getPlayer(playerID);
         p.setBattleInfo(unitList);
-        HibernateUtil.update(p);
+        session.update(p);
     }
 
-    public List<Integer> getBattleInfo(int playerID){
+    public List<Integer> getBattleInfo(int playerID) {
         Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
-        q.setParameter("id",playerID);
+        q.setParameter("id", playerID);
         Player player = q.uniqueResult();
-        List<Integer> res = player.getBattleInfo();
-        return res;
+        return player.getBattleInfo();
     }
 }

@@ -5,6 +5,7 @@ import edu.duke.ece.fantasy.Building.Prototype.Building;
 import edu.duke.ece.fantasy.Building.Prototype.Mine;
 import edu.duke.ece.fantasy.Building.Prototype.Shop;
 import edu.duke.ece.fantasy.database.*;
+import edu.duke.ece.fantasy.database.DAO.DBBuildingDAO;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.DAO.TerritoryDAO;
@@ -17,16 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BuildingHandler {
-    PlayerDAO playerDAO;
-    edu.duke.ece.fantasy.database.DAO.DBBuildingDAO DBBuildingDAO;
-    TerritoryDAO territoryDAO;
     Map<String, Building> BaseBuildingMap = new HashMap<>();
     //("shop",shop);
 
     public BuildingHandler() {
-        playerDAO = MetaDAO.getPlayerDAO();
-        DBBuildingDAO = MetaDAO.getDbBuildingDAO();
-        territoryDAO = MetaDAO.getTerritoryDAO();
         Shop shop = new BaseShop();
         Mine mine = new Mine();
         BaseBuildingMap.put(shop.getName(), shop);
@@ -40,7 +35,8 @@ public class BuildingHandler {
 
         WorldCoord coord = buildingRequestMessage.getCoord();
         Player curPlayer = session.getPlayer();
-
+        TerritoryDAO territoryDAO = session.getMetaDAO().getTerritoryDAO();
+        DBBuildingDAO dbBuildingDAO = session.getMetaDAO().getDbBuildingDAO();
         try {
             if (action.equals("createList")) {
                 // check territory status
@@ -55,19 +51,19 @@ public class BuildingHandler {
                 buildingResultMessage.setResult("success");
             } else if (action.equals("create")) {
                 // create different building
-                Building building = Create(buildingRequestMessage, curPlayer);
+                Building building = Create(buildingRequestMessage, curPlayer, dbBuildingDAO);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
             } else if (action.equals("upgradeList")) {
                 // check if Building exist
-                DBBuilding dbBuilding = DBBuildingDAO.getBuilding(coord);
+                DBBuilding dbBuilding = dbBuildingDAO.getBuilding(coord);
                 if (dbBuilding == null) {
                     throw new InvalidBuildingRequest("Selected building doesn't exist");
                 }
                 buildingResultMessage.setBuildingList(dbBuilding.toGameBuilding().getUpgradeList());
                 buildingResultMessage.setResult("success");
             } else if (action.equals("upgrade")) {
-                Building building = Update(buildingRequestMessage, curPlayer);
+                Building building = Update(buildingRequestMessage, curPlayer, dbBuildingDAO);
                 buildingResultMessage.setBuilding(building);
                 buildingResultMessage.setResult("success");
             }
@@ -79,11 +75,11 @@ public class BuildingHandler {
         session.sendMsg(buildingResultMessage);
     }
 
-    private Building Create(BuildingRequestMessage buildingRequestMessage, Player player) throws InvalidBuildingRequest {
+    private Building Create(BuildingRequestMessage buildingRequestMessage, Player player, DBBuildingDAO dbBuildingDAO) throws InvalidBuildingRequest {
         WorldCoord coord = buildingRequestMessage.getCoord();
         String name = buildingRequestMessage.getBuildingName();
         // check if territory have building
-        if (DBBuildingDAO.getBuilding(coord) != null) {
+        if (dbBuildingDAO.getBuilding(coord) != null) {
             throw new InvalidBuildingRequest("Selected territory already have a building");
         }
 
@@ -104,12 +100,12 @@ public class BuildingHandler {
         return building;
     }
 
-    private Building Update(BuildingRequestMessage buildingRequestMessage, Player player) throws InvalidBuildingRequest {
+    private Building Update(BuildingRequestMessage buildingRequestMessage, Player player, DBBuildingDAO dbBuildingDAO) throws InvalidBuildingRequest {
         WorldCoord coord = buildingRequestMessage.getCoord();
         String name = buildingRequestMessage.getBuildingName();
 
         // check if territory have building
-        DBBuilding dbBuilding = DBBuildingDAO.getBuilding(coord);
+        DBBuilding dbBuilding = dbBuildingDAO.getBuilding(coord);
         if (dbBuilding == null) {
             throw new InvalidBuildingRequest("Selected building doesn't exist");
         }

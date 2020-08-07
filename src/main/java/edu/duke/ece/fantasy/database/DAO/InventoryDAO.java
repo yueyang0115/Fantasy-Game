@@ -8,14 +8,21 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class InventoryDAO {
+    Session session;
+
+    public InventoryDAO(Session session) {
+        this.session = session;
+    }
 
     public List<Inventory> getAllItemPack() {
-        return HibernateUtil.queryList("SELECT I From Inventory I", Inventory.class, null, null);
+        Query<Inventory> q = session.createQuery("SELECT I From Inventory I", Inventory.class);
+        return q.getResultList();
     }
 
     public Inventory getInventory(int id) {
-        return HibernateUtil.queryOne("From Inventory I where I.id =:id", Inventory.class,
-                new String[]{"id"}, new Object[]{id});
+        Query<Inventory> q = session.createQuery("From Inventory I where I.id =:id", Inventory.class);
+        q.setParameter("id", id);
+        return q.uniqueResult();
     }
 
 }
