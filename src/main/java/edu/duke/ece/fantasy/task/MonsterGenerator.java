@@ -21,9 +21,9 @@ public class MonsterGenerator extends MonsterScheduledTask {
 
         else {
             // get num of monsters in an area
-            System.out.println("player.currentCoord before monsterNum is "+player.getCurrentCoord());
+            //System.out.println("player.currentCoord before monsterNum is "+player.getCurrentCoord());
             long monsterNum = session.getMetaDAO().getMonsterDAO().countMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
-            System.out.println("monsterNum is "+monsterNum);
+            //System.out.println("monsterNum is "+monsterNum);
             //if the num is less than limited number, generate a new monster
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
