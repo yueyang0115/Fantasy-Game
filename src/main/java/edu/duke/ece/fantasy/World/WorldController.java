@@ -11,7 +11,7 @@ import edu.duke.ece.fantasy.net.UserSession;
 public class WorldController {
     @RequestMapping
     public void ReqCoord(UserSession session, PositionRequestMessage msg){
-        session.getPlayer().setStatus(WorldInfo.MainWorld);
         GameContext.getPositionUpdateHandler().handle(session,msg);
+        session.getPlayer().setStatus(WorldInfo.MainWorld);
     }
 }

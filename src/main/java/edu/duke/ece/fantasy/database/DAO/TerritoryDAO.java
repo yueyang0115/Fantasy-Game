@@ -91,13 +91,12 @@ public class TerritoryDAO {
                 + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
                 + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
                 + " and not exists (from Monster M where M.coord = T.coord)"
-                + " order by T.tame DESC", Territory.class);
+                + " order by T.tame DESC", Territory.class).setMaxResults(1);
         String[] paraName = new String[]{"wid", "xlower", "xupper", "ylower", "yupper"};
         Object[] para = new Object[]{where.getWid(), where.getX() - x_range / 2, where.getX() + x_range / 2,
                 where.getY() - y_range / 2, where.getY() + y_range / 2};
         HibernateUtil.assignMutilplePara(q, paraName, para);
-        List<Territory> territoryList = q.getResultList();
-        Territory t = territoryList.get(0);
+        Territory t = q.uniqueResult();
 
         return t.getCoord();
     }
@@ -114,7 +113,7 @@ public class TerritoryDAO {
                 + " and T.coord.x >=:xlower and T.coord.x <=:xupper"
                 + " and T.coord.y >=:ylower and T.coord.y <=:yupper"
                 + " and T.coord != :center", Territory.class);
-        String[] paraName = new String[]{"wid", "xlower", "xupper", "ylower", "yupper"};
+        String[] paraName = new String[]{"wid", "center", "xlower", "xupper", "ylower", "yupper"};
         Object[] para = new Object[]{where.getWid(), where, where.getX() - x_range / 2, where.getX() + x_range / 2,
                 where.getY() - y_range / 2, where.getY() + y_range / 2};
         for (int i = 0; i < para.length; i++) {

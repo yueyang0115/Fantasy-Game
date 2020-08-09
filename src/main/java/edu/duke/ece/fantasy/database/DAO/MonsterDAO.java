@@ -35,7 +35,12 @@ public class MonsterDAO {
         Query<Monster> q = session.createQuery("From Monster M where M.coord =:coord",
                 Monster.class);
         q.setParameter("coord", where);
-        return q.getResultList();
+        List<Monster> monsterList = new ArrayList<>();
+        for(Iterator<Monster> iterator = q.list().iterator(); iterator.hasNext();){
+            Object o = iterator.next();
+            monsterList.add((Monster) o);
+        }
+        return monsterList;
     }
 
     //update a monster's hp
@@ -70,17 +75,16 @@ public class MonsterDAO {
     }
 
     // count num of monsters within an area
-    public int countMonstersInRange(WorldCoord where, int x_range, int y_range) {
-        Query<Monster> q = session.createQuery("From Monster M where M.coord.wid =:wid"
-                        + " and M.coord.x >=:xlower and M.coord.x <=:xupper"
-                        + " and M.coord.y >=:ylower and M.coord.y <=:yupper",
-                Monster.class);
+    public Long countMonstersInRange(WorldCoord where, int x_range, int y_range) {
+        Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid"
+                +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
+                +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
+        );
         String[] paraName = new String[]{"wid", "xlower", "xupper", "ylower", "yupper"};
         Object[] para = new Object[]{where.getWid(), where.getX() - x_range / 2, where.getX() + x_range / 2,
                 where.getY() - y_range / 2, where.getY() + y_range / 2};
         HibernateUtil.assignMutilplePara(q, paraName, para);
-        List<Monster> monsterList = q.getResultList();
-        int cnt = monsterList.size();
+        Long cnt = (Long) q.uniqueResult();
         return cnt;
     }
 
@@ -95,7 +99,11 @@ public class MonsterDAO {
         Object[] para = new Object[]{where.getWid(), where, where.getX() - x_range/2, where.getX() + x_range/2,
                 where.getY() - y_range/2, where.getY() + y_range/2};
         HibernateUtil.assignMutilplePara(q, paraName, para);
-        List<Monster> monsterList = q.getResultList();
+        List<Monster> monsterList = new ArrayList<>();
+        for(Iterator iterator = q.list().iterator(); iterator.hasNext();){
+            Object o = iterator.next();
+            monsterList.add((Monster) o);
+        }
         return monsterList;
     }
 

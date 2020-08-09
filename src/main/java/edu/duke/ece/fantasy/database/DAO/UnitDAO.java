@@ -7,6 +7,7 @@ import edu.duke.ece.fantasy.database.levelUp.Skill;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UnitDAO {
@@ -57,20 +58,17 @@ public class UnitDAO {
 
     // update unit's level according to its experience
     private void updateLevel(Unit unit) {
-        if (unit == null || unit instanceof Monster) return;
+        if(unit == null || unit instanceof Monster) return;
         // get the supposed unit level that corresponds to the certain experience
-        Query<ExperienceLevelEntry> q = session.createQuery("from ExperienceLevelEntry E where E.experience <= :unitExperience"
-                        + " order by E.experience DESC",
-                ExperienceLevelEntry.class);
-        q.setParameter("unitExperience", unit.getExperience());
-        List<ExperienceLevelEntry> entryList = q.getResultList();
+        Query q = session.createQuery("from ExperienceLevelEntry E where E.experience <= :unitExperience"
+                +" order by E.experience DESC"
+        ).setMaxResults(1);
+        q.setParameter("unitExperience", unit.getExperience().getExperience());
+        ExperienceLevelEntry entry = (ExperienceLevelEntry) q.uniqueResult();
 
-        if (entryList == null || entryList.size() == 0) return;
-        ExperienceLevelEntry entry = entryList.get(0);
-
-//        if(entry == null) return;
+        if(entry == null) return;
         // if unit's level is not updated, update it
-        if (unit.getExperience().getLevel() != entry.getLevel()) {
+        if(unit.getExperience().getLevel() != entry.getLevel()){
             unit.getExperience().setLevel(entry.getLevel());
             session.update(unit);
             // changes in level may bring changes to skillPoint
@@ -81,18 +79,15 @@ public class UnitDAO {
 
     // update unit's skillPoint according to its level and existing skills it has
     private void updateSkillPoint(Unit unit) {
-        if (unit == null || unit instanceof Monster) return;
-        Query<LevelSkillPointEntry> q = session.createQuery("from LevelSkillPointEntry E where E.level <= :unitLevel"
-                        + " order by E.level DESC",
-                LevelSkillPointEntry.class);
+        if(unit == null || unit instanceof Monster) return;
+        Query q = session.createQuery("from LevelSkillPointEntry E where E.level <= :unitLevel"
+                +" order by E.level DESC"
+        ).setMaxResults(1);
         q.setParameter("unitLevel", unit.getExperience().getLevel());
-        List<LevelSkillPointEntry> entryList = q.getResultList();
+        LevelSkillPointEntry entry = (LevelSkillPointEntry) q.uniqueResult();
 
-        if (entryList == null || entryList.size() == 0) return;
-        LevelSkillPointEntry entry = entryList.get(0);
-
-//        if(entry == null) return;
-        int existingSkillNum = unit.getSkills() == null ? 0 : unit.getSkills().size();
+        if(entry == null) return;
+        int existingSkillNum = unit.getSkills()==null? 0 : unit.getSkills().size();
         unit.getExperience().setSkillPoint(Math.max(entry.getSkillPoint() - existingSkillNum, 0));
         session.update(unit);
     }

@@ -86,9 +86,10 @@ public class PositionUpdateHandler {
         boolean isNewWorld = false;
         if (info == null) { // generate info
             info = worldDAO.initWorld(currentCoord, player.getUsername(), 20);//TODO: Fix hardcoding of tile size
-            player.setCurWorldId(info.getWid());
             isNewWorld = true;
         }
+        player.setCurWorldId(info.getWid());
+        player.getCurrentCoord().setWid(info.getWid());
 
         GenerateTerritory(worldCoords, info, session.getMetaDAO());
 

@@ -30,7 +30,11 @@ public class SoldierDAO {
         Query<Soldier> q = session.createQuery("From Soldier S where S.player.id =:playerID",
                 Soldier.class);
         q.setParameter("playerID", playerID);
-        return q.getResultList();
+        List<Soldier> soldierList = new ArrayList<>();
+        for(Object o : q.list()) {
+            soldierList.add((Soldier) o);
+        }
+        return soldierList;
     }
 
 }
