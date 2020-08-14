@@ -1,7 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.WorldCoord;
+import edu.duke.ece.fantasy.database.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -10,32 +9,34 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MonsterDAO {
-    private Session session;
+
+    Session session;
 
     public MonsterDAO(Session session) {
         this.session = session;
     }
 
     // add monster to the given coord
-    public void addMonster(Monster m, WorldCoord where){
+    public void addMonster(Monster m, WorldCoord where) {
         m.setCoord(where);
         session.save(m);
     }
 
     //get a monster from database based on the provided monsterID
     public Monster getMonster(int monsterID) {
-        Query q = session.createQuery("From Monster M where M.id =:id");
+        Query<Monster> q = session.createQuery("From Monster M where M.id =:id",
+                Monster.class);
         q.setParameter("id", monsterID);
-        Monster res = (Monster) q.uniqueResult();
-        return res;
+        return q.uniqueResult();
     }
 
     //get all monsters in the provided coord from database
-    public List<Monster> getMonsters(WorldCoord where){
-        List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.coord =:coord");
+    public List<Monster> getMonsters(WorldCoord where) {
+        Query<Monster> q = session.createQuery("From Monster M where M.coord =:coord",
+                Monster.class);
         q.setParameter("coord", where);
-        for(Iterator<Object> iterator = q.list().iterator(); iterator.hasNext();){
+        List<Monster> monsterList = new ArrayList<>();
+        for(Iterator<Monster> iterator = q.list().iterator(); iterator.hasNext();){
             Object o = iterator.next();
             monsterList.add((Monster) o);
         }
@@ -43,7 +44,7 @@ public class MonsterDAO {
     }
 
     //update a monster's hp
-    public boolean setMonsterHp(int monsterID, int hp){
+    public boolean setMonsterHp(int monsterID, int hp) {
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return false;
@@ -55,7 +56,7 @@ public class MonsterDAO {
 
 
     // change monster's needUpdate field to the given status
-    public void setMonsterStatus(int monsterID, boolean status){
+    public void setMonsterStatus(int monsterID, boolean status) {
         Monster m = getMonster(monsterID);
         if (m == null) { // don't have that monster
             return;
@@ -65,47 +66,40 @@ public class MonsterDAO {
     }
 
     // change given monsters' needUpdate field to the given status
-    public void setMonstersStatus(List<Monster> monsterList, boolean status){
+    public void setMonstersStatus(List<Monster> monsterList, boolean status) {
         //for(Monster m : monsterList) setMonsterStatus(m.getId(), false);
-        for(Iterator<Monster> iterator = monsterList.iterator(); iterator.hasNext();){
+        for (Iterator<Monster> iterator = monsterList.iterator(); iterator.hasNext(); ) {
             Monster m = iterator.next();
             setMonsterStatus(m.getId(), status);
         }
     }
 
     // count num of monsters within an area
-    public Long countMonstersInRange(WorldCoord where, int x_range, int y_range){
-        List<Monster> monsterList = new ArrayList<>();
+    public Long countMonstersInRange(WorldCoord where, int x_range, int y_range) {
         Query q = session.createQuery("select count(*) From Monster M where M.coord.wid =:wid"
                 +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
                 +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
         );
-        q.setParameter("wid", where.getWid());
-        q.setParameter("xlower", where.getX() - x_range/2);
-        q.setParameter("xupper", where.getX() + x_range/2);
-        q.setParameter("ylower", where.getY() - y_range/2);
-        q.setParameter("yupper", where.getY() + y_range/2);
+        String[] paraName = new String[]{"wid", "xlower", "xupper", "ylower", "yupper"};
+        Object[] para = new Object[]{where.getWid(), where.getX() - x_range / 2, where.getX() + x_range / 2,
+                where.getY() - y_range / 2, where.getY() + y_range / 2};
+        HibernateUtil.assignMutilplePara(q, paraName, para);
         Long cnt = (Long) q.uniqueResult();
         return cnt;
     }
 
     //get all monsters within an area, not including monsters that located in the center
-    public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range){
+    public List<Monster> getMonstersInRange(WorldCoord where, int x_range, int y_range) {
+        Query<Monster> q = session.createQuery("From Monster M where M.coord.wid =:wid "
+                        + " and M.coord.x >=:xlower and M.coord.x <=:xupper"
+                        + " and M.coord.y >=:ylower and M.coord.y <=:yupper"
+                        + " and M.coord != :coord ",
+                Monster.class);
+        String[] paraName = new String[]{"wid", "coord", "xlower", "xupper", "ylower", "yupper"};
+        Object[] para = new Object[]{where.getWid(), where, where.getX() - x_range/2, where.getX() + x_range/2,
+                where.getY() - y_range/2, where.getY() + y_range/2};
+        HibernateUtil.assignMutilplePara(q, paraName, para);
         List<Monster> monsterList = new ArrayList<>();
-        Query q = session.createQuery("From Monster M where M.coord.wid =:wid "
-                +" and M.coord.x >=:xlower and M.coord.x <=:xupper"
-                +" and M.coord.y >=:ylower and M.coord.y <=:yupper"
-                +" and M.coord != :coord "
-        );
-        q.setParameter("wid", where.getWid());
-        q.setParameter("coord", where);
-        q.setParameter("xlower", where.getX() - x_range/2);
-        q.setParameter("xupper", where.getX() + x_range/2);
-        q.setParameter("ylower", where.getY() - y_range/2);
-        q.setParameter("yupper", where.getY() + y_range/2);
-//        for(Object o : q.list()) {
-//            monsterList.add((Monster) o);
-//        }
         for(Iterator iterator = q.list().iterator(); iterator.hasNext();){
             Object o = iterator.next();
             monsterList.add((Monster) o);
@@ -114,9 +108,9 @@ public class MonsterDAO {
     }
 
     // update monster's coord to the given x and y
-    public void updateMonsterCoord(int monsterID, int x, int y){
+    public void updateMonsterCoord(int monsterID, int x, int y) {
         Monster m = getMonster(monsterID);
-        if(m != null){
+        if (m != null) {
             m.getCoord().setX(x);
             m.getCoord().setY(y);
             session.update(m);

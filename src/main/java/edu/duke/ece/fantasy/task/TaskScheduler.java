@@ -35,7 +35,7 @@ public class TaskScheduler {
             ScheduledTask scheduledTask = tasksQueue.peek();
             //if: the task is ready
             if(scheduledTask.getWhen() <= now ){
-                scheduledTask.doTask();
+                scheduledTask.action();
                 tasksQueue.poll();
                 //if the task should be done repeatedly, update the next time to do it, add it back to queue
                 if(scheduledTask.isRepeating()){

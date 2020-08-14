@@ -1,11 +1,10 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.building.BaseShop;
-import edu.duke.ece.fantasy.building.Shop;
+import edu.duke.ece.fantasy.Building.Prototype.BaseShop;
+import edu.duke.ece.fantasy.Building.Prototype.Shop;
 import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Inventory;
 import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.shopInventory;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
@@ -23,7 +22,7 @@ class ShopInventoryDAOTest {
     @BeforeEach
     void SetUpEach() {
         session.beginTransaction();
-        metaDAO = new MetaDAO(session);
+        metaDAO = new MetaDAO();
     }
 
     @AfterEach
@@ -38,9 +37,9 @@ class ShopInventoryDAOTest {
 
     @Test
     void getInventories() {
-        ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO(session);
+        ShopInventoryDAO shopInventoryDAO = new ShopInventoryDAO();
         Shop baseShop = new BaseShop();
-        baseShop.onCreate(metaDAO, new WorldCoord());
+        baseShop.onCreate(new WorldCoord());
         List<Inventory> res = shopInventoryDAO.getInventories(new WorldCoord());
 
     }

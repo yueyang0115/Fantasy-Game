@@ -1,8 +1,6 @@
 package edu.duke.ece.fantasy.database;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import edu.duke.ece.fantasy.json.InventoryRequestMessage;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.duke.ece.fantasy.Item.InvalidItemUsageException;
 import edu.duke.ece.fantasy.Item.Item;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
+import org.hibernate.Session;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 
@@ -70,8 +71,13 @@ public class Player implements Trader {
     @OneToMany(mappedBy = "player", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Soldier> soldiers = new ArrayList<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<playerInventory> items = new ArrayList<>();
+
+    @ElementCollection()
+    @Column(name = "battleInfo")
+    private List<Integer> battleInfo;
 
     public Player(String username, String password) {
         this.username = username;
@@ -257,11 +263,17 @@ public class Player implements Trader {
     }
 
     @Override
-    public Inventory addInventory(MetaDAO metaDAO, Inventory inventory) {
+    public Inventory addInventory(Session session, Inventory inventory) {
         playerInventory playerInventory = new playerInventory(inventory.getDBItem().toGameItem().toDBItem(), inventory.getAmount(), this);
-        metaDAO.getSession().save(playerInventory);
+        session.save(playerInventory);
         this.addItem(playerInventory);
         return playerInventory;
+    }
+
+    public List<Integer> getBattleInfo() { return battleInfo; }
+
+    public void setBattleInfo(List<Integer> battleInfo) {
+        this.battleInfo = battleInfo;
     }
 
 }

@@ -1,10 +1,10 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Account.Message.LoginRequestMessage;
+import edu.duke.ece.fantasy.Account.Message.LoginResultMessage;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.WorldCoord;
-import edu.duke.ece.fantasy.database.WorldInfo;
 import edu.duke.ece.fantasy.json.*;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ public class LoginHandlerTest {
                 .thenReturn(new Player("mockName","mockPassword"));
 
         SharedData sharedData = new SharedData();
-        LoginHandler lh = new LoginHandler(mockedMetaDAO, sharedData);
+        OldLoginHandler lh = new OldLoginHandler(mockedMetaDAO, sharedData);
         LoginRequestMessage request = new LoginRequestMessage("mockName","mockPassword");
         LoginResultMessage result = lh.handle(request);
         assertEquals(result.getStatus(),"success");
@@ -44,7 +44,7 @@ public class LoginHandlerTest {
                 .thenReturn(null);
 
         SharedData sharedData = new SharedData();
-        LoginHandler lh = new LoginHandler(mockedMetaDAO, sharedData);
+        OldLoginHandler lh = new OldLoginHandler(mockedMetaDAO, sharedData);
         LoginRequestMessage request = new LoginRequestMessage("mockName","mockPassword");
         LoginResultMessage result = lh.handle(request);
         assertEquals(result.getStatus(),"fail");

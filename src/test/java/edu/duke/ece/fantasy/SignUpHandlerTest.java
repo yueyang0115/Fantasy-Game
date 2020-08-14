@@ -1,9 +1,10 @@
 package edu.duke.ece.fantasy;
 
+import edu.duke.ece.fantasy.Account.Message.SignUpRequestMessage;
+import edu.duke.ece.fantasy.Account.Message.SignUpResultMessage;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.database.DAO.PlayerDAO;
 import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.WorldCoord;
 import edu.duke.ece.fantasy.json.*;
 import org.junit.jupiter.api.Test;
 

@@ -1,26 +1,21 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.database.Monster;
-import edu.duke.ece.fantasy.database.Player;
-import edu.duke.ece.fantasy.database.Soldier;
-import edu.duke.ece.fantasy.database.Tile;
 import org.hibernate.Session;
 
 public class MetaDAO {
-    PlayerDAO playerDAO;
-    InventoryDAO inventoryDAO;
-    TileDAO tileDAO;
-    WorldDAO worldDAO;
-    DBBuildingDAO dbBuildingDAO;
-    PlayerInventoryDAO playerInventoryDAO;
-    ShopInventoryDAO shopInventoryDAO;
-    TerritoryDAO territoryDAO;
-    MonsterDAO monsterDAO;
-    SoldierDAO soldierDAO;
-    UnitDAO unitDAO;
-    SkillDAO skillDAO;
-    RelationshipDAO relationshipDAO;
-    Session session;
+    private  PlayerDAO playerDAO;
+    private  InventoryDAO inventoryDAO;
+    private  TileDAO tileDAO;
+    private  WorldDAO worldDAO;
+    private  DBBuildingDAO dbBuildingDAO;
+    private  PlayerInventoryDAO playerInventoryDAO;
+    private  ShopInventoryDAO shopInventoryDAO;
+    private  TerritoryDAO territoryDAO;
+    private  MonsterDAO monsterDAO;
+    private  SoldierDAO soldierDAO;
+    private  UnitDAO unitDAO;
+    private  SkillDAO skillDAO;
+    private  RelationshipDAO relationshipDAO;
 
     public MetaDAO(Session session) {
         playerDAO = new PlayerDAO(session);
@@ -36,61 +31,56 @@ public class MetaDAO {
         unitDAO = new UnitDAO(session);
         skillDAO = new SkillDAO(session);
         relationshipDAO = new RelationshipDAO(session);
-        this.session = session;
-    }
-
-    public RelationshipDAO getRelationshipDAO() {
-        return relationshipDAO;
-    }
-
-
-    public PlayerDAO getPlayerDAO() {
-        return playerDAO;
-    }
-
-    public InventoryDAO getInventoryDAO() {
-        return inventoryDAO;
     }
 
     public TileDAO getTileDAO() {
         return tileDAO;
     }
 
-    public WorldDAO getWorldDAO() {
+    public RelationshipDAO getRelationshipDAO() {
+        return relationshipDAO;
+    }
+
+     public PlayerDAO getPlayerDAO() {
+        return playerDAO;
+    }
+
+    public  InventoryDAO getInventoryDAO() {
+        return inventoryDAO;
+    }
+
+    public  WorldDAO getWorldDAO() {
         return worldDAO;
     }
 
-    public DBBuildingDAO getDbBuildingDAO() {
+    public  DBBuildingDAO getDbBuildingDAO() {
         return dbBuildingDAO;
     }
 
-    public PlayerInventoryDAO getPlayerInventoryDAO() {
+    public  PlayerInventoryDAO getPlayerInventoryDAO() {
         return playerInventoryDAO;
     }
 
-    public ShopInventoryDAO getShopInventoryDAO() {
+    public  ShopInventoryDAO getShopInventoryDAO() {
         return shopInventoryDAO;
     }
 
-    public TerritoryDAO getTerritoryDAO() {
+     public TerritoryDAO getTerritoryDAO() {
         return territoryDAO;
     }
 
-    public MonsterDAO getMonsterDAO() {
+    public  MonsterDAO getMonsterDAO() {
         return monsterDAO;
     }
 
-    public SoldierDAO getSoldierDAO() {
+    public  SoldierDAO getSoldierDAO() {
         return soldierDAO;
     }
 
-    public UnitDAO getUnitDAO() {
+    public  UnitDAO getUnitDAO() {
         return unitDAO;
     }
 
-    public SkillDAO getSkillDAO() { return skillDAO; }
+    public  SkillDAO getSkillDAO() { return skillDAO; }
 
-    public Session getSession() {
-        return session;
-    }
 }

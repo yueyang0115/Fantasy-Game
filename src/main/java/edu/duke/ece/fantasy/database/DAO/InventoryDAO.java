@@ -1,5 +1,6 @@
 package edu.duke.ece.fantasy.database.DAO;
 
+import edu.duke.ece.fantasy.database.HibernateUtil;
 import edu.duke.ece.fantasy.database.Inventory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -14,16 +15,14 @@ public class InventoryDAO {
     }
 
     public List<Inventory> getAllItemPack() {
-        Query q = session.createQuery("SELECT I From Inventory I");
+        Query<Inventory> q = session.createQuery("SELECT I From Inventory I", Inventory.class);
         return q.getResultList();
     }
 
-
     public Inventory getInventory(int id) {
-        Query q = session.createQuery("From Inventory I where I.id =:id");
+        Query<Inventory> q = session.createQuery("From Inventory I where I.id =:id", Inventory.class);
         q.setParameter("id", id);
-        Inventory res = (Inventory) q.uniqueResult();
-        return res;
+        return q.uniqueResult();
     }
 
 }

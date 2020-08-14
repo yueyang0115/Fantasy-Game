@@ -5,7 +5,9 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+
 
 public class PlayerDAO {
     private Session session;
@@ -17,12 +19,11 @@ public class PlayerDAO {
     }
 
     public void addPlayer(String username, String password) {
-//        HibernateUtil.getSessionFactory().getCurrentSession();
         String encryptPassword = passwordEncryptor.encryptPassword(password);
         Player player = new Player(username, encryptPassword);
 
         //add two default soldier for each player
-        Soldier soldier = new Soldier("wizard", 6, 5, 20);
+        Soldier soldier = new Soldier("wizard", 100, 5, 20);
 //        Soldier soldier2 = new Soldier("soldier", 12, 3, 18);
 //        Skill basicSkill = new Skill("ironball",2);
 //        soldier.addSkill(basicSkill);
@@ -35,8 +36,9 @@ public class PlayerDAO {
         session.save(player);
     }
 
+
     public Player getPlayerByWid(int wid) {
-        Query<Player> q = session.createQuery("From Player U where U.wid =:wid", Player.class);
+        Query<Player> q = session.createQuery("From Player U where U.curWorldId =:wid", Player.class);
         q.setParameter("wid", wid);
         return q.uniqueResult();
     }
@@ -44,7 +46,6 @@ public class PlayerDAO {
     public Player getPlayer(int id) {
         Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
         q.setParameter("id", id);
-        q.uniqueResult();
         return q.uniqueResult();
     }
 
@@ -56,9 +57,7 @@ public class PlayerDAO {
 
     public Player getPlayer(String username, String password) {
         // select territory according to conditions
-        Query<Player> q = session.createQuery("From Player U where U.username =:username", Player.class);
-        q.setParameter("username", username);
-        Player res = q.uniqueResult();
+        Player res = getPlayer(username);
         if (res == null) {
             return null;
         }
@@ -67,32 +66,31 @@ public class PlayerDAO {
         } else {
             return null;
         }
+
     }
 
-    // update player's status first in cache then in database
-//    public void setStatus(Player p, String status){
-//        p.setStatus(status);
-//        session.update(p);
-//    }
-//
-//    // update player's coord first in cache then in database
-//    public void setCurrentCoord(Player p, WorldCoord currentCoord){
-//        p.setCurrentCoord(currentCoord);
-//        session.update(p);
-//    }
 
-    public void removeSoldier(int playerID, int soldierID){
+    public void removeSoldier(int playerID, int soldierID) {
         Player p = getPlayer(playerID);
-        Query q = session.createQuery("From Soldier S where S.id =:id");
+        Query<Soldier> q = session.createQuery("From Soldier S where S.id =:id",
+                Soldier.class);
         q.setParameter("id", soldierID);
-        Soldier soldier = (Soldier) q.uniqueResult();
+        Soldier soldier = q.uniqueResult();
         p.getSoldiers().remove(soldier);
         session.update(p);
     }
 
-    public void addWorld(int playerID, WorldInfo info){
-        Player player = getPlayer(playerID);
-//        player.addWorldInfo(info);
-        session.update(player);
+
+    public void setBattleInfo(int playerID, List<Integer> unitList) {
+        Player p = getPlayer(playerID);
+        p.setBattleInfo(unitList);
+        session.update(p);
+    }
+
+    public List<Integer> getBattleInfo(int playerID) {
+        Query<Player> q = session.createQuery("From Player U where U.id =:id", Player.class);
+        q.setParameter("id", playerID);
+        Player player = q.uniqueResult();
+        return player.getBattleInfo();
     }
 }

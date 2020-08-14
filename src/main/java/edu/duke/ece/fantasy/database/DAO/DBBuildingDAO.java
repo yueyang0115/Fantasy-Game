@@ -1,27 +1,23 @@
 package edu.duke.ece.fantasy.database.DAO;
 
-import edu.duke.ece.fantasy.building.Building;
+import edu.duke.ece.fantasy.Building.Prototype.Building;
 import edu.duke.ece.fantasy.database.DBBuilding;
+import edu.duke.ece.fantasy.database.HibernateUtil;
+import edu.duke.ece.fantasy.database.Player;
 import edu.duke.ece.fantasy.database.WorldCoord;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 public class DBBuildingDAO {
+
     Session session;
 
     public DBBuildingDAO(Session session) {
         this.session = session;
     }
 
-    public DBBuilding addBuilding(DBBuilding building) {
-        session.saveOrUpdate(building);
-        return building;
-    }
-
-    public DBBuilding addBuilding(WorldCoord where, DBBuilding building) {
-        building.setCoord(where);
-        session.saveOrUpdate(building);
-        return building;
+    public Session getSession() {
+        return session;
     }
 
     public DBBuilding addBuilding(WorldCoord where, Building building) {
@@ -31,16 +27,14 @@ public class DBBuildingDAO {
     }
 
     public DBBuilding getBuilding(String name) {
-        Query q = session.createQuery("From DBBuilding b where b.name =:name");
+        Query<DBBuilding> q = session.createQuery("From DBBuilding b where b.name =:name", DBBuilding.class);
         q.setParameter("name", name);
-        DBBuilding res = (DBBuilding) q.uniqueResult();
-        return res;
+        return q.uniqueResult();
     }
 
     public DBBuilding getBuilding(WorldCoord coord) {
         Query<DBBuilding> q = session.createQuery("From DBBuilding b where b.coord =:coord", DBBuilding.class);
         q.setParameter("coord", coord);
-        DBBuilding res = q.uniqueResult();
-        return res;
+        return q.uniqueResult();
     }
 }

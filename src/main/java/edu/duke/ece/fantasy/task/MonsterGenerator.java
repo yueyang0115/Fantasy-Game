@@ -1,9 +1,9 @@
 package edu.duke.ece.fantasy.task;
 
-import edu.duke.ece.fantasy.SharedData;
 import edu.duke.ece.fantasy.database.*;
 import edu.duke.ece.fantasy.database.DAO.MetaDAO;
 import edu.duke.ece.fantasy.json.MessagesS2C;
+import edu.duke.ece.fantasy.net.UserSession;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -11,26 +11,28 @@ public class MonsterGenerator extends MonsterScheduledTask {
     private int MONSTER_LIMIT = 3;
     private static int TAME_LIMIT = 0;
 
-    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, MetaDAO metaDAO, SharedData sharedData, LinkedBlockingQueue<MessagesS2C> resultMsgQueue) {
-        super(when, repeatedInterval, repeating, metaDAO, sharedData, resultMsgQueue);
+    public MonsterGenerator(long when, int repeatedInterval, boolean repeating, UserSession session) {
+        super(when, repeatedInterval, repeating, session);
     }
 
     @Override
-    public void doTask() {
-        if(cannotGenerateMonster()) return;
+    public void action() {
+        if (cannotGenerateMonster()) return;
 
-        else{
+        else {
             // get num of monsters in an area
-            Long monsterNum = metaDAO.getMonsterDAO().countMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
+            //System.out.println("player.currentCoord before monsterNum is "+player.getCurrentCoord());
+            long monsterNum = session.getMetaDAO().getMonsterDAO().countMonstersInRange(player.getCurrentCoord(), X_RANGE, Y_RANGE);
+            //System.out.println("monsterNum is "+monsterNum);
             //if the num is less than limited number, generate a new monster
             if (monsterNum < MONSTER_LIMIT) {
                 Monster m = new Monster("wolf", 60, 6, 10);
                 // find a coord to generate a new monster
                 WorldCoord where = generateCoord(player.getCurrentCoord());
-                if(where != null) {
+                if (where != null) {
                     // add one monster
                     m.setCoord(where);
-                    metaDAO.getMonsterDAO().addMonster(m, where);
+                    session.getMetaDAO().getMonsterDAO().addMonster(m, where);
                     //save the changed monster message in resultMsgQueue
                     putMonsterInResultMsgQueue(m);
                     System.out.println("generate a new monster in " + where.toString());
@@ -40,8 +42,8 @@ public class MonsterGenerator extends MonsterScheduledTask {
     }
 
     //find a coord with the biggest tame within an area
-    private WorldCoord generateCoord(WorldCoord currentCoord){
-        WorldCoord newCorod = metaDAO.getTerritoryDAO().getWildestCoordInRange(currentCoord,X_RANGE,Y_RANGE);
+    private WorldCoord generateCoord(WorldCoord currentCoord) {
+        WorldCoord newCorod = session.getMetaDAO().getTerritoryDAO().getWildestCoordInRange(currentCoord, X_RANGE, Y_RANGE);
         return newCorod;
     }
 }
